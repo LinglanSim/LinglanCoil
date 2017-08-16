@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="DataModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=D:\Work\Simulation\MCoil\Model\Data.db" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AirCoef">
+          <Key>
+            <PropertyRef Name="Curve" />
+          </Key>
+          <Property Name="Curve" Type="integer" Nullable="false" />
+          <Property Name="creHT" Type="real" />
+          <Property Name="reexpHT" Type="real" />
+          <Property Name="creDP" Type="real" />
+          <Property Name="reexpDP" Type="real" />
+        </EntityType>
+        <EntityType Name="BaroczyVoidFraction">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="I0" Type="real" />
+          <Property Name="I1" Type="real" />
+          <Property Name="I2" Type="real" />
+          <Property Name="I3" Type="real" />
+          <Property Name="I4" Type="real" />
+          <Property Name="I5" Type="real" />
+          <Property Name="I6" Type="real" />
+          <Property Name="id" Type="integer" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="DataModelStoreContainer">
+          <EntitySet Name="AirCoef" EntityType="Self.AirCoef" store:Type="Tables" />
+          <EntitySet Name="BaroczyVoidFraction" EntityType="Self.BaroczyVoidFraction" store:Type="Tables" />
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DataModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="AirCoef">
+          <Key>
+            <PropertyRef Name="Curve" />
+          </Key>
+          <Property Name="Curve" Type="Int64" Nullable="false" />
+          <Property Name="creHT" Type="Double" />
+          <Property Name="reexpHT" Type="Double" />
+          <Property Name="creDP" Type="Double" />
+          <Property Name="reexpDP" Type="Double" />
+        </EntityType>
+        <EntityType Name="BaroczyVoidFraction">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="I0" Type="Double" />
+          <Property Name="I1" Type="Double" />
+          <Property Name="I2" Type="Double" />
+          <Property Name="I3" Type="Double" />
+          <Property Name="I4" Type="Double" />
+          <Property Name="I5" Type="Double" />
+          <Property Name="I6" Type="Double" />
+          <Property Name="id" Type="Int64" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="DataEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AirCoef" EntityType="Self.AirCoef" />
+          <EntitySet Name="BaroczyVoidFraction" EntityType="Self.BaroczyVoidFraction" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DataModelStoreContainer" CdmEntityContainer="DataEntities">
+          <EntitySetMapping Name="AirCoef">
+            <EntityTypeMapping TypeName="DataModel.AirCoef">
+              <MappingFragment StoreEntitySet="AirCoef">
+                <ScalarProperty Name="Curve" ColumnName="Curve" />
+                <ScalarProperty Name="creHT" ColumnName="creHT" />
+                <ScalarProperty Name="reexpHT" ColumnName="reexpHT" />
+                <ScalarProperty Name="creDP" ColumnName="creDP" />
+                <ScalarProperty Name="reexpDP" ColumnName="reexpDP" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BaroczyVoidFraction">
+            <EntityTypeMapping TypeName="DataModel.BaroczyVoidFraction">
+              <MappingFragment StoreEntitySet="BaroczyVoidFraction">
+                <ScalarProperty Name="I0" ColumnName="I0" />
+                <ScalarProperty Name="I1" ColumnName="I1" />
+                <ScalarProperty Name="I2" ColumnName="I2" />
+                <ScalarProperty Name="I3" ColumnName="I3" />
+                <ScalarProperty Name="I4" ColumnName="I4" />
+                <ScalarProperty Name="I5" ColumnName="I5" />
+                <ScalarProperty Name="I6" ColumnName="I6" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
