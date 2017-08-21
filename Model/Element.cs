@@ -64,7 +64,7 @@ namespace Model
                 //{Equations are for charge calculation}
                 double P_avg = (pri + res_element.Pro) / 2; //Average pressure of the element
                 double rho_l = Refrigerant.SATP(fluid, composition, P_avg, phase1).DensityL*r.Wm;
-                double rho_v = Refrigerant.SATP(fluid, composition, P_avg, phase1).DensityV*r.Wm;
+                double rho_v = Refrigerant.SATP(fluid, composition, P_avg, phase2).DensityV*r.Wm;
                 //{Call VOIDFRACTION_pressure(ref$, x_avg, P_avg : alpha_p)  "Baroczy void fraction model"     }
                 M = Vol_tubes * (alpha * rho_v + (1 - alpha) * rho_l);  //Mass calculated   
             }
