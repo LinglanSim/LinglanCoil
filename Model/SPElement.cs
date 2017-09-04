@@ -60,7 +60,6 @@ namespace Model
             res.DP = zdp * f_sp * l / dh * Math.Pow(g, 2.0) / rho_r / 2000;
             res.Pro = fluid[0] == "Water" ? pri : pri - res.DP;
             res.hro = hri + Math.Pow(-1, hexType) * res.Q / mr;
-
             return res; 
 
         }

@@ -224,7 +224,7 @@ namespace Model
 
                         index++;
                         //dPconverge = CheckDPforCircuits.CheckDPConverge(mr, mr_ciri, r, Ncir);
-                        dPconverge = CheckDPforCircuits.CheckDPConverge(flag_ciro, mr_forDP, r1, Ncir_forDP);
+                        dPconverge = CheckDPforCircuits.CheckDPConverge(res_cir2, iterforPri, flag_ciro, mr_forDP, r1, Ncir_forDP);
                         if (flag_ciro == 0)
                         {
                             restartDP_index = 0;
@@ -283,6 +283,7 @@ namespace Model
                                 res_cir2[j].R_1 = res_cir2[j].R_1 / N_tube2;
                                 res_cir2[j].R_1a = res_cir2[j].R_1a / N_tube2;
                                 res_cir2[j].R_1r = res_cir2[j].R_1r / N_tube2;
+                                res_cir2[j].Tri = tri;
 
                                 te_calc = Refrigerant.SATP(fluid, composition, res_cir2[j].Pro, 1).Temperature;
                                 if (fluid[0] == "Water")
@@ -307,7 +308,7 @@ namespace Model
                         flag_ciro = 1;
                         Ncir_forDP = Nciro;
                         mr_forDP = (double[])mr_ciro.Clone(); // mr_forDP = mr_ciro
-                        dPconverge = CheckDPforCircuits.CheckDPConverge(flag_ciro, mr_forDP, r2, Ncir_forDP);
+                        dPconverge = CheckDPforCircuits.CheckDPConverge(res_cir2, iterforPri, flag_ciro, mr_forDP, r2, Ncir_forDP);
                         if (!dPconverge.flag)
                         {
                             restartDP_index = 1;

@@ -714,7 +714,7 @@ namespace Model
             double ma = Va * rho_a_st;//Va / 3600 * 1.2; //kg/s
             int curve = 1; //
             double za = 1; //Adjust factor
-            double ha = AirHTC.alpha(Vel_a, za, curve)*1.5;//71.84;//36.44;
+            double ha = AirHTC.alpha(Vel_a, za, curve) * 1.2;//71.84;//36.44;
             double eta_surface = 1;
             double zh = 1;
             double zdp = 1;

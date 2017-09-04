@@ -104,6 +104,8 @@ namespace Model
                     res_cir.R_1 += r[i].R_1;
                     res_cir.R_1a += r[i].R_1a;
                     res_cir.R_1r += r[i].R_1r;
+                    res_cir.Tri = r[i].Tri;
+                    res_cir.x_i = r[i].x_i;
 
                 }
 
@@ -118,6 +120,7 @@ namespace Model
             //}            
             res_cir.mr = mr;
             res_cir.Tao_Detail = ta;
+
             //res_cir.Tao = res_cir.Tao / Nelement;
             res_cir.href = res_cir.href / TubeofCir[index];
             res_cir.R_1 = res_cir.R_1 / TubeofCir[index];

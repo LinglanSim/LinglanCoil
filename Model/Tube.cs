@@ -47,7 +47,8 @@ namespace Model
             res_tube.R_1 = res_tube.R_1 / Nelement;
             res_tube.R_1a = res_tube.R_1a / Nelement;
             res_tube.R_1r = res_tube.R_1r / Nelement;
-
+            res_tube.Tri = r.Tri;
+            res_tube.x_i = r.x_i;
             return res_tube;
 
         }
