@@ -11,8 +11,8 @@ namespace Model
     public class Slab
     {
         public static CalcResult SlabCalc(int[,] CirArrange, CircuitNumber CircuitInfo, int Nrow, int[] Ntube, int Nelement, string[] fluid, double[] composition, //double Npass, int[] N_tubes_pass, 
-            double dh, double l, GeometryResult[,] geo, double[, ,] ta,
-            double te, double pe, double hri, double mr, double ma, double ha,
+            double dh, double l, GeometryResult[,] geo, double[,] ta,
+            double te, double pe, double hri, double mr, double ma, MalAirDistr malAirDistr, double[,] ha,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater)
    
         {
@@ -174,7 +174,7 @@ namespace Model
                                 {
                                     //for (int i = 0; i < Ncir; i++)
                                     r[i] = Circuit.CircuitCalc(i, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, dh, l, geo, ta,
-                                        tri_cir[i], pri_cir[i], hri_cir[i], mr_ciro[k], ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+                                        tri_cir[i], pri_cir[i], hri_cir[i], mr_ciro[k], ma, malAirDistr, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
                                     r1[k] = r[i].ShallowCopy();
                                     r2[k] = r[i].ShallowCopy();
                                     if (!index_outbig) r1[k].DP += res_cir2[k].DP;
@@ -206,7 +206,7 @@ namespace Model
 
                                 //for (int i = 0; i < Ncir; i++)
                                 r[i] = Circuit.CircuitCalc(i, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, dh, l, geo, ta, 
-                                    tri_cir[i], pri_cir[i], hri_cir[i], mr_ciri[k], ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+                                    tri_cir[i], pri_cir[i], hri_cir[i], mr_ciri[k], ma, malAirDistr, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
                                 r1[k] = r[i].ShallowCopy();
                                 index_cir[k] = i;
                                 k++;
@@ -387,7 +387,14 @@ namespace Model
             res_slab.DP = pri - res_slab.Pro;
             res_slab.Tao_Detail = ta;
             res_slab.href = res_slab.href / N_tube_total;
-            res_slab.ha = ha;
+            for (int i = 0; i < ha.GetLength(0); i++)
+                for (int j = 0; j < ha.GetLength(1); j++)
+                {
+                    res_slab.ha += ha[i, j];
+                }
+
+            res_slab.ha = res_slab.ha / ha.Length;
+
             res_slab.R_1 = res_slab.R_1 / N_tube_total;
             res_slab.R_1a = res_slab.R_1a / N_tube_total;
             res_slab.R_1r = res_slab.R_1r / N_tube_total;
@@ -408,8 +415,7 @@ namespace Model
             res_slab.Tro = Refrigerant.PHFLSH(fluid, composition, res_slab.Pro, (res_slab.hro + (fluid[0] == "Water" ? 0 : 140)) * wm).t - 273.15;
 
             for (int j = 0; j < N_tube; j++)
-                for (int i = 0; i < Nelement; i++)
-                    res_slab.Tao += res_slab.Tao_Detail[i, j, Nrow];
+                res_slab.Tao += res_slab.Tao_Detail[j, Nrow];
             res_slab.Tao = res_slab.Tao / N_tube;
             res_slab.Ra_ratio = res_slab.R_1a / res_slab.R_1;
             res_slab.ma = ma;

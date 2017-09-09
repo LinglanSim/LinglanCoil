@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace Model.Basic
 {
-    public class CheckAir
+    public class MalAirDistr
     {
-        public double[,] ta;
-        public bool flag;
+        public int V;
+        public int H;
+        public double[,] distribution;
+        public double nominate;
     }
 }

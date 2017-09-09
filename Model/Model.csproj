@@ -81,6 +81,8 @@
     <Compile Include="Basic\Fluid.cs" />
     <Compile Include="Basic\FluidCategory.cs" />
     <Compile Include="Basic\GeometryResult.cs" />
+    <Compile Include="Basic\MalAirDistr.cs" />
+    <Compile Include="Basic\MalAirDistribution.cs" />
     <Compile Include="Basic\RefHTCandDPResult.cs" />
     <Compile Include="Basic\Refrigerant.cs" />
     <Compile Include="Basic\RefrigerantHTCandDP.cs" />

@@ -36,7 +36,6 @@ namespace Model
             int[] Ntube = { 6, 6 };
             int N_tube=Ntube[0];
             double L = 914.4 * 0.001;
-            int Nelement = 1;
             int[,] CirArrange;
             //CirArrange = new int[,] { { 8, 6, 4, 2, 1, 3, 5, 7 } };//actual, counter-paralle,  Q=83.1
             //CirArrange = new int[,] { { 20, 18, 16, 14, 12, 10, 8, 6, 4, 2, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19 } };//actual, counter-paralle,  Q=83.1
@@ -65,26 +64,32 @@ namespace Model
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
             //  Ncir=1, 20in, 20->19 1out
 
-                //int total = 0;
-                //if (CirArrange != null)
-                //{
-                //    foreach (var seg in CirArrange)
-                //    {
-                //        total += seg.
-                //    }
-                //}
+            double[,] ma_distribution = new double[,] { { 1, 1, 2, 3 }, { 1, 1, 2, 0.50001 }, { 1, 2, 2, 0.499999 } };
+            int Nelement = 2;// always less than 2
+            var malAirDistr = MalAirDistribution.AirDistribution(Nelement, ma_distribution);
 
             double mr = 0.0425;
-            double Vel_a = 2.032; //m/s
+            double Vel_a_ave = 2.032; //m/s
+            double[,] Vel_a = new double[malAirDistr.V, malAirDistr.H];
+            double[,] ha = new double[malAirDistr.V, malAirDistr.H];
+            int curve = 1; //
+            double za = 1; //Adjust factor
+            for (int i = 0; i < malAirDistr.V; i++)
+            {
+                for (int j = 0; j < malAirDistr.H; j++)
+                {
+                    Vel_a[i, j] = Vel_a_ave * (malAirDistr.distribution[i, j] / malAirDistr.nominate) / (1.0 / malAirDistr.V) * Nelement; //must multiply Nelement.
+                    ha[i, j] = AirHTC.alpha(Vel_a[i, j], za, curve);//71.84;//36.44;
+                }
+            }
+
             double H = Pt * N_tube;
             double Hx = L * H;
             double rho_a_st = 1.2; //kg/m3
 
-            double Va = Vel_a * Hx;
-            double ma = Va * rho_a_st;//Va / 3600 * 1.2; //kg/s
-            int curve = 1; //
-            double za = 1; //Adjust factor
-            double ha = AirHTC.alpha(Vel_a, za, curve);//71.84;//36.44;
+            double Va = Vel_a_ave * Hx;
+            double ma = Va * rho_a_st;          
+            
             double eta_surface = 1;
             double zh = 1;
             double zdp = 1;
@@ -106,11 +111,11 @@ namespace Model
             //double hri = 354.6;
             //double xin = 0.57;
 
-            double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+            double[,] ta = new double[N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
             string AirDirection = "Counter";
-            ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, te, AirDirection);
+            ta = InitialAirProperty.AirTemp(Ntube, Nrow, tai, te, AirDirection);
 
             GeometryResult geo = new GeometryResult();
             //GeometryResult[,] geo_element = new GeometryResult[,] { };
@@ -130,7 +135,7 @@ namespace Model
             geo.A_ratio = geo.A_r / geo.A_a;
 
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, te, pe, hri,
-                mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+                mr, ma, malAirDistr, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
 
             //res = Slab.SlabCalc(Npass, N_tubes_pass, fluid, composition, Dh, L, geo.A_a, geo.A_r_cs, geo.A_r, tai, tri, pe, hri,
             //    mr, ma, ha, eta_surface, zh, zdp);
@@ -197,29 +202,34 @@ namespace Model
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
             //  Ncir=1, 20in, 20->19 1out
 
-            //int total = 0;
-            //if (CirArrange != null)
-            //{
-            //    foreach (var seg in CirArrange)
-            //    {
-            //        total += seg.
-            //    }
-            //}
+            double[,] ma_distribution = new double[,] { { 0.1 }, { 0.1 }, { 0.1 } };
+            var malAirDistr = MalAirDistribution.AirDistribution(Nelement, ma_distribution);
 
-            double mr = 23.0 / 60;
-            double Vel_a = 1.2; //m/s
+            double mr = 23.0 / 60; ;
+            double Vel_a_ave = 1.2; //m/s
+            double[,] Vel_a = new double[malAirDistr.V, malAirDistr.H];
+            double[,] ha = new double[malAirDistr.V, malAirDistr.H];
+            int curve = 1; //
+            double za = 1; //Adjust factor
+            for (int i = 0; i < malAirDistr.V; i++)
+            {
+                for (int j = 0; j < malAirDistr.H; j++)
+                {
+                    Vel_a[i, j] = Vel_a_ave * (malAirDistr.distribution[i, j] / malAirDistr.nominate) / (1.0 / malAirDistr.V) * Nelement; //must multiply Nelement.
+                    ha[i, j] = AirHTC.alpha(Vel_a[i, j], za, curve);//71.84;//36.44;
+                }
+            }
+
             double H = Pt * N_tube;
             double Hx = L * H;
             double rho_a_st = 1.2; //kg/m3
 
-            double Va = Vel_a * Hx;
-            double ma = Va * rho_a_st;//Va / 3600 * 1.2; //kg/s
-            int curve = 1; //
-            double za = 1; //Adjust factor
+            double Va = Vel_a_ave * Hx;
+            double ma = Va * rho_a_st;
+            double eta_surface = 0.89;
             double zh = 1;
             double zdp = 1;
-            double eta_surface = 0.89;
-            double ha = AirHTC.alpha(Vel_a, za, curve);//71.84;//36.44;
+
             double tai = 20;
             double tri = 45;
             double tc = tri;
@@ -236,11 +246,11 @@ namespace Model
             //double hri = 354.6;
             //double xin = 0.57;
 
-            double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+            double[,] ta = new double[N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
             string AirDirection = "Counter";
-            ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
+            ta = InitialAirProperty.AirTemp(Ntube, Nrow, tai, tc, AirDirection);
 
             GeometryResult geo = new GeometryResult();
             //GeometryResult[,] geo_element = new GeometryResult[,] { };
@@ -260,7 +270,7 @@ namespace Model
             geo.A_ratio = geo.A_r / geo.A_a;
 
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, tc, pc, hri,
-                mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+                mr, ma, malAirDistr, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
 
             //res = Slab.SlabCalc(Npass, N_tubes_pass, fluid, composition, Dh, L, geo.A_a, geo.A_r_cs, geo.A_r, tai, tri, pe, hri,
             //    mr, ma, ha, eta_surface, zh, zdp);
@@ -300,21 +310,33 @@ namespace Model
             CircuitInfo.TubeofCir = new int[] { 4, 4, 4 };  //{ 4, 8 };
             // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
-
+            double[,] ma_distribution = new double[,] { { 0.1 }, { 0.1 }, { 0.1 } };
+            var malAirDistr = MalAirDistribution.AirDistribution(Nelement, ma_distribution);
             double mr = 9.99 / 60;
-            double Vel_a = 2; //m/s
+            double Vel_a_ave = 2; //m/s
+            double[,] Vel_a = new double[malAirDistr.V, malAirDistr.H];
+            double[,] ha = new double[malAirDistr.V, malAirDistr.H];
+            int curve = 1; //
+            double za = 1; //Adjust factor
+            for (int i = 0; i < malAirDistr.V; i++)
+            {
+                for (int j = 0; j < malAirDistr.H; j++)
+                {
+                    Vel_a[i, j] = Vel_a_ave * (malAirDistr.distribution[i, j] / malAirDistr.nominate) / (1.0 / malAirDistr.V) * Nelement; //must multiply Nelement.
+                    ha[i, j] = AirHTC.alpha(Vel_a[i, j], za, curve) / 79 * 77.42;//71.84;//36.44;
+                }
+            }
+
             double H = Pt * N_tube;
             double Hx = L * H;
             double rho_a_st = 1.188; //kg/m3
 
-            double Va = Vel_a * Hx;
-            double ma = Va * rho_a_st;//Va / 3600 * 1.2; //kg/s
-            int curve = 1; //
-            double za = 1; //Adjust factor
+            double Va = Vel_a_ave * Hx;
+            double ma = Va * rho_a_st;
+            double eta_surface = 0.8284;
+
             double zh = 1;
             double zdp = 1;
-            double eta_surface = 0.8284;
-            double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 77.42;//71.84;//36.44;
             double tai = 19.98;
             double tri = 44.98;
             double tc = tri;
@@ -325,11 +347,11 @@ namespace Model
             double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
             double hri = Refrigerant.TPFLSH(fluid, composition, tc + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
 
-            double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+            double[,] ta = new double[N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
             string AirDirection = "Counter";
-            ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
+            ta = InitialAirProperty.AirTemp(Ntube, Nrow, tai, tc, AirDirection);
 
             GeometryResult geo = new GeometryResult();
             //GeometryResult[,] geo_element = new GeometryResult[,] { };
@@ -348,7 +370,7 @@ namespace Model
             geo.A_ratio = geo.A_r / geo.A_a;
 
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, tc, pc, hri,
-                mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+                mr, ma, malAirDistr, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
 
             return res;
         }
@@ -392,6 +414,9 @@ namespace Model
                 Va[i] = Vel_a[i] * Hx;
                 double[] ma = new double[N];
                 ma[i] = Va[i] * rho_a_st;//Va / 3600 * 1.2; //kg/s
+                double[,] ma_distribution = new double[,] { { 0.1 }, { 0.1 }, { 0.1 } };
+                var malAirDistr = MalAirDistribution.AirDistribution(Nelement, ma_distribution);
+
                 int curve = 1; //
                 double za = 1; //Adjust factor
                 double zh = 1;
@@ -399,6 +424,12 @@ namespace Model
                 double[] eta_surface = new double[] { 0.845, 0.845, 0.845, 0.845, 0.845, 0.845, 0.845, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.83, 0.83, 0.83, 0.83, 0.83, 0.83, 0.83 };
                 //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
                 double[] ha = new double[] { 72.64, 72.64, 72.64, 72.64, 72.64, 72.64, 73.6, 77.2, 77.2, 77.2, 77.2, 77.2, 77.2, 77.2, 78.67, 78.67, 78.67, 78.67, 78.67, 78.67, 78.67, 83.09, 83.09, 83.09, 83.09, 83.09, 83.09, 83.09 };
+                double[,] ha_in = new double[malAirDistr.V, malAirDistr.H];
+                for (int j = 0; j < malAirDistr.V; j++)
+                {
+                    ha_in[j, 0] = ha[i];
+                }
+
                 double[] tai = new double[] { 27.0, 26.99, 26.99, 26.99, 27.01, 27.02, 26.98, 27.01, 27.00, 27.01, 27.00, 27.02, 27.00, 27.00, 27.01, 26.99, 26.99, 27.0, 27.0, 26.99, 27.01, 27.00, 26.99, 26.99, 27.01, 27.0, 27.0, 26.98 };
                 double[] tri = new double[] { 9.98, 10.0, 9.98, 10.0, 9.99, 10.0, 9.98, 10.0, 9.99, 10.0, 10.01, 9.99, 10.02, 10.0, 10.01, 9.99, 9.99, 9.98, 9.99, 10.0, 10.0, 10.0, 9.99, 9.99, 9.99, 9.99, 9.99, 9.99 };
                 double[] tc = tri;
@@ -411,9 +442,9 @@ namespace Model
                 double[] hri = new double[N];
                 hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
 
-                double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+                double[,] ta = new double[N_tube, Nrow + 1];
                 string AirDirection = "Counter";
-                ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
+                ta = InitialAirProperty.AirTemp(Ntube, Nrow, tai[i], tc[i], AirDirection);
 
                 GeometryResult geo = new GeometryResult();
                 GeometryResult[,] geo_element = new GeometryResult[N_tube, Nrow];
@@ -433,7 +464,7 @@ namespace Model
                 geo.A_ratio = geo.A_r / geo.A_a;
 
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, tc[i], pc[i], hri[i],
-                    mr[i], ma[i], ha[i], eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater);
+                    mr[i], ma[i], malAirDistr, ha_in, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_cool.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -480,6 +511,10 @@ namespace Model
                 double[] Va = new double[N];
                 Va[i] = Vel_a[i] * Hx;
                 double[] ma = new double[N];
+
+                double[,] ma_distribution = new double[,] { { 0.1 }, { 0.1 }, { 0.1 } };
+                var malAirDistr = MalAirDistribution.AirDistribution(Nelement, ma_distribution);
+
                 ma[i] = Va[i] * rho_a_st;//Va / 3600 * 1.2; //kg/s
                 int curve = 1; //
                 double za = 1; //Adjust factor
@@ -489,6 +524,12 @@ namespace Model
                 //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
                 //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
                 double[] ha = new double[] { 58.51, 58.51, 58.51, 58.51, 58.51, 58.51, 58.51, 64.92, 64.92, 64.92, 64.92, 64.92, 64.92, 64.92, 70.41, 70.41, 70.41, 70.41, 70.41, 70.41, 70.41, 75.42, 75.42, 75.42, 75.42, 75.42, 75.42, 75.42 };
+                double[,] ha_in = new double[malAirDistr.V, malAirDistr.H];
+                for (int j = 0; j < malAirDistr.V; j++)
+                {
+                    ha_in[j, 0] = ha[i];
+                }
+
                 double[] tai = new double[] { 20.01, 20.0, 20.02, 20.0, 19.99, 20.02, 20.0, 19.98, 20.0, 19.99, 19.99, 19.99, 19.98, 20.0, 19.98, 20.01, 19.99, 20.0, 20.0, 19.99, 19.99, 19.98, 20.01, 20.0, 20.0, 20.01, 20.01, 20.02 };
                 double[] tri = new double[] { 45.01, 45.01, 44.99, 44.99, 45.0, 45.0, 44.99, 44.99, 45.01, 44.99, 45.01, 44.99, 45.01, 45.01, 45.0, 45.01, 44.99, 45.01, 45.01, 44.99, 45.01, 44.98, 45.01, 44.99, 45.0, 45.0, 45.01, 45.0 };
                 double[] tc = tri;
@@ -501,9 +542,9 @@ namespace Model
                 double[] hri = new double[N];
                 hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
 
-                double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+                double[,] ta = new double[N_tube, Nrow + 1];
                 string AirDirection = "Counter";
-                ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
+                ta = InitialAirProperty.AirTemp(Ntube, Nrow, tai[i], tc[i], AirDirection);
 
                 GeometryResult geo = new GeometryResult();
                 GeometryResult[,] geo_element = new GeometryResult[N_tube, Nrow];
@@ -523,7 +564,7 @@ namespace Model
                 geo.A_ratio = geo.A_r / geo.A_a;
 
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, tc[i], pc[i], hri[i],
-                    mr[i], ma[i], ha[i], eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater);
+                    mr[i], ma[i], malAirDistr, ha_in, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -583,17 +624,31 @@ namespace Model
             CircuitInfo.TubeofCir = new int[] { 8, 6, 8, 10, 6, 10 };  //{ 4, 8 };
             CircuitInfo.UnequalCir = new int[] { 5, 5, 6, 6, 0, 0 };
 
+            double[,] ma_distribution = new double[,] { { 0.1 }, { 0.1 }, { 0.1 } };
+            var malAirDistr = MalAirDistribution.AirDistribution(Nelement, ma_distribution);
+
             double mr = 0.06;
-            double Vel_a = 1.8; //m/s
+            double Vel_a_ave = 2.032; //m/s
+            double[,] Vel_a = new double[malAirDistr.V, malAirDistr.H];
+            double[,] ha = new double[malAirDistr.V, malAirDistr.H];
+            int curve = 1; //
+            double za = 1; //Adjust factor
+            for (int i = 0; i < malAirDistr.V; i++)
+            {
+                for (int j = 0; j < malAirDistr.H; j++)
+                {
+                    Vel_a[i, j] = Vel_a_ave * (malAirDistr.distribution[i, j] / malAirDistr.nominate) / (1.0 / malAirDistr.V) * Nelement; //must multiply Nelement.
+                    ha[i, j] = AirHTC.alpha(Vel_a[i, j], za, curve);//71.84;//36.44;
+                }
+            }
+
             double H = Pt * N_tube;
             double Hx = L * H;
             double rho_a_st = 1.2; //kg/m3
 
-            double Va = Vel_a * Hx;
-            double ma = Va * rho_a_st;//Va / 3600 * 1.2; //kg/s
-            int curve = 1; //
-            double za = 1; //Adjust factor
-            double ha = AirHTC.alpha(Vel_a, za, curve);//71.84;//36.44;
+            double Va = Vel_a_ave * Hx;
+            double ma = Va * rho_a_st;   
+
             double eta_surface = 1;
             double zh = 1;
             double zdp = 1.5;
@@ -615,11 +670,11 @@ namespace Model
             //double hri = 354.6;
             //double xin = 0.57;
 
-            double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+            double[,] ta = new double[N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
             string AirDirection = "Counter";
-            ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, te, AirDirection);
+            ta = InitialAirProperty.AirTemp(Ntube, Nrow, tai, te, AirDirection);
 
             GeometryResult geo = new GeometryResult();
             //GeometryResult[,] geo_element = new GeometryResult[,] { };
@@ -639,7 +694,7 @@ namespace Model
             geo.A_ratio = geo.A_r / geo.A_a;
 
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, te, pe, hri,
-                mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+                mr, ma, malAirDistr, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
 
             //res = Slab.SlabCalc(Npass, N_tubes_pass, fluid, composition, Dh, L, geo.A_a, geo.A_r_cs, geo.A_r, tai, tri, pe, hri,
             //    mr, ma, ha, eta_surface, zh, zdp);
@@ -704,17 +759,31 @@ namespace Model
             CircuitInfo.TubeofCir = new int[] { 6, 10, 8, 6, 8, 10 };  //{ 4, 8 };
             CircuitInfo.UnequalCir = new int[] { -5, -6, 5, 5, 6, 6 }; //{ 3, 4, -3, -3, -4, -4 };
 
+            double[,] ma_distribution = new double[,] { { 0.1 }, { 0.1 }, { 0.1 } };
+            var malAirDistr = MalAirDistribution.AirDistribution(Nelement, ma_distribution);
+
             double mr = 0.076;
-            double Vel_a = 1.8; //m/s
+            double Vel_a_ave = 1.8; //m/s
+            double[,] Vel_a = new double[malAirDistr.V, malAirDistr.H];
+            double[,] ha = new double[malAirDistr.V, malAirDistr.H];
+            int curve = 1; //
+            double za = 1; //Adjust factor
+            for (int i = 0; i < malAirDistr.V; i++)
+            {
+                for (int j = 0; j < malAirDistr.H; j++)
+                {
+                    Vel_a[i, j] = Vel_a_ave * (malAirDistr.distribution[i, j] / malAirDistr.nominate) / (1.0 / malAirDistr.V) * Nelement; //must multiply Nelement.
+                    ha[i, j] = AirHTC.alpha(Vel_a[i, j], za, curve) * 1.2;//71.84;//36.44;
+                }
+            }
+
             double H = Pt * N_tube;
             double Hx = L * H;
             double rho_a_st = 1.2; //kg/m3
 
-            double Va = Vel_a * Hx;
-            double ma = Va * rho_a_st;//Va / 3600 * 1.2; //kg/s
-            int curve = 1; //
-            double za = 1; //Adjust factor
-            double ha = AirHTC.alpha(Vel_a, za, curve) * 1.2;//71.84;//36.44;
+            double Va = Vel_a_ave * Hx;
+            double ma = Va * rho_a_st;   
+
             double eta_surface = 1;
             double zh = 1;
             double zdp = 1;
@@ -736,11 +805,11 @@ namespace Model
             //double hri = 354.6;
             //double xin = 0.57;
 
-            double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+            double[,] ta = new double[N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
             string AirDirection = "Counter";
-            ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, te, AirDirection);
+            ta = InitialAirProperty.AirTemp(Ntube, Nrow, tai, te, AirDirection);
 
             GeometryResult geo = new GeometryResult();
             //GeometryResult[,] geo_element = new GeometryResult[,] { };
@@ -760,7 +829,7 @@ namespace Model
             geo.A_ratio = geo.A_r / geo.A_a;
 
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, te, pe, hri,
-                mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+                mr, ma, malAirDistr, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
 
             //res = Slab.SlabCalc(Npass, N_tubes_pass, fluid, composition, Dh, L, geo.A_a, geo.A_r_cs, geo.A_r, tai, tri, pe, hri,
             //    mr, ma, ha, eta_surface, zh, zdp);

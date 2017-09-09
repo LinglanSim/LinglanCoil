@@ -10,8 +10,8 @@ namespace Model
     public class Circuit
     {
         public static CalcResult CircuitCalc(int index, CirArr[] cirArr, CircuitNumber CircuitInfo, int Nrow, int[] Ntube, int Nelement, string[] fluid, double[] composition, 
-            double dh, double l, GeometryResult[,] geo, double[, ,] ta,
-            double tri, double pri, double hri, double mr, double ma, double ha,
+            double dh, double l, GeometryResult[,] geo, double[,] ta,
+            double tri, double pri, double hri, double mr, double ma, MalAirDistr malAirDistr, double[,] ha,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater)
         {
 
@@ -24,8 +24,8 @@ namespace Model
             int iRow = 0;
             int iTube = 0;
 
-            double[] tai = new double[Nelement];
-            double[, ,] taout_calc = new double[Nelement, N_tube, Nrow];
+            double tai = 0;
+            double[,] taout_calc = new double[N_tube, Nrow];
             double Ar = 0;
             double Aa = 0;
             double Aa_tube = 0;
@@ -35,10 +35,12 @@ namespace Model
             double tri_tube = 0;
             double hri_tube = 0;
             int index2 = 0;
+            double[] ma_tube = new double[Nelement];
+            double[] ha_tube = new double[Nelement];
 
             CheckAir airConverge = new CheckAir();
             int iter = 0;
-            ma = ma / N_tube; //air flow distribution to be considered
+            //ma = ma / N_tube; //air flow distribution to be considered
 
             if (index == 0) index2 = 0;
             else
@@ -69,6 +71,13 @@ namespace Model
                     //index2 = index == 1 ? 0 : (index - 1) * TubeofCir[index - 1 - 1];
                     iRow = cirArr[i + index2].iRow;
                     iTube = cirArr[i + index2].iTube;
+                    //kkk indicate which section of the mal-air-distribution...
+                    int kkk = (int)((iTube + 1 + ((double)N_tube / malAirDistr.V) / 2 - 1) / ((double)N_tube / malAirDistr.V) + 0.50001);
+                    for (int j = 0; j <Nelement ; j++)
+                    {
+                        ma_tube[j] = ma / N_tube * (((malAirDistr.distribution[kkk - 1, j] / malAirDistr.nominate) / (1.0 / malAirDistr.V)));
+                        ha_tube[j] = ha[kkk - 1, j];
+                    }
 
                     Ar = geo[iTube, iRow].A_r;
                     Aa = geo[iTube, iRow].A_a;
@@ -76,18 +85,13 @@ namespace Model
                     Aa_fin = geo[iTube, iRow].Aa_fin;
                     Ar_cs = geo[iTube, iRow].A_r_cs;
                     //tai=ta[,iTube,iRow];
-                    for (int j = 0; j < Nelement; j++)
-                    {
-                        tai[j] = ta[j, iTube, iRow];
-                    }
 
-                    r[i] = Tube.TubeCalc(Nelement, fluid, composition, dh, l, Aa_fin, Aa_tube, Ar_cs, Ar, tai, tri_tube, pri_tube, hri_tube,
-                        mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
-                    for (int j = 0; j < Nelement; j++)
-                    {
-                        taout_calc[j, iTube, iRow] = r[i].Tao;
-                    }
+                    tai = ta[iTube, iRow];                   
 
+                    r[i] = Tube.TubeCalc(Nelement, fluid, composition, dh, l, Aa_fin * Nelement, Aa_tube * Nelement, Ar_cs, Ar * Nelement, tai, tri_tube, pri_tube, hri_tube,
+                        mr, ma_tube, ha_tube, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+
+                    taout_calc[iTube, iRow] = r[i].Tao;
                     tri_tube = r[i].Tro;
                     pri_tube = r[i].Pro;
                     hri_tube = r[i].hro;
