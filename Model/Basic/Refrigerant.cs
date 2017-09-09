@@ -47,7 +47,12 @@ namespace Model.Basic
             double[] compositionL, double[] compositionV,
             ref int ierr, char[] herr,
             int l1);
-
+        [DllImport("refprop.dll", EntryPoint = "CRITPdll", SetLastError = true)]
+        public static extern void CRITPdll(
+            double[] composition, ref double temperature,
+            ref double pressure, ref double density,
+            ref int ierr, char[] herr,
+            int l1);      
         [DllImport("refprop.dll", EntryPoint = "SATTdll", SetLastError = true)]
         public static extern void SATTdll(
             ref double temperature, double[] composition, ref int phase,
@@ -407,7 +412,7 @@ namespace Model.Basic
         {
             public double Enthalpy;
         }
-
+        
         public static CVCPResult CVCP(string[] components, double[] composition, double temperature, double density)
         {
             Initialize(components, composition);
@@ -572,7 +577,23 @@ namespace Model.Basic
                 ref r.cv, ref r.cp, ref r.w, ref _ierr, _herr, _herr.Length);
             return r;
         }
+        public struct CRITResults
+        {
+            public double t;
+            public double p;
+            public double rho;
+        }
 
+        public static CRITResults CRIT(string[] components, double[] composition)
+        {
+            Initialize(components, composition);
+            double temperature = 0.0;
+            double pressure = 0.0;
+            double density = 0.0;
+            CRITPdll(_x, ref temperature, ref pressure, ref density, ref _ierr, _herr, _herr.Length);
+            return new CRITResults { t = temperature, p = pressure, rho = density };
+
+        }
         #endregion Public methods
     }
 }
