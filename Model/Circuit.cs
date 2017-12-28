@@ -9,8 +9,8 @@ namespace Model
 {
     public class Circuit
     {
-        public static CalcResult CircuitCalc(int index, CirArr[] cirArr, CircuitNumber CircuitInfo, int Nrow, int[] Ntube, int Nelement, string[] fluid, double[] composition, 
-            double dh, double l, GeometryResult[,] geo, double[, ,] ta,
+        public static CalcResult CircuitCalc(int index, CirArr[] cirArr, CircuitNumber CircuitInfo, int Nrow, int[] Ntube, int Nelement, string[] fluid, double[] composition,
+            double dh, double l, GeometryResult[,] geo, double[, ,] ta, double[, ,] RH,
             double tri, double pri, double hri, double mr, double ma, double ha,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater)
         {
@@ -25,7 +25,9 @@ namespace Model
             int iTube = 0;
 
             double[] tai = new double[Nelement];
+            double[] RHi = new double[Nelement];
             double[, ,] taout_calc = new double[Nelement, N_tube, Nrow];
+            double[, ,] RHout_calc = new double[Nelement, N_tube, Nrow];
             double Ar = 0;
             double Aa = 0;
             double Aa_tube = 0;
@@ -79,13 +81,15 @@ namespace Model
                     for (int j = 0; j < Nelement; j++)
                     {
                         tai[j] = ta[j, iTube, iRow];
+                        RHi[j] = RH[j, iTube, iRow];
                     }
 
-                    r[i] = Tube.TubeCalc(Nelement, fluid, composition, dh, l, Aa_fin, Aa_tube, Ar_cs, Ar, tai, tri_tube, pri_tube, hri_tube,
+                    r[i] = Tube.TubeCalc(Nelement, fluid, composition, dh, l, Aa_fin, Aa_tube, Ar_cs, Ar, tai, RHi, tri_tube, pri_tube, hri_tube,
                         mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
                     for (int j = 0; j < Nelement; j++)
                     {
                         taout_calc[j, iTube, iRow] = r[i].Tao;
+                        RHout_calc[j, iTube, iRow] = r[i].RHout;
                     }
 
                     tri_tube = r[i].Tro;
@@ -107,8 +111,9 @@ namespace Model
 
                 }
 
-                airConverge = CheckAirConvergeforCircuits.CheckAirConverge(Nrow, N_tube, Nelement, ta, taout_calc);
+                airConverge = CheckAirConvergeforCircuits.CheckAirConverge(Nrow, N_tube, Nelement, ta, RH, taout_calc, RHout_calc);
                 ta = airConverge.ta;
+                RH = airConverge.RH;
                 iter++;
             } while (!airConverge.flag && iter < 100);
 
@@ -118,6 +123,7 @@ namespace Model
             //}            
             res_cir.mr = mr;
             res_cir.Tao_Detail = ta;
+            res_cir.RHo_Detail = RH;
             //res_cir.Tao = res_cir.Tao / Nelement;
             res_cir.href = res_cir.href / TubeofCir[index];
             res_cir.R_1 = res_cir.R_1 / TubeofCir[index];

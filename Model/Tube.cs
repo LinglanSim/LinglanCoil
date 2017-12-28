@@ -11,7 +11,7 @@ namespace Model
     {
         public static CalcResult TubeCalc(int Nelement, string[] fluid, double[] composition,
             double dh, double l, double Aa_fin, double Aa_tube, double A_r_cs, double Ar, double[] tai,
-            double tri, double pri, double hri, double mr, double ma, double ha,
+            double[] RHi, double tri, double pri, double hri, double mr, double ma, double ha,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater)
         {
             double g = mr / A_r_cs;
@@ -22,13 +22,14 @@ namespace Model
             {
 
                 r = Element.ElementCal(fluid, composition, dh, l / Nelement, Aa_fin / Nelement, Aa_tube / Nelement, A_r_cs, Ar / Nelement,
-                    tai[i], tri, pri, hri, mr, g, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+                    tai[i], RHi[i], tri, pri, hri, mr, g, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
 
                 pri = r.Pro;
                 hri = r.hro;
                 tri = r.Tro;
 
                 res_tube.Tao = r.Tao;
+                res_tube.RHout = r.RHout;
                 res_tube.DP += r.DP;
                 res_tube.Q += r.Q;
                 res_tube.M += r.M;

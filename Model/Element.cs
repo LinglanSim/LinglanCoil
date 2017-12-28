@@ -10,7 +10,7 @@ namespace Model
     public class Element
     {
         public static CalcResult ElementCal(string[] fluid, double[] composition, double dh, double l, 
-            double Aa_fin, double Aa_tube, double A_r_cs, double Ar, double tai,
+            double Aa_fin, double Aa_tube, double A_r_cs, double Ar, double tai, double RHi,
             double tri, double pri, double hri, double mr, double g, double ma, double ha,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater)
         {
@@ -38,7 +38,7 @@ namespace Model
                 else
                     Tri_mod = tri;
 
-                res_element = SPElement.ElementCalc(fluid, composition, dh, l, Aa_fin, Aa_tube, A_r_cs, Ar, tai, Tri_mod, pri, hri, mr, g, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+                res_element = SPElement.ElementCalc(fluid, composition, dh, l, Aa_fin, Aa_tube, A_r_cs, Ar, tai, RHi, Tri_mod, pri, hri, mr, g, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
                 res_element.x_i = (hri - h_l) / (h_v - h_l);
                 res_element.x_o = (res_element.hro - h_l) / (h_v - h_l);
                 alpha = 1; //set void fraction to 1 to identify a superheated state
@@ -79,7 +79,7 @@ namespace Model
 
                 if (fluid[0] == "Water") Tri_mod = tri - 0.0001;
 
-                res_element = SPElement.ElementCalc(fluid, composition, dh, l, Aa_fin, Aa_tube, A_r_cs, Ar, tai, Tri_mod, pri, hri, mr, g, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+                res_element = SPElement.ElementCalc(fluid, composition, dh, l, Aa_fin, Aa_tube, A_r_cs, Ar, tai, RHi, Tri_mod, pri, hri, mr, g, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
                 //Call SUBCOOLED(ref$, Dh, L, A_a, A_r, Tai, Tri_mod, Pri, hri, m_r, G_r, m_a, h_air, eta_surface: Tro, Pro, hro, Tao, Q, h_ref, R_1, R_1a, R_1r, DELTAP, Vel_r )
                 res_element.x_i = (hri - h_l) / (h_v - h_l);
                 res_element.x_o = (res_element.hro - h_l) / (h_v - h_l);

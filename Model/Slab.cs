@@ -11,7 +11,7 @@ namespace Model
     public class Slab
     {
         public static CalcResult SlabCalc(int[,] CirArrange, CircuitNumber CircuitInfo, int Nrow, int[] Ntube, int Nelement, string[] fluid, double[] composition, //double Npass, int[] N_tubes_pass, 
-            double dh, double l, GeometryResult[,] geo, double[, ,] ta,
+            double dh, double l, GeometryResult[,] geo, double[, ,] ta, double[, ,] RH,
             double te, double pe, double hri, double mr, double ma, double ha,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater)
    
@@ -173,7 +173,7 @@ namespace Model
                                 if(CircuitInfo.UnequalCir[i]<=0)
                                 {
                                     //for (int i = 0; i < Ncir; i++)
-                                    r[i] = Circuit.CircuitCalc(i, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, dh, l, geo, ta,
+                                    r[i] = Circuit.CircuitCalc(i, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, dh, l, geo, ta, RH,
                                         tri_cir[i], pri_cir[i], hri_cir[i], mr_ciro[k], ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
                                     r1[k] = r[i].ShallowCopy();
                                     r2[k] = r[i].ShallowCopy();
@@ -205,7 +205,7 @@ namespace Model
                                 //else mr_ciri_base.CopyTo(mr_ciri[k], 0);
 
                                 //for (int i = 0; i < Ncir; i++)
-                                r[i] = Circuit.CircuitCalc(i, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, dh, l, geo, ta, 
+                                r[i] = Circuit.CircuitCalc(i, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, dh, l, geo, ta, RH,
                                     tri_cir[i], pri_cir[i], hri_cir[i], mr_ciri[k], ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
                                 r1[k] = r[i].ShallowCopy();
                                 index_cir[k] = i;
@@ -317,13 +317,13 @@ namespace Model
                     }
                 }
 
-                using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\MinNout.txt"))
-                {
-                    for (int i = 0; i < Ncir; i++)
-                    {
-                        wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}, mr, {6}", r[i].Q, r[i].DP, r[i].href, r[i].Ra_ratio, r[i].Tao, r[i].Tro, r[i].mr);
-                    }
-                }
+                //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\MinNout.txt"))
+                //{
+                    //for (int i = 0; i < Ncir; i++)
+                    //{
+                        //wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}, mr, {6}", r[i].Q, r[i].DP, r[i].href, r[i].Ra_ratio, r[i].Tao, r[i].Tro, r[i].mr);
+                    //}
+                //}
 
 
                 if (restartDP_index == 1) priconverge.flag = false;
@@ -385,6 +385,7 @@ namespace Model
             res_slab.mr = mr;
             res_slab.DP = pri - res_slab.Pro;
             res_slab.Tao_Detail = ta;
+            res_slab.RHo_Detail = RH;
             res_slab.href = res_slab.href / N_tube_total;
             res_slab.ha = ha;
             res_slab.R_1 = res_slab.R_1 / N_tube_total;
@@ -408,8 +409,13 @@ namespace Model
 
             for (int j = 0; j < N_tube; j++)
                 for (int i = 0; i < Nelement; i++)
+                {
                     res_slab.Tao += res_slab.Tao_Detail[i, j, Nrow];
+                    res_slab.RHout += res_slab.RHo_Detail[i, j, Nrow];
+                }
+                    
             res_slab.Tao = res_slab.Tao / N_tube;
+            res_slab.RHout = res_slab.RHout / N_tube;
             res_slab.Ra_ratio = res_slab.R_1a / res_slab.R_1;
             res_slab.ma = ma;
             res_slab.Va = ma / 1.2 * 3600;
