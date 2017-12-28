@@ -13,6 +13,7 @@ namespace Model.Basic
         public double hro = 0;
         public double Tao = 0; //= new double[1];
         public double[, ,] Tao_Detail = new double[100, 100, 100];
+        public double[, ,] RHo_Detail = new double[100, 100, 100];
         public double Q = 0;
         public double M = 0;
         public double x_i = 0;
@@ -31,6 +32,8 @@ namespace Model.Basic
         public double hri = 0;
         public double ma = 0;
         public double Va = 0;
+        public double RHout = 0;
+
 
         public CalcResult ShallowCopy()
         {

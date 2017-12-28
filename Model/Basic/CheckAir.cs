@@ -9,6 +9,7 @@ namespace Model.Basic
     public class CheckAir
     {
         public double[, ,] ta;
+        public double[, ,] RH;
         public bool flag;
     }
 }

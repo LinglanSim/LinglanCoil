@@ -89,6 +89,7 @@ namespace Model
             double zh = 1;
             double zdp = 1;
             double tai = 26.67;
+            double RHi = 0.469;
             double tri = 7.2;
             double te = tri;
             double pe = Refrigerant.SATT(fluid, composition, te + 273.15, 1).Pressure;
@@ -107,10 +108,12 @@ namespace Model
             //double xin = 0.57;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+            double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
             string AirDirection = "Counter";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, te, AirDirection);
+            RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, te, AirDirection);
 
             GeometryResult geo = new GeometryResult();
             //GeometryResult[,] geo_element = new GeometryResult[,] { };
@@ -129,7 +132,7 @@ namespace Model
             }
             geo.A_ratio = geo.A_r / geo.A_a;
 
-            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, te, pe, hri,
+            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, te, pe, hri,
                 mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
 
             //res = Slab.SlabCalc(Npass, N_tubes_pass, fluid, composition, Dh, L, geo.A_a, geo.A_r_cs, geo.A_r, tai, tri, pe, hri,
@@ -221,6 +224,7 @@ namespace Model
             double eta_surface = 0.89;
             double ha = AirHTC.alpha(Vel_a, za, curve);//71.84;//36.44;
             double tai = 20;
+            double RHi = 0.469;
             double tri = 45;
             double tc = tri;
             double pc = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
@@ -237,10 +241,12 @@ namespace Model
             //double xin = 0.57;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+            double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
             string AirDirection = "Counter";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
+            RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
             GeometryResult geo = new GeometryResult();
             //GeometryResult[,] geo_element = new GeometryResult[,] { };
@@ -259,7 +265,7 @@ namespace Model
                 }
             geo.A_ratio = geo.A_r / geo.A_a;
 
-            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, tc, pc, hri,
+            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc, pc, hri,
                 mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
 
             //res = Slab.SlabCalc(Npass, N_tubes_pass, fluid, composition, Dh, L, geo.A_a, geo.A_r_cs, geo.A_r, tai, tri, pe, hri,
@@ -316,6 +322,7 @@ namespace Model
             double eta_surface = 0.8284;
             double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 77.42;//71.84;//36.44;
             double tai = 19.98;
+            double RHi = 0.469;
             double tri = 44.98;
             double tc = tri;
             double pc = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
@@ -326,10 +333,12 @@ namespace Model
             double hri = Refrigerant.TPFLSH(fluid, composition, tc + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+            double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
             string AirDirection = "Counter";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
+            RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
             GeometryResult geo = new GeometryResult();
             //GeometryResult[,] geo_element = new GeometryResult[,] { };
@@ -347,7 +356,7 @@ namespace Model
                 }
             geo.A_ratio = geo.A_r / geo.A_a;
 
-            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, tc, pc, hri,
+            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc, pc, hri,
                 mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
 
             return res;
@@ -400,6 +409,8 @@ namespace Model
                 //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
                 double[] ha = new double[] { 72.64, 72.64, 72.64, 72.64, 72.64, 72.64, 73.6, 77.2, 77.2, 77.2, 77.2, 77.2, 77.2, 77.2, 78.67, 78.67, 78.67, 78.67, 78.67, 78.67, 78.67, 83.09, 83.09, 83.09, 83.09, 83.09, 83.09, 83.09 };
                 double[] tai = new double[] { 27.0, 26.99, 26.99, 26.99, 27.01, 27.02, 26.98, 27.01, 27.00, 27.01, 27.00, 27.02, 27.00, 27.00, 27.01, 26.99, 26.99, 27.0, 27.0, 26.99, 27.01, 27.00, 26.99, 26.99, 27.01, 27.0, 27.0, 26.98 };
+                double[] RHi = new double[] { 27.0, 26.99, 26.99, 26.99, 27.01, 27.02, 26.98, 27.01, 27.00, 27.01, 27.00, 27.02, 27.00, 27.00, 27.01, 26.99, 26.99, 27.0, 27.0, 26.99, 27.01, 27.00, 26.99, 26.99, 27.01, 27.0, 27.0, 26.98 };
+                
                 double[] tri = new double[] { 9.98, 10.0, 9.98, 10.0, 9.99, 10.0, 9.98, 10.0, 9.99, 10.0, 10.01, 9.99, 10.02, 10.0, 10.01, 9.99, 9.99, 9.98, 9.99, 10.0, 10.0, 10.0, 9.99, 9.99, 9.99, 9.99, 9.99, 9.99 };
                 double[] tc = tri;
                 double[] pc = new double[N];
@@ -412,8 +423,10 @@ namespace Model
                 hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+                double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
                 string AirDirection = "Counter";
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
+                RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
                 GeometryResult geo = new GeometryResult();
                 GeometryResult[,] geo_element = new GeometryResult[N_tube, Nrow];
@@ -432,7 +445,7 @@ namespace Model
 
                 geo.A_ratio = geo.A_r / geo.A_a;
 
-                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, tc[i], pc[i], hri[i],
+                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
                     mr[i], ma[i], ha[i], eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_cool.txt"))
                 //{
@@ -490,6 +503,8 @@ namespace Model
                 //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
                 double[] ha = new double[] { 58.51, 58.51, 58.51, 58.51, 58.51, 58.51, 58.51, 64.92, 64.92, 64.92, 64.92, 64.92, 64.92, 64.92, 70.41, 70.41, 70.41, 70.41, 70.41, 70.41, 70.41, 75.42, 75.42, 75.42, 75.42, 75.42, 75.42, 75.42 };
                 double[] tai = new double[] { 20.01, 20.0, 20.02, 20.0, 19.99, 20.02, 20.0, 19.98, 20.0, 19.99, 19.99, 19.99, 19.98, 20.0, 19.98, 20.01, 19.99, 20.0, 20.0, 19.99, 19.99, 19.98, 20.01, 20.0, 20.0, 20.01, 20.01, 20.02 };
+                double[] RHi = new double[] { 20.01, 20.0, 20.02, 20.0, 19.99, 20.02, 20.0, 19.98, 20.0, 19.99, 19.99, 19.99, 19.98, 20.0, 19.98, 20.01, 19.99, 20.0, 20.0, 19.99, 19.99, 19.98, 20.01, 20.0, 20.0, 20.01, 20.01, 20.02 };
+                
                 double[] tri = new double[] { 45.01, 45.01, 44.99, 44.99, 45.0, 45.0, 44.99, 44.99, 45.01, 44.99, 45.01, 44.99, 45.01, 45.01, 45.0, 45.01, 44.99, 45.01, 45.01, 44.99, 45.01, 44.98, 45.01, 44.99, 45.0, 45.0, 45.01, 45.0 };
                 double[] tc = tri;
                 double[] pc = new double[N];
@@ -502,8 +517,11 @@ namespace Model
                 hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+                double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
+
                 string AirDirection = "Counter";
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
+                RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
                 GeometryResult geo = new GeometryResult();
                 GeometryResult[,] geo_element = new GeometryResult[N_tube, Nrow];
@@ -522,7 +540,7 @@ namespace Model
 
                 geo.A_ratio = geo.A_r / geo.A_a;
 
-                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, tc[i], pc[i], hri[i],
+                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
                     mr[i], ma[i], ha[i], eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
@@ -598,6 +616,7 @@ namespace Model
             double zh = 1;
             double zdp = 1.5;
             double tai = 26.67;
+            double RHi = 0.469;
             double tri = 7.2;
             double te = tri;
             double pe = Refrigerant.SATT(fluid, composition, te + 273.15, 1).Pressure;
@@ -616,10 +635,12 @@ namespace Model
             //double xin = 0.57;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+            double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
             string AirDirection = "Counter";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, te, AirDirection);
+            RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, te, AirDirection);
 
             GeometryResult geo = new GeometryResult();
             //GeometryResult[,] geo_element = new GeometryResult[,] { };
@@ -638,7 +659,7 @@ namespace Model
                 }
             geo.A_ratio = geo.A_r / geo.A_a;
 
-            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, te, pe, hri,
+            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, te, pe, hri,
                 mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
 
             //res = Slab.SlabCalc(Npass, N_tubes_pass, fluid, composition, Dh, L, geo.A_a, geo.A_r_cs, geo.A_r, tai, tri, pe, hri,
@@ -719,6 +740,7 @@ namespace Model
             double zh = 1;
             double zdp = 1;
             double tai = 26.67;
+            double RHi = 0.469;
             double tri = 7.2;
             double te = tri;
             double pe = Refrigerant.SATT(fluid, composition, te + 273.15, 1).Pressure;
@@ -737,10 +759,12 @@ namespace Model
             //double xin = 0.57;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+            double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
             string AirDirection = "Counter";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, te, AirDirection);
+            RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, te, AirDirection);
 
             GeometryResult geo = new GeometryResult();
             //GeometryResult[,] geo_element = new GeometryResult[,] { };
@@ -759,7 +783,7 @@ namespace Model
                 }
             geo.A_ratio = geo.A_r / geo.A_a;
 
-            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, te, pe, hri,
+            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, te, pe, hri,
                 mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
 
             //res = Slab.SlabCalc(Npass, N_tubes_pass, fluid, composition, Dh, L, geo.A_a, geo.A_r_cs, geo.A_r, tai, tri, pe, hri,

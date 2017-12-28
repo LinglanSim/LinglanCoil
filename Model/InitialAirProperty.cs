@@ -22,5 +22,19 @@ namespace Model
 
             return ta;
         }
+        public static double[, ,] RHTemp(int element, int[] Ntube, int Nrow, double RHi, double te, string AirDirection)
+        {
+            double[, ,] RH = new double[element, Ntube[0], Nrow + 1];
+
+            //if (AirDirection == "DowntoUp") //For refrigerator
+            //{
+            for (int k = 0; k < Nrow + 1; k++)
+                for (int j = 0; j < Ntube[0]; j++)
+                    for (int i = 0; i < element; i++)
+                        RH[i, j, k] = RHi;
+            //}
+
+            return RH;
+        }
     }
 }
