@@ -205,6 +205,7 @@ namespace Model
                                 //else mr_ciri_base.CopyTo(mr_ciri[k], 0);
 
                                 //for (int i = 0; i < Ncir; i++)
+                                //首次流路计算
                                 r[i] = Circuit.CircuitCalc(i, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, dh, l, geo, ta, RH,
                                     tri_cir[i], pri_cir[i], hri_cir[i], mr_ciri[k], ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
                                 r1[k] = r[i].ShallowCopy();

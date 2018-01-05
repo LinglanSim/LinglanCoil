@@ -17,7 +17,12 @@ namespace Test
             //var rr = Main.Water_Midea9();
             //var rrr = Main.Water_Cool_Midea9();
             //var rr = Main.Water_Heat_Midea9();
-
+            //var rr = Main.Water_Heat_Jiayong6();
+            //var rr = Main.Water_Cool_Jiayong6();
+            //var rr = Main.Water_Heat_Jiayong2();
+            //var rr = Main.Water_Cool_Jiayong2();
+            //var rr = Main.Water_Heat_Zhongyang1();
+            //var rr = Main.Water_Cool_Zhongyang1();
         }
     }
 }
