@@ -33,6 +33,15 @@ namespace Test
             int curve = 1;
             var ha = AirHTC.alpha(10, 4.4, curve);
         }
+        [TestMethod]
+        public void TestMethod2()
+        {
+            string[] fluid = new string[] { "R410A.MIX" };
+            //string[] fluid = new string[] { "ISOBUTAN" };
+            double[] composition = new double[] { 1 };
+            var mmm = Refrigerant.CRIT(fluid, composition);
+        }
+
     }
 }
 
