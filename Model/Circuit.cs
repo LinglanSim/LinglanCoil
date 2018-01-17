@@ -108,6 +108,8 @@ namespace Model
                     res_cir.R_1 += r[i].R_1;
                     res_cir.R_1a += r[i].R_1a;
                     res_cir.R_1r += r[i].R_1r;
+                    res_cir.Tri = r[i].Tri;
+                    res_cir.x_i = r[i].x_i;
 
                 }
 

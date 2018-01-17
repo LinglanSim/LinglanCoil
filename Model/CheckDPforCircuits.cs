@@ -9,12 +9,12 @@ namespace Model
 {
     public class CheckDPforCircuits
     {
-        public static CheckDP CheckDPConverge(int flag_ciro, double[] mr_cir, CalcResult[] r, int Ncir)
+        public static CheckDP CheckDPConverge(CalcResult[]res_cir2, double iterforPri, int flag_ciro, double[] mr_cir, CalcResult[] r, int Ncir)
         {
             CheckDP res = new CheckDP();
             int index = 0;
             bool flag = true;//means converge
-            double err = 0.02;
+            double err = iterforPri == 0 ? 0.2 : 0.02;
             double dev = 0;
             double devsum = 0;
             //double[] f = new double[Ncir * (Ncir - 1) + 1];
@@ -27,6 +27,18 @@ namespace Model
             double N = 0;
 
             if (flag_ciro == 1) N = 2.2; else N = 1.8; //1.8
+            for (int i = 0; i < Ncir; i++)
+            {
+                if (res_cir2[Ncir - 1] != null)
+                {
+                    if (res_cir2[i].Tro - res_cir2[i].Tri > 30 && iterforPri > 0) err = 0.3;
+                }
+                else
+                {
+                    if (r[i].x_o > 1.2 && iterforPri > 0) err = 0.3;
+                }
+                   
+            }
 
             for (int i = 0; i < Ncir - 1; i++)
             {

@@ -93,8 +93,6 @@
     <Compile Include="CheckDPforCircuits.cs" />
     <Compile Include="CheckAirConvergeforCircuits.cs" />
     <Compile Include="CirArrangement.cs" />
-    <Compile Include="SPElement1.cs" />
-    <Compile Include="TPElement1.cs" />
     <Compile Include="Tube.cs" />
     <Compile Include="Element.cs" />
     <Compile Include="DataBase.Context.cs">
