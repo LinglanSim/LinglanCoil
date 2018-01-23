@@ -1586,6 +1586,405 @@ namespace Model
             return res;
         }
 
+        public static CalcResult Water_Heat_Zhongyang1()
+        {
+            string[] fluid = new string[] { "Water" };
+
+            double[] composition = new double[] { 1 };
+            CalcResult res = new CalcResult();
+            int Nrow = 3;
+            double[] FPI = new double[Nrow + 1];
+            FPI = new double[] { 16.933, 16.933, 16.933 };
+            double Pt = 21.0 * 0.001;
+            double Pr = 19.4 * 0.001;
+            double Di = 6.8944 * 0.001;//8
+            double Do = 7.35 * 0.001;//8.4
+            double Fthickness = 0.1 * 0.001;
+            double thickness = 0.5 * (Do - Di);
+            int[] Ntube = { 18, 18, 18 };
+            int N_tube = Ntube[0];
+            double L = 438.0 * 0.001;
+            int Nelement = 1;
+            int[,] CirArrange;
+            CirArrange = new int[,] { { 37, 38, 39, 40, 41, 42, 24, 23, 22, 21, 20, 19, 1, 2, 3, 4, 5, 6 }, { 43, 44, 45, 46, 47, 48, 30, 29, 28, 27, 26, 25, 7, 8, 9, 10, 11, 12 }, { 49, 50, 51, 52, 53, 54, 36, 35, 34, 33, 32, 31, 13, 14, 15, 16, 17, 18 } };
+            CircuitNumber CircuitInfo = new CircuitNumber();
+            CircuitInfo.number = new int[] { 3, 3 };
+            CircuitInfo.TubeofCir = new int[] { 18, 18, 18 };  //{ 4, 8 };
+
+            //Geometry calculation for an element
+            GeometryResult geo = new GeometryResult();
+            GeometryResult[,] geo_element = new GeometryResult[N_tube, Nrow];
+            for (int k = 0; k < Nrow; k++)
+                for (int j = 0; j < N_tube; j++)
+                {
+                    geo_element[j, k] = Areas.Geometry(L / Nelement, FPI[k], Do, Di, Pt, Pr, Fthickness);
+                    //geo_element[i] = Areas.Geometry(L / element, FPI[i], Do, Di, Pt, Pr);
+                    geo.Aa_tube += geo_element[j, k].Aa_tube;
+                    geo.Aa_fin += geo_element[j, k].Aa_fin;
+                    geo.A_a += geo_element[j, k].A_a;
+                    geo.A_r += geo_element[j, k].A_r;
+                    geo.A_r_cs += geo_element[j, k].A_r_cs;
+                    //geo.A_ratio += geo_element[j,k].A_ratio;
+                }
+
+            geo.A_ratio = geo.A_r / geo.A_a;
+
+
+            double[] Q = new double[16];
+            int N = 16;
+            for (int i = 0; i < N; i++)
+            {
+                double[] mr = new double[] { 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.00, 25.00, 13.00, 17.01, 21.01, 25.00, 13.00, 17.00, 21.01, 25.00 }; // 60;
+                mr[i] = mr[i] / 60;
+                double[] Vel_a = new double[] { 0.60061, 0.60059, 0.59874, 0.60039, 0.89766, 0.89707, 0.89755, 0.89636, 1.09706, 1.09812, 1.09922, 1.09919, 1.29987, 1.29968, 1.29857, 1.29670 }; //m/s
+                double H = Pt * N_tube;
+                double Hx = L * H;
+                double[] rho_a_st = { 1.19775, 1.19775, 1.19766, 1.19778, 1.19777, 1.19769, 1.19770, 1.19770, 1.19754, 1.19770, 1.19777, 1.19767, 1.19780, 1.19761, 1.19751, 1.19766 }; //kg/m3
+
+                double[] Va = new double[N];
+                Va[i] = Vel_a[i] * Hx;
+                double[] ma = new double[N];
+                ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
+                int curve = 1; //
+                double za = 1; //Adjust factor
+                double zh = 1;
+                double zdp = 1;
+                double[] eta_surface = new double[] { 0.91638, 0.917989, 0.9188580, 0.9193723, 0.88357, 0.884134, 0.8849341, 0.8834665, 0.86450, 0.865326, 0.8658559, 0.8664762, 0.85036, 0.85115, 0.85198, 0.85284 };
+                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
+                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
+                double[] ha = new double[] { 32.230, 31.553, 31.189, 30.974, 46.541, 46.285, 45.924, 46.587, 55.360, 54.968, 54.718, 54.426, 62.153, 61.768, 61.363, 60.944 };
+                double[] tai = new double[] { 20.00, 20.00, 20.02, 19.99, 19.99, 20.01, 20.01, 20.01, 20.05, 20.01, 19.99, 20.02, 19.98, 20.03, 20.06, 20.02 };
+                double[] RHi = new double[] { 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469 };
+
+                double[] tri = new double[] { 45.00, 45.00, 44.99, 45.00, 45.03, 45.02, 45.01, 44.99, 45.01, 45.01, 45.00, 44.99, 45.03, 45.01, 45.01, 45.02 };
+                double[] tc = tri;
+                double[] pc = new double[N];
+                pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
+                double Pwater = 395;//kpa
+                double conductivity = 386; //w/mK for Cu
+                int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
+                double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
+                double[] hri = new double[N];
+                hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+
+                double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+                double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
+
+                string AirDirection = "Counter";
+                ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
+                RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
+
+
+                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
+                    mr[i], ma[i], ha[i], eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater);
+                //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
+                //{
+                //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
+                //}
+                Q[i] = res.Q;
+            }
+            return res;
+        }
+        public static CalcResult Water_Cool_Zhongyang1()
+        {
+            string[] fluid = new string[] { "Water" };
+
+            double[] composition = new double[] { 1 };
+            CalcResult res = new CalcResult();
+            int Nrow = 3;
+            double[] FPI = new double[Nrow + 1];
+            FPI = new double[] { 16.933, 16.933, 16.933 };
+            double Pt = 21.0 * 0.001;
+            double Pr = 19.4 * 0.001;
+            double Di = 6.8944 * 0.001;//8
+            double Do = 7.35 * 0.001;//8.4
+            double Fthickness = 0.1 * 0.001;
+            double thickness = 0.5 * (Do - Di);
+            int[] Ntube = { 18, 18, 18 };
+            int N_tube = Ntube[0];
+            double L = 438.0 * 0.001;
+            int Nelement = 1;
+            int[,] CirArrange;
+            CirArrange = new int[,] { { 37, 38, 39, 40, 41, 42, 24, 23, 22, 21, 20, 19, 1, 2, 3, 4, 5, 6 }, { 43, 44, 45, 46, 47, 48, 30, 29, 28, 27, 26, 25, 7, 8, 9, 10, 11, 12 }, { 49, 50, 51, 52, 53, 54, 36, 35, 34, 33, 32, 31, 13, 14, 15, 16, 17, 18 } };
+            CircuitNumber CircuitInfo = new CircuitNumber();
+            CircuitInfo.number = new int[] { 3, 3 };
+            CircuitInfo.TubeofCir = new int[] { 18, 18, 18 };  //{ 4, 8 };
+
+            //Geometry calculation for an element
+            GeometryResult geo = new GeometryResult();
+            GeometryResult[,] geo_element = new GeometryResult[N_tube, Nrow];
+            for (int k = 0; k < Nrow; k++)
+                for (int j = 0; j < N_tube; j++)
+                {
+                    geo_element[j, k] = Areas.Geometry(L / Nelement, FPI[k], Do, Di, Pt, Pr, Fthickness);
+                    //geo_element[i] = Areas.Geometry(L / element, FPI[i], Do, Di, Pt, Pr);
+                    geo.Aa_tube += geo_element[j, k].Aa_tube;
+                    geo.Aa_fin += geo_element[j, k].Aa_fin;
+                    geo.A_a += geo_element[j, k].A_a;
+                    geo.A_r += geo_element[j, k].A_r;
+                    geo.A_r_cs += geo_element[j, k].A_r_cs;
+                    //geo.A_ratio += geo_element[j,k].A_ratio;
+                }
+
+            geo.A_ratio = geo.A_r / geo.A_a;
+
+
+            double[] Q = new double[16];
+            int N = 16;
+            for (int i = 0; i < N; i++)
+            {
+                double[] mr = new double[] { 13.01, 17.01, 21.01, 25.01, 13.01, 17.01, 21.01, 25.00, 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.00, 25.00 }; // 60;
+                mr[i] = mr[i] / 60;
+                double[] Vel_a = new double[] { 0.59953, 0.59918, 0.59937, 0.59932, 0.89662, 0.89764, 0.89871, 0.89920, 1.09872, 1.09853, 1.09848, 1.09934, 1.29794, 1.29856, 1.29909, 1.29948 }; //m/s
+                double H = Pt * N_tube;
+                double Hx = L * H;
+                double[] rho_a_st = { 1.16838, 1.16839, 1.16860, 1.16853, 1.16846, 1.16857, 1.16846, 1.16847, 1.16849, 1.16849, 1.16849, 1.16846, 1.16839, 1.16847, 1.16844, 1.16847 }; //kg/m3
+
+                double[] Va = new double[N];
+                Va[i] = Vel_a[i] * Hx;
+                double[] ma = new double[N];
+                ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
+                int curve = 1; //
+                double za = 1; //Adjust factor
+                double zh = 1;
+                double zdp = 1;
+                double[] eta_surface = new double[] { 0.89596, 0.896814, 0.8966571, 0.8980433, 0.86571, 0.864929, 0.8638292, 0.8638503, 0.84928, 0.846912, 0.8477477, 0.8480225, 0.83348, 0.83280, 0.83285, 0.83317 };
+                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
+                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
+                double[] ha = new double[] { 32.230, 31.553, 31.189, 30.974, 46.541, 46.285, 45.924, 46.587, 55.360, 54.968, 54.718, 54.426, 62.153, 61.768, 61.363, 60.944 };
+                double[] tai = new double[] { 27.03, 27.03, 26.97, 26.99, 27.01, 26.98, 27.01, 27.01, 27.00, 27.00, 27.00, 27.01, 27.03, 27.01, 27.02, 27.01 };
+                double[] RHi = new double[] { 0.4682, 0.4676, 0.4704, 0.4694, 0.4685, 0.4699, 0.4685, 0.4680, 0.4690, 0.4690, 0.4696, 0.4685, 0.4676, 0.4680, 0.4669, 0.4680 };
+
+                double[] tri = new double[] { 10.01, 10.01, 10.00, 10.00, 10.01, 10.00, 10.00, 10.02, 9.99, 10.00, 10.00, 10.01, 10.00, 10.02, 10.00, 9.99 };
+                double[] tc = tri;
+                double[] pc = new double[N];
+                pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
+                double Pwater = 395;//kpa
+                double conductivity = 386; //w/mK for Cu
+                int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
+                double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
+                double[] hri = new double[N];
+                hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+
+                double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+                double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
+
+                string AirDirection = "Counter";
+                ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
+                RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
+
+
+                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
+                    mr[i], ma[i], ha[i], eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater);
+                //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
+                //{
+                //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
+                //}
+                Q[i] = res.Q;
+            }
+            return res;
+        }
+        public static CalcResult Water_Heat_Zhongyang2()
+        {
+            string[] fluid = new string[] { "Water" };
+
+            double[] composition = new double[] { 1 };
+            CalcResult res = new CalcResult();
+            int Nrow = 3;
+            double[] FPI = new double[Nrow + 1];
+            FPI = new double[] { 15.875, 15.875, 15.875 };
+            double Pt = 22.0 * 0.001;
+            double Pr = 19.05 * 0.001;
+            double Di = 7.8937 * 0.001;//8
+            double Do = 8.4 * 0.001;//8.4
+            double Fthickness = 0.1 * 0.001;
+            double thickness = 0.5 * (Do - Di);
+            int[] Ntube = { 16, 16, 16 };
+            int N_tube = Ntube[0];
+            double L = 433.0 * 0.001;
+            int Nelement = 1;
+            int[,] CirArrange;
+            CirArrange = new int[,] { { 33, 34, 35, 36, 37, 38, 22, 21, 20, 19, 18, 17, 1, 2, 3, 4, 5, 6 }, { 44, 43, 42, 41, 40, 39, 23, 24, 25, 26, 10, 9, 8, 7, 0, 0, 0, 0 }, { 45, 46, 47, 48, 32, 31, 30, 29, 28, 27, 11, 12, 13, 14, 15, 16, 0, 0 } };
+            CircuitNumber CircuitInfo = new CircuitNumber();
+            CircuitInfo.number = new int[] { 3, 3 };
+            CircuitInfo.TubeofCir = new int[] { 18, 14, 16 };  //{ 4, 8 };
+
+            //Geometry calculation for an element
+            GeometryResult geo = new GeometryResult();
+            GeometryResult[,] geo_element = new GeometryResult[N_tube, Nrow];
+            for (int k = 0; k < Nrow; k++)
+                for (int j = 0; j < N_tube; j++)
+                {
+                    geo_element[j, k] = Areas.Geometry(L / Nelement, FPI[k], Do, Di, Pt, Pr, Fthickness);
+                    //geo_element[i] = Areas.Geometry(L / element, FPI[i], Do, Di, Pt, Pr);
+                    geo.Aa_tube += geo_element[j, k].Aa_tube;
+                    geo.Aa_fin += geo_element[j, k].Aa_fin;
+                    geo.A_a += geo_element[j, k].A_a;
+                    geo.A_r += geo_element[j, k].A_r;
+                    geo.A_r_cs += geo_element[j, k].A_r_cs;
+                    //geo.A_ratio += geo_element[j,k].A_ratio;
+                }
+
+            geo.A_ratio = geo.A_r / geo.A_a;
+
+
+            double[] Q = new double[20];
+            int N = 20;
+            for (int i = 0; i < N; i++)
+            {
+                double[] mr = new double[] { 13.00, 17.01, 21.01, 25.00, 13.01, 17.01, 21.00, 25.01, 13.01, 17.01, 21.00, 25.00, 13.00, 17.01, 21.00, 25.00, 13.00, 17.00, 21.00, 25.00 }; // 60;
+                mr[i] = mr[i] / 60;
+                double[] Vel_a = new double[] { 0.65258, 0.65231, 0.65180, 0.65176, 0.97598, 0.97500, 0.97810, 0.97742, 1.19366, 1.19366, 1.19284, 1.19266, 1.40963, 1.40746, 1.41107, 1.41074, 1.45499, 1.45375, 1.45412, 1.45386 }; //m/s
+                double H = Pt * N_tube;
+                double Hx = L * H;
+                double[] rho_a_st = { 1.19768, 1.19768, 1.19768, 1.19768, 1.19776, 1.19772, 1.19772, 1.19772, 1.19776, 1.19772, 1.19763, 1.19772, 1.19771, 1.19763, 1.19772, 1.19772, 1.19775, 1.19776, 1.19776, 1.19769 }; //kg/m3
+
+                double[] Va = new double[N];
+                Va[i] = Vel_a[i] * Hx;
+                double[] ma = new double[N];
+                ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
+                int curve = 1; //
+                double za = 1; //Adjust factor
+                double zh = 1;
+                double zdp = 1;
+                double[] eta_surface = new double[] { 0.90594, 0.906857, 0.9077445, 0.9085159, 0.87662, 0.876653, 0.8771807, 0.8775052, 0.86100, 0.861029, 0.8612912, 0.8618596, 0.85076, 0.85051, 0.85013, 0.85026, 0.85038, 0.85072, 0.85076, 0.85058 };
+                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
+                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
+                double[] ha = new double[] { 42.843, 42.385, 41.940, 41.554, 58.081, 58.063, 57.780, 57.606, 66.621, 66.605, 66.459, 66.143, 72.389, 72.531, 72.751, 72.677, 72.605, 72.414, 72.389, 72.491 };
+
+                double[] tai = new double[] { 20.01, 20.01, 20.01, 20.01, 19.99, 20.00, 20.00, 20.00, 19.99, 20.00, 20.02, 20.00, 20.00, 20.02, 20.00, 20.00, 19.99, 19.99, 19.99, 20.01 };
+                double[] RHi = new double[] { 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469 };
+
+                double[] tri = new double[] { 44.99, 44.99, 45.00, 45.00, 45.00, 45.00, 45.00, 45.00, 45.00, 45.02, 45.01, 45.00, 45.01, 45.01, 44.99, 44.98, 45.02, 45.00, 45.00, 45.00 };
+                double[] tc = tri;
+                double[] pc = new double[N];
+                pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
+                double Pwater = 395;//kpa
+                double conductivity = 386; //w/mK for Cu
+                int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
+                double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
+                double[] hri = new double[N];
+                hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+
+                double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+                double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
+
+                string AirDirection = "Counter";
+                ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
+                RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
+
+
+                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
+                    mr[i], ma[i], ha[i], eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater);
+                //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
+                //{
+                //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
+                //}
+                Q[i] = res.Q;
+            }
+            return res;
+        }
+        public static CalcResult Water_Cool_Zhongyang2()
+        {
+            string[] fluid = new string[] { "Water" };
+
+            double[] composition = new double[] { 1 };
+            CalcResult res = new CalcResult();
+            int Nrow = 3;
+            double[] FPI = new double[Nrow + 1];
+            FPI = new double[] { 15.875, 15.875, 15.875 };
+            double Pt = 22.0 * 0.001;
+            double Pr = 19.05 * 0.001;
+            double Di = 7.8937 * 0.001;//8
+            double Do = 8.4 * 0.001;//8.4
+            double Fthickness = 0.1 * 0.001;
+            double thickness = 0.5 * (Do - Di);
+            int[] Ntube = { 16, 16, 16 };
+            int N_tube = Ntube[0];
+            double L = 433.0 * 0.001;
+            int Nelement = 1;
+            int[,] CirArrange;
+            CirArrange = new int[,] { { 33, 34, 35, 36, 37, 38, 22, 21, 20, 19, 18, 17, 1, 2, 3, 4, 5, 6 }, { 44, 43, 42, 41, 40, 39, 23, 24, 25, 26, 10, 9, 8, 7, 0, 0, 0, 0 }, { 45, 46, 47, 48, 32, 31, 30, 29, 28, 27, 11, 12, 13, 14, 15, 16, 0, 0 } };
+            CircuitNumber CircuitInfo = new CircuitNumber();
+            CircuitInfo.number = new int[] { 3, 3 };
+            CircuitInfo.TubeofCir = new int[] { 18, 14, 16 };  //{ 4, 8 };
+
+            //Geometry calculation for an element
+            GeometryResult geo = new GeometryResult();
+            GeometryResult[,] geo_element = new GeometryResult[N_tube, Nrow];
+            for (int k = 0; k < Nrow; k++)
+                for (int j = 0; j < N_tube; j++)
+                {
+                    geo_element[j, k] = Areas.Geometry(L / Nelement, FPI[k], Do, Di, Pt, Pr, Fthickness);
+                    //geo_element[i] = Areas.Geometry(L / element, FPI[i], Do, Di, Pt, Pr);
+                    geo.Aa_tube += geo_element[j, k].Aa_tube;
+                    geo.Aa_fin += geo_element[j, k].Aa_fin;
+                    geo.A_a += geo_element[j, k].A_a;
+                    geo.A_r += geo_element[j, k].A_r;
+                    geo.A_r_cs += geo_element[j, k].A_r_cs;
+                    //geo.A_ratio += geo_element[j,k].A_ratio;
+                }
+
+            geo.A_ratio = geo.A_r / geo.A_a;
+
+
+            double[] Q = new double[20];
+            int N = 20;
+            for (int i = 0; i < N; i++)
+            {
+                double[] mr = new double[] { 13.00, 17.01, 21.01, 25.00, 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.01, 25.01, 13.01, 17.01, 21.00, 25.01, 13.01, 17.00, 21.01, 25.00 }; // 60;
+                mr[i] = mr[i] / 60;
+                double[] Vel_a = new double[] { 0.65233, 0.65247, 0.65203, 0.65231, 0.97535, 0.97611, 0.97615, 0.97600, 1.19102, 1.19266, 1.19328, 1.19184, 1.41083, 1.41189, 1.41016, 1.41338, 1.45545, 1.45630, 1.45670, 1.45692 }; //m/s
+                double H = Pt * N_tube;
+                double Hx = L * H;
+                double[] rho_a_st = { 1.16851, 1.16850, 1.16847, 1.16847, 1.16844, 1.16845, 1.16845, 1.16846, 1.16840, 1.16840, 1.16845, 1.16850, 1.16848, 1.16847, 1.16840, 1.16843, 1.16849, 1.16852, 1.16845, 1.16845 }; //kg/m3
+
+                double[] Va = new double[N];
+                Va[i] = Vel_a[i] * Hx;
+                double[] ma = new double[N];
+                ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
+                int curve = 1; //
+                double za = 1; //Adjust factor
+                double zh = 1;
+                double zdp = 1;
+                double[] eta_surface = new double[] { 0.88953, 0.887951, 0.8871507, 0.8877251, 0.86188, 0.858276, 0.8577662, 0.8573741, 0.84928, 0.845690, 0.8435979, 0.8437980, 0.83914, 0.83524, 0.83448, 0.83279, 0.83796, 0.83381, 0.83292, 0.83561 };
+                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
+                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
+                double[] ha = new double[] { 42.843, 42.385, 41.940, 41.554, 58.081, 58.063, 57.780, 57.606, 66.621, 66.605, 66.459, 66.143, 72.389, 72.531, 72.751, 72.677, 72.605, 72.414, 72.389, 72.491 };
+
+                double[] tai = new double[] { 27.00, 27.00, 27.01, 27.01, 27.02, 27.01, 27.01, 27.01, 27.02, 27.02, 27.01, 27.00, 27.01, 27.00, 27.02, 27.01, 27.00, 26.99, 27.01, 27.01 };
+                double[] RHi = new double[] { 0.4679, 0.4684, 0.4680, 0.4680, 0.4669, 0.4691, 0.4691, 0.4685, 0.4692, 0.4692, 0.4691, 0.4684, 0.4674, 0.4707, 0.4698, 0.4702, 0.4696, 0.4700, 0.4691, 0.4691 };
+
+                double[] tri = new double[] { 9.98, 10.01, 10.01, 10.00, 10.01, 10.00, 10.02, 10.00, 10.01, 10.02, 10.01, 10.00, 10.00, 10.01, 10.02, 10.01, 10.01, 9.99, 10.00, 10.01 };
+                double[] tc = tri;
+                double[] pc = new double[N];
+                pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
+                double Pwater = 395;//kpa
+                double conductivity = 386; //w/mK for Cu
+                int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
+                double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
+                double[] hri = new double[N];
+                hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+
+                double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+                double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
+
+                string AirDirection = "Counter";
+                ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
+                RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
+
+
+                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
+                    mr[i], ma[i], ha[i], eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater);
+                //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
+                //{
+                //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
+                //}
+                Q[i] = res.Q;
+            }
+            return res;
+        }
+
         public static CalcResult MinNout()
         {
             //string[] fluid = new string[] { "Water" };

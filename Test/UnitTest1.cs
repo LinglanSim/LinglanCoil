@@ -22,7 +22,11 @@ namespace Test
             //var rr = Main.Water_Heat_Jiayong2();
             //var rr = Main.Water_Cool_Jiayong2();
             //var rr = Main.Water_Heat_Jiayong6_autosplitCir();
-            var rr = Main.Water_Heat_Jiayong2_autosplitCir();
+            //var rr = Main.Water_Heat_Jiayong2_autosplitCir();
+            var rr = Main.Water_Heat_Zhongyang1();
+            //var rr = Main.Water_Cool_Zhongyang1();
+            //var rr = Main.Water_Heat_Zhongyang2();
+            //var rr = Main.Water_Cool_Zhongyang2();
             //var r = Main.MinNout();
             //var r = Main.NinMout();
         }
