@@ -15,6 +15,10 @@ namespace Model.Basic
         public double[, ,] Tao_Detail = new double[100, 100, 100];
         public double[, ,] RHo_Detail = new double[100, 100, 100];
         public double Q = 0;
+        public double[,] Q_detail = new double[100, 100];//detail output
+        public double[,] DP_detail = new double[100, 100];
+        public double[,] Tro_detail = new double[100, 100];
+        public double[,] href_detail = new double[100, 100];
         public double M = 0;
         public double x_i = 0;
         public double x_o = 0;

@@ -71,6 +71,11 @@ namespace Model
             CalcResult[] r2 = new CalcResult[Ncir]; //for NinMout only
             CalcResult[] res_cir2 = new CalcResult[Nciro + 1];
 
+            double[,] Q_detail=new double[N_tube,Nrow];//detail output
+            double[,] DP_detail = new double[N_tube, Nrow];
+            double[,] Tro_detail = new double[N_tube, Nrow];
+            double[,] href_detail = new double[N_tube, Nrow];
+
             int flag_ciro = 0;
             int Ncir_forDP = 0;
             double[] mr_forDP = new double[Nciri];
@@ -361,6 +366,16 @@ namespace Model
                 res_slab.R_1 += r[i].R_1 * CircuitInfo.TubeofCir[i];
                 res_slab.R_1a += r[i].R_1a * CircuitInfo.TubeofCir[i];
                 res_slab.R_1r += r[i].R_1r * CircuitInfo.TubeofCir[i];
+                for(int j=0;j<N_tube;j++)//detail output
+                {
+                    for(k=0;k<Nrow;k++)
+                    {
+                        if (r[i].Q_detail[j, k] != 0) Q_detail[j, k] = r[i].Q_detail[j, k];
+                        if (r[i].DP_detail[j, k] != 0) DP_detail[j, k] = r[i].DP_detail[j,k];
+                        if (r[i].Tro_detail[j, k] != 0) Tro_detail[j, k] = r[i].Tro_detail[j, k];
+                        if (r[i].href_detail[j, k] != 0) href_detail[j, k] = r[i].href_detail[j, k];
+                    }
+                }
             }
             if (Nciri == Nciro)
             {
@@ -420,6 +435,10 @@ namespace Model
             res_slab.Ra_ratio = res_slab.R_1a / res_slab.R_1;
             res_slab.ma = ma;
             res_slab.Va = ma / 1.2 * 3600;
+            res_slab.Q_detail = Q_detail;//detail output
+            res_slab.DP_detail = DP_detail;
+            res_slab.Tro_detail = Tro_detail;
+            res_slab.href_detail = href_detail;
             return res_slab;
             #endregion
         }

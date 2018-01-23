@@ -28,6 +28,10 @@ namespace Model
             double[] RHi = new double[Nelement];
             double[, ,] taout_calc = new double[Nelement, N_tube, Nrow];
             double[, ,] RHout_calc = new double[Nelement, N_tube, Nrow];
+            double[,] Q_detail = new double[N_tube,Nrow];//detail output
+            double[,] DP_detail = new double[N_tube, Nrow];
+            double[,] Tro_detail = new double[N_tube, Nrow];
+            double[,] href_detail = new double[N_tube, Nrow];
             double Ar = 0;
             double Aa = 0;
             double Aa_tube = 0;
@@ -98,6 +102,10 @@ namespace Model
                     res_cir.DP += r[i].DP;
                     // res_cir.Tao += r.Tao;
                     res_cir.Q += r[i].Q;
+                    Q_detail[iTube, iRow] = r[i].Q;//detail output
+                    DP_detail[iTube, iRow] = r[i].DP;
+                    Tro_detail[iTube, iRow] = r[i].Tro;
+                    href_detail[iTube, iRow] = r[i].href;
                     res_cir.M += r[i].M;
                     res_cir.Tro = r[i].Tro;
                     res_cir.Pro = r[i].Pro;
@@ -131,7 +139,10 @@ namespace Model
             res_cir.R_1 = res_cir.R_1 / TubeofCir[index];
             res_cir.R_1a = res_cir.R_1a / TubeofCir[index];
             res_cir.R_1r = res_cir.R_1r / TubeofCir[index];
-
+            res_cir.Q_detail = Q_detail;//detail output
+            res_cir.DP_detail = DP_detail;
+            res_cir.Tro_detail = Tro_detail;
+            res_cir.href_detail = href_detail;
             return res_cir;
         }
 
