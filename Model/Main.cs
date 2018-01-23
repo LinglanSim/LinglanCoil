@@ -1224,6 +1224,368 @@ namespace Model
             return res;
         }
 
+        public static CalcResult Water_Heat_Jiayong6_autosplitCir()
+        {
+            string[] fluid = new string[] { "Water" };
+
+            double[] composition = new double[] { 1 };
+            CalcResult res = new CalcResult();
+            int Nrow = 2;
+            double[] FPI = new double[Nrow + 1];
+            FPI = new double[] { 21.167, 21.167 };
+            double Pt = 21 * 0.001;
+            double Pr = 22 * 0.001;
+            double Di = 6.8944 * 0.001;//8
+            double Do = 7.35 * 0.001;//8.4
+            double Fthickness = 0.095 * 0.001;
+            double thickness = 0.5 * (Do - Di);
+            int[] Ntube = { 16, 16 };
+            int N_tube = Ntube[0];
+            double L = 400 * 0.001;
+            int Nelement = 1;
+
+            //流路均分设计
+            int[,] CirArrange;
+
+            CircuitNumber CircuitInfo = new CircuitNumber();
+            CircuitInfo.number = new int[] { 7, 7 };
+            CircuitInfo.TubeofCir = new int[] { 4, 4, 4, 4, 4, 6, 6 };
+            //增加流路输入不正确的提示功能
+
+            CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
+
+            //int iCircuit = 0;
+            //int iTube_Cir = 0;
+            int AddNumber = 0;
+            int iCircuit1 = 0;
+
+            for (int iCircuit = 0; iCircuit < CircuitInfo.number[0]; iCircuit++)
+                for (int iTube_Cir = 0; iTube_Cir < CircuitInfo.TubeofCir[iCircuit]; iTube_Cir++)
+                {
+                    if (iTube_Cir < CircuitInfo.TubeofCir[iCircuit] / Nrow)
+                    {
+                        if (iCircuit == 0)
+                            CirArrange[iCircuit, iTube_Cir] = iTube_Cir + 1 + N_tube;
+                        else
+                        {
+                            for (iCircuit1 = 1; iCircuit1 <= iCircuit; iCircuit1++)
+                            {
+
+                                AddNumber = AddNumber + CircuitInfo.TubeofCir[iCircuit1 - 1] / Nrow;
+                            }
+                            CirArrange[iCircuit, iTube_Cir] = iTube_Cir + 1 + N_tube + AddNumber;
+                            AddNumber = 0;
+                        }
+
+                    }
+                    else
+                    {
+                        if (iCircuit == 0)
+                            CirArrange[iCircuit, iTube_Cir] = CircuitInfo.TubeofCir[iCircuit] - iTube_Cir;
+                        else
+                        {
+                            for (iCircuit1 = 1; iCircuit1 <= iCircuit; iCircuit1++)
+                            {
+                                AddNumber = AddNumber + CircuitInfo.TubeofCir[iCircuit1 - 1] / Nrow;
+                            }
+                            CirArrange[iCircuit, iTube_Cir] = CircuitInfo.TubeofCir[iCircuit] - iTube_Cir + AddNumber;
+                            AddNumber = 0;
+                        }
+
+                    }
+                }
+
+            /*else
+            {
+                if (p % Nrow != 0)
+                {
+                        
+                    x = Convert.ToInt32(Math.Ceiling(CircuitInfo.TubeofCir[m] / 2.0));
+                    y = Convert.ToInt32(Math.Floor(CircuitInfo.TubeofCir[m] / 2.0));
+
+                    int q = 0;
+                    if (n < x)
+                    {
+                        for (int t = 0; t < m - 1; t++)
+                        {
+                            q = q + CircuitInfo.TubeofCir[m] / Nrow;
+                        }
+                        CirArrange[m, n] = x - n + N_tube + q;
+
+                    }
+                    else
+                    {
+                        x = Convert.ToInt32(Math.Ceiling(CircuitInfo.TubeofCir[m] / 2.0));
+                        y = Convert.ToInt32(Math.Floor(CircuitInfo.TubeofCir[m] / 2.0));
+
+                        for (int t = 0; t < m - 1; t++)
+                        {
+                            q = q + CircuitInfo.TubeofCir[m] / Nrow;
+                        }
+                        CirArrange[m, n] = n - y + 1 + q;
+                    }
+
+                }
+                else
+                {
+                    x = Convert.ToInt32(Math.Ceiling(CircuitInfo.TubeofCir[m] / 2.0));
+                    y = Convert.ToInt32(Math.Floor(CircuitInfo.TubeofCir[m] / 2.0));
+
+                    int q = 0;
+                    if (n < y)
+                    {
+                        for (int t = 0; t < m - 1; t++)
+                        {
+                            q = q + x;
+                        }
+
+                        CirArrange[m, n] = y + 1 + N_tube + q;
+                    }
+                    else
+                    {
+
+                        x = Convert.ToInt32(Math.Ceiling(CircuitInfo.TubeofCir[m] / 2.0));
+                        y = Convert.ToInt32(Math.Floor(CircuitInfo.TubeofCir[m] / 2.0));
+
+                            
+                        for (int t = 0; t < m - 1; t++)
+                        {
+                            q = q + y;
+                        }
+
+                        CirArrange[m, n] = n - y + 1 + q;
+                    }
+
+                }
+                p = p + 1;
+
+            }
+                
+        }*/
+
+            //Geometry calculation for an element
+            GeometryResult geo = new GeometryResult();
+            GeometryResult[,] geo_element = new GeometryResult[N_tube, Nrow];
+            for (int k = 0; k < Nrow; k++)
+                for (int j = 0; j < N_tube; j++)
+                {
+                    geo_element[j, k] = Areas.Geometry(L / Nelement, FPI[k], Do, Di, Pt, Pr, Fthickness);
+                    //geo_element[i] = Areas.Geometry(L / element, FPI[i], Do, Di, Pt, Pr);
+                    geo.Aa_tube += geo_element[j, k].Aa_tube;
+                    geo.Aa_fin += geo_element[j, k].Aa_fin;
+                    geo.A_a += geo_element[j, k].A_a;
+                    geo.A_r += geo_element[j, k].A_r;
+                    geo.A_r_cs += geo_element[j, k].A_r_cs;
+                    //geo.A_ratio += geo_element[j,k].A_ratio;
+                }
+
+            geo.A_ratio = geo.A_r / geo.A_a;
+
+
+            double[] Q = new double[16];
+            double[] href = new double[16];
+
+            int N = 16;
+            for (int i = 0; i < N; i++)
+            {
+                double[] mr = new double[] { 13.01, 17.01, 21.00, 25.00, 13.00, 17.01, 21.00, 25.00, 13.00, 17.00, 21.00, 25.01, 13.01, 17.00, 21.01, 25.00 }; // 60;
+                mr[i] = mr[i] / 60;
+                double[] Vel_a = new double[] { 0.70550, 0.70395, 0.70348, 0.70329, 1.00285, 1.00238, 1.00203, 1.00366, 1.30551, 1.30599, 1.30520, 1.30471, 1.58699, 1.58381, 1.58356, 1.58275 }; //m/s
+                double H = Pt * N_tube;
+                double Hx = L * H;
+                double[] rho_a_st = { 1.19767, 1.19763, 1.19766, 1.19767, 1.19772, 1.19773, 1.19772, 1.19776, 1.19779, 1.19771, 1.19775, 1.19771, 1.19767, 1.19774, 1.19768, 1.19768 }; //kg/m3
+
+                double[] Va = new double[N];
+                Va[i] = Vel_a[i] * Hx;
+                double[] ma = new double[N];
+                ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
+                int curve = 1; //
+                double za = 1; //Adjust factor
+                double zh = 1;
+                double zdp = 1;
+                double[] eta_surface = new double[] { 0.86998, 0.872736, 0.8747438, 0.8761934, 0.84895, 0.851907, 0.8535928, 0.8544665, 0.82776, 0.830934, 0.8327302, 0.8339071, 0.81128, 0.81624, 0.81832, 0.81969 };
+                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
+                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
+                double[] ha = new double[] { 40.297, 39.319, 38.610, 38.100, 47.975, 46.873, 46.248, 45.925, 56.106, 54.862, 54.162, 53.705, 62.722, 60.704, 59.864, 59.315 };
+                double[] tai = new double[] { 20.01, 20.02, 20.01, 20.01, 20.00, 20.00, 20.00, 19.99, 19.98, 20.00, 19.99, 20.00, 20.01, 19.99, 20.01, 20.01 };
+                double[] RHi = new double[] { 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469 };
+
+                double[] tri = new double[] { 45.01, 45.00, 44.98, 44.99, 45.01, 44.99, 45.00, 44.99, 45.01, 44.99, 44.99, 44.99, 45.00, 44.99, 44.98, 45.01 };
+                double[] tc = tri;
+                double[] pc = new double[N];
+                pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
+                double Pwater = 395;//kpa
+                double conductivity = 386; //w/mK for Cu
+                int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
+                double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
+                double[] hri = new double[N];
+                hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+
+                double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+                double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
+
+                string AirDirection = "Counter";
+                ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
+                RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
+
+
+                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
+                    mr[i], ma[i], ha[i], eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater);
+                //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
+                //{
+                //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
+                //}
+                Q[i] = res.Q;
+                href[i] = res.href;
+            }
+            return res;
+        }
+        public static CalcResult Water_Heat_Jiayong2_autosplitCir()
+        {
+            string[] fluid = new string[] { "Water" };
+
+            double[] composition = new double[] { 1 };
+            CalcResult res = new CalcResult();
+            int Nrow = 2;
+            double[] FPI = new double[Nrow + 1];
+            FPI = new double[] { 21.167, 21.167 };
+            double Pt = 14.5 * 0.001;
+            double Pr = 12.56 * 0.001;
+            double Di = 4.8706 * 0.001;//8
+            double Do = 5.25 * 0.001;//8.4
+            double Fthickness = 0.095 * 0.001;
+            double thickness = 0.5 * (Do - Di);
+            int[] Ntube = { 24, 24 };
+            int N_tube = Ntube[0];
+            double L = 400 * 0.001;
+            int Nelement = 1;
+
+            //流路均分设计
+            int[,] CirArrange;
+
+            CircuitNumber CircuitInfo = new CircuitNumber();
+            CircuitInfo.number = new int[] { 16, 16 };
+            CircuitInfo.TubeofCir = new int[] { 2, 2, 2, 2, 2, 2, 2, 2, 4, 4, 4, 4, 4, 4, 4, 4 };
+            //流路输入不正确的提示功能
+
+            CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
+
+            //int iCircuit = 0;
+            //int iTube_Cir = 0;
+            int AddNumber = 0;
+            int iCircuit1 = 0;
+
+            for (int iCircuit = 0; iCircuit < CircuitInfo.number[0]; iCircuit++)
+                for (int iTube_Cir = 0; iTube_Cir < CircuitInfo.TubeofCir[iCircuit]; iTube_Cir++)
+                {
+                    if (iTube_Cir < CircuitInfo.TubeofCir[iCircuit] / Nrow)
+                    {
+                        if (iCircuit == 0)
+                            CirArrange[iCircuit, iTube_Cir] = iTube_Cir + 1 + N_tube;
+                        else
+                        {
+                            for (iCircuit1 = 1; iCircuit1 <= iCircuit; iCircuit1++)
+                            {
+
+                                AddNumber = AddNumber + CircuitInfo.TubeofCir[iCircuit1 - 1] / Nrow;
+                            }
+                            CirArrange[iCircuit, iTube_Cir] = iTube_Cir + 1 + N_tube + AddNumber;
+                            AddNumber = 0;
+                        }
+
+                    }
+                    else
+                    {
+                        if (iCircuit == 0)
+                            CirArrange[iCircuit, iTube_Cir] = CircuitInfo.TubeofCir[iCircuit] - iTube_Cir;
+                        else
+                        {
+                            for (iCircuit1 = 1; iCircuit1 <= iCircuit; iCircuit1++)
+                            {
+                                AddNumber = AddNumber + CircuitInfo.TubeofCir[iCircuit1 - 1] / Nrow;
+                            }
+                            CirArrange[iCircuit, iTube_Cir] = CircuitInfo.TubeofCir[iCircuit] - iTube_Cir + AddNumber;
+                            AddNumber = 0;
+                        }
+
+                    }
+                }
+
+            //Geometry calculation for an element
+            GeometryResult geo = new GeometryResult();
+            GeometryResult[,] geo_element = new GeometryResult[N_tube, Nrow];
+            for (int k = 0; k < Nrow; k++)
+                for (int j = 0; j < N_tube; j++)
+                {
+                    geo_element[j, k] = Areas.Geometry(L / Nelement, FPI[k], Do, Di, Pt, Pr, Fthickness);
+                    //geo_element[i] = Areas.Geometry(L / element, FPI[i], Do, Di, Pt, Pr);
+                    geo.Aa_tube += geo_element[j, k].Aa_tube;
+                    geo.Aa_fin += geo_element[j, k].Aa_fin;
+                    geo.A_a += geo_element[j, k].A_a;
+                    geo.A_r += geo_element[j, k].A_r;
+                    geo.A_r_cs += geo_element[j, k].A_r_cs;
+                    //geo.A_ratio += geo_element[j,k].A_ratio;
+                }
+
+            geo.A_ratio = geo.A_r / geo.A_a;
+
+
+            double[] Q = new double[16];
+            int N = 16;
+            for (int i = 0; i < N; i++)
+            {
+                double[] mr = new double[] { 13.00, 17.00, 21.00, 25.00, 13.00, 17.01, 21.01, 25.00, 13.01, 17.00, 21.00, 25.00, 13.01, 17.00, 21.01, 25.00 }; // 60;
+                mr[i] = mr[i] / 60;
+                double[] Vel_a = new double[] { 0.702466, 0.70428, 0.70592, 0.70592, 1.00585, 1.00475, 1.00716, 1.00635, 1.31044, 1.30957, 1.30901, 1.30781, 1.58978, 1.58832, 1.58607, 1.59028 }; //m/s
+                double H = Pt * N_tube;
+                double Hx = L * H;
+                double[] rho_a_st = { 1.19772, 1.19771, 1.19777, 1.19762, 1.19773, 1.19773, 1.19775, 1.19767, 1.19772, 1.19773, 1.19770, 1.19772, 1.19766, 1.19771, 1.19771, 1.19775 }; //kg/m3
+
+                double[] Va = new double[N];
+                Va[i] = Vel_a[i] * Hx;
+                double[] ma = new double[N];
+                ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
+                int curve = 1; //
+                double za = 1; //Adjust factor
+                double zh = 1;
+                double zdp = 1;
+                double[] eta_surface = new double[] { 0.93687, 0.936250, 0.9295073, 0.9333229, 0.92812, 0.927387, 0.9259171, 0.9252950, 0.92324, 0.92239, 0.92222, 0.92211, 0.91866, 0.91823, 0.91817, 0.91800 };
+                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
+                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
+                double[] ha = new double[] { 56.798, 57.390, 63.920, 60.213, 65.277, 65.993, 67.436, 68.048, 70.078, 70.917, 71.086, 71.197, 74.628, 75.059, 75.112, 75.283 };
+                double[] tai = new double[] { 20.00, 20.00, 19.98, 20.02, 20.00, 20.00, 19.99, 20.01, 20.00, 20.00, 20.01, 20.00, 20.01, 20.00, 20.00, 19.99 };
+                double[] RHi = new double[] { 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469 };
+
+                double[] tri = new double[] { 44.99, 44.99, 45.01, 44.99, 45.02, 45.02, 44.99, 45.01, 45.01, 45.03, 44.98, 44.99, 45.02, 44.98, 45.03, 44.99 };
+                double[] tc = tri;
+                double[] pc = new double[N];
+                pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
+                double Pwater = 395;//kpa
+                double conductivity = 386; //w/mK for Cu
+                int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
+                double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
+                double[] hri = new double[N];
+                hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+
+                double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+                double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
+
+                string AirDirection = "Counter";
+                ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
+                RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
+
+
+                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
+                    mr[i], ma[i], ha[i], eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater);
+                //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
+                //{
+                //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
+                //}
+                Q[i] = res.Q;
+            }
+            return res;
+        }
+
         public static CalcResult MinNout()
         {
             //string[] fluid = new string[] { "Water" };
