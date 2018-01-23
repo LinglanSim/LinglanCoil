@@ -412,6 +412,149 @@ namespace Model
 
             return res;
         }
+        public static CalcResult Water_Midea5_reverse()
+        {
+            string[] fluid = new string[] { "Water" };
+            //string[] fluid = new string[] { "R410A.MIX" };
+            //string[] fluid = new string[] { "ISOBUTAN" };
+            double[] composition = new double[] { 1 };
+            CalcResult res = new CalcResult();
+            int Nrow = 3;
+            double[] FPI = new double[Nrow + 1];
+            //FPI = new double[] { 1.27, 1.27, 1.27, 1.27, 1.27, 1.27, 1.27, 2.6, 2.6, 2.6, 2.6, 2.6, 2.6, 2.6, 2.6, 5.2, 5.2, 5.2, 5.2, 5.2, 5.2 };
+            FPI = new double[] { 17, 17, 17 };
+            double Pt = 21 * 0.001;
+            double Pr = 13.37 * 0.001;
+            double Di = 6.8944 * 0.001;//8
+            double Do = 7.35 * 0.001;//8.4
+            double Fthickness = 0.095 * 0.001;
+            double thickness = 0.5 * (Do - Di);
+            //double n_tubes = 10;
+            //double n_rows = 2;
+            //int[] Ntube = { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
+            //int[] Ntube = { 2, 2, 2, 2 };
+            int[] Ntube = { 14, 14, 14 };
+            int N_tube = Ntube[0];
+            double L = 367 * 0.001;
+            int Nelement = 1;
+            int[,] CirArrange;
+            //CirArrange = new int[,] { { 8, 6, 4, 2, 1, 3, 5, 7 } };//actual, counter-paralle,  Q=83.1
+            //CirArrange = new int[,] { { 20, 18, 16, 14, 12, 10, 8, 6, 4, 2, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19 } };//actual, counter-paralle,  Q=83.1
+            //CirArrange = new int[,] { { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19 } }; //paralle-paralle, better Q=85.3
+            //CirArrange = new int[,] { { 20, 18, 16, 14, 12, 10, 8, 6, 4, 2, 19, 17, 15, 13, 11, 9, 7, 5, 3, 1 } };//counter-counter,  Q=82.4
+            //CirArrange = new int[,] { { 14, 12, 10, 8, 6, 4, 2, 1, 3, 5, 7, 9, 11, 13 } };//actual, counter-paralle,  Q=76
+            //CirArrange = new int[,] { {16, 14, 12, 10, 8, 6, 4, 2, 1, 3, 5, 7, 9, 11, 13, 15 } };//actual, counter-paralle,  Q=79
+            //CirArrange = new int[,] { {42, 40, 38, 36, 34, 32, 30, 28, 26, 24, 22, 20, 18, 16, 14, 12, 10, 8, 6, 4, 2, 
+            //                              1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41 } };//actual, counter-paralle,  Q=79
+            //CirArrange = new int[,] { {32, 30, 28, 26, 24, 22, 20, 18, 16, 14, 12, 10, 8, 6, 4, 2, 
+            //                              1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31 } };//actual, counter-paralle,  Q=79
+
+            //CirArrange = new int[,] { { 7, 8, 2, 1, 5, 3 }, {5, 8, 9, 10, 11}, {5, 88, 5, 4, 3 } };
+            //CirArrange = new int[,] { { 7, 8, 2, 1, 0, 0, 0, 0 }, { 9, 10, 11, 12, 6, 5, 4, 3 } };
+            //CirArrange = new int[,] { { 7, 1, 0, 0, 0, 0 }, { 8, 9, 3, 2, 0, 0 }, { 10, 11, 12, 6, 5, 4 } };
+            //CirArrange = new int[,] { { 7, 8, 2, 1, 9, 10, 11, 12, 6, 5, 4, 3 } };
+            //List<string> productType = new List<string>();
+            //CirArrange = new int[,] { { 7, 8, 9, 3, 2, 1 }, { 12, 11, 10, 4, 5, 6 } };
+            //CirArrange = new int[,] { { 7, 8, 9, 4, 5, 6 }, { 12, 11, 10, 3, 2, 1 } };
+            //CirArrange = new int[,] { { 7, 8, 5, 6 }, { 10, 9, 2, 1 }, { 12, 11, 4, 3 } };
+            //CirArrange = new int[,] { { 7, 8, 2, 1 }, { 10, 9, 3, 4 }, { 11, 12, 6, 5 } };
+            //CirArrange = new int[,] { { 29, 30, 16, 15, 1, 2 }, { 32, 31, 17, 18, 4, 3 }, { 33, 34, 20, 19, 5, 6 }, { 36, 35, 21, 22, 8, 7 }, { 37, 38, 24, 23, 9, 10 }, { 40, 39, 25, 26, 12, 11 }, { 41, 42, 28, 27, 13, 14 } };
+            //顺流逆流切换模块
+            int flowType = 1;//*********************************0 is counterflow, 1 is paralflow******************************************
+            if (flowType == 0)
+            {
+                CirArrange = new int[,] { { 29, 30, 16, 15, 1, 2 }, { 32, 31, 17, 18, 4, 3 }, { 33, 34, 20, 19, 5, 6 }, { 36, 35, 21, 22, 8, 7 }, { 37, 38, 24, 23, 9, 10 }, { 40, 39, 25, 26, 12, 11 }, { 41, 42, 28, 27, 13, 14 } };
+            }
+            else
+            {
+                CirArrange = new int[,] { { 2, 1, 15, 16, 30, 29 }, { 3, 4, 18, 17, 31, 32 }, { 6, 5, 19, 20, 34, 33 }, { 7, 8, 22, 21, 35, 36 }, { 10, 9, 23, 24, 38, 37 }, { 11, 12, 26, 25, 39, 40 }, { 14, 13, 27, 28, 42, 41 } };
+            }
+            
+            CircuitNumber CircuitInfo = new CircuitNumber();
+            CircuitInfo.number = new int[] { 7, 7 };
+            CircuitInfo.TubeofCir = new int[] { 6, 6, 6, 6, 6, 6, 6 };  //{ 4, 8 };
+            // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
+            // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
+            //  Ncir=1, 20in, 20->19 1out
+
+            //int total = 0;
+            //if (CirArrange != null)
+            //{
+            //    foreach (var seg in CirArrange)
+            //    {
+            //        total += seg.
+            //    }
+            //}
+
+            double mr = 23.0 / 60;
+            double Vel_a = 1.2; //m/s
+            double H = Pt * N_tube;
+            double Hx = L * H;
+            double rho_a_st = 1.2; //kg/m3
+
+            double Va = Vel_a * Hx;
+            double ma = Va * rho_a_st;//Va / 3600 * 1.2; //kg/s
+            int curve = 1; //
+            double za = 1; //Adjust factor
+            double zh = 1;
+            double zdp = 1;
+            double eta_surface = 0.89;
+            double ha = AirHTC.alpha(Vel_a, za, curve);//71.84;//36.44;
+            double tai = 20;
+            double RHi = 0.469;
+            double tri = 45;
+            double tc = tri;
+            double pc = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
+            double Pwater = 305;//kpa
+            double conductivity = 386; //w/mK for Cu
+            int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
+            //double densityL = Refrigerant.SATT(fluid, composition, te + 273.15, 1).DensityV;
+            //double hri = Refrigerant.ENTHAL(fluid, composition, tri + 273.15, densityL).Enthalpy ;
+            double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
+            //hri = hri / wm - 140;
+            double hri = Refrigerant.TPFLSH(fluid, composition, tc + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+
+            //double hri = 354.6;
+            //double xin = 0.57;
+
+            double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+            double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
+
+            //string AirDirection="DowntoUp";
+            string AirDirection = "Counter";
+            ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
+            RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
+
+            GeometryResult geo = new GeometryResult();
+            //GeometryResult[,] geo_element = new GeometryResult[,] { };
+            GeometryResult[,] geo_element = new GeometryResult[N_tube, Nrow];
+            for (int k = 0; k < Nrow; k++)
+                for (int j = 0; j < N_tube; j++)
+                {
+                    geo_element[j, k] = Areas.Geometry(L / Nelement, FPI[k], Do, Di, Pt, Pr, Fthickness);
+                    //geo_element[i] = Areas.Geometry(L / element, FPI[i], Do, Di, Pt, Pr);
+                    geo.Aa_tube += geo_element[j, k].Aa_tube;
+                    geo.Aa_fin += geo_element[j, k].Aa_fin;
+                    geo.A_a += geo_element[j, k].A_a;
+                    geo.A_r += geo_element[j, k].A_r;
+                    geo.A_r_cs += geo_element[j, k].A_r_cs;
+                    //geo.A_ratio += geo_element[j,k].A_ratio;
+                }
+            geo.A_ratio = geo.A_r / geo.A_a;
+
+            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc, pc, hri,
+                mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+
+            //res = Slab.SlabCalc(Npass, N_tubes_pass, fluid, composition, Dh, L, geo.A_a, geo.A_r_cs, geo.A_r, tai, tri, pe, hri,
+            //    mr, ma, ha, eta_surface, zh, zdp);
+            //Tsh_calc = res.Tro - (Refrigerant.SATP(fluid, composition, res.Pro, 1).Temperature - 273.15);
+
+            // res = Slab.SlabCalc(Npass, N_tubes_pass, fluid, composition, Dh, L, geo.A_a, geo.A_r_cs, geo.A_r, tai, tri, pe, hri,
+            //     mr, ma, ha, eta_surface, zh, zdp);
+            // Tsh_calc = res.Tro - (Refrigerant.SATP(fluid, composition, res.Pro, 1).Temperature - 273.15);
+
+            return res;
+        }
 
         public static CalcResult Water_Midea9()
         {
