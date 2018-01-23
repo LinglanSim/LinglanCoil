@@ -43,8 +43,15 @@ namespace Model
             double C_max = Math.Max(C_a, C_r);
             double C_ratio = C_min / C_max;
             double NTU = UA / (C_min * 1000);
-            double epsilon = 1 - Math.Exp(Math.Pow(C_ratio,-1.0)*Math.Pow(NTU,0.22)
-                *(Math.Exp(-C_ratio*Math.Pow(NTU,0.78))-1));
+            //流体不混合的一次交叉流
+            //double epsilon_jc = 1 - Math.Exp(Math.Pow(C_ratio,-1.0)*Math.Pow(NTU,0.22)
+                //*(Math.Exp(-C_ratio*Math.Pow(NTU,0.78))-1));
+            //顺流计算公式
+            //double epsilon_downflow = (1 - Math.Exp(-NTU * (1 + C_ratio))) / (1 + C_ratio);
+            //逆流计算公式
+            double epsilon_counterflow = (1 - Math.Exp(-NTU * (1 - C_ratio))) / (1 - C_ratio * Math.Exp(-NTU * (1 - C_ratio)));
+
+            double epsilon = epsilon_counterflow;
             res.Q = epsilon * C_min * Math.Abs(tri - tai);
             if (C_r < C_a)
             { // hexType=0 :evap, 1:cond
@@ -390,7 +397,7 @@ namespace Model
                 double change = 1;
 
                 //半干半湿计算
-                if (Tin_s > Tdp+0.5) //Jingming
+                if (Tin_s > Tdp+100.0) //Jingming
                     //if (Tin_s > Tdp && Tout_s < Tdp)
                 //Partially wet and Partially dry with single-fase on refrigerant side
                 {
