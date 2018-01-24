@@ -21,8 +21,8 @@ namespace Model
             for (int i = 0; i < Nelement; i++)
             {
 
-                r = Element.ElementCal(fluid, composition, dh, l / Nelement, Aa_fin / Nelement, Aa_tube / Nelement, A_r_cs, Ar / Nelement,
-                    tai[i], RHi[i], tri, pri, hri, mr, g, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+                r = Element.ElementCal(fluid, composition, dh, l / Nelement, Aa_fin, Aa_tube, A_r_cs, Ar,
+                    tai[i], RHi[i], tri, pri, hri, mr, g, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);//elementtest
 
                 pri = r.Pro;
                 hri = r.hro;

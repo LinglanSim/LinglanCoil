@@ -814,7 +814,7 @@ namespace Model
             double Do = 7.35 *0.001;
             double Fthickness = 0.095 *0.001;
             double thickness = (Do - Di) / 2;
-            int Nelement = 1;//Element
+            int Nelement = 3;//Element
             int[,] CirArrange;
             CirArrange = new int[,] { { 29, 30, 31, 17, 16, 15, 1, 2, 3 }, { 32, 33, 34, 20, 19, 18, 4, 5, 6 }, { 35, 36, 37, 23, 22, 21, 7, 8, 9 }, { 38, 39, 40, 26, 25, 24, 10, 11, 12 }, { 41, 27, 13, 0, 0, 0, 0, 0, 0 }, { 42, 28, 14, 0, 0, 0, 0, 0, 0 } };
             CircuitNumber CircuitInfo = new CircuitNumber();
