@@ -43,8 +43,15 @@ namespace Model
             double C_max = Math.Max(C_a, C_r);
             double C_ratio = C_min / C_max;
             double NTU = UA / (C_min * 1000);
-            double epsilon = 1 - Math.Exp(Math.Pow(C_ratio,-1.0)*Math.Pow(NTU,0.22)
-                *(Math.Exp(-C_ratio*Math.Pow(NTU,0.78))-1));
+            //流体不混合的一次交叉流
+            //double epsilon_jc = 1 - Math.Exp(Math.Pow(C_ratio,-1.0)*Math.Pow(NTU,0.22)
+                //*(Math.Exp(-C_ratio*Math.Pow(NTU,0.78))-1));
+            //顺流计算公式
+            //double epsilon_downflow = (1 - Math.Exp(-NTU * (1 + C_ratio))) / (1 + C_ratio);
+            //逆流计算公式
+            double epsilon_counterflow = (1 - Math.Exp(-NTU * (1 - C_ratio))) / (1 - C_ratio * Math.Exp(-NTU * (1 - C_ratio)));
+
+            double epsilon = epsilon_counterflow;
             res.Q = epsilon * C_min * Math.Abs(tri - tai);
             if (C_r < C_a)
             { // hexType=0 :evap, 1:cond
@@ -60,6 +67,8 @@ namespace Model
             res.DP = zdp * f_sp * l / dh * Math.Pow(g, 2.0) / rho_r / 2000;
             res.Pro = fluid[0] == "Water" ? pri : pri - res.DP;
             res.hro = hri + Math.Pow(-1, hexType) * res.Q / mr;
+            res.RHout = 1.1 * RHi;
+
 
             res.RHout = 1.1 * RHi;
 
@@ -132,9 +141,12 @@ namespace Model
 
             //Counterflow effectiveness
             //方程的数学内含规律决定了物理量之间的依变关系
+
+            //纯逆流计算
             double epsilon_dry = (1 - Math.Exp(-Ntu_dry * (1 - C_ratio))) / (1 - C_ratio * Math.Exp(-Ntu_dry * (1 - C_ratio)));
 
-            //double epsilon_dry = 1 - Math.Exp(Math.Pow(C_ratio, -1.0) * Math.Pow(Ntu_dry, 0.22)
+            //交叉流计算
+            //double epsilon_dry2 = 1 - Math.Exp(Math.Pow(C_ratio, -1.0) * Math.Pow(Ntu_dry, 0.22)
             //* (Math.Exp(-C_ratio * Math.Pow(Ntu_dry, 0.78)) - 1));
             //**************************************//
             //干工况输出
@@ -241,15 +253,6 @@ namespace Model
                 double Tout_s1 = 1.0;
                 double errorToutr = 1.0;
 
-                //while (errorToutr > eps && iter < 100)
-                //{
-                //if (iter == 1)
-                //Tout_s1 = tri;
-                //if (iter > 1)
-                //Tout_s1 = tri + iter * 0.1;
-
-                //double Tout_r_start = Tout_r;
-
                 ma = ma / (1.0 + omega_in);//ma这样修正不对
                 //ma = ma;
                 //double Tout_r_start = Tout_r;
@@ -262,7 +265,6 @@ namespace Model
                 //double c_1 = -0.1232369; double c_2 = 0.611334891; double c_3 = 31.34295802; double c_4 = 0.025365477; double c_5 = -29.94267762;
                 //double c_6 = -0.456313635; double c_7 = -0.000454003; double c_8 = 14.97634549; double c_9 = 0.290827526; double c_10 = 0.065911723;
                 //h_s_w_i = c_1 + c_2 * T_ac + c_3 * RHin_a + c_4 * Math.Pow(T_ac, 2) + c_5 * Math.Pow(RHin_a, 2) + c_6 * T_ac * RHin_a + c_7 * Math.Pow(T_ac, 3) + c_8 * Math.Pow(RHin_a, 3) + c_9 * T_ac * Math.Pow(RHin_a, 2) + c_10 * Math.Pow(T_ac, 2) * RHin_a;  
-
 
                 //Saturation specific heat at mean water temp J/kg
                 double c_s = 2.0;//cair_sat((Tin_r + Tout_r) / 2) * 1000;
@@ -280,12 +282,12 @@ namespace Model
                 //double ppp = 1;//WavyLouveredFins(DWS.Fins)
                 k_fin = 237;//237
                 Fthickness = 0.095 * 0.001;
-                Pt = 1 * 14.5 * 0.001;
+                Pt = 1 * 21 * 0.001;
                 //double Pt = 14.5 * 0.001;
                 //double Pr = 12.56 * 0.001;
                 //double Pr = 0.75 * 25.4 * 0.001;
                 //double Di = 8.4074 * 0.001;//8 6.8944
-                Do = 5.25 * 0.001;//8.4 7.35
+                Do = 7.35 * 0.001;//8.4 7.35
                 //double Do = 5.25 * 0.001;//8.4
                 h_fin = (Pt - Do) / 2;
                 m = Math.Sqrt(2 * ha * cs_cp / (k_fin * Fthickness));
@@ -323,9 +325,11 @@ namespace Model
                 //Ntu_wet = 0.86982344382357357; //修改后epsilon_wet = 0.57666264924152688;Q_wet = 0.06335494410307306;
                 //Ntu_wet = 0.87727834647216352;//修改前epsilon_wet = 0.57974227442820847;Q_wet = 0.067057695299025735; Q_wet的差别是两次焓的差别引起
                 //Counterflow effectiveness for wet analysis
-                double epsilon_wet = (1 - Math.Exp(-Ntu_wet * (1 - m_star))) / (1 - m_star * Math.Exp(-Ntu_wet * (1 - m_star)));
+                //纯逆流计算
+                //double epsilon_wet = (1 - Math.Exp(-Ntu_wet * (1 - m_star))) / (1 - m_star * Math.Exp(-Ntu_wet * (1 - m_star)));
                 //excel处理的是逆流，这里处理成逆流是正确的
-
+                double epsilon_wet = 1 - Math.Exp(Math.Pow(m_star, -1.0) * Math.Pow(Ntu_wet, 0.22)
+                * (Math.Exp(-m_star * Math.Pow(Ntu_wet, 0.78)) - 1));
 
                 //Wet-analysis heat transfer rate质量要变成每kg干空气
                 Q_wet = epsilon_wet * mdot_min * (hin_a - h_s_w_i);
@@ -376,42 +380,6 @@ namespace Model
                     RHo = g_1 + g_2 * Tout_a + g_3 * hout_a + g_4 * Math.Pow(Tout_a, 2) + g_5 * Math.Pow(hout_a, 2) + g_6 * Tout_a * hout_a + g_7 * Math.Pow(Tout_a, 3) + g_8 * Math.Pow(hout_a, 3) + g_9 * Tout_a * Math.Pow(hout_a, 2) + g_10 * Math.Pow(Tout_a, 2) * hout_a;
 
                 }
-                //RHo = 0.9;
-                //**********************************//
-                //double Tout_s11 = tri + (hout_a - h_s_w_i) * ((eta_a * ha * A_a * cs_cp / c_s ) / (res.href * Ar));
-                //**********************************//
-
-                //errorToutr = Tout_s11 - Tout_s1;
-
-                //iter += 1;
-                //}
-
-
-
-
-
-
-
-
-
-                //Error between guess and recalculated value K
-                //double errorToutr = Tout_r -Tout_r_start;
-
-                /*if (iter > 500)
-                    //print "Superheated region wet analysis Toutr convergence failed"
-                    res.Q = Q_dry;
-                return
-                    if (iter == 1)
-                        y1 = errorToutr;
-                if (iter > 1)
-                    y2 = errorToutr;
-                x3 = x2 - y2 / (y2 - y1) * (x2 - x1);
-                change = abs(y2 / (y2 - y1) * (x2 - x1));
-                y1 =y2; x1 = x2; x2 =x3;
-                //if hasattr(DWS,'Verbosity') and DWS.Verbosity > 7
-                //print "Fullwet iter %d Toutr %0.5f dT %g" %(iter, Tout_r,errorToutr)
-                //Update loop counter
-                iter+=1;*/
 
 
                 //Fully wetted outlet temp K
@@ -430,31 +398,42 @@ namespace Model
                 double change = 1;
 
                 //半干半湿计算
-                /*if (Tin_s > Tdp)
+
+                if (Tin_s > Tdp+100.0) //Jingming
+
                     //if (Tin_s > Tdp && Tout_s < Tdp)
                 //Partially wet and Partially dry with single-fase on refrigerant side
                 {
                     iter1 = 1;
                     //Now do an iterative solver to find the fraction of the coil that is wetted
-                    /*x11 = 0.0001;
-                    x21 = 0.9999;
+
+                    x1 = 0.01;
+                    x2 = 0.99;
+
                     eps1 = Math.Pow(10, -8);
 
                     double h_a_x = 0;
                     double T_a_x = 0;
 
-                    while ((iter1 <= 3 & error > eps1) && iter1 < 100)
+
+                    while ((iter1 <= 3 | Math.Abs(error) > eps1) && iter1 < 100)
                     {
                         if (iter1 == 1)
                         {
-                            f_dry = x11;
+                            f_dry = x1;
                         }
 
                           //if (iter > 1)
                         else
                         {
-                            f_dry = x21;
+
+                            f_dry = x2;
                         }
+
+                        f_dry = 0.8;// 0.01 * iter1;
+
+
+
 
 
                         double K = Ntu_dry * (1.0 - C_ratio);
@@ -470,12 +449,16 @@ namespace Model
                         }
 
                         //Wet and dry effective effectiveness
-                        epsilon_dry = (1 - Math.Exp(-f_dry * Ntu_dry * (1 - C_ratio))) / (1 - C_ratio * Math.Exp(-f_dry * Ntu_dry * (1 - C_ratio)));
-                        Ntu_wet = 1.0; 
-                        m_star = 1.0;
-                        epsilon_wet = (1 - Math.Exp(-(1 - f_dry) * Ntu_wet * (1 - m_star))) / (1 - m_star * Math.Exp(-(1 - f_dry) * Ntu_wet * (1 - m_star)));
 
-                        mdot_min = 1.0;
+                        //纯逆流计算
+                        epsilon_dry = (1 - Math.Exp(-f_dry * Ntu_dry * (1 - C_ratio))) / (1 - C_ratio * Math.Exp(-f_dry * Ntu_dry * (1 - C_ratio)));
+            
+                        //纯逆流计算
+                        epsilon_wet = (1 - Math.Exp(-(1 - f_dry) * Ntu_wet * (1 - m_star))) / (1 - m_star * Math.Exp(-(1 - f_dry) * Ntu_wet * (1 - m_star)));
+                        //double epsilon_wet = 1 - Math.Exp(Math.Pow(m_star, -1.0) * Math.Pow(Ntu_wet, 0.22)
+                        //* (Math.Exp(-m_star * Math.Pow(Ntu_wet, 0.78)) - 1));
+                        //mdot_min = 1.0;
+
                         //Temperature of water where condensation begins
                         double T_w_x = (tri + mdot_min / (cp_r / 1000 * mr) * epsilon_wet * (hin_a - h_s_w_i - epsilon_dry * C_min / ma * Tin_a)) / (1 - C_min * mdot_min / (cp_r * mr * ma) * epsilon_wet * epsilon_dry);
                         //Obtained from energy balance on air side
@@ -497,9 +480,11 @@ namespace Model
                             throw new Exception("iter for f_dryConverge > 100.");
                         }
 
-                        if (iter1 == 1)
+
+                        /*if (iter1 == 1)
                         {
-                            y1 = error;
+                            y1 = Math.Abs(error);
+>>>>>>> Temp
                         }
 
                         if (iter1 > 1)
@@ -507,8 +492,13 @@ namespace Model
                             y2 = error;
                             x3 = x2 - y2 / (y2 - y1) * (x2 - x1);
                             change = Math.Abs(y2 / (y2 - y1) * (x2 - x1));
+<<<<<<< HEAD
                             y1 = y2; x1 = x2; x2 = x3;
                         }
+=======
+                            y1 = y2; x1 = x2; x2 = Math.Abs(x3);
+                        }*/
+
 
 
 
@@ -523,7 +513,9 @@ namespace Model
                     //Wet-analysis saturation enthalpy J/kg
                     h_s_s_e = h_a_x + (hout_a - h_a_x) / (1 - Math.Exp(-(1 - f_dry) * Ntu_owet));
                     //Surface effective temperature K
-                    T_s_e = 1.0;//HAProps('T','H',h_s_s_e/1000,'P',pin_a,'R',1.0);
+
+                    //T_s_e = 1.0;//HAProps('T','H',h_s_s_e/1000,'P',pin_a,'R',1.0);
+
                     T_s_e = -0.0016 * Math.Pow(h_s_s_e, 2) + 0.4914 * h_s_s_e - 2.9124;
                     //Air outlet temp based on effective surface temp K
                     Tout_a = T_s_e + (T_a_x - T_s_e) * Math.Exp(-(1 - f_dry) * Ntu_o);
@@ -535,14 +527,38 @@ namespace Model
                     Q_sensible = ma * cp_a * (Tin_a - Tout_a);
                     //RHo = 0.7;
 
+                    //相对湿度计算
+                    if (Tout_a < 20)
+                    {
+                        //Tdp = 10;
+                        double f_1 = -0.6625838; double f_2 = 0.0286184; double f_3 = 0.1029451; double f_4 = -0.0022826; double f_5 = -0.0001418;
+                        double f_6 = -0.0057562; double f_7 = 6.403 * Math.Pow(10, -5); double f_8 = -2.588 * Math.Pow(10, -6); double f_9 = 2.175 * Math.Pow(10, -5); double f_10 = 7.33779 * Math.Pow(10, -5);
+                        RHo = f_1 + f_2 * Tout_a + f_3 * hout_a + f_4 * Math.Pow(Tout_a, 2) + f_5 * Math.Pow(hout_a, 2) + f_6 * Tout_a * hout_a + f_7 * Math.Pow(Tout_a, 3) + f_8 * Math.Pow(hout_a, 3) + f_9 * Tout_a * Math.Pow(hout_a, 2) + f_10 * Math.Pow(Tout_a, 2) * hout_a;
+
+                        if (RHo > 1.0)
+                            RHo = 1.0;
+                    }
+                    else
+                    {
+                        //Tdp = 10;
+                        double g_1 = -1.1598572; double g_2 = 0.046598; double g_3 = 0.0888223; double g_4 = -0.0014229; double g_5 = -0.0001526;
+                        double g_6 = -0.0037078; double g_7 = 1.942 * Math.Pow(10, -5); double g_8 = 2.487 * Math.Pow(10, -7); double g_9 = 3.229 * Math.Pow(10, -6); double g_10 = 4.53442 * Math.Pow(10, -5);
+                        RHo = g_1 + g_2 * Tout_a + g_3 * hout_a + g_4 * Math.Pow(Tout_a, 2) + g_5 * Math.Pow(hout_a, 2) + g_6 * Tout_a * hout_a + g_7 * Math.Pow(Tout_a, 3) + g_8 * Math.Pow(hout_a, 3) + g_9 * Tout_a * Math.Pow(hout_a, 2) + g_10 * Math.Pow(Tout_a, 2) * hout_a;
+
+                        if (RHo > 1.0)
+                            RHo = 1.0;
+                    }
+
                 }
 
                 else
                 {
-                    
-                    
-                }*/
-                Q = Q_wet;
+
+
+                    Q = Q_wet;
+                }
+                
+
 
             }
 
@@ -557,8 +573,6 @@ namespace Model
 
 
 
-            //res.f_dry = f_dry;
-            //res.omega_out = 1.0;//HAProps('W','T',Tout_a,'P',101.325,'H',hout_a/1000)
             res.RHout = RHo;//HAProps('R','T',Tout_a,'P',101.325,'W',res.omega_out)
             res.Q = Q;
             res.Tao = Tout_a;
@@ -569,42 +583,6 @@ namespace Model
             res.hro = hri + Math.Pow(-1, hexType) * res.Q / mr;
 
 
-
-            //res.Q_sensible = Q_sensible;
-
-            //res.hout_a = hout_a;
-            //res.hin_a = hin_a;
-
-
-
-
-
-
-            //res.R_1a = 1 / ((eta_surface * Aa_fin + Aa_tube) * ha);
-            //res.R_1r = 1 / (res.href * Ar);
-            //res.R_1 = res.R_1a + res.R_1r + r_metal;
-            //double UA = 1 / res.R_1;
-            //double C_min = Math.Min(C_a, C_r);
-            //double C_max = Math.Max(C_a, C_r);
-            /*double C_ratio = C_min / C_max;
-            double NTU = UA / (C_min * 1000);
-            double epsilon = 1 - Math.Exp(Math.Pow(C_ratio,-1.0)*Math.Pow(NTU,0.22)
-                *(Math.Exp(-C_ratio*Math.Pow(NTU,0.78))-1));
-            res.Q = 1.0 * epsilon * C_min * Math.Abs(tri - tai);
-            if (C_r < C_a)
-            { // hexType=0 :evap, 1:cond
-                res.Tro = tri + Math.Pow(-1, hexType) * epsilon * Math.Abs(tai - tri);
-                res.Tao = tai + Math.Pow(-1, (hexType + 1)) * C_r * (Math.Abs(res.Tro - tri) / C_a);
-            }
-            else
-            {
-                res.Tao = tai + Math.Pow(-1, (hexType + 1)) * epsilon * Math.Abs(tai - tri);
-                res.Tro = tri + Math.Pow(-1, hexType) * C_a * (Math.Abs(tai - res.Tao) / C_r);
-            }
-            double f_sp = RefrigerantSPDP.ff_Friction(Re_r);
-            res.DP = zdp * f_sp * l / dh * Math.Pow(g, 2.0) / rho_r / 2000;
-            res.Pro = fluid[0] == "Water" ? pri : pri - res.DP;
-            res.hro = hri + Math.Pow(-1, hexType) * res.Q / mr;*/
 
             return res;
 

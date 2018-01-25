@@ -40,7 +40,7 @@ namespace Model
 
             CheckAir airConverge = new CheckAir();
             int iter = 0;
-            ma = ma / N_tube; //air flow distribution to be considered
+            ma = ma / (N_tube * Nelement); //air flow distribution to be considered
 
             if (index == 0) index2 = 0;
             else
