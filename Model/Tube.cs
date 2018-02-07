@@ -17,39 +17,40 @@ namespace Model
             double g = mr / A_r_cs;
 
             CalcResult res_tube = new CalcResult();
-            CalcResult r = new CalcResult();
+            CalcResult[] r = new CalcResult[Nelement];
             for (int i = 0; i < Nelement; i++)
             {
 
-                r = Element.ElementCal(fluid, composition, dh, l / Nelement, Aa_fin, Aa_tube, A_r_cs, Ar,
+                r[i] = Element.ElementCal(fluid, composition, dh, l / Nelement, Aa_fin, Aa_tube, A_r_cs, Ar,
                     tai[i], RHi[i], tri, pri, hri, mr, g, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);//elementtest
 
-                pri = r.Pro;
-                hri = r.hro;
-                tri = r.Tro;
+                pri = r[i].Pro;
+                hri = r[i].hro;
+                tri = r[i].Tro;
 
-                res_tube.Tao = r.Tao;
-                res_tube.RHout = r.RHout;
-                res_tube.DP += r.DP;
-                res_tube.Q += r.Q;
-                res_tube.M += r.M;
-                res_tube.Tro = r.Tro;
-                res_tube.Pro = r.Pro;
-                res_tube.hro = r.hro;
-                res_tube.x_o = r.x_o;
-                res_tube.Vel_r = r.Vel_r;
-                res_tube.href += r.href;
-                res_tube.R_1 += r.R_1;
-                res_tube.R_1a += r.R_1a;
-                res_tube.R_1r += r.R_1r;
+                res_tube.Tao += r[i].Tao;
+                res_tube.RHout+= r[i].RHout;
+                res_tube.DP += r[i].DP;
+                res_tube.Q += r[i].Q;
+                res_tube.M += r[i].M;
+                res_tube.href += r[i].href;
+                res_tube.R_1 += r[i].R_1;
+                res_tube.R_1a += r[i].R_1a;
+                res_tube.R_1r += r[i].R_1r;
             }
-            //res_tube.Tao = res_tube.Tao / Nelement; //to be modified....
+            res_tube.Tao = res_tube.Tao / Nelement; //to be modified....
+            res_tube.RHout = res_tube.RHout / Nelement;
             res_tube.href = res_tube.href / Nelement;
             res_tube.R_1 = res_tube.R_1 / Nelement;
             res_tube.R_1a = res_tube.R_1a / Nelement;
             res_tube.R_1r = res_tube.R_1r / Nelement;
-            res_tube.Tri = r.Tri;
-            res_tube.x_i = r.x_i;
+            res_tube.Tro = r[Nelement-1].Tro;
+            res_tube.Pro = r[Nelement-1].Pro;
+            res_tube.hro = r[Nelement-1].hro;
+            res_tube.x_o = r[Nelement-1].x_o;
+            res_tube.Vel_r = r[Nelement-1].Vel_r;
+            res_tube.Tri = r[0].Tri;
+            res_tube.x_i = r[0].x_i;
             return res_tube;
 
         }
