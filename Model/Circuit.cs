@@ -11,7 +11,7 @@ namespace Model
     {
         public static CalcResult CircuitCalc(int index, CirArr[] cirArr, CircuitNumber CircuitInfo, int Nrow, int[] Ntube, int Nelement, string[] fluid, double[] composition,
             double dh, double l, GeometryResult[,] geo, double[, ,] ta, double[, ,] RH,
-            double tri, double pri, double hri, double mr, double ma, double ha,
+            double tri, double pri, double hri, double mr, double[,] ma, double[,] ha,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater)
         {
 
@@ -40,11 +40,13 @@ namespace Model
             double pri_tube = 0;
             double tri_tube = 0;
             double hri_tube = 0;
+            double[] ma_tube = new double[Nelement];
+            double[] ha_tube = new double[Nelement];
             int index2 = 0;
 
             CheckAir airConverge = new CheckAir();
             int iter = 0;
-            ma = ma / (N_tube*Nelement); //air flow distribution to be considered
+            //ma = ma / (N_tube*Nelement); //air flow distribution to be considered
 
             if (index == 0) index2 = 0;
             else
@@ -86,10 +88,12 @@ namespace Model
                     {
                         tai[j] = ta[j, iTube, iRow];
                         RHi[j] = RH[j, iTube, iRow];
+                        ma_tube[j] = ma[iTube, j];
+                        ha_tube[j] = ha[iTube, j];
                     }
 
                     r[i] = Tube.TubeCalc(Nelement, fluid, composition, dh, l, Aa_fin, Aa_tube, Ar_cs, Ar, tai, RHi, tri_tube, pri_tube, hri_tube,
-                        mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+                        mr, ma_tube, ha_tube, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
                     for (int j = 0; j < Nelement; j++)
                     {
                         taout_calc[j, iTube, iRow] = r[i].Tao;

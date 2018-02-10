@@ -12,7 +12,7 @@ namespace Model
     {
         public static CalcResult SlabCalc(int[,] CirArrange, CircuitNumber CircuitInfo, int Nrow, int[] Ntube, int Nelement, string[] fluid, double[] composition, //double Npass, int[] N_tubes_pass, 
             double dh, double l, GeometryResult[,] geo, double[, ,] ta, double[, ,] RH,
-            double te, double pe, double hri, double mr, double ma, double ha,
+            double te, double pe, double hri, double mr, double[,] ma, double[,] ha,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater)
    
         {
@@ -403,7 +403,12 @@ namespace Model
             res_slab.Tao_Detail = ta;
             res_slab.RHo_Detail = RH;
             res_slab.href = res_slab.href / N_tube_total;
-            res_slab.ha = ha;
+            for (int i = 0; i < ha.GetLength(0); i++)
+                for (int j = 0; j < ha.GetLength(1); j++)
+                {
+                    res_slab.ha += ha[i, j];
+                }
+            res_slab.ha = res_slab.ha / ha.Length;
             res_slab.R_1 = res_slab.R_1 / N_tube_total;
             res_slab.R_1a = res_slab.R_1a / N_tube_total;
             res_slab.R_1r = res_slab.R_1r / N_tube_total;
@@ -433,8 +438,12 @@ namespace Model
             res_slab.Tao = res_slab.Tao / N_tube;
             res_slab.RHout = res_slab.RHout / N_tube;
             res_slab.Ra_ratio = res_slab.R_1a / res_slab.R_1;
-            res_slab.ma = ma;
-            res_slab.Va = ma / 1.2 * 3600;
+            for (int i = 0; i < ma.GetLength(0); i++)
+                for (int j = 0; j < ma.GetLength(1); j++)
+                {
+                    res_slab.ma += ma[i, j];
+                }
+            res_slab.Va = res_slab.ma / 1.2 * 3600;
             res_slab.Q_detail = Q_detail;//detail output
             res_slab.DP_detail = DP_detail;
             res_slab.Tro_detail = Tro_detail;

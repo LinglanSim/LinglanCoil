@@ -12,7 +12,7 @@ namespace Model
     public class Main
     {
          
-        public static CalcResult main()
+        /*public static CalcResult main()
         {
             //string[] fluid = new string[] { "Water" };
             string[] fluid = new string[] { "R410A.MIX" };
@@ -795,7 +795,7 @@ namespace Model
             // Tsh_calc = res.Tro - (Refrigerant.SATP(fluid, composition, res.Pro, 1).Temperature - 273.15);
 
             return res;
-        }
+        }*/
 
         public static CalcResult Water_Midea_cir6()
         {
@@ -822,17 +822,33 @@ namespace Model
             CircuitInfo.TubeofCir = new int[] { 9, 9, 9, 9, 3, 3 };
             CircuitInfo.UnequalCir = new int[] { 5, 5, 6, 6, 0, 0 };
             double mr = 23.0 / 60;
-            double Vel_a = 1.2;
+            //double Vel_a = 1.2;
+            double[,] Vel_a = { { 1.0 } };
+            double Vel_ave = 1.2;
+            AirDistribution VaDistri = new AirDistribution();
+            VaDistri = DistributionConvert.VaConvert(Vel_a, N_tube, Nelement);
+            double[,] ma=new double[N_tube,Nelement];
+            double[,] ha = new double[N_tube, Nelement];
             double H = Pt * N_tube;
             double Hx = L * H;
             double rho_a_st = 1.2;
-            double Va = Vel_a * Hx;
-            double ma = Va * rho_a_st;
             double za = 1;
+            int curve=1;
+            for(int i=0;i<N_tube;i++)
+            {
+                for(int j=0;j<Nelement;j++)
+                {
+                    ma[i, j] = VaDistri.Va[i, j] * (Vel_ave/VaDistri.Va_ave)*(H * Hx / N_tube / Nelement) * rho_a_st;
+                    //ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve);
+                    ha[i, j] = 79;                    
+                }
+            }             
+            //double Va = Vel_a * Hx;
+            //double ma = Va * rho_a_st;
             double zh = 1;
             double zdp = 1;
             double eta_surface = 0.89;
-            double ha = 79;
+            //double ha = 79;
             double tai = 20;
             double RHi = 0.469;
             double tri = 45;
