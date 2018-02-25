@@ -838,7 +838,7 @@ namespace Model
             {
                 for(int j=0;j<Nelement;j++)
                 {
-                    ma[i, j] = VaDistri.Va[i, j] * (Vel_ave/VaDistri.Va_ave)*(H * Hx / N_tube / Nelement) * rho_a_st;
+                    ma[i, j] = VaDistri.Va[i, j] * (Vel_ave/VaDistri.Va_ave)*(Hx / N_tube / Nelement) * rho_a_st;
                     //ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve);
                     ha[i, j] = 79;                    
                 }
