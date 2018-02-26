@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Model.Basic
 {
-    public class CalcResult_CirArr
+    public class CalcCirArr
     {
         public int[,] CirArrange = new int[100 , 100];
         public int AddNumber_1;

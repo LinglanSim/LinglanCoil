@@ -1551,107 +1551,15 @@ namespace Model
             CircuitInfo.number = new int[] { 3, 3 };
             CircuitInfo.TubeofCir = new int[CircuitInfo.number[0]];
 
-            //流路输入不正确的提示
+            //Avoid invalid Ncir input 
             if (CircuitInfo.number[0] > Ntube[0])
             {
                 throw new Exception("circuit number is beyond range.");
             }
-
-            //CircuitInfo.TubeofCir的分配
-            int N_total = Nrow * Ntube[0];
-            int a = N_total / CircuitInfo.number[0];
-            int b = N_total % CircuitInfo.number[0];
-            if (b == 0)
-            {
-                if (a % 2 == 0)
-                {
-                    for (int i = 0; i < CircuitInfo.number[0]; i++)
-                        CircuitInfo.TubeofCir[i] = a;
-                }
-                else
-                {
-                    if (CircuitInfo.number[0] % 2 != 0)
-                        throw new Exception("error for exchanger input.");
-                    for (int i = 0; i < CircuitInfo.number[0]; i++)
-                    {
-                        if (i < CircuitInfo.number[0] / 2)
-                            CircuitInfo.TubeofCir[i] = a - 1;
-                        else
-                            CircuitInfo.TubeofCir[i] = a + 1;
-                    }
-                }
-            }
-            else
-            {
-                if (a % 2 == 0)
-                {
-                    int c = b / 2;
-                    for (int i = 0; i < CircuitInfo.number[0]; i++)
-                    { 
-                      if (i < CircuitInfo.number[0] - c)
-                          CircuitInfo.TubeofCir[i] = a;
-                      else
-                          CircuitInfo.TubeofCir[i] = a + 2;
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < CircuitInfo.number[0]; i++)
-                    {
-                        if (i >= CircuitInfo.number[0] - b)
-                            CircuitInfo.TubeofCir[i] = a + 1;
-                        else
-                        {
-                            if (i < (CircuitInfo.number[0] - b) / 2)
-                                CircuitInfo.TubeofCir[i] = a - 1;
-                            else
-                                CircuitInfo.TubeofCir[i] = a + 1;
-                        }
-                    }
-                }
-            }
-
-            
-            //CirArrange的分配
+            //Get AutoCircuitry
+            CircuitInfo = AutoCir.GetTubeofCir(Nrow, N_tube, CircuitInfo);
             CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
-
-            //int iCircuit = 0;
-            //int iTube_Cir = 0;
-            int AddNumber = 0;
-            int iCircuit1 = 0;
-            for (int iCircuit = 0; iCircuit < CircuitInfo.number[0]; iCircuit++)
-                for (int iTube_Cir = 0; iTube_Cir < CircuitInfo.TubeofCir[iCircuit]; iTube_Cir++)
-                {
-                    if (iTube_Cir < CircuitInfo.TubeofCir[iCircuit] / Nrow)
-                    {
-                        if (iCircuit == 0)
-                            CirArrange[iCircuit, iTube_Cir] = iTube_Cir + 1 + N_tube;
-                        else
-                        {
-                            for (iCircuit1 = 1; iCircuit1 <= iCircuit; iCircuit1++)
-                            {
-                                AddNumber = AddNumber + CircuitInfo.TubeofCir[iCircuit1 - 1] / Nrow;
-                            }
-                            CirArrange[iCircuit, iTube_Cir] = iTube_Cir + 1 + N_tube + AddNumber;
-                            AddNumber = 0;
-                        }
-                    }
-                    else
-                    {
-                        if (iCircuit == 0)
-                            CirArrange[iCircuit, iTube_Cir] = CircuitInfo.TubeofCir[iCircuit] - iTube_Cir;
-                        else
-                        {
-                            for (iCircuit1 = 1; iCircuit1 <= iCircuit; iCircuit1++)
-                            {
-                                AddNumber = AddNumber + CircuitInfo.TubeofCir[iCircuit1 - 1] / Nrow;
-                            }
-                            CirArrange[iCircuit, iTube_Cir] = CircuitInfo.TubeofCir[iCircuit] - iTube_Cir + AddNumber;
-                            AddNumber = 0;
-                        }
-                    }
-                }
-
+            CirArrange = AutoCir.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
 
             //Geometry calculation for an element
             GeometryResult geo = new GeometryResult();
@@ -1755,7 +1663,7 @@ namespace Model
 
             CircuitNumber CircuitInfo = new CircuitNumber();
             CircuitInfo.number = new int[] { 6, 6 };
-            //流路输入不正确的提示
+            //Avoid invalid Ncir input 
             if (CircuitInfo.number[0] > Ntube[0])
             {
                 throw new Exception("circuit number is beyond range.");
@@ -1763,99 +1671,10 @@ namespace Model
 
             CircuitInfo.TubeofCir = new int[CircuitInfo.number[0]];
 
-            //CircuitInfo.TubeofCir的分配
-            int N_total = Nrow * Ntube[0];
-            int a = N_total / CircuitInfo.number[0];
-            int b = N_total % CircuitInfo.number[0];
-            if (b == 0)
-            {
-                if (a % 2 == 0)
-                {
-                    for (int i = 0; i < CircuitInfo.number[0]; i++)
-                        CircuitInfo.TubeofCir[i] = a;
-                }
-                else
-                {
-                    if (CircuitInfo.number[0] % 2 != 0)
-                        throw new Exception("error for exchanger input.");
-                    for (int i = 0; i < CircuitInfo.number[0]; i++)
-                    {
-                        if (i < CircuitInfo.number[0] / 2)
-                            CircuitInfo.TubeofCir[i] = a - 1;
-                        else
-                            CircuitInfo.TubeofCir[i] = a + 1;
-                    }
-                }
-            }
-            else
-            {
-                if (a % 2 == 0)
-                {
-                    int c = b / 2;
-                    for (int i = 0; i < CircuitInfo.number[0]; i++)
-                    {
-                        if (i < CircuitInfo.number[0] - c)
-                            CircuitInfo.TubeofCir[i] = a;
-                        else
-                            CircuitInfo.TubeofCir[i] = a + 2;
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < CircuitInfo.number[0]; i++)
-                    {
-                        if (i >= CircuitInfo.number[0] - b)
-                            CircuitInfo.TubeofCir[i] = a + 1;
-                        else
-                        {
-                            if (i < (CircuitInfo.number[0] - b) / 2)
-                                CircuitInfo.TubeofCir[i] = a - 1;
-                            else
-                                CircuitInfo.TubeofCir[i] = a + 1;
-                        }
-                    }
-                }
-            }
-
-            //CirArrange的分配
+            //Get AutoCircuitry
+            CircuitInfo = AutoCir.GetTubeofCir(Nrow, N_tube, CircuitInfo);
             CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
-
-            //int iCircuit = 0;
-            //int iTube_Cir = 0;
-            int AddNumber = 0;
-            int iCircuit1 = 0;
-            for (int iCircuit = 0; iCircuit < CircuitInfo.number[0]; iCircuit++)
-                for (int iTube_Cir = 0; iTube_Cir < CircuitInfo.TubeofCir[iCircuit]; iTube_Cir++)
-                {
-                    if (iTube_Cir < CircuitInfo.TubeofCir[iCircuit] / Nrow)
-                    {
-                        if (iCircuit == 0)
-                            CirArrange[iCircuit, iTube_Cir] = iTube_Cir + 1 + N_tube;
-                        else
-                        {
-                            for (iCircuit1 = 1; iCircuit1 <= iCircuit; iCircuit1++)
-                            {
-                                AddNumber = AddNumber + CircuitInfo.TubeofCir[iCircuit1 - 1] / Nrow;
-                            }
-                            CirArrange[iCircuit, iTube_Cir] = iTube_Cir + 1 + N_tube + AddNumber;
-                            AddNumber = 0;
-                        }
-                    }
-                    else
-                    {
-                        if (iCircuit == 0)
-                            CirArrange[iCircuit, iTube_Cir] = CircuitInfo.TubeofCir[iCircuit] - iTube_Cir;
-                        else
-                        {
-                            for (iCircuit1 = 1; iCircuit1 <= iCircuit; iCircuit1++)
-                            {
-                                AddNumber = AddNumber + CircuitInfo.TubeofCir[iCircuit1 - 1] / Nrow;
-                            }
-                            CirArrange[iCircuit, iTube_Cir] = CircuitInfo.TubeofCir[iCircuit] - iTube_Cir + AddNumber;
-                            AddNumber = 0;
-                        }
-                    }
-                }
+            CirArrange = AutoCir.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
 
             //Geometry calculation for an element
             GeometryResult geo = new GeometryResult();
@@ -1955,136 +1774,16 @@ namespace Model
             CircuitNumber CircuitInfo = new CircuitNumber();
             CircuitInfo.number = new int[] { 11, 11 };
             CircuitInfo.TubeofCir = new int[CircuitInfo.number[0]];
-            //流路输入不正确的提示
+            //Avoid invalid Ncir input 
             if (CircuitInfo.number[0] > Ntube[0])
             {
                 throw new Exception("circuit number is beyond range.");
             }
 
-            //CircuitInfo.TubeofCir的分配
-            int N_total = Nrow * Ntube[0];
-            int a = N_total / CircuitInfo.number[0];
-            int b = N_total % CircuitInfo.number[0];
-            if (b == 0)
-            {
-                if (a % 2 == 0)
-                {
-                    for (int i = 0; i < CircuitInfo.number[0]; i++)
-                        CircuitInfo.TubeofCir[i] = a;
-                }
-                else
-                {
-                    if (CircuitInfo.number[0] % 2 != 0)
-                        throw new Exception("error for exchanger input.");
-                    for (int i = 0; i < CircuitInfo.number[0]; i++)
-                    {
-                        if (i < CircuitInfo.number[0] / 2)
-                            CircuitInfo.TubeofCir[i] = a - 1;
-                        else
-                            CircuitInfo.TubeofCir[i] = a + 1;
-                    }
-                }
-            }
-            else
-            {
-                if (a % 2 == 0)
-                {
-                    int c = b / 2;
-                    for (int i = 0; i < CircuitInfo.number[0]; i++)
-                    {
-                        if (i < CircuitInfo.number[0] - c)
-                            CircuitInfo.TubeofCir[i] = a;
-                        else
-                            CircuitInfo.TubeofCir[i] = a + 2;
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < CircuitInfo.number[0]; i++)
-                    {
-                        if (i >= CircuitInfo.number[0] - b)
-                            CircuitInfo.TubeofCir[i] = a + 1;
-                        else
-                        {
-                            if (i < (CircuitInfo.number[0] - b) / 2)
-                                CircuitInfo.TubeofCir[i] = a - 1;
-                            else
-                                CircuitInfo.TubeofCir[i] = a + 1;
-                        }
-                    }
-                }
-            }
-
-            //CirArrange的分配
+            //Get AutoCircuitry
+            CircuitInfo = AutoCir.GetTubeofCir(Nrow, N_tube, CircuitInfo);          
             CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
-
-            int AddNumber1 = 0;
-            int AddNumber2 = 0;
-            int AddNumber3 = 0;
-
-            CalcResult_CirArr res_CirArr1 = new CalcResult_CirArr();
-
-            for (int iCircuit = 0; iCircuit < CircuitInfo.number[0]; iCircuit++)
-            {
-                if (CircuitInfo.TubeofCir[iCircuit] % Nrow == 0)
-                {
-                   res_CirArr1 = CircuitArrange.CircuitArrange_0(iCircuit, Nrow, CircuitInfo.TubeofCir[iCircuit] / Nrow, N_tube, CirArrange);
-                   CirArrange = res_CirArr1.CirArrange;
-
-                   for (int iTube_Cir = 0; iTube_Cir < Nrow * CircuitInfo.TubeofCir[iCircuit] / Nrow; iTube_Cir++)
-                   {
-                       if (iTube_Cir < CircuitInfo.TubeofCir[iCircuit] / Nrow)
-                       {
-                           CirArrange[iCircuit, iTube_Cir] += AddNumber1;
-                       }
-                       else if (iTube_Cir >= CircuitInfo.TubeofCir[iCircuit] / Nrow && iTube_Cir < (Nrow - 1) * CircuitInfo.TubeofCir[iCircuit] / Nrow)
-                       {
-                           CirArrange[iCircuit, iTube_Cir] += AddNumber2;
-                       }
-                       else
-                       {
-                           CirArrange[iCircuit, iTube_Cir] += AddNumber3;
-                       }
-                   }
-
-                   AddNumber1 += res_CirArr1.AddNumber_1;
-                   AddNumber2 += res_CirArr1.AddNumber_2;
-                   AddNumber3 += res_CirArr1.AddNumber_3;
-                }
-                else if (CircuitInfo.TubeofCir[iCircuit] % Nrow == 1)
-                {
-                    res_CirArr1 = CircuitArrange.CircuitArrange_1(iCircuit, Nrow, CircuitInfo.TubeofCir[iCircuit] / Nrow, N_tube, CirArrange);
-                    CirArrange = res_CirArr1.CirArrange;
-
-                    for (int iCircuit0 = iCircuit; iCircuit0 < iCircuit + 3; iCircuit0++)
-                        for (int iTube_Cir = 0; iTube_Cir < CircuitInfo.TubeofCir[iCircuit0]; iTube_Cir++)
-                    {                     
-                            CirArrange[iCircuit0, iTube_Cir] += AddNumber1;               
-                    }
-
-                    AddNumber1 += res_CirArr1.AddNumber_1;
-                    AddNumber2 += res_CirArr1.AddNumber_2;
-                    AddNumber3 += res_CirArr1.AddNumber_3;
-                    iCircuit = iCircuit + 2;
-                }
-                else
-                {
-                    res_CirArr1 = CircuitArrange.CircuitArrange_2(iCircuit, Nrow, CircuitInfo.TubeofCir[iCircuit] / Nrow, N_tube, CirArrange);
-                    CirArrange = res_CirArr1.CirArrange;
-
-                    for (int iCircuit0 = iCircuit; iCircuit0 < iCircuit + 3; iCircuit0++)
-                        for (int iTube_Cir = 0; iTube_Cir < CircuitInfo.TubeofCir[iCircuit0]; iTube_Cir++)
-                        {
-                            CirArrange[iCircuit0, iTube_Cir] += AddNumber1;
-                        }
-
-                    AddNumber1 += res_CirArr1.AddNumber_1;
-                    AddNumber2 += res_CirArr1.AddNumber_2;
-                    AddNumber3 += res_CirArr1.AddNumber_3;
-                    iCircuit = iCircuit + 2;
-                }
-            }
-
+            CirArrange = AutoCir.GetCirArrange_3Row(CirArrange, Nrow, N_tube, CircuitInfo);
 
             //Geometry calculation for an element
             GeometryResult geo = new GeometryResult();

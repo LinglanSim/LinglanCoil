@@ -72,13 +72,12 @@
     </Compile>
     <Compile Include="Basic\AirHTC.cs" />
     <Compile Include="Basic\Brine.cs" />
-    <Compile Include="Basic\CalcResult_CirArr.cs" />
+    <Compile Include="Basic\CalcCirArr.cs" />
     <Compile Include="Basic\CalcResult.cs" />
-    <Compile Include="Basic\CheckCirArrange.cs" />
     <Compile Include="Basic\CheckPri.cs" />
     <Compile Include="Basic\CheckDP.cs" />
     <Compile Include="Basic\CheckAir.cs" />
-    <Compile Include="Basic\CirArrange.cs" />
+    <Compile Include="Basic\AutoCir.cs" />
     <Compile Include="Basic\CirArr.cs" />
     <Compile Include="Basic\CircuitNumber.cs" />
     <Compile Include="Basic\Fluid.cs" />
