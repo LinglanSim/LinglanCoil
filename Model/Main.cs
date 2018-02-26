@@ -1100,22 +1100,8 @@ namespace Model
             CircuitInfo.TubeofCir = new int[] { 6, 6, 6, 6, 8 };  //{ 4, 8 };
 
             //Circuit-Reverse module
-            int flowType = 1;//*********************************0:origin, 1:reverse******************************************
-            int[,] CirArrangeCopy= new int[CircuitInfo.number[0],CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
-            if (flowType == 1)
-            { 
-                for (int i = 0; i <CircuitInfo.number[0]; i++)
-                {
-                    for (int j = 0; j < CircuitInfo.TubeofCir[i]; j++)
-                    {
-                        CirArrangeCopy[i, j] = CirArrange[i, CircuitInfo.TubeofCir[i] - 1 - j];
-                    }
-                    for (int j = 0; j < CircuitInfo.TubeofCir[i]; j++)
-                    {
-                        CirArrange[i, j] = CirArrangeCopy[i, j];
-                    }
-                } 
-            }
+            bool reverse = true; //*********************************false:origin, true:reverse******************************************
+            CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
 
             //Geometry calculation for an element
             GeometryResult geo = new GeometryResult();
@@ -1217,23 +1203,8 @@ namespace Model
             CircuitInfo.TubeofCir = new int[] { 8, 8, 8, 8, 8, 8 };  //{ 4, 8 };
 
             //Circuit-Reverse module
-            int flowType = 1;//*********************************0:origin, 1:reverse******************************************
-            int[,] CirArrangeCopy = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
-            if (flowType == 1)
-            {
-                for (int i = 0; i < CircuitInfo.number[0]; i++)
-                {
-                    for (int j = 0; j < CircuitInfo.TubeofCir[i]; j++)
-                    {
-                        CirArrangeCopy[i, j] = CirArrange[i, CircuitInfo.TubeofCir[i] - 1 - j];
-                    }
-                    for (int j = 0; j < CircuitInfo.TubeofCir[i]; j++)
-                    {
-                        CirArrange[i, j] = CirArrangeCopy[i, j];
-                    }
-                }
-            }
-
+            bool reverse = true; //*********************************false:origin, true:reverse******************************************
+            CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
 
             //Geometry calculation for an element
             GeometryResult geo = new GeometryResult();
@@ -1338,22 +1309,8 @@ namespace Model
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
             
             //Circuit-Reverse module
-            int flowType = 1;//*********************************0:origin, 1:reverse******************************************
-            int[,] CirArrangeCopy = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
-            if (flowType == 1)
-            {
-                for (int i = 0; i < CircuitInfo.number[0]; i++)
-                {
-                    for (int j = 0; j < CircuitInfo.TubeofCir[i]; j++)
-                    {
-                        CirArrangeCopy[i, j] = CirArrange[i, CircuitInfo.TubeofCir[i] - 1 - j];
-                    }
-                    for (int j = 0; j < CircuitInfo.TubeofCir[i]; j++)
-                    {
-                        CirArrange[i, j] = CirArrangeCopy[i, j];
-                    }
-                }
-            }
+            bool reverse = true; //*********************************false:origin, true:reverse******************************************
+            CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
 
             double mr = 9.99 / 60;
             double Vel_a = 2; //m/s
@@ -1435,22 +1392,8 @@ namespace Model
             CircuitInfo.TubeofCir = new int[] { 18, 18, 18 };  //{ 4, 8 };
 
             //Circuit-Reverse module
-            int flowType = 1;//*********************************0:origin, 1:reverse******************************************
-            int[,] CirArrangeCopy = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
-            if (flowType == 1)
-            {
-                for (int i = 0; i < CircuitInfo.number[0]; i++)
-                {
-                    for (int j = 0; j < CircuitInfo.TubeofCir[i]; j++)
-                    {
-                        CirArrangeCopy[i, j] = CirArrange[i, CircuitInfo.TubeofCir[i] - 1 - j];
-                    }
-                    for (int j = 0; j < CircuitInfo.TubeofCir[i]; j++)
-                    {
-                        CirArrange[i, j] = CirArrangeCopy[i, j];
-                    }
-                }
-            }
+            bool reverse = true; //*********************************false:origin, true:reverse******************************************
+            CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
 
             //Geometry calculation for an element
             GeometryResult geo = new GeometryResult();

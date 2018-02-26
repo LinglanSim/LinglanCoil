@@ -77,9 +77,10 @@
     <Compile Include="Basic\CheckPri.cs" />
     <Compile Include="Basic\CheckDP.cs" />
     <Compile Include="Basic\CheckAir.cs" />
-    <Compile Include="Basic\AutoCir.cs" />
+    <Compile Include="Basic\AutoCircuiting.cs" />
     <Compile Include="Basic\CirArr.cs" />
     <Compile Include="Basic\CircuitNumber.cs" />
+    <Compile Include="Basic\CircuitReverse.cs" />
     <Compile Include="Basic\Fluid.cs" />
     <Compile Include="Basic\FluidCategory.cs" />
     <Compile Include="Basic\GeometryResult.cs" />
