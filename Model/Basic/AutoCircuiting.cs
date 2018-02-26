@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Model.Basic
 {
-    public class AutoCir
+    public class AutoCircuiting
     {
         public static CalcCirArr CircuitArrange_0(int iCircuit, int Nrow, int Tubeof_Nrow, int N_tube, int[,] CirArrange)
         {

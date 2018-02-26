@@ -1557,9 +1557,9 @@ namespace Model
                 throw new Exception("circuit number is beyond range.");
             }
             //Get AutoCircuitry
-            CircuitInfo = AutoCir.GetTubeofCir(Nrow, N_tube, CircuitInfo);
+            CircuitInfo = AutoCircuiting.GetTubeofCir(Nrow, N_tube, CircuitInfo);
             CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
-            CirArrange = AutoCir.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
+            CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
 
             //Geometry calculation for an element
             GeometryResult geo = new GeometryResult();
@@ -1672,9 +1672,9 @@ namespace Model
             CircuitInfo.TubeofCir = new int[CircuitInfo.number[0]];
 
             //Get AutoCircuitry
-            CircuitInfo = AutoCir.GetTubeofCir(Nrow, N_tube, CircuitInfo);
+            CircuitInfo = AutoCircuiting.GetTubeofCir(Nrow, N_tube, CircuitInfo);
             CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
-            CirArrange = AutoCir.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
+            CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
 
             //Geometry calculation for an element
             GeometryResult geo = new GeometryResult();
@@ -1781,9 +1781,9 @@ namespace Model
             }
 
             //Get AutoCircuitry
-            CircuitInfo = AutoCir.GetTubeofCir(Nrow, N_tube, CircuitInfo);          
+            CircuitInfo = AutoCircuiting.GetTubeofCir(Nrow, N_tube, CircuitInfo);          
             CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
-            CirArrange = AutoCir.GetCirArrange_3Row(CirArrange, Nrow, N_tube, CircuitInfo);
+            CirArrange = AutoCircuiting.GetCirArrange_3Row(CirArrange, Nrow, N_tube, CircuitInfo);
 
             //Geometry calculation for an element
             GeometryResult geo = new GeometryResult();
