@@ -148,7 +148,7 @@ namespace Model
         {
             //制冷剂制热模块计算
             //string[] fluid = new string[] { "Water" };
-            string[] fluid = new string[] { "R410A.MIX" };
+            string[] fluid = new string[] { "R32" }; //;{ "R410A.MIX" }
             //string[] fluid = new string[] { "ISOBUTAN" };
             double[] composition = new double[] { 1 };
             CalcResult res = new CalcResult();
@@ -169,7 +169,7 @@ namespace Model
             int[] Ntube = { 6, 6 };
             int N_tube = Ntube[0];
             double L = 914.4 * 0.001;
-            int Nelement = 1;
+            int Nelement = 5;
             int[,] CirArrange;
             //CirArrange = new int[,] { { 8, 6, 4, 2, 1, 3, 5, 7 } };//actual, counter-paralle,  Q=83.1
             //CirArrange = new int[,] { { 20, 18, 16, 14, 12, 10, 8, 6, 4, 2, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19 } };//actual, counter-paralle,  Q=83.1
@@ -198,15 +198,6 @@ namespace Model
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
             //  Ncir=1, 20in, 20->19 1out
 
-            //int total = 0;
-            //if (CirArrange != null)
-            //{
-            //    foreach (var seg in CirArrange)
-            //    {
-            //        total += seg.
-            //    }
-            //}
-
             double mr = 0.01;
             double Vel_a = 2.032; //m/s
             double H = Pt * N_tube;
@@ -223,11 +214,10 @@ namespace Model
             double zdp = 1;
             double tai = 26.67;
             double RHi = 0.469;
-            double tri = 45.0;
-            double te = tri;
-            double pe = Refrigerant.SATT(fluid, composition, te + 273.15, 1).Pressure;
+            double tc = 45.0;
+            double pri = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
             //double P_exv = 1842.28;//kpa
-            double T_exv = 80.0;//C
+            double tri = 78;//C
             double conductivity = 386; //w/mK for Cu
             double Pwater = 100.0;
             int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
@@ -235,7 +225,7 @@ namespace Model
             //double hri = Refrigerant.ENTHAL(fluid, composition, tri + 273.15, densityL).Enthalpy ;
             double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
             //hri = hri / wm - 140;
-            double hri = Refrigerant.TPFLSH(fluid, composition, T_exv + 273.15, pe).h / wm - (fluid[0] == "Water" ? 0 : 140);
+            double hri = Refrigerant.TPFLSH(fluid, composition, tri + 273.15, pri).h / wm - (fluid[0] == "Water" ? 0 : 140);
 
             //double hri = 354.6;
             //double xin = 0.57;
@@ -245,8 +235,8 @@ namespace Model
 
             //string AirDirection="DowntoUp";
             string AirDirection = "Counter";
-            ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, te, AirDirection);
-            RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, te, AirDirection);
+            ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
+            RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
             GeometryResult geo = new GeometryResult();
             //GeometryResult[,] geo_element = new GeometryResult[,] { };
@@ -265,16 +255,8 @@ namespace Model
                 }
             geo.A_ratio = geo.A_r / geo.A_a;
 
-            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, T_exv, pe, hri,
+            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tri, pri, hri,
                 mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
-
-            //res = Slab.SlabCalc(Npass, N_tubes_pass, fluid, composition, Dh, L, geo.A_a, geo.A_r_cs, geo.A_r, tai, tri, pe, hri,
-            //    mr, ma, ha, eta_surface, zh, zdp);
-            //Tsh_calc = res.Tro - (Refrigerant.SATP(fluid, composition, res.Pro, 1).Temperature - 273.15);
-
-            // res = Slab.SlabCalc(Npass, N_tubes_pass, fluid, composition, Dh, L, geo.A_a, geo.A_r_cs, geo.A_r, tai, tri, pe, hri,
-            //     mr, ma, ha, eta_surface, zh, zdp);
-            // Tsh_calc = res.Tro - (Refrigerant.SATP(fluid, composition, res.Pro, 1).Temperature - 273.15);
 
             return res;
         }
@@ -1566,7 +1548,7 @@ namespace Model
             int[,] CirArrange;
 
             CircuitNumber CircuitInfo = new CircuitNumber();
-            CircuitInfo.number = new int[] { 9, 9 };
+            CircuitInfo.number = new int[] { 3, 3 };
             CircuitInfo.TubeofCir = new int[CircuitInfo.number[0]];
 
             //流路输入不正确的提示

@@ -24,6 +24,16 @@ namespace Model
             double rho_r = r.D * wm;
             double cp_r = r.cp / wm * 1000;
             double Pr_r = cp_r * mu_r / k_r;
+            
+            //for debugging, to check if the 1ph property is in 2ph region but not in 1ph, ruhao20180209
+            /*
+            var rr = new Refrigerant.SATTTotalResult();
+            rr = Refrigerant.SATTTotal(fluid, composition, Refrigerant.SATP(fluid, composition, pri, 1).Temperature).SATTTotalResult; //satruration temperature
+            if ( rho_r > rr.DensityV && rho_r < rr.DensityL)
+            {
+                throw new Exception("property is not in 1ph region");
+            }
+            */
             res.Vel_r = g / rho_r;
             double Re_r = rho_r * res.Vel_r * dh / mu_r;
             double fh = RefrigerantSPHTC.ff_CHURCHILL(Re_r);
