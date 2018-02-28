@@ -12,7 +12,7 @@ namespace Model
         public static CalcResult CircuitCalc(int index, CirArr[] cirArr, CircuitNumber CircuitInfo, int Nrow, int[] Ntube, int Nelement, string[] fluid, double[] composition,
             double dh, double l, GeometryResult[,] geo, double[, ,] ta, double[, ,] RH,
             double tri, double pri, double hri, double mr, double[,] ma, double[,] ha,
-            double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater)
+            double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater,string Airdirection)
         {
 
             int N_tube = Ntube[0];
@@ -94,10 +94,21 @@ namespace Model
 
                     r[i] = Tube.TubeCalc(Nelement, fluid, composition, dh, l, Aa_fin, Aa_tube, Ar_cs, Ar, tai, RHi, tri_tube, pri_tube, hri_tube,
                         mr, ma_tube, ha_tube, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
-                    for (int j = 0; j < Nelement; j++)
+                    if (Airdirection=="Parallel")
                     {
-                        taout_calc[j, iTube, iRow] = r[i].Tao;
-                        RHout_calc[j, iTube, iRow] = r[i].RHout;
+                        for (int j = 0; j < Nelement; j++)
+                        {
+                            ta[j, iTube, iRow+1] = r[i].Tao;
+                            RH[j, iTube, iRow+1] = r[i].RHout;
+                        }
+                    }
+                    else//Counter
+                    {
+                        for(int j=0;j<Nelement;j++)
+                        {
+                            taout_calc[j, iTube, iRow] = r[i].Tao;
+                            RHout_calc[j, iTube, iRow] = r[i].RHout;
+                        }
                     }
 
                     tri_tube = r[i].Tro;
@@ -124,11 +135,17 @@ namespace Model
                     res_cir.x_i = r[i].x_i;
 
                 }
+                if (Airdirection == "Parallel")
+                    airConverge.flag = true;
+                else//Counter
+                {
+                    airConverge = CheckAirConvergeforCircuits.CheckAirConverge(Nrow, N_tube, Nelement, ta, RH, taout_calc, RHout_calc);
+                    ta = airConverge.ta;
+                    RH = airConverge.RH;
+                    iter++;
+                }
 
-                airConverge = CheckAirConvergeforCircuits.CheckAirConverge(Nrow, N_tube, Nelement, ta, RH, taout_calc, RHout_calc);
-                ta = airConverge.ta;
-                RH = airConverge.RH;
-                iter++;
+
             } while (!airConverge.flag && iter < 100);
 
             //if (iter >= 100)

@@ -14,10 +14,20 @@ namespace Model
 
             //if (AirDirection == "DowntoUp") //For refrigerator
             //{
-            for (int k = 0; k < Nrow + 1; k++)
+            if (AirDirection=="Parallel")
+            {
+                for (int i = 0; i < element; i++)
+                    for (int j = 0; j < Ntube[0]; j++)
+                        ta[i, j, 0] = tai;
+            }
+            else // Counter
+            {
+                for (int k = 0; k < Nrow + 1; k++)
                     for (int j = 0; j < Ntube[0]; j++)
                         for (int i = 0; i < element; i++)
                             ta[i, j, k] = tai - (tai - te) / Nrow * k;
+            }
+
             //}
 
             return ta;
@@ -28,10 +38,20 @@ namespace Model
 
             //if (AirDirection == "DowntoUp") //For refrigerator
             //{
-            for (int k = 0; k < Nrow + 1; k++)
-                for (int j = 0; j < Ntube[0]; j++)
-                    for (int i = 0; i < element; i++)
-                        RH[i, j, k] = RHi;
+            if(AirDirection=="Parallel")
+            {
+                for (int i = 0; i < element; i++)
+                    for (int j = 0; j < Ntube[0]; j++)
+                        RH[i, j, 0] = RHi;
+            }
+            else //Counter
+            {
+                for (int k = 0; k < Nrow + 1; k++)
+                    for (int j = 0; j < Ntube[0]; j++)
+                        for (int i = 0; i < element; i++)
+                            RH[i, j, k] = RHi;
+            }
+
             //}
 
             return RH;

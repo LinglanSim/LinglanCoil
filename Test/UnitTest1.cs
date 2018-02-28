@@ -18,6 +18,7 @@ namespace Test
             //var rrr = Main.Water_Cool_Midea9();
             //var rr = Main.Water_Heat_Midea9();
             var r = Main.Water_Midea_cir6();
+            //var r = Main.Water_Midea_cir7_parallel_test();
 
         }
     }

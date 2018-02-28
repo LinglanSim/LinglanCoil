@@ -880,10 +880,95 @@ namespace Model
             }
             geo.A_ratio = geo.A_r / geo.A_a;
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc, pc, hri,
-                mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+                mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
             return res;
         }
-       
+        public static CalcResult Water_Midea_cir7_parallel_test()
+        {
+            CalcResult res = new CalcResult();
+            string[] fluid = new string[] { "Water" };
+            double[] composition = new double[] { 1 };
+            int Nrow = 3;
+            int[] Ntube = { 2, 2 ,2};
+            int N_tube = Ntube[0];
+            double L = 367 * 0.001;
+            double[] FPI = new double[Nrow + 1];
+            FPI = new double[] { 17, 17, 17 };
+            double Pt = 21 * 0.001;//??
+            double Pr = 13.37 * 0.001;
+            double Di = 6.8944 * 0.001;
+            double Do = 7.35 * 0.001;
+            double Fthickness = 0.095 * 0.001;
+            double thickness = (Do - Di) / 2;
+            int Nelement = 3;//Element
+            int[,] CirArrange;
+            CirArrange = new int[,] { { 1, 2, 4, 3, 5, 6 } };
+            CircuitNumber CircuitInfo = new CircuitNumber();
+            CircuitInfo.number = new int[] { 1, 1 };
+            CircuitInfo.TubeofCir = new int[] { 6};
+            double mr = 5.0 / 60;
+            //double Vel_a = 1.2;
+            double[,] Vel_a = { { 1.0 } };
+            double Vel_ave = 1.2;
+            AirDistribution VaDistri = new AirDistribution();
+            VaDistri = DistributionConvert.VaConvert(Vel_a, N_tube, Nelement);
+            double[,] ma = new double[N_tube, Nelement];
+            double[,] ha = new double[N_tube, Nelement];
+            double H = Pt * N_tube;
+            double Hx = L * H;
+            double rho_a_st = 1.2;
+            double za = 1;
+            int curve = 1;
+            for (int i = 0; i < N_tube; i++)
+            {
+                for (int j = 0; j < Nelement; j++)
+                {
+                    ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
+                    //ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve);
+                    ha[i, j] = 79;
+                }
+            }
+            //double Va = Vel_a * Hx;
+            //double ma = Va * rho_a_st;
+            double zh = 1;
+            double zdp = 1;
+            double eta_surface = 0.89;
+            //double ha = 79;
+            double tai = 20;
+            double RHi = 0.469;
+            double tri = 45;
+            double tc = tri;
+            double pc = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
+            double Pwater = 305;//kPa
+            double conductivity = 386;
+            int hexType = 1;//0-eva,1-con
+            double wm = Refrigerant.WM(fluid, composition).Wm;
+            double hri = Refrigerant.TPFLSH(fluid, composition, tc + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);//??
+            double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+            double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
+            //string AirDirection = "Counter";
+            string AirDirection = "Parallel";
+            ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
+            RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
+            GeometryResult geo = new GeometryResult();
+            GeometryResult[,] geo_element = new GeometryResult[N_tube, Nrow];
+            for (int k = 0; k < Nrow; k++)
+            {
+                for (int j = 0; j < N_tube; j++)
+                {
+                    geo_element[j, k] = Areas.Geometry(L / Nelement, FPI[k], Do, Di, Pt, Pr, Fthickness);
+                    geo.Aa_tube += geo_element[j, k].Aa_tube;
+                    geo.Aa_fin += geo_element[j, k].Aa_fin;
+                    geo.A_a += geo_element[j, k].A_a;
+                    geo.A_r += geo_element[j, k].A_r;
+                    geo.A_r_cs += geo_element[j, k].A_r_cs;
+                }
+            }
+            geo.A_ratio = geo.A_r / geo.A_a;
+            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc, pc, hri,
+                mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);//
+            return res;
+        }
 
     }
 }
