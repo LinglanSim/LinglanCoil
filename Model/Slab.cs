@@ -66,6 +66,7 @@ namespace Model
             int restartDP_index = 0;
             int N_tube2 = 0;
             int[] index_cir = new int[Ncir];
+            int index_mr_ciri_base = 0;
             CalcResult[] r = new CalcResult[Ncir];
             CalcResult[] r1 = new CalcResult[Ncir];
             CalcResult[] r2 = new CalcResult[Ncir]; //for NinMout only
@@ -211,7 +212,12 @@ namespace Model
                                     else
                                     {
                                         if (restartDP_index == 1 || !priconverge.flag)
-                                            mr_ciri[k] = mr_ciri_base[j][k] * mr_ciro[j] / (mr / Nciro);
+                                        {
+                                            var mm = mr_ciri_base[j].Sum();
+                                            //foreach (var item in mr_ciri_base[j])
+                                            //mm += item; 
+                                            mr_ciri[k] = mr_ciri_base[j][k] * mr_ciro[j] / mm;//(mr / Nciro);
+                                        }
                                         else
                                             mr_ciri[k] = mr_ciro[j] / Ngroupin[j];
                                     }
@@ -271,9 +277,15 @@ namespace Model
                             if (Nciri == Nciro) 
                                 te_calc = Refrigerant.SATP(fluid, composition, r[j].Pro, 1).Temperature;
                             else
-                            {
+                            {                            
+                                if (mr_ciri_base.Count == Nciro && flag_ciro == 0)
+                                {
+                                    mr_ciri_base.RemoveAt(index_mr_ciri_base);
+                                    mr_ciri_base.Insert(index_mr_ciri_base, mr_forDP);
+                                    index_mr_ciri_base++;
+                                    index_mr_ciri_base %= mr_ciri_base.Count;
+                                }                                
                                 if (mr_ciri_base.Count < Nciro) mr_ciri_base.Add(mr_forDP); //keep original mr ratio for fast iter
-
                                 j = (flag_ciro == 1 ? j + Nciro : j);
                                 res_cir2[j] = new CalcResult();
                                 for (int i = 0; i < (flag_ciro == 1 ? Nciro : Ngroupin[j]); i++)
@@ -314,7 +326,7 @@ namespace Model
                         }
                         #endregion
 
-                    } while (!dPconverge.flag && iterforDP < 100);
+                    } while (!dPconverge.flag && iterforDP < 500);
 
                     if (Nciri == Nciro) break;
 
@@ -362,9 +374,9 @@ namespace Model
             } while (!priconverge.flag && iterforPri < 20);
 
 
-            if (iterforDP >= 100)
+            if (iterforDP >= 500)
             {
-                throw new Exception("iter for DPConverge > 100.");
+                throw new Exception("iter for DPConverge > 500.");
             }
             if (iterforPri >= 20)
             {
