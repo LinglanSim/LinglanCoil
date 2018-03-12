@@ -73,20 +73,49 @@ namespace Model
             //    }
             //}
 
+            //double mr = 0.015;
+            //double Vel_a = 2.032; //m/s
+            //double H = Pt * N_tube;
+            //double Hx = L * H;
+            //double rho_a_st = 1.2; //kg/m3
+
+            //double Va = Vel_a * Hx;
+            //double ma = Va * rho_a_st;//Va / 3600 * 1.2; //kg/s
+            //int curve = 1; //
+            //double za = 1; //Adjust factor
+            //double ha = AirHTC.alpha(Vel_a, za, curve);//71.84;//36.44;
+            //double eta_surface = 1;
+            //double zh = 1;
+            //double zdp = 1;
+
+
             double mr = 0.015;
-            double Vel_a = 2.032; //m/s
+            //double Vel_a = 1.8; //m/s
+            double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+            double Vel_ave = 2.032;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+            AirDistribution VaDistri = new AirDistribution();
+            VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+            double[,] ma = new double[N_tube, Nelement];
+            double[,] ha = new double[N_tube, Nelement];
             double H = Pt * N_tube;
             double Hx = L * H;
             double rho_a_st = 1.2; //kg/m3
-
-            double Va = Vel_a * Hx;
-            double ma = Va * rho_a_st;//Va / 3600 * 1.2; //kg/s
             int curve = 1; //
             double za = 1; //Adjust factor
-            double ha = AirHTC.alpha(Vel_a, za, curve);//71.84;//36.44;
+            for (int i = 0; i < N_tube; i++)
+            {
+                for (int j = 0; j < Nelement; j++)
+                {
+                    ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
+                    ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve) * 1.5;
+                    //ha[i, j] = 79;
+                }
+            }
             double eta_surface = 1;
             double zh = 1;
             double zdp = 1;
+
+
             double tai = 26.67;
             double RHi = 0.469;
             double tri = 7.2;
@@ -132,7 +161,7 @@ namespace Model
             geo.A_ratio = geo.A_r / geo.A_a;
 
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, te, pe, hri,
-                mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+                mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
 
             //res = Slab.SlabCalc(Npass, N_tubes_pass, fluid, composition, Dh, L, geo.A_a, geo.A_r_cs, geo.A_r, tai, tri, pe, hri,
             //    mr, ma, ha, eta_surface, zh, zdp);
@@ -198,20 +227,49 @@ namespace Model
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
             //  Ncir=1, 20in, 20->19 1out
 
+            //double mr = 0.01;
+            //double Vel_a = 2.032; //m/s
+            //double H = Pt * N_tube;
+            //double Hx = L * H;
+            //double rho_a_st = 1.2; //kg/m3
+
+            //double Va = Vel_a * Hx;
+            //double ma = Va * rho_a_st;//Va / 3600 * 1.2; //kg/s
+            //int curve = 1; //
+            //double za = 1; //Adjust factor
+            //double ha = AirHTC.alpha(Vel_a, za, curve);//71.84;//36.44;
+            //double eta_surface = 1;
+            //double zh = 1;
+            //double zdp = 1;
+
             double mr = 0.01;
-            double Vel_a = 2.032; //m/s
+            //double Vel_a = 1.8; //m/s
+            double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+            double Vel_ave =2.032;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+            AirDistribution VaDistri = new AirDistribution();
+            VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+            double[,] ma = new double[N_tube, Nelement];
+            double[,] ha = new double[N_tube, Nelement];
             double H = Pt * N_tube;
             double Hx = L * H;
             double rho_a_st = 1.2; //kg/m3
-
-            double Va = Vel_a * Hx;
-            double ma = Va * rho_a_st;//Va / 3600 * 1.2; //kg/s
             int curve = 1; //
             double za = 1; //Adjust factor
-            double ha = AirHTC.alpha(Vel_a, za, curve);//71.84;//36.44;
+            for (int i = 0; i < N_tube; i++)
+            {
+                for (int j = 0; j < Nelement; j++)
+                {
+                    ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
+                    ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve) * 1.5;
+                    //ha[i, j] = 79;
+                }
+            }
             double eta_surface = 1;
             double zh = 1;
             double zdp = 1;
+
+
+
             double tai = 26.67;
             double RHi = 0.469;
             double tc = 45.0;
@@ -256,7 +314,7 @@ namespace Model
             geo.A_ratio = geo.A_r / geo.A_a;
 
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tri, pri, hri,
-                mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+                mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
 
             return res;
         }
@@ -324,20 +382,49 @@ namespace Model
             //    }
             //}
 
+            //double mr = 23.0 / 60;
+            //double Vel_a = 1.2; //m/s
+            //double H = Pt * N_tube;
+            //double Hx = L * H;
+            //double rho_a_st = 1.2; //kg/m3
+
+            //double Va = Vel_a * Hx;
+            //double ma = Va * rho_a_st;//Va / 3600 * 1.2; //kg/s
+            //int curve = 1; //
+            //double za = 1; //Adjust factor
+            //double zh = 1;
+            //double zdp = 1;
+            //double eta_surface = 0.89;
+            //double ha = AirHTC.alpha(Vel_a, za, curve);//71.84;//36.44;
+
             double mr = 23.0 / 60;
-            double Vel_a = 1.2; //m/s
+            //double Vel_a = 1.8; //m/s
+            double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+            double Vel_ave = 1.2;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+            AirDistribution VaDistri = new AirDistribution();
+            VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+            double[,] ma = new double[N_tube, Nelement];
+            double[,] ha = new double[N_tube, Nelement];
             double H = Pt * N_tube;
             double Hx = L * H;
             double rho_a_st = 1.2; //kg/m3
-
-            double Va = Vel_a * Hx;
-            double ma = Va * rho_a_st;//Va / 3600 * 1.2; //kg/s
             int curve = 1; //
             double za = 1; //Adjust factor
+            for (int i = 0; i < N_tube; i++)
+            {
+                for (int j = 0; j < Nelement; j++)
+                {
+                    ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
+                    ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve) * 1.5;
+                    //ha[i, j] = 79;
+                }
+            }
+            double eta_surface = 0.89;
             double zh = 1;
             double zdp = 1;
-            double eta_surface = 0.89;
-            double ha = AirHTC.alpha(Vel_a, za, curve);//71.84;//36.44;
+            
+            
+            
             double tai = 20;
             double RHi = 0.469;
             double tri = 45;
@@ -381,7 +468,7 @@ namespace Model
             geo.A_ratio = geo.A_r / geo.A_a;
 
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc, pc, hri,
-                mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+                mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
 
             //res = Slab.SlabCalc(Npass, N_tubes_pass, fluid, composition, Dh, L, geo.A_a, geo.A_r_cs, geo.A_r, tai, tri, pe, hri,
             //    mr, ma, ha, eta_surface, zh, zdp);
@@ -422,20 +509,48 @@ namespace Model
             // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
 
-            double mr = 9.99 / 60;
-            double Vel_a = 2; //m/s
+            //double mr = 9.99 / 60;
+            //double Vel_a = 2; //m/s
+            //double H = Pt * N_tube;
+            //double Hx = L * H;
+            //double rho_a_st = 1.188; //kg/m3
+
+            //double Va = Vel_a * Hx;
+            //double ma = Va * rho_a_st;//Va / 3600 * 1.2; //kg/s
+            //int curve = 1; //
+            //double za = 1; //Adjust factor
+            //double zh = 1;
+            //double zdp = 1;
+            //double eta_surface = 0.8284;
+            //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 77.42;//71.84;//36.44;
+
+            double mr = 9.99/60;
+            //double Vel_a = 1.8; //m/s
+            double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+            double Vel_ave = 2;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+            AirDistribution VaDistri = new AirDistribution();
+            VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+            double[,] ma = new double[N_tube, Nelement];
+            double[,] ha = new double[N_tube, Nelement];
             double H = Pt * N_tube;
             double Hx = L * H;
             double rho_a_st = 1.188; //kg/m3
-
-            double Va = Vel_a * Hx;
-            double ma = Va * rho_a_st;//Va / 3600 * 1.2; //kg/s
             int curve = 1; //
             double za = 1; //Adjust factor
+            for (int i = 0; i < N_tube; i++)
+            {
+                for (int j = 0; j < Nelement; j++)
+                {
+                    ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
+                    ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve) * 1.5;
+                    //ha[i, j] = 79;
+                }
+            }
+            double eta_surface = 0.8284;
             double zh = 1;
             double zdp = 1;
-            double eta_surface = 0.8284;
-            double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 77.42;//71.84;//36.44;
+            
+            
             double tai = 19.98;
             double RHi = 0.469;
             double tri = 44.98;
@@ -472,7 +587,7 @@ namespace Model
             geo.A_ratio = geo.A_r / geo.A_a;
 
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc, pc, hri,
-                mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+                mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
 
             return res;
         }
@@ -505,24 +620,55 @@ namespace Model
             int N = 28;
             for (int i = 6; i < 7; i++)
             {
+                //double[] mr = new double[] { 10.0, 14.01, 18.0, 21.01, 25.01, 29.0, 31.01, 10.01, 14.01, 18.01, 21.01, 25.01, 29.01, 31.01, 10.01, 14.01, 18.0, 21.0, 25.01, 29.0, 31.01, 10.01, 14.01, 18.01, 21.01, 25.01, 29.01, 31.0 }; // 60;
+                //mr[i] = mr[i] / 60;
+                //double[] Vel_a = new double[] { 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0 }; //m/s
+                //double H = Pt * N_tube;
+                //double Hx = L * H;
+                //double rho_a_st = 1.157; //kg/m3
+
+                //double[] Va = new double[N];
+                //Va[i] = Vel_a[i] * Hx;
+                //double[] ma = new double[N];
+                //ma[i] = Va[i] * rho_a_st;//Va / 3600 * 1.2; //kg/s
+                //int curve = 1; //
+                //double za = 1; //Adjust factor
+                //double zh = 1;
+                //double zdp = 1;
+                //double[] eta_surface = new double[] { 0.845, 0.845, 0.845, 0.845, 0.845, 0.845, 0.845, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.83, 0.83, 0.83, 0.83, 0.83, 0.83, 0.83 };
+                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
+                //double[] ha = new double[] { 72.64, 72.64, 72.64, 72.64, 72.64, 72.64, 73.6, 77.2, 77.2, 77.2, 77.2, 77.2, 77.2, 77.2, 78.67, 78.67, 78.67, 78.67, 78.67, 78.67, 78.67, 83.09, 83.09, 83.09, 83.09, 83.09, 83.09, 83.09 };
+
+
                 double[] mr = new double[] { 10.0, 14.01, 18.0, 21.01, 25.01, 29.0, 31.01, 10.01, 14.01, 18.01, 21.01, 25.01, 29.01, 31.01, 10.01, 14.01, 18.0, 21.0, 25.01, 29.0, 31.01, 10.01, 14.01, 18.01, 21.01, 25.01, 29.01, 31.0 }; // 60;
                 mr[i] = mr[i] / 60;
-                double[] Vel_a = new double[] { 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0 }; //m/s
+                double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+                //double Vel_ave = 1.6;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+                double[] Vel_ave = new double[] { 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0 }; //m/s
+                AirDistribution VaDistri = new AirDistribution();
+                VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+                double[,] ma = new double[N_tube, Nelement];
+                double[,] ha = new double[N_tube, Nelement];
                 double H = Pt * N_tube;
                 double Hx = L * H;
-                double rho_a_st = 1.157; //kg/m3
-
-                double[] Va = new double[N];
-                Va[i] = Vel_a[i] * Hx;
-                double[] ma = new double[N];
-                ma[i] = Va[i] * rho_a_st;//Va / 3600 * 1.2; //kg/s
+                double rho_a_st = 1.188;
                 int curve = 1; //
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
                 double[] eta_surface = new double[] { 0.845, 0.845, 0.845, 0.845, 0.845, 0.845, 0.845, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.83, 0.83, 0.83, 0.83, 0.83, 0.83, 0.83 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                double[] ha = new double[] { 72.64, 72.64, 72.64, 72.64, 72.64, 72.64, 73.6, 77.2, 77.2, 77.2, 77.2, 77.2, 77.2, 77.2, 78.67, 78.67, 78.67, 78.67, 78.67, 78.67, 78.67, 83.09, 83.09, 83.09, 83.09, 83.09, 83.09, 83.09 };
+                double[] hai = new double[] { 72.64, 72.64, 72.64, 72.64, 72.64, 72.64, 73.6, 77.2, 77.2, 77.2, 77.2, 77.2, 77.2, 77.2, 78.67, 78.67, 78.67, 78.67, 78.67, 78.67, 78.67, 83.09, 83.09, 83.09, 83.09, 83.09, 83.09, 83.09 };
+                for (int j = 0; j < N_tube; j++)
+                {
+                    for (int k = 0; k < Nelement; k++)
+                    {
+                        ma[j, k] = VaDistri.Va[j, k] * (Vel_ave[i] / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
+                        //ha[j, k] = AirHTC.alpha(VaDistri.Va[j, k] * (Vel_ave / VaDistri.Va_ave), za, curve);
+                        ha[j, k] = hai[i];
+                    }
+                }
+                
+                
                 double[] tai = new double[] { 27.0, 26.99, 26.99, 26.99, 27.01, 27.02, 26.98, 27.01, 27.00, 27.01, 27.00, 27.02, 27.00, 27.00, 27.01, 26.99, 26.99, 27.0, 27.0, 26.99, 27.01, 27.00, 26.99, 26.99, 27.01, 27.0, 27.0, 26.98 };
                 double[] RHi = new double[] { 27.0, 26.99, 26.99, 26.99, 27.01, 27.02, 26.98, 27.01, 27.00, 27.01, 27.00, 27.02, 27.00, 27.00, 27.01, 26.99, 26.99, 27.0, 27.0, 26.99, 27.01, 27.00, 26.99, 26.99, 27.01, 27.0, 27.0, 26.98 };
 
@@ -561,7 +707,7 @@ namespace Model
                 geo.A_ratio = geo.A_r / geo.A_a;
 
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma[i], ha[i], eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater);
+                    mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_cool.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -598,25 +744,57 @@ namespace Model
             int N = 28;
             for (int i = 0; i < N; i++)
             {
+                //double[] mr = new double[] { 10.01, 14.01, 18.0, 21.0, 25.0, 29.01, 31.0, 9.99, 14.01, 18.01, 21.01, 25.0, 29.01, 31.0, 10.01, 14.01, 18.01, 21.01, 25.0, 29.01, 31.01, 9.99, 14.0, 18.0, 21.0, 24.99, 29.0, 31.01 }; // 60;
+                //mr[i] = mr[i] / 60;
+                //double[] Vel_a = new double[] { 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0 }; //m/s
+                //double H = Pt * N_tube;
+                //double Hx = L * H;
+                //double rho_a_st = 1.188; //kg/m3
+
+                //double[] Va = new double[N];
+                //Va[i] = Vel_a[i] * Hx;
+                //double[] ma = new double[N];
+                //ma[i] = Va[i] * rho_a_st;//Va / 3600 * 1.2; //kg/s
+                //int curve = 1; //
+                //double za = 1; //Adjust factor
+                //double zh = 1;
+                //double zdp = 1;
+                //double[] eta_surface = new double[] { 0.8764, 0.8764, 0.8764, 0.8764, 0.8764, 0.8764, 0.8764, 0.865, 0.865, 0.865, 0.865, 0.865, 0.865, 0.865, 0.855, 0.855, 0.855, 0.855, 0.855, 0.855, 0.855, 0.846, 0.846, 0.846, 0.846, 0.846, 0.846, 0.846 };
+                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
+                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
+                //double[] ha = new double[] { 58.51, 58.51, 58.51, 58.51, 58.51, 58.51, 58.51, 64.92, 64.92, 64.92, 64.92, 64.92, 64.92, 64.92, 70.41, 70.41, 70.41, 70.41, 70.41, 70.41, 70.41, 75.42, 75.42, 75.42, 75.42, 75.42, 75.42, 75.42 };
+
+
                 double[] mr = new double[] { 10.01, 14.01, 18.0, 21.0, 25.0, 29.01, 31.0, 9.99, 14.01, 18.01, 21.01, 25.0, 29.01, 31.0, 10.01, 14.01, 18.01, 21.01, 25.0, 29.01, 31.01, 9.99, 14.0, 18.0, 21.0, 24.99, 29.0, 31.01 }; // 60;
                 mr[i] = mr[i] / 60;
-                double[] Vel_a = new double[] { 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0 }; //m/s
+                double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+                //double Vel_ave = 1.6;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+                double[] Vel_ave = new double[] { 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0 }; //m/s
+                AirDistribution VaDistri = new AirDistribution();
+                VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+                double[,] ma = new double[N_tube, Nelement];
+                double[,] ha = new double[N_tube, Nelement];
                 double H = Pt * N_tube;
                 double Hx = L * H;
-                double rho_a_st = 1.188; //kg/m3
-
-                double[] Va = new double[N];
-                Va[i] = Vel_a[i] * Hx;
-                double[] ma = new double[N];
-                ma[i] = Va[i] * rho_a_st;//Va / 3600 * 1.2; //kg/s
+                double rho_a_st = 1.188;
                 int curve = 1; //
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
                 double[] eta_surface = new double[] { 0.8764, 0.8764, 0.8764, 0.8764, 0.8764, 0.8764, 0.8764, 0.865, 0.865, 0.865, 0.865, 0.865, 0.865, 0.865, 0.855, 0.855, 0.855, 0.855, 0.855, 0.855, 0.855, 0.846, 0.846, 0.846, 0.846, 0.846, 0.846, 0.846 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
-                double[] ha = new double[] { 58.51, 58.51, 58.51, 58.51, 58.51, 58.51, 58.51, 64.92, 64.92, 64.92, 64.92, 64.92, 64.92, 64.92, 70.41, 70.41, 70.41, 70.41, 70.41, 70.41, 70.41, 75.42, 75.42, 75.42, 75.42, 75.42, 75.42, 75.42 };
+                double[] hai = new double[] { 58.51, 58.51, 58.51, 58.51, 58.51, 58.51, 58.51, 64.92, 64.92, 64.92, 64.92, 64.92, 64.92, 64.92, 70.41, 70.41, 70.41, 70.41, 70.41, 70.41, 70.41, 75.42, 75.42, 75.42, 75.42, 75.42, 75.42, 75.42 };
+                for (int j = 0; j < N_tube; j++)
+                {
+                    for (int k = 0; k < Nelement; k++)
+                    {
+                        ma[j, k] = VaDistri.Va[j, k] * (Vel_ave[i] / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
+                        //ha[j, k] = AirHTC.alpha(VaDistri.Va[j, k] * (Vel_ave / VaDistri.Va_ave), za, curve);
+                        ha[j, k] = hai[i];
+                    }
+                }
+                
+                
+                
                 double[] tai = new double[] { 20.01, 20.0, 20.02, 20.0, 19.99, 20.02, 20.0, 19.98, 20.0, 19.99, 19.99, 19.99, 19.98, 20.0, 19.98, 20.01, 19.99, 20.0, 20.0, 19.99, 19.99, 19.98, 20.01, 20.0, 20.0, 20.01, 20.01, 20.02 };
                 double[] RHi = new double[] { 20.01, 20.0, 20.02, 20.0, 19.99, 20.02, 20.0, 19.98, 20.0, 19.99, 19.99, 19.99, 19.98, 20.0, 19.98, 20.01, 19.99, 20.0, 20.0, 19.99, 19.99, 19.98, 20.01, 20.0, 20.0, 20.01, 20.01, 20.02 };
 
@@ -656,7 +834,7 @@ namespace Model
                 geo.A_ratio = geo.A_r / geo.A_a;
 
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma[i], ha[i], eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater);
+                    mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -712,25 +890,56 @@ namespace Model
             int N = 16;
             for (int i = 0; i < N; i++)
             {
+                //double[] mr = new double[] { 13.01, 17.01, 21.00, 25.00, 13.00, 17.01, 21.00, 25.00, 13.00, 17.00, 21.00, 25.01, 13.01, 17.00, 21.01, 25.00 }; // 60;
+                //mr[i] = mr[i] / 60;
+                //double[] Vel_a = new double[] { 0.70550, 0.70395, 0.70348, 0.70329, 1.00285, 1.00238, 1.00203, 1.00366, 1.30551, 1.30599, 1.30520, 1.30471, 1.58699, 1.58381, 1.58356, 1.58275 }; //m/s
+                //double H = Pt * N_tube;
+                //double Hx = L * H;
+                //double[] rho_a_st = { 1.19767, 1.19763, 1.19766, 1.19767, 1.19772, 1.19773, 1.19772, 1.19776, 1.19779, 1.19771, 1.19775, 1.19771, 1.19767, 1.19774, 1.19768, 1.19768 }; //kg/m3
+
+                //double[] Va = new double[N];
+                //Va[i] = Vel_a[i] * Hx;
+                //double[] ma = new double[N];
+                //ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
+                //int curve = 1; //
+                //double za = 1; //Adjust factor
+                //double zh = 1;
+                //double zdp = 1;
+                //double[] eta_surface = new double[] { 0.86998, 0.872736, 0.8747438, 0.8761934, 0.84895, 0.851907, 0.8535928, 0.8544665, 0.82776, 0.830934, 0.8327302, 0.8339071, 0.81128, 0.81624, 0.81832, 0.81969 };
+                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
+                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
+                //double[] ha = new double[] { 40.297, 39.319, 38.610, 38.100, 47.975, 46.873, 46.248, 45.925, 56.106, 54.862, 54.162, 53.705, 62.722, 60.704, 59.864, 59.315 };
+
+
                 double[] mr = new double[] { 13.01, 17.01, 21.00, 25.00, 13.00, 17.01, 21.00, 25.00, 13.00, 17.00, 21.00, 25.01, 13.01, 17.00, 21.01, 25.00 }; // 60;
                 mr[i] = mr[i] / 60;
-                double[] Vel_a = new double[] { 0.70550, 0.70395, 0.70348, 0.70329, 1.00285, 1.00238, 1.00203, 1.00366, 1.30551, 1.30599, 1.30520, 1.30471, 1.58699, 1.58381, 1.58356, 1.58275 }; //m/s
+                double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+                //double Vel_ave = 1.6;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+                double[] Vel_ave = new double[] { 0.70550, 0.70395, 0.70348, 0.70329, 1.00285, 1.00238, 1.00203, 1.00366, 1.30551, 1.30599, 1.30520, 1.30471, 1.58699, 1.58381, 1.58356, 1.58275 }; //m/s
+                AirDistribution VaDistri = new AirDistribution();
+                VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+                double[,] ma = new double[N_tube, Nelement];
+                double[,] ha = new double[N_tube, Nelement];
                 double H = Pt * N_tube;
                 double Hx = L * H;
                 double[] rho_a_st = { 1.19767, 1.19763, 1.19766, 1.19767, 1.19772, 1.19773, 1.19772, 1.19776, 1.19779, 1.19771, 1.19775, 1.19771, 1.19767, 1.19774, 1.19768, 1.19768 }; //kg/m3
-
-                double[] Va = new double[N];
-                Va[i] = Vel_a[i] * Hx;
-                double[] ma = new double[N];
-                ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
                 int curve = 1; //
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
                 double[] eta_surface = new double[] { 0.86998, 0.872736, 0.8747438, 0.8761934, 0.84895, 0.851907, 0.8535928, 0.8544665, 0.82776, 0.830934, 0.8327302, 0.8339071, 0.81128, 0.81624, 0.81832, 0.81969 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
-                double[] ha = new double[] { 40.297, 39.319, 38.610, 38.100, 47.975, 46.873, 46.248, 45.925, 56.106, 54.862, 54.162, 53.705, 62.722, 60.704, 59.864, 59.315 };
+                double[] hai = new double[] { 40.297, 39.319, 38.610, 38.100, 47.975, 46.873, 46.248, 45.925, 56.106, 54.862, 54.162, 53.705, 62.722, 60.704, 59.864, 59.315 };
+                for (int j = 0; j < N_tube; j++)
+                {
+                    for (int k = 0; k < Nelement; k++)
+                    {
+                        ma[j, k] = VaDistri.Va[j, k] * (Vel_ave[i] / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st[i];
+                        //ha[j, k] = AirHTC.alpha(VaDistri.Va[j, k] * (Vel_ave / VaDistri.Va_ave), za, curve);
+                        ha[j, k] = hai[i];
+                    }
+                }
+                
+                
                 double[] tai = new double[] { 20.01, 20.02, 20.01, 20.01, 20.00, 20.00, 20.00, 19.99, 19.98, 20.00, 19.99, 20.00, 20.01, 19.99, 20.01, 20.01 };
                 double[] RHi = new double[] { 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469 };
 
@@ -754,7 +963,7 @@ namespace Model
 
 
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma[i], ha[i], eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater);
+                    mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -811,25 +1020,56 @@ namespace Model
             int N = 16;
             for (int i = 0; i < 1; i++)
             {
+                //double[] mr = new double[] { 13.01, 17.01, 21.01, 25.00, 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.01, 25.00, 13.01, 17.01, 21.01, 25.00 }; // 60;
+                //mr[i] = mr[i] / 60;
+                //double[] Vel_a = new double[] { 0.70538, 0.70457, 0.70465, 0.70472, 1.00341, 1.00451, 1.00502, 1.00570, 1.30334, 1.30465, 1.30518, 1.30566, 1.58873, 1.58858, 1.58567, 1.58517 }; //m/s
+                //double H = Pt * N_tube;
+                //double Hx = L * H;
+                //double[] rho_a_st = { 1.16847, 1.16850, 1.16849, 1.16853, 1.16842, 1.16846, 1.16856, 1.16840, 1.16848, 1.16840, 1.16844, 1.16848, 1.16845, 1.16845, 1.16848, 1.16849 }; //kg/m3
+
+                //double[] Va = new double[N];
+                //Va[i] = Vel_a[i] * Hx;
+                //double[] ma = new double[N];
+                //ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
+                //int curve = 1; //
+                //double za = 1; //Adjust factor
+                //double zh = 1;
+                //double zdp = 1;
+                //double[] eta_surface = new double[] { 0.86197, 0.863491, 0.8652783, 0.8663570, 0.83131, 0.830614, 0.8305166, 0.8318977, 0.80813, 0.809165, 0.8107805, 0.8109122, 0.78758, 0.78951, 0.79302, 0.79641 };
+                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
+                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
+                //double[] ha = new double[] { 40.297, 39.319, 38.610, 38.100, 47.975, 46.873, 46.248, 45.925, 56.106, 54.862, 54.162, 53.705, 62.722, 60.704, 59.864, 59.315 };
+
+
                 double[] mr = new double[] { 13.01, 17.01, 21.01, 25.00, 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.01, 25.00, 13.01, 17.01, 21.01, 25.00 }; // 60;
                 mr[i] = mr[i] / 60;
-                double[] Vel_a = new double[] { 0.70538, 0.70457, 0.70465, 0.70472, 1.00341, 1.00451, 1.00502, 1.00570, 1.30334, 1.30465, 1.30518, 1.30566, 1.58873, 1.58858, 1.58567, 1.58517 }; //m/s
+                double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+                //double Vel_ave = 1.6;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+                double[] Vel_ave = new double[] { 0.70538, 0.70457, 0.70465, 0.70472, 1.00341, 1.00451, 1.00502, 1.00570, 1.30334, 1.30465, 1.30518, 1.30566, 1.58873, 1.58858, 1.58567, 1.58517 }; //m/s
+                AirDistribution VaDistri = new AirDistribution();
+                VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+                double[,] ma = new double[N_tube, Nelement];
+                double[,] ha = new double[N_tube, Nelement];
                 double H = Pt * N_tube;
                 double Hx = L * H;
                 double[] rho_a_st = { 1.16847, 1.16850, 1.16849, 1.16853, 1.16842, 1.16846, 1.16856, 1.16840, 1.16848, 1.16840, 1.16844, 1.16848, 1.16845, 1.16845, 1.16848, 1.16849 }; //kg/m3
-
-                double[] Va = new double[N];
-                Va[i] = Vel_a[i] * Hx;
-                double[] ma = new double[N];
-                ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
                 int curve = 1; //
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
                 double[] eta_surface = new double[] { 0.86197, 0.863491, 0.8652783, 0.8663570, 0.83131, 0.830614, 0.8305166, 0.8318977, 0.80813, 0.809165, 0.8107805, 0.8109122, 0.78758, 0.78951, 0.79302, 0.79641 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
-                double[] ha = new double[] { 40.297, 39.319, 38.610, 38.100, 47.975, 46.873, 46.248, 45.925, 56.106, 54.862, 54.162, 53.705, 62.722, 60.704, 59.864, 59.315 };
+                double[] hai = new double[] { 40.297, 39.319, 38.610, 38.100, 47.975, 46.873, 46.248, 45.925, 56.106, 54.862, 54.162, 53.705, 62.722, 60.704, 59.864, 59.315 };
+                for (int j = 0; j < N_tube; j++)
+                {
+                    for (int k = 0; k < Nelement; k++)
+                    {
+                        ma[j, k] = VaDistri.Va[j, k] * (Vel_ave[i] / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st[i];
+                        //ha[j, k] = AirHTC.alpha(VaDistri.Va[j, k] * (Vel_ave / VaDistri.Va_ave), za, curve);
+                        ha[j, k] = hai[i];
+                    }
+                }
+                
+                
                 double[] tai = new double[] { 27.01, 27.00, 27.00, 26.99, 27.02, 27.01, 26.98, 27.02, 27.00, 27.02, 27.01, 27.00, 27.01, 27.01, 27.00, 27.00 };
                 double[] RHi = new double[] { 0.4680, 0.4684, 0.4696, 0.4694, 0.4681, 0.4685, 0.4705, 0.4698, 0.4701, 0.4692, 0.4697, 0.4701, 0.4691, 0.4691, 0.4701, 0.4690 };
 
@@ -853,7 +1093,7 @@ namespace Model
 
 
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma[i], ha[i], eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater);
+                    mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -911,25 +1151,56 @@ namespace Model
             int N = 16;
             for (int i = 0; i < N; i++)
             {
+                //double[] mr = new double[] { 13.00, 17.00, 21.00, 25.00, 13.00, 17.01, 21.01, 25.00, 13.01, 17.00, 21.00, 25.00, 13.01, 17.00, 21.01, 25.00 }; // 60;
+                //mr[i] = mr[i] / 60;
+                //double[] Vel_a = new double[] { 0.702466, 0.70428, 0.70592, 0.70592, 1.00585, 1.00475, 1.00716, 1.00635, 1.31044, 1.30957, 1.30901, 1.30781, 1.58978, 1.58832, 1.58607, 1.59028 }; //m/s
+                //double H = Pt * N_tube;
+                //double Hx = L * H;
+                //double[] rho_a_st = { 1.19772, 1.19771, 1.19777, 1.19762, 1.19773, 1.19773, 1.19775, 1.19767, 1.19772, 1.19773, 1.19770, 1.19772, 1.19766, 1.19771, 1.19771, 1.19775 }; //kg/m3
+
+                //double[] Va = new double[N];
+                //Va[i] = Vel_a[i] * Hx;
+                //double[] ma = new double[N];
+                //ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
+                //int curve = 1; //
+                //double za = 1; //Adjust factor
+                //double zh = 1;
+                //double zdp = 1;
+                //double[] eta_surface = new double[] { 0.93687, 0.936250, 0.9295073, 0.9333229, 0.92812, 0.927387, 0.9259171, 0.9252950, 0.92324, 0.92239, 0.92222, 0.92211, 0.91866, 0.91823, 0.91817, 0.91800 };
+                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
+                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
+                //double[] ha = new double[] { 56.798, 57.390, 63.920, 60.213, 65.277, 65.993, 67.436, 68.048, 70.078, 70.917, 71.086, 71.197, 74.628, 75.059, 75.112, 75.283 };
+
+
                 double[] mr = new double[] { 13.00, 17.00, 21.00, 25.00, 13.00, 17.01, 21.01, 25.00, 13.01, 17.00, 21.00, 25.00, 13.01, 17.00, 21.01, 25.00 }; // 60;
                 mr[i] = mr[i] / 60;
-                double[] Vel_a = new double[] { 0.702466, 0.70428, 0.70592, 0.70592, 1.00585, 1.00475, 1.00716, 1.00635, 1.31044, 1.30957, 1.30901, 1.30781, 1.58978, 1.58832, 1.58607, 1.59028 }; //m/s
+                double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+                //double Vel_ave = 1.6;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+                double[] Vel_ave = new double[] { 0.702466, 0.70428, 0.70592, 0.70592, 1.00585, 1.00475, 1.00716, 1.00635, 1.31044, 1.30957, 1.30901, 1.30781, 1.58978, 1.58832, 1.58607, 1.59028 }; //m/s
+                AirDistribution VaDistri = new AirDistribution();
+                VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+                double[,] ma = new double[N_tube, Nelement];
+                double[,] ha = new double[N_tube, Nelement];
                 double H = Pt * N_tube;
                 double Hx = L * H;
                 double[] rho_a_st = { 1.19772, 1.19771, 1.19777, 1.19762, 1.19773, 1.19773, 1.19775, 1.19767, 1.19772, 1.19773, 1.19770, 1.19772, 1.19766, 1.19771, 1.19771, 1.19775 }; //kg/m3
-
-                double[] Va = new double[N];
-                Va[i] = Vel_a[i] * Hx;
-                double[] ma = new double[N];
-                ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
                 int curve = 1; //
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
                 double[] eta_surface = new double[] { 0.93687, 0.936250, 0.9295073, 0.9333229, 0.92812, 0.927387, 0.9259171, 0.9252950, 0.92324, 0.92239, 0.92222, 0.92211, 0.91866, 0.91823, 0.91817, 0.91800 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
-                double[] ha = new double[] { 56.798, 57.390, 63.920, 60.213, 65.277, 65.993, 67.436, 68.048, 70.078, 70.917, 71.086, 71.197, 74.628, 75.059, 75.112, 75.283 };
+                double[] hai = new double[] { 56.798, 57.390, 63.920, 60.213, 65.277, 65.993, 67.436, 68.048, 70.078, 70.917, 71.086, 71.197, 74.628, 75.059, 75.112, 75.283 };
+                for (int j = 0; j < N_tube; j++)
+                {
+                    for (int k = 0; k < Nelement; k++)
+                    {
+                        ma[j, k] = VaDistri.Va[j, k] * (Vel_ave[i] / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st[i];
+                        //ha[j, k] = AirHTC.alpha(VaDistri.Va[j, k] * (Vel_ave / VaDistri.Va_ave), za, curve);
+                        ha[j, k] = hai[i];
+                    }
+                }
+                
+                
                 double[] tai = new double[] { 20.00, 20.00, 19.98, 20.02, 20.00, 20.00, 19.99, 20.01, 20.00, 20.00, 20.01, 20.00, 20.01, 20.00, 20.00, 19.99 };
                 double[] RHi = new double[] { 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469 };
 
@@ -953,7 +1224,7 @@ namespace Model
 
 
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma[i], ha[i], eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater);
+                    mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -1010,25 +1281,56 @@ namespace Model
             int N = 16;
             for (int i = 0; i < N; i++)
             {
+                //double[] mr = new double[] { 13.01, 17.01, 21.01, 25.00, 13.00, 17.00, 21.01, 25.00, 13.00, 17.00, 21.00, 25.01, 13.01, 17.01, 21.00, 25.00 }; // 60;
+                //mr[i] = mr[i] / 60;
+                //double[] Vel_a = new double[] { 0.70813, 0.70656, 0.70680, 0.70728, 1.00764, 1.005388, 1.00521, 1.00649, 1.30721, 1.30791, 1.30833, 1.30897, 1.58697, 1.58870, 1.59016, 1.58798 }; //m/s
+                //double H = Pt * N_tube;
+                //double Hx = L * H;
+                //double[] rho_a_st = { 1.16850, 1.16845, 1.16841, 1.16846, 1.16850, 1.16849, 1.16849, 1.16845, 1.16848, 1.16846, 1.16848, 1.16850, 1.16848, 1.16846, 1.16842, 1.16847 }; //kg/m3
+
+                //double[] Va = new double[N];
+                //Va[i] = Vel_a[i] * Hx;
+                //double[] ma = new double[N];
+                //ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
+                //int curve = 1; //
+                //double za = 1; //Adjust factor
+                //double zh = 1;
+                //double zdp = 1;
+                //double[] eta_surface = new double[] { 0.93114, 0.928620, 0.9280530, 0.9278466, 0.92327, 0.920580, 0.9193262, 0.9188672, 0.91820, 0.91618, 0.91352, 0.90995, 0.91237, 0.90993, 0.90838, 0.90781 };
+                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
+                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
+                //double[] ha = new double[] { 56.798, 57.390, 63.920, 60.213, 65.277, 65.993, 67.436, 68.048, 70.078, 70.917, 71.086, 71.197, 74.628, 75.059, 75.112, 75.283 };
+
+
                 double[] mr = new double[] { 13.01, 17.01, 21.01, 25.00, 13.00, 17.00, 21.01, 25.00, 13.00, 17.00, 21.00, 25.01, 13.01, 17.01, 21.00, 25.00 }; // 60;
                 mr[i] = mr[i] / 60;
-                double[] Vel_a = new double[] { 0.70813, 0.70656, 0.70680, 0.70728, 1.00764, 1.005388, 1.00521, 1.00649, 1.30721, 1.30791, 1.30833, 1.30897, 1.58697, 1.58870, 1.59016, 1.58798 }; //m/s
+                double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+                //double Vel_ave = 1.6;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+                double[] Vel_ave = new double[] { 0.70813, 0.70656, 0.70680, 0.70728, 1.00764, 1.005388, 1.00521, 1.00649, 1.30721, 1.30791, 1.30833, 1.30897, 1.58697, 1.58870, 1.59016, 1.58798 }; //m/s
+                AirDistribution VaDistri = new AirDistribution();
+                VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+                double[,] ma = new double[N_tube, Nelement];
+                double[,] ha = new double[N_tube, Nelement];
                 double H = Pt * N_tube;
                 double Hx = L * H;
                 double[] rho_a_st = { 1.16850, 1.16845, 1.16841, 1.16846, 1.16850, 1.16849, 1.16849, 1.16845, 1.16848, 1.16846, 1.16848, 1.16850, 1.16848, 1.16846, 1.16842, 1.16847 }; //kg/m3
-
-                double[] Va = new double[N];
-                Va[i] = Vel_a[i] * Hx;
-                double[] ma = new double[N];
-                ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
                 int curve = 1; //
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
                 double[] eta_surface = new double[] { 0.93114, 0.928620, 0.9280530, 0.9278466, 0.92327, 0.920580, 0.9193262, 0.9188672, 0.91820, 0.91618, 0.91352, 0.90995, 0.91237, 0.90993, 0.90838, 0.90781 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
-                double[] ha = new double[] { 56.798, 57.390, 63.920, 60.213, 65.277, 65.993, 67.436, 68.048, 70.078, 70.917, 71.086, 71.197, 74.628, 75.059, 75.112, 75.283 };
+                double[] hai = new double[] { 56.798, 57.390, 63.920, 60.213, 65.277, 65.993, 67.436, 68.048, 70.078, 70.917, 71.086, 71.197, 74.628, 75.059, 75.112, 75.283 };
+                for (int j = 0; j < N_tube; j++)
+                {
+                    for (int k = 0; k < Nelement; k++)
+                    {
+                        ma[j, k] = VaDistri.Va[j, k] * (Vel_ave[i] / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st[i];
+                        //ha[j, k] = AirHTC.alpha(VaDistri.Va[j, k] * (Vel_ave / VaDistri.Va_ave), za, curve);
+                        ha[j, k] = hai[i];
+                    }
+                }
+                
+                
                 double[] tai = new double[] { 27.00, 27.01, 27.02, 27.01, 27.00, 27.00, 27.00, 27.01, 27.00, 27.01, 27.00, 27.00, 27.00, 27.01, 27.02, 27.01 };
                 double[] RHi = new double[] { 0.4684, 0.4691, 0.4686, 0.4685, 0.4684, 0.4690, 0.4696, 0.4691, 0.4701, 0.4685, 0.4701, 0.4684, 0.4701, 0.4685, 0.4681, 0.4680 };
 
@@ -1052,7 +1354,7 @@ namespace Model
 
 
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma[i], ha[i], eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater);
+                    mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -1126,25 +1428,56 @@ namespace Model
             int N = 16;
             for (int i = 0; i < N; i++)
             {
+                //double[] mr = new double[] { 13.01, 17.01, 21.00, 25.00, 13.00, 17.01, 21.00, 25.00, 13.00, 17.00, 21.00, 25.01, 13.01, 17.00, 21.01, 25.00 }; // 60;
+                //mr[i] = mr[i] / 60;
+                //double[] Vel_a = new double[] { 0.70550, 0.70395, 0.70348, 0.70329, 1.00285, 1.00238, 1.00203, 1.00366, 1.30551, 1.30599, 1.30520, 1.30471, 1.58699, 1.58381, 1.58356, 1.58275 }; //m/s
+                //double H = Pt * N_tube;
+                //double Hx = L * H;
+                //double[] rho_a_st = { 1.19767, 1.19763, 1.19766, 1.19767, 1.19772, 1.19773, 1.19772, 1.19776, 1.19779, 1.19771, 1.19775, 1.19771, 1.19767, 1.19774, 1.19768, 1.19768 }; //kg/m3
+
+                //double[] Va = new double[N];
+                //Va[i] = Vel_a[i] * Hx;
+                //double[] ma = new double[N];
+                //ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
+                //int curve = 1; //
+                //double za = 1; //Adjust factor
+                //double zh = 1;
+                //double zdp = 1;
+                //double[] eta_surface = new double[] { 0.86998, 0.872736, 0.8747438, 0.8761934, 0.84895, 0.851907, 0.8535928, 0.8544665, 0.82776, 0.830934, 0.8327302, 0.8339071, 0.81128, 0.81624, 0.81832, 0.81969 };
+                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
+                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
+                //double[] ha = new double[] { 40.297, 39.319, 38.610, 38.100, 47.975, 46.873, 46.248, 45.925, 56.106, 54.862, 54.162, 53.705, 62.722, 60.704, 59.864, 59.315 };
+
+
                 double[] mr = new double[] { 13.01, 17.01, 21.00, 25.00, 13.00, 17.01, 21.00, 25.00, 13.00, 17.00, 21.00, 25.01, 13.01, 17.00, 21.01, 25.00 }; // 60;
                 mr[i] = mr[i] / 60;
-                double[] Vel_a = new double[] { 0.70550, 0.70395, 0.70348, 0.70329, 1.00285, 1.00238, 1.00203, 1.00366, 1.30551, 1.30599, 1.30520, 1.30471, 1.58699, 1.58381, 1.58356, 1.58275 }; //m/s
+                double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+                //double Vel_ave = 1.6;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+                double[] Vel_ave = new double[] { 0.70550, 0.70395, 0.70348, 0.70329, 1.00285, 1.00238, 1.00203, 1.00366, 1.30551, 1.30599, 1.30520, 1.30471, 1.58699, 1.58381, 1.58356, 1.58275 }; //m/s
+                AirDistribution VaDistri = new AirDistribution();
+                VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+                double[,] ma = new double[N_tube, Nelement];
+                double[,] ha = new double[N_tube, Nelement];
                 double H = Pt * N_tube;
                 double Hx = L * H;
                 double[] rho_a_st = { 1.19767, 1.19763, 1.19766, 1.19767, 1.19772, 1.19773, 1.19772, 1.19776, 1.19779, 1.19771, 1.19775, 1.19771, 1.19767, 1.19774, 1.19768, 1.19768 }; //kg/m3
-
-                double[] Va = new double[N];
-                Va[i] = Vel_a[i] * Hx;
-                double[] ma = new double[N];
-                ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
                 int curve = 1; //
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
                 double[] eta_surface = new double[] { 0.86998, 0.872736, 0.8747438, 0.8761934, 0.84895, 0.851907, 0.8535928, 0.8544665, 0.82776, 0.830934, 0.8327302, 0.8339071, 0.81128, 0.81624, 0.81832, 0.81969 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
-                double[] ha = new double[] { 40.297, 39.319, 38.610, 38.100, 47.975, 46.873, 46.248, 45.925, 56.106, 54.862, 54.162, 53.705, 62.722, 60.704, 59.864, 59.315 };
+                double[] hai = new double[] { 40.297, 39.319, 38.610, 38.100, 47.975, 46.873, 46.248, 45.925, 56.106, 54.862, 54.162, 53.705, 62.722, 60.704, 59.864, 59.315 };
+                for (int j = 0; j < N_tube; j++)
+                {
+                    for (int k = 0; k < Nelement; k++)
+                    {
+                        ma[j, k] = VaDistri.Va[j, k] * (Vel_ave[i] / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st[i];
+                        //ha[j, k] = AirHTC.alpha(VaDistri.Va[j, k] * (Vel_ave / VaDistri.Va_ave), za, curve);
+                        ha[j, k] = hai[i];
+                    }
+                }
+                
+                
                 double[] tai = new double[] { 20.01, 20.02, 20.01, 20.01, 20.00, 20.00, 20.00, 19.99, 19.98, 20.00, 19.99, 20.00, 20.01, 19.99, 20.01, 20.01 };
                 double[] RHi = new double[] { 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469 };
 
@@ -1168,7 +1501,7 @@ namespace Model
 
 
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma[i], ha[i], eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater);
+                    mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -1229,25 +1562,56 @@ namespace Model
             int N = 16;
             for (int i = 0; i < N; i++)
             {
+                //double[] mr = new double[] { 13.00, 17.00, 21.00, 25.00, 13.00, 17.01, 21.01, 25.00, 13.01, 17.00, 21.00, 25.00, 13.01, 17.00, 21.01, 25.00 }; // 60;
+                //mr[i] = mr[i] / 60;
+                //double[] Vel_a = new double[] { 0.702466, 0.70428, 0.70592, 0.70592, 1.00585, 1.00475, 1.00716, 1.00635, 1.31044, 1.30957, 1.30901, 1.30781, 1.58978, 1.58832, 1.58607, 1.59028 }; //m/s
+                //double H = Pt * N_tube;
+                //double Hx = L * H;
+                //double[] rho_a_st = { 1.19772, 1.19771, 1.19777, 1.19762, 1.19773, 1.19773, 1.19775, 1.19767, 1.19772, 1.19773, 1.19770, 1.19772, 1.19766, 1.19771, 1.19771, 1.19775 }; //kg/m3
+
+                //double[] Va = new double[N];
+                //Va[i] = Vel_a[i] * Hx;
+                //double[] ma = new double[N];
+                //ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
+                //int curve = 1; //
+                //double za = 1; //Adjust factor
+                //double zh = 1;
+                //double zdp = 1;
+                //double[] eta_surface = new double[] { 0.93687, 0.936250, 0.9295073, 0.9333229, 0.92812, 0.927387, 0.9259171, 0.9252950, 0.92324, 0.92239, 0.92222, 0.92211, 0.91866, 0.91823, 0.91817, 0.91800 };
+                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
+                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
+                //double[] ha = new double[] { 56.798, 57.390, 63.920, 60.213, 65.277, 65.993, 67.436, 68.048, 70.078, 70.917, 71.086, 71.197, 74.628, 75.059, 75.112, 75.283 };
+
+
                 double[] mr = new double[] { 13.00, 17.00, 21.00, 25.00, 13.00, 17.01, 21.01, 25.00, 13.01, 17.00, 21.00, 25.00, 13.01, 17.00, 21.01, 25.00 }; // 60;
                 mr[i] = mr[i] / 60;
-                double[] Vel_a = new double[] { 0.702466, 0.70428, 0.70592, 0.70592, 1.00585, 1.00475, 1.00716, 1.00635, 1.31044, 1.30957, 1.30901, 1.30781, 1.58978, 1.58832, 1.58607, 1.59028 }; //m/s
+                double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+                //double Vel_ave = 1.6;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+                double[] Vel_ave = new double[] { 0.702466, 0.70428, 0.70592, 0.70592, 1.00585, 1.00475, 1.00716, 1.00635, 1.31044, 1.30957, 1.30901, 1.30781, 1.58978, 1.58832, 1.58607, 1.59028 }; //m/s
+                AirDistribution VaDistri = new AirDistribution();
+                VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+                double[,] ma = new double[N_tube, Nelement];
+                double[,] ha = new double[N_tube, Nelement];
                 double H = Pt * N_tube;
                 double Hx = L * H;
                 double[] rho_a_st = { 1.19772, 1.19771, 1.19777, 1.19762, 1.19773, 1.19773, 1.19775, 1.19767, 1.19772, 1.19773, 1.19770, 1.19772, 1.19766, 1.19771, 1.19771, 1.19775 }; //kg/m3
-
-                double[] Va = new double[N];
-                Va[i] = Vel_a[i] * Hx;
-                double[] ma = new double[N];
-                ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
                 int curve = 1; //
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
                 double[] eta_surface = new double[] { 0.93687, 0.936250, 0.9295073, 0.9333229, 0.92812, 0.927387, 0.9259171, 0.9252950, 0.92324, 0.92239, 0.92222, 0.92211, 0.91866, 0.91823, 0.91817, 0.91800 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
-                double[] ha = new double[] { 56.798, 57.390, 63.920, 60.213, 65.277, 65.993, 67.436, 68.048, 70.078, 70.917, 71.086, 71.197, 74.628, 75.059, 75.112, 75.283 };
+                double[] hai = new double[] { 56.798, 57.390, 63.920, 60.213, 65.277, 65.993, 67.436, 68.048, 70.078, 70.917, 71.086, 71.197, 74.628, 75.059, 75.112, 75.283 };
+                for (int j = 0; j < N_tube; j++)
+                {
+                    for (int k = 0; k < Nelement; k++)
+                    {
+                        ma[j, k] = VaDistri.Va[j, k] * (Vel_ave[i] / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st[i];
+                        //ha[j, k] = AirHTC.alpha(VaDistri.Va[j, k] * (Vel_ave / VaDistri.Va_ave), za, curve);
+                        ha[j, k] = hai[i];
+                    }
+                }
+                
+                
                 double[] tai = new double[] { 20.00, 20.00, 19.98, 20.02, 20.00, 20.00, 19.99, 20.01, 20.00, 20.00, 20.01, 20.00, 20.01, 20.00, 20.00, 19.99 };
                 double[] RHi = new double[] { 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469 };
 
@@ -1271,7 +1635,7 @@ namespace Model
 
 
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma[i], ha[i], eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater);
+                    mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -1312,20 +1676,46 @@ namespace Model
             bool reverse = true; //*********************************false:origin, true:reverse******************************************
             CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
 
-            double mr = 9.99 / 60;
-            double Vel_a = 2; //m/s
+            //double mr = 9.99 / 60;
+            //double Vel_a = 2; //m/s
+            //double H = Pt * N_tube;
+            //double Hx = L * H;
+            //double rho_a_st = 1.188; //kg/m3
+
+            //double Va = Vel_a * Hx;
+            //double ma = Va * rho_a_st;//Va / 3600 * 1.2; //kg/s
+            //int curve = 1; //
+            //double za = 1; //Adjust factor
+            //double zh = 1;
+            //double zdp = 1;
+            //double eta_surface = 0.8284;
+            //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 77.42;//71.84;//36.44;
+
+            double mr = 9.99/60;
+            double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+            double Vel_ave = 2;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+            AirDistribution VaDistri = new AirDistribution();
+            VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+            double[,] ma = new double[N_tube, Nelement];
+            double[,] ha = new double[N_tube, Nelement];
             double H = Pt * N_tube;
             double Hx = L * H;
-            double rho_a_st = 1.188; //kg/m3
-
-            double Va = Vel_a * Hx;
-            double ma = Va * rho_a_st;//Va / 3600 * 1.2; //kg/s
-            int curve = 1; //
-            double za = 1; //Adjust factor
-            double zh = 1;
-            double zdp = 1;
+            double rho_a_st = 1.188;
+            double za = 1;
+            int curve = 1;
+            for (int i = 0; i < N_tube; i++)
+            {
+                for (int j = 0; j < Nelement; j++)
+                {
+                    ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
+                    ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve);
+                    //ha[i, j] = 79;
+                }
+            }
             double eta_surface = 0.8284;
-            double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 77.42;//71.84;//36.44;
+            double zh = 1;
+            double zdp = 1.5;
+
             double tai = 19.98;
             double RHi = 0.469;
             double tri = 44.98;
@@ -1362,7 +1752,7 @@ namespace Model
             geo.A_ratio = geo.A_r / geo.A_a;
 
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc, pc, hri,
-                mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+                mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
 
             return res;
         }
@@ -1418,25 +1808,56 @@ namespace Model
             int N = 16;
             for (int i = 0; i < N; i++)
             {
+                //double[] mr = new double[] { 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.00, 25.00, 13.00, 17.01, 21.01, 25.00, 13.00, 17.00, 21.01, 25.00 }; // 60;
+                //mr[i] = mr[i] / 60;
+                //double[] Vel_a = new double[] { 0.60061, 0.60059, 0.59874, 0.60039, 0.89766, 0.89707, 0.89755, 0.89636, 1.09706, 1.09812, 1.09922, 1.09919, 1.29987, 1.29968, 1.29857, 1.29670 }; //m/s
+                //double H = Pt * N_tube;
+                //double Hx = L * H;
+                //double[] rho_a_st = { 1.19775, 1.19775, 1.19766, 1.19778, 1.19777, 1.19769, 1.19770, 1.19770, 1.19754, 1.19770, 1.19777, 1.19767, 1.19780, 1.19761, 1.19751, 1.19766 }; //kg/m3
+
+                //double[] Va = new double[N];
+                //Va[i] = Vel_a[i] * Hx;
+                //double[] ma = new double[N];
+                //ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
+                //int curve = 1; //
+                //double za = 1; //Adjust factor
+                //double zh = 1;
+                //double zdp = 1;
+                //double[] eta_surface = new double[] { 0.91638, 0.917989, 0.9188580, 0.9193723, 0.88357, 0.884134, 0.8849341, 0.8834665, 0.86450, 0.865326, 0.8658559, 0.8664762, 0.85036, 0.85115, 0.85198, 0.85284 };
+                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
+                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
+                //double[] ha = new double[] { 32.230, 31.553, 31.189, 30.974, 46.541, 46.285, 45.924, 46.587, 55.360, 54.968, 54.718, 54.426, 62.153, 61.768, 61.363, 60.944 };
+
+
                 double[] mr = new double[] { 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.00, 25.00, 13.00, 17.01, 21.01, 25.00, 13.00, 17.00, 21.01, 25.00 }; // 60;
                 mr[i] = mr[i] / 60;
-                double[] Vel_a = new double[] { 0.60061, 0.60059, 0.59874, 0.60039, 0.89766, 0.89707, 0.89755, 0.89636, 1.09706, 1.09812, 1.09922, 1.09919, 1.29987, 1.29968, 1.29857, 1.29670 }; //m/s
+                double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+                //double Vel_ave = 1.6;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+                double[] Vel_ave = new double[] { 0.60061, 0.60059, 0.59874, 0.60039, 0.89766, 0.89707, 0.89755, 0.89636, 1.09706, 1.09812, 1.09922, 1.09919, 1.29987, 1.29968, 1.29857, 1.29670 }; //m/s
+                AirDistribution VaDistri = new AirDistribution();
+                VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+                double[,] ma = new double[N_tube, Nelement];
+                double[,] ha = new double[N_tube, Nelement];
                 double H = Pt * N_tube;
                 double Hx = L * H;
                 double[] rho_a_st = { 1.19775, 1.19775, 1.19766, 1.19778, 1.19777, 1.19769, 1.19770, 1.19770, 1.19754, 1.19770, 1.19777, 1.19767, 1.19780, 1.19761, 1.19751, 1.19766 }; //kg/m3
-
-                double[] Va = new double[N];
-                Va[i] = Vel_a[i] * Hx;
-                double[] ma = new double[N];
-                ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
                 int curve = 1; //
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
                 double[] eta_surface = new double[] { 0.91638, 0.917989, 0.9188580, 0.9193723, 0.88357, 0.884134, 0.8849341, 0.8834665, 0.86450, 0.865326, 0.8658559, 0.8664762, 0.85036, 0.85115, 0.85198, 0.85284 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
-                double[] ha = new double[] { 32.230, 31.553, 31.189, 30.974, 46.541, 46.285, 45.924, 46.587, 55.360, 54.968, 54.718, 54.426, 62.153, 61.768, 61.363, 60.944 };
+                double[] hai = new double[] { 32.230, 31.553, 31.189, 30.974, 46.541, 46.285, 45.924, 46.587, 55.360, 54.968, 54.718, 54.426, 62.153, 61.768, 61.363, 60.944 };
+                for (int j = 0; j < N_tube; j++)
+                {
+                    for (int k = 0; k < Nelement; k++)
+                    {
+                        ma[j, k] = VaDistri.Va[j, k] * (Vel_ave[i] / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st[i];
+                        //ha[j, k] = AirHTC.alpha(VaDistri.Va[j, k] * (Vel_ave / VaDistri.Va_ave), za, curve);
+                        ha[j, k] = hai[i];
+                    }
+                }
+                
+                
                 double[] tai = new double[] { 20.00, 20.00, 20.02, 19.99, 19.99, 20.01, 20.01, 20.01, 20.05, 20.01, 19.99, 20.02, 19.98, 20.03, 20.06, 20.02 };
                 double[] RHi = new double[] { 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469 };
 
@@ -1458,7 +1879,7 @@ namespace Model
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma[i], ha[i], eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater);
+                    mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -1529,25 +1950,56 @@ namespace Model
             int N = 16;
             for (int i = 0; i < N; i++)
             {
+                //double[] mr = new double[] { 13.01, 17.01, 21.00, 25.00, 13.00, 17.01, 21.00, 25.00, 13.00, 17.00, 21.00, 25.01, 13.01, 17.00, 21.01, 25.00 }; // 60;
+                //mr[i] = mr[i] / 60;
+                //double[] Vel_a = new double[] { 0.70550, 0.70395, 0.70348, 0.70329, 1.00285, 1.00238, 1.00203, 1.00366, 1.30551, 1.30599, 1.30520, 1.30471, 1.58699, 1.58381, 1.58356, 1.58275 }; //m/s
+                //double H = Pt * N_tube;
+                //double Hx = L * H;
+                //double[] rho_a_st = { 1.19767, 1.19763, 1.19766, 1.19767, 1.19772, 1.19773, 1.19772, 1.19776, 1.19779, 1.19771, 1.19775, 1.19771, 1.19767, 1.19774, 1.19768, 1.19768 }; //kg/m3
+
+                //double[] Va = new double[N];
+                //Va[i] = Vel_a[i] * Hx;
+                //double[] ma = new double[N];
+                //ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
+                //int curve = 1; //
+                //double za = 1; //Adjust factor
+                //double zh = 1;
+                //double zdp = 1;
+                //double[] eta_surface = new double[] { 0.86998, 0.872736, 0.8747438, 0.8761934, 0.84895, 0.851907, 0.8535928, 0.8544665, 0.82776, 0.830934, 0.8327302, 0.8339071, 0.81128, 0.81624, 0.81832, 0.81969 };
+                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
+                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
+                //double[] ha = new double[] { 40.297, 39.319, 38.610, 38.100, 47.975, 46.873, 46.248, 45.925, 56.106, 54.862, 54.162, 53.705, 62.722, 60.704, 59.864, 59.315 };
+
+
                 double[] mr = new double[] { 13.01, 17.01, 21.00, 25.00, 13.00, 17.01, 21.00, 25.00, 13.00, 17.00, 21.00, 25.01, 13.01, 17.00, 21.01, 25.00 }; // 60;
                 mr[i] = mr[i] / 60;
-                double[] Vel_a = new double[] { 0.70550, 0.70395, 0.70348, 0.70329, 1.00285, 1.00238, 1.00203, 1.00366, 1.30551, 1.30599, 1.30520, 1.30471, 1.58699, 1.58381, 1.58356, 1.58275 }; //m/s
+                double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+                //double Vel_ave = 1.6;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+                double[] Vel_ave = new double[] { 0.70550, 0.70395, 0.70348, 0.70329, 1.00285, 1.00238, 1.00203, 1.00366, 1.30551, 1.30599, 1.30520, 1.30471, 1.58699, 1.58381, 1.58356, 1.58275 }; //m/s
+                AirDistribution VaDistri = new AirDistribution();
+                VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+                double[,] ma = new double[N_tube, Nelement];
+                double[,] ha = new double[N_tube, Nelement];
                 double H = Pt * N_tube;
                 double Hx = L * H;
                 double[] rho_a_st = { 1.19767, 1.19763, 1.19766, 1.19767, 1.19772, 1.19773, 1.19772, 1.19776, 1.19779, 1.19771, 1.19775, 1.19771, 1.19767, 1.19774, 1.19768, 1.19768 }; //kg/m3
-
-                double[] Va = new double[N];
-                Va[i] = Vel_a[i] * Hx;
-                double[] ma = new double[N];
-                ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
                 int curve = 1; //
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
                 double[] eta_surface = new double[] { 0.86998, 0.872736, 0.8747438, 0.8761934, 0.84895, 0.851907, 0.8535928, 0.8544665, 0.82776, 0.830934, 0.8327302, 0.8339071, 0.81128, 0.81624, 0.81832, 0.81969 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
-                double[] ha = new double[] { 40.297, 39.319, 38.610, 38.100, 47.975, 46.873, 46.248, 45.925, 56.106, 54.862, 54.162, 53.705, 62.722, 60.704, 59.864, 59.315 };
+                double[] hai = new double[] { 40.297, 39.319, 38.610, 38.100, 47.975, 46.873, 46.248, 45.925, 56.106, 54.862, 54.162, 53.705, 62.722, 60.704, 59.864, 59.315 };
+                for (int j = 0; j < N_tube; j++)
+                {
+                    for (int k = 0; k < Nelement; k++)
+                    {
+                        ma[j, k] = VaDistri.Va[j, k] * (Vel_ave[i] / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st[i];
+                        //ha[j, k] = AirHTC.alpha(VaDistri.Va[j, k] * (Vel_ave / VaDistri.Va_ave), za, curve);
+                        ha[j, k] = hai[i];
+                    }
+                }
+                
+                
                 double[] tai = new double[] { 20.01, 20.02, 20.01, 20.01, 20.00, 20.00, 20.00, 19.99, 19.98, 20.00, 19.99, 20.00, 20.01, 19.99, 20.01, 20.01 };
                 double[] RHi = new double[] { 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469 };
 
@@ -1571,7 +2023,7 @@ namespace Model
 
 
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma[i], ha[i], eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater);
+                    mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -1642,25 +2094,56 @@ namespace Model
             int N = 16;
             for (int i = 0; i < N; i++)
             {
+                //double[] mr = new double[] { 13.00, 17.00, 21.00, 25.00, 13.00, 17.01, 21.01, 25.00, 13.01, 17.00, 21.00, 25.00, 13.01, 17.00, 21.01, 25.00 }; // 60;
+                //mr[i] = mr[i] / 60;
+                //double[] Vel_a = new double[] { 0.702466, 0.70428, 0.70592, 0.70592, 1.00585, 1.00475, 1.00716, 1.00635, 1.31044, 1.30957, 1.30901, 1.30781, 1.58978, 1.58832, 1.58607, 1.59028 }; //m/s
+                //double H = Pt * N_tube;
+                //double Hx = L * H;
+                //double[] rho_a_st = { 1.19772, 1.19771, 1.19777, 1.19762, 1.19773, 1.19773, 1.19775, 1.19767, 1.19772, 1.19773, 1.19770, 1.19772, 1.19766, 1.19771, 1.19771, 1.19775 }; //kg/m3
+                //double[] Va = new double[N];
+                //Va[i] = Vel_a[i] * Hx;
+                //double[] ma = new double[N];
+                //ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
+                //int curve = 1; //
+                //double za = 1; //Adjust factor
+                //double zh = 1;
+                //double zdp = 1;
+                //double[] eta_surface = new double[] { 0.93687, 0.936250, 0.9295073, 0.9333229, 0.92812, 0.927387, 0.9259171, 0.9252950, 0.92324, 0.92239, 0.92222, 0.92211, 0.91866, 0.91823, 0.91817, 0.91800 };
+                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
+                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
+                //double[] ha = new double[] { 56.798, 57.390, 63.920, 60.213, 65.277, 65.993, 67.436, 68.048, 70.078, 70.917, 71.086, 71.197, 74.628, 75.059, 75.112, 75.283 };
+
+
                 double[] mr = new double[] { 13.00, 17.00, 21.00, 25.00, 13.00, 17.01, 21.01, 25.00, 13.01, 17.00, 21.00, 25.00, 13.01, 17.00, 21.01, 25.00 }; // 60;
                 mr[i] = mr[i] / 60;
-                double[] Vel_a = new double[] { 0.702466, 0.70428, 0.70592, 0.70592, 1.00585, 1.00475, 1.00716, 1.00635, 1.31044, 1.30957, 1.30901, 1.30781, 1.58978, 1.58832, 1.58607, 1.59028 }; //m/s
+                double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+                //double Vel_ave = 1.6;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+                double[] Vel_ave = new double[] { 0.702466, 0.70428, 0.70592, 0.70592, 1.00585, 1.00475, 1.00716, 1.00635, 1.31044, 1.30957, 1.30901, 1.30781, 1.58978, 1.58832, 1.58607, 1.59028 }; //m/s
+                AirDistribution VaDistri = new AirDistribution();
+                VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+                double[,] ma = new double[N_tube, Nelement];
+                double[,] ha = new double[N_tube, Nelement];
                 double H = Pt * N_tube;
                 double Hx = L * H;
                 double[] rho_a_st = { 1.19772, 1.19771, 1.19777, 1.19762, 1.19773, 1.19773, 1.19775, 1.19767, 1.19772, 1.19773, 1.19770, 1.19772, 1.19766, 1.19771, 1.19771, 1.19775 }; //kg/m3
-
-                double[] Va = new double[N];
-                Va[i] = Vel_a[i] * Hx;
-                double[] ma = new double[N];
-                ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
                 int curve = 1; //
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
                 double[] eta_surface = new double[] { 0.93687, 0.936250, 0.9295073, 0.9333229, 0.92812, 0.927387, 0.9259171, 0.9252950, 0.92324, 0.92239, 0.92222, 0.92211, 0.91866, 0.91823, 0.91817, 0.91800 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
-                double[] ha = new double[] { 56.798, 57.390, 63.920, 60.213, 65.277, 65.993, 67.436, 68.048, 70.078, 70.917, 71.086, 71.197, 74.628, 75.059, 75.112, 75.283 };
+                double[] hai = new double[] { 56.798, 57.390, 63.920, 60.213, 65.277, 65.993, 67.436, 68.048, 70.078, 70.917, 71.086, 71.197, 74.628, 75.059, 75.112, 75.283 };
+                for (int j = 0; j < N_tube; j++)
+                {
+                    for (int k = 0; k < Nelement; k++)
+                    {
+                        ma[j, k] = VaDistri.Va[j, k] * (Vel_ave[i] / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st[i];
+                        //ha[j, k] = AirHTC.alpha(VaDistri.Va[j, k] * (Vel_ave / VaDistri.Va_ave), za, curve);
+                        ha[j, k] = hai[i];
+                    }
+                }
+                
+                
+                
                 double[] tai = new double[] { 20.00, 20.00, 19.98, 20.02, 20.00, 20.00, 19.99, 20.01, 20.00, 20.00, 20.01, 20.00, 20.01, 20.00, 20.00, 19.99 };
                 double[] RHi = new double[] { 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469 };
 
@@ -1684,7 +2167,7 @@ namespace Model
 
 
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma[i], ha[i], eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater);
+                    mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -1751,25 +2234,55 @@ namespace Model
             int N = 16;
             for (int i = 0; i < N; i++)
             {
+                //double[] mr = new double[] { 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.00, 25.00, 13.00, 17.01, 21.01, 25.00, 13.00, 17.00, 21.01, 25.00 }; // 60;
+                //mr[i] = mr[i] / 60;
+                //double[] Vel_a = new double[] { 0.60061, 0.60059, 0.59874, 0.60039, 0.89766, 0.89707, 0.89755, 0.89636, 1.09706, 1.09812, 1.09922, 1.09919, 1.29987, 1.29968, 1.29857, 1.29670 }; //m/s
+                //double H = Pt * N_tube;
+                //double Hx = L * H;
+                //double[] rho_a_st = { 1.19775, 1.19775, 1.19766, 1.19778, 1.19777, 1.19769, 1.19770, 1.19770, 1.19754, 1.19770, 1.19777, 1.19767, 1.19780, 1.19761, 1.19751, 1.19766 }; //kg/m3
+                //double[] Va = new double[N];
+                //Va[i] = Vel_a[i] * Hx;
+                //double[] ma = new double[N];
+                //ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
+                //int curve = 1; //
+                //double za = 1; //Adjust factor
+                //double zh = 1;
+                //double zdp = 1;
+                //double[] eta_surface = new double[] { 0.91638, 0.917989, 0.9188580, 0.9193723, 0.88357, 0.884134, 0.8849341, 0.8834665, 0.86450, 0.865326, 0.8658559, 0.8664762, 0.85036, 0.85115, 0.85198, 0.85284 };
+                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
+                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
+                //double[] ha = new double[] { 32.230, 31.553, 31.189, 30.974, 46.541, 46.285, 45.924, 46.587, 55.360, 54.968, 54.718, 54.426, 62.153, 61.768, 61.363, 60.944 };
+
+
                 double[] mr = new double[] { 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.00, 25.00, 13.00, 17.01, 21.01, 25.00, 13.00, 17.00, 21.01, 25.00 }; // 60;
                 mr[i] = mr[i] / 60;
-                double[] Vel_a = new double[] { 0.60061, 0.60059, 0.59874, 0.60039, 0.89766, 0.89707, 0.89755, 0.89636, 1.09706, 1.09812, 1.09922, 1.09919, 1.29987, 1.29968, 1.29857, 1.29670 }; //m/s
+                double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+                //double Vel_ave = 1.6;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+                double[] Vel_ave = new double[] { 0.60061, 0.60059, 0.59874, 0.60039, 0.89766, 0.89707, 0.89755, 0.89636, 1.09706, 1.09812, 1.09922, 1.09919, 1.29987, 1.29968, 1.29857, 1.29670 }; //m/s
+                AirDistribution VaDistri = new AirDistribution();
+                VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+                double[,] ma = new double[N_tube, Nelement];
+                double[,] ha = new double[N_tube, Nelement];
                 double H = Pt * N_tube;
                 double Hx = L * H;
                 double[] rho_a_st = { 1.19775, 1.19775, 1.19766, 1.19778, 1.19777, 1.19769, 1.19770, 1.19770, 1.19754, 1.19770, 1.19777, 1.19767, 1.19780, 1.19761, 1.19751, 1.19766 }; //kg/m3
-
-                double[] Va = new double[N];
-                Va[i] = Vel_a[i] * Hx;
-                double[] ma = new double[N];
-                ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
                 int curve = 1; //
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
                 double[] eta_surface = new double[] { 0.91638, 0.917989, 0.9188580, 0.9193723, 0.88357, 0.884134, 0.8849341, 0.8834665, 0.86450, 0.865326, 0.8658559, 0.8664762, 0.85036, 0.85115, 0.85198, 0.85284 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
-                double[] ha = new double[] { 32.230, 31.553, 31.189, 30.974, 46.541, 46.285, 45.924, 46.587, 55.360, 54.968, 54.718, 54.426, 62.153, 61.768, 61.363, 60.944 };
+                double[] hai = new double[] { 32.230, 31.553, 31.189, 30.974, 46.541, 46.285, 45.924, 46.587, 55.360, 54.968, 54.718, 54.426, 62.153, 61.768, 61.363, 60.944 };
+                for (int j = 0; j < N_tube; j++)
+                {
+                    for (int k = 0; k < Nelement; k++)
+                    {
+                        ma[j, k] = VaDistri.Va[j, k] * (Vel_ave[i] / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st[i];
+                        //ha[j, k] = AirHTC.alpha(VaDistri.Va[j, k] * (Vel_ave / VaDistri.Va_ave), za, curve);
+                        ha[j, k] = hai[i];
+                    }
+                }
+                
+                
                 double[] tai = new double[] { 20.00, 20.00, 20.02, 19.99, 19.99, 20.01, 20.01, 20.01, 20.05, 20.01, 19.99, 20.02, 19.98, 20.03, 20.06, 20.02 };
                 double[] RHi = new double[] { 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469 };
 
@@ -1791,7 +2304,7 @@ namespace Model
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma[i], ha[i], eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater);
+                    mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -1849,25 +2362,57 @@ namespace Model
             int N = 16;
             for (int i = 0; i < N; i++)
             {
-                double[] mr = new double[] { 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.00, 25.00, 13.00, 17.01, 21.01, 25.00, 13.00, 17.00, 21.01, 25.00 }; // 60;
+                //double[] mr = new double[] { 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.00, 25.00, 13.00, 17.01, 21.01, 25.00, 13.00, 17.00, 21.01, 25.00 }; // 60;
+                //mr[i] = mr[i] / 60;
+                //double[] Vel_a = new double[] { 0.60061, 0.60059, 0.59874, 0.60039, 0.89766, 0.89707, 0.89755, 0.89636, 1.09706, 1.09812, 1.09922, 1.09919, 1.29987, 1.29968, 1.29857, 1.29670 }; //m/s
+                //double H = Pt * N_tube;
+                //double Hx = L * H;
+                //double[] rho_a_st = { 1.19775, 1.19775, 1.19766, 1.19778, 1.19777, 1.19769, 1.19770, 1.19770, 1.19754, 1.19770, 1.19777, 1.19767, 1.19780, 1.19761, 1.19751, 1.19766 }; //kg/m3
+
+                //double[] Va = new double[N];
+                //Va[i] = Vel_a[i] * Hx;
+                //double[] ma = new double[N];
+                //ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
+                //int curve = 1; //
+                //double za = 1; //Adjust factor
+                //double zh = 1;
+                //double zdp = 1;
+                //double[] eta_surface = new double[] { 0.91638, 0.917989, 0.9188580, 0.9193723, 0.88357, 0.884134, 0.8849341, 0.8834665, 0.86450, 0.865326, 0.8658559, 0.8664762, 0.85036, 0.85115, 0.85198, 0.85284 };
+                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
+                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
+                //double[] ha = new double[] { 32.230, 31.553, 31.189, 30.974, 46.541, 46.285, 45.924, 46.587, 55.360, 54.968, 54.718, 54.426, 62.153, 61.768, 61.363, 60.944 };
+
+
+                double[] mr = new double[] { 13.01, 17.01, 21.01, 25.01, 13.01, 17.01, 21.01, 25.00, 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.00, 25.00 }; // 60;
                 mr[i] = mr[i] / 60;
-                double[] Vel_a = new double[] { 0.60061, 0.60059, 0.59874, 0.60039, 0.89766, 0.89707, 0.89755, 0.89636, 1.09706, 1.09812, 1.09922, 1.09919, 1.29987, 1.29968, 1.29857, 1.29670 }; //m/s
+                double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+                //double Vel_ave = 1.6;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+                double[] Vel_ave = new double[] { 0.60061, 0.60059, 0.59874, 0.60039, 0.89766, 0.89707, 0.89755, 0.89636, 1.09706, 1.09812, 1.09922, 1.09919, 1.29987, 1.29968, 1.29857, 1.29670 }; //m/s
+                AirDistribution VaDistri = new AirDistribution();
+                VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+                double[,] ma = new double[N_tube, Nelement];
+                double[,] ha = new double[N_tube, Nelement];
                 double H = Pt * N_tube;
                 double Hx = L * H;
                 double[] rho_a_st = { 1.19775, 1.19775, 1.19766, 1.19778, 1.19777, 1.19769, 1.19770, 1.19770, 1.19754, 1.19770, 1.19777, 1.19767, 1.19780, 1.19761, 1.19751, 1.19766 }; //kg/m3
-
-                double[] Va = new double[N];
-                Va[i] = Vel_a[i] * Hx;
-                double[] ma = new double[N];
-                ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
                 int curve = 1; //
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
                 double[] eta_surface = new double[] { 0.91638, 0.917989, 0.9188580, 0.9193723, 0.88357, 0.884134, 0.8849341, 0.8834665, 0.86450, 0.865326, 0.8658559, 0.8664762, 0.85036, 0.85115, 0.85198, 0.85284 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
-                double[] ha = new double[] { 32.230, 31.553, 31.189, 30.974, 46.541, 46.285, 45.924, 46.587, 55.360, 54.968, 54.718, 54.426, 62.153, 61.768, 61.363, 60.944 };
+                double[] hai = new double[] { 32.230, 31.553, 31.189, 30.974, 46.541, 46.285, 45.924, 46.587, 55.360, 54.968, 54.718, 54.426, 62.153, 61.768, 61.363, 60.944 };
+                for (int j = 0; j < N_tube; j++)
+                {
+                    for (int k = 0; k < Nelement; k++)
+                    {
+                        ma[j, k] = VaDistri.Va[j, k] * (Vel_ave[i] / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st[i];
+                        //ha[j, k] = AirHTC.alpha(VaDistri.Va[j, k] * (Vel_ave / VaDistri.Va_ave), za, curve);
+                        ha[j, k] = hai[i];
+                    }
+                } 
+                
+                
+                
                 double[] tai = new double[] { 20.00, 20.00, 20.02, 19.99, 19.99, 20.01, 20.01, 20.01, 20.05, 20.01, 19.99, 20.02, 19.98, 20.03, 20.06, 20.02 };
                 double[] RHi = new double[] { 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469, 0.469 };
 
@@ -1889,7 +2434,7 @@ namespace Model
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma[i], ha[i], eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater);
+                    mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -1945,25 +2490,55 @@ namespace Model
             int N = 16;
             for (int i = 0; i < N; i++)
             {
+                //double[] mr = new double[] { 13.01, 17.01, 21.01, 25.01, 13.01, 17.01, 21.01, 25.00, 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.00, 25.00 }; // 60;
+                //mr[i] = mr[i] / 60;
+                //double[] Vel_a = new double[] { 0.59953, 0.59918, 0.59937, 0.59932, 0.89662, 0.89764, 0.89871, 0.89920, 1.09872, 1.09853, 1.09848, 1.09934, 1.29794, 1.29856, 1.29909, 1.29948 }; //m/s
+                //double H = Pt * N_tube;
+                //double Hx = L * H;
+                //double[] rho_a_st = { 1.16838, 1.16839, 1.16860, 1.16853, 1.16846, 1.16857, 1.16846, 1.16847, 1.16849, 1.16849, 1.16849, 1.16846, 1.16839, 1.16847, 1.16844, 1.16847 }; //kg/m3
+
+                //double[] Va = new double[N];
+                //Va[i] = Vel_a[i] * Hx;
+                //double[] ma = new double[N];
+                //ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
+                //int curve = 1; //
+                //double za = 1; //Adjust factor
+                //double zh = 1;
+                //double zdp = 1;
+                //double[] eta_surface = new double[] { 0.89596, 0.896814, 0.8966571, 0.8980433, 0.86571, 0.864929, 0.8638292, 0.8638503, 0.84928, 0.846912, 0.8477477, 0.8480225, 0.83348, 0.83280, 0.83285, 0.83317 };
+                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
+                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
+                //double[] ha = new double[] { 32.230, 31.553, 31.189, 30.974, 46.541, 46.285, 45.924, 46.587, 55.360, 54.968, 54.718, 54.426, 62.153, 61.768, 61.363, 60.944 };
+
                 double[] mr = new double[] { 13.01, 17.01, 21.01, 25.01, 13.01, 17.01, 21.01, 25.00, 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.00, 25.00 }; // 60;
                 mr[i] = mr[i] / 60;
-                double[] Vel_a = new double[] { 0.59953, 0.59918, 0.59937, 0.59932, 0.89662, 0.89764, 0.89871, 0.89920, 1.09872, 1.09853, 1.09848, 1.09934, 1.29794, 1.29856, 1.29909, 1.29948 }; //m/s
+                double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+                //double Vel_ave = 1.6;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+                double[] Vel_ave = new double[] { 0.59953, 0.59918, 0.59937, 0.59932, 0.89662, 0.89764, 0.89871, 0.89920, 1.09872, 1.09853, 1.09848, 1.09934, 1.29794, 1.29856, 1.29909, 1.29948 }; //m/s
+                AirDistribution VaDistri = new AirDistribution();
+                VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+                double[,] ma = new double[N_tube, Nelement];
+                double[,] ha = new double[N_tube, Nelement];
                 double H = Pt * N_tube;
                 double Hx = L * H;
                 double[] rho_a_st = { 1.16838, 1.16839, 1.16860, 1.16853, 1.16846, 1.16857, 1.16846, 1.16847, 1.16849, 1.16849, 1.16849, 1.16846, 1.16839, 1.16847, 1.16844, 1.16847 }; //kg/m3
-
-                double[] Va = new double[N];
-                Va[i] = Vel_a[i] * Hx;
-                double[] ma = new double[N];
-                ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
                 int curve = 1; //
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
                 double[] eta_surface = new double[] { 0.89596, 0.896814, 0.8966571, 0.8980433, 0.86571, 0.864929, 0.8638292, 0.8638503, 0.84928, 0.846912, 0.8477477, 0.8480225, 0.83348, 0.83280, 0.83285, 0.83317 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
-                double[] ha = new double[] { 32.230, 31.553, 31.189, 30.974, 46.541, 46.285, 45.924, 46.587, 55.360, 54.968, 54.718, 54.426, 62.153, 61.768, 61.363, 60.944 };
+                double[] hai = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
+                for (int j = 0; j < N_tube; j++)
+                {
+                    for (int k = 0; k < Nelement; k++)
+                    {
+                        ma[j, k] = VaDistri.Va[j, k] * (Vel_ave[i] / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st[i];
+                        //ha[j, k] = AirHTC.alpha(VaDistri.Va[j, k] * (Vel_ave / VaDistri.Va_ave), za, curve);
+                        ha[j, k] = hai[i];
+                    }
+                } 
+
+                
                 double[] tai = new double[] { 27.03, 27.03, 26.97, 26.99, 27.01, 26.98, 27.01, 27.01, 27.00, 27.00, 27.00, 27.01, 27.03, 27.01, 27.02, 27.01 };
                 double[] RHi = new double[] { 0.4682, 0.4676, 0.4704, 0.4694, 0.4685, 0.4699, 0.4685, 0.4680, 0.4690, 0.4690, 0.4696, 0.4685, 0.4676, 0.4680, 0.4669, 0.4680 };
 
@@ -1987,7 +2562,7 @@ namespace Model
 
 
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma[i], ha[i], eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater);
+                    mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -2021,20 +2596,45 @@ namespace Model
             CircuitInfo.number = new int[] { 3, 3 };
              CircuitInfo.TubeofCir = new int[] { 18, 14, 16 };  //{ 4, 8 };
 
-            double mr = 9.99 / 60;
-            double Vel_a = 2; //m/s
-            double H = Pt * N_tube;
-            double Hx = L * H;
-            double rho_a_st = 1.188; //kg/m3
+            //double mr = 9.99 / 60;
+            //double Vel_a = 2; //m/s
+            //double H = Pt * N_tube;
+            //double Hx = L * H;
+            //double rho_a_st = 1.188; //kg/m3
 
-            double Va = Vel_a * Hx;
-            double ma = Va * rho_a_st;//Va / 3600 * 1.2; //kg/s
-            int curve = 1; //
-            double za = 1; //Adjust factor
-            double zh = 1;
-            double zdp = 1;
-            double eta_surface = 0.8284;
-            double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 77.42;//71.84;//36.44;
+            //double Va = Vel_a * Hx;
+            //double ma = Va * rho_a_st;//Va / 3600 * 1.2; //kg/s
+            //int curve = 1; //
+            //double za = 1; //Adjust factor
+            //double zh = 1;
+            //double zdp = 1;
+            //double eta_surface = 0.8284;
+            //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 77.42;//71.84;//36.44;
+             double mr = 9.99/60;
+             double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+             double Vel_ave = 2;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+             AirDistribution VaDistri = new AirDistribution();
+             VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+             double[,] ma = new double[N_tube, Nelement];
+             double[,] ha = new double[N_tube, Nelement];
+             double H = Pt * N_tube;
+             double Hx = L * H;
+             double rho_a_st = 1.188;
+             double za = 1;
+             int curve = 1;
+             double eta_surface = 1;
+             double zh = 1;
+             double zdp = 1.5;
+             for (int i = 0; i < N_tube; i++)
+             {
+                 for (int j = 0; j < Nelement; j++)
+                 {
+                     ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
+                     ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve);
+                     //ha[i, j] = 79;
+                 }
+             }
+
             double tai = 19.98;
             double RHi = 0.469;
             double tri = 44.98;
@@ -2071,7 +2671,7 @@ namespace Model
                 }
 
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc, pc, hri,
-                mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+                mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
 
             return res;
         }
@@ -2123,7 +2723,7 @@ namespace Model
             int N = 20;
             for (int i = 0; i < N; i++)
             {
-                double[] mr = new double[] { 13.00, 17.01, 21.01, 25.00, 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.01, 25.01, 13.01, 17.01, 21.00, 25.01, 13.01, 17.00, 21.01, 25.00 }; // 60;
+                /*double[] mr = new double[] { 13.00, 17.01, 21.01, 25.00, 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.01, 25.01, 13.01, 17.01, 21.00, 25.01, 13.01, 17.00, 21.01, 25.00 }; // 60;
                 mr[i] = mr[i] / 60;
                 double[] Vel_a = new double[] { 0.65233, 0.65247, 0.65203, 0.65231, 0.97535, 0.97611, 0.97615, 0.97600, 1.19102, 1.19266, 1.19328, 1.19184, 1.41083, 1.41189, 1.41016, 1.41338, 1.45545, 1.45630, 1.45670, 1.45692 }; //m/s
                 double H = Pt * N_tube;
@@ -2133,7 +2733,7 @@ namespace Model
                 double[] Va = new double[N];
                 Va[i] = Vel_a[i] * Hx;
                 double[] ma = new double[N];
-                ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
+                ma[i] = Va[i] * rho_a_st[i]/N_tube/Nelement;//Va / 3600 * 1.2; //kg/s
                 int curve = 1; //
                 double za = 1; //Adjust factor
                 double zh = 1;
@@ -2143,6 +2743,45 @@ namespace Model
                 //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
 
                 double[] ha = new double[] { 42.843, 42.385, 41.940, 41.554, 58.081, 58.063, 57.780, 57.606, 66.621, 66.605, 66.459, 66.143, 72.389, 72.531, 72.751, 72.677, 72.605, 72.414, 72.389, 72.491 };
+                double[,] maa = new double[N_tube,Nelement];
+                double[,] haa = new double[N_tube, Nelement];
+                for (int j = 0; j < N_tube; j++)
+                {
+                    for (int k = 0; k < Nelement; k++)
+                    {
+                        maa[j, k] = ma[i];
+                        //ha[j, k] = AirHTC.alpha(VaDistri.Va[j, k] * (Vel_ave / VaDistri.Va_ave), za, curve);
+                        haa[j, k] = ha[i];
+                    }
+                }*/
+
+                double[] mr = new double[] { 13.00, 17.01, 21.01, 25.00, 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.01, 25.01, 13.01, 17.01, 21.00, 25.01, 13.01, 17.00, 21.01, 25.00 }; // 60;
+                mr[i] = mr[i] / 60;
+                double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+                //double Vel_ave = 1.6;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+                double[] Vel_ave = new double[] { 0.65233, 0.65247, 0.65203, 0.65231, 0.97535, 0.97611, 0.97615, 0.97600, 1.19102, 1.19266, 1.19328, 1.19184, 1.41083, 1.41189, 1.41016, 1.41338, 1.45545, 1.45630, 1.45670, 1.45692 };
+                AirDistribution VaDistri = new AirDistribution();
+                VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+                double[,] ma = new double[N_tube, Nelement];
+                double[,] ha = new double[N_tube, Nelement];
+                double H = Pt * N_tube;
+                double Hx = L * H;
+                double[] rho_a_st = { 1.16851, 1.16850, 1.16847, 1.16847, 1.16844, 1.16845, 1.16845, 1.16846, 1.16840, 1.16840, 1.16845, 1.16850, 1.16848, 1.16847, 1.16840, 1.16843, 1.16849, 1.16852, 1.16845, 1.16845 }; //kg/m3
+                int curve = 1; //
+                double za = 1; //Adjust factor
+                double zh = 1;
+                double zdp = 1;
+                double[] eta_surface = new double[] { 0.88953, 0.887951, 0.8871507, 0.8877251, 0.86188, 0.858276, 0.8577662, 0.8573741, 0.84928, 0.845690, 0.8435979, 0.8437980, 0.83914, 0.83524, 0.83448, 0.83279, 0.83796, 0.83381, 0.83292, 0.83561 };
+                double[] hai = new double[] { 42.843, 42.385, 41.940, 41.554, 58.081, 58.063, 57.780, 57.606, 66.621, 66.605, 66.459, 66.143, 72.389, 72.531, 72.751, 72.677, 72.605, 72.414, 72.389, 72.491 };
+                for (int j = 0; j < N_tube; j++)
+                {
+                    for (int k = 0; k < Nelement; k++)
+                    {
+                        ma[j, k] = VaDistri.Va[j, k] * (Vel_ave[i]/ VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st[i];
+                        //ha[j, k] = AirHTC.alpha(VaDistri.Va[j, k] * (Vel_ave / VaDistri.Va_ave), za, curve);
+                        ha[j, k] = hai[i];
+                    }
+                }               
 
                 double[] tai = new double[] { 27.00, 27.00, 27.01, 27.01, 27.02, 27.01, 27.01, 27.01, 27.02, 27.02, 27.01, 27.00, 27.01, 27.00, 27.02, 27.01, 27.00, 26.99, 27.01, 27.01 };
                 double[] RHi = new double[] { 0.4679, 0.4684, 0.4680, 0.4680, 0.4669, 0.4691, 0.4691, 0.4685, 0.4692, 0.4692, 0.4691, 0.4684, 0.4674, 0.4707, 0.4698, 0.4702, 0.4696, 0.4700, 0.4691, 0.4691 };
@@ -2168,7 +2807,7 @@ namespace Model
 
 
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma[i], ha[i], eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater);
+                    mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -2229,7 +2868,7 @@ namespace Model
             CircuitInfo.TubeofCir = new int[] { 8, 6, 8, 10, 6, 10 };  //{ 4, 8 };
             CircuitInfo.UnequalCir = new int[] { 5, 5, 6, 6, 0, 0 };
 
-            double mr = 0.06;
+            /*double mr = 0.06;
             double Vel_a = 1.8; //m/s
             double H = Pt * N_tube;
             double Hx = L * H;
@@ -2239,10 +2878,32 @@ namespace Model
             double ma = Va * rho_a_st;//Va / 3600 * 1.2; //kg/s
             int curve = 1; //
             double za = 1; //Adjust factor
-            double ha = AirHTC.alpha(Vel_a, za, curve);//71.84;//36.44;
+            double ha = AirHTC.alpha(Vel_a, za, curve);//71.84;//36.44;*/
+            double mr =0.06;
+            double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+            double Vel_ave = 1.6;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+            AirDistribution VaDistri = new AirDistribution();
+            VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+            double[,] ma = new double[N_tube, Nelement];
+            double[,] ha = new double[N_tube, Nelement];
+            double H = Pt * N_tube;
+            double Hx = L * H;
+            double rho_a_st = 1.2;
+            double za = 1;
+            int curve = 1;
+            for (int i = 0; i < N_tube; i++)
+            {
+                for (int j = 0; j < Nelement; j++)
+                {
+                    ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
+                    ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve);
+                    //ha[i, j] = 79;
+                }
+            }
             double eta_surface = 1;
             double zh = 1;
             double zdp = 1.5;
+
             double tai = 26.67;
             double RHi = 0.469;
             double tri = 7.2;
@@ -2288,7 +2949,7 @@ namespace Model
             geo.A_ratio = geo.A_r / geo.A_a;
 
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, te, pe, hri,
-                mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+                mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
 
             //res = Slab.SlabCalc(Npass, N_tubes_pass, fluid, composition, Dh, L, geo.A_a, geo.A_r_cs, geo.A_r, tai, tri, pe, hri,
             //    mr, ma, ha, eta_surface, zh, zdp);
@@ -2354,17 +3015,33 @@ namespace Model
             CircuitInfo.UnequalCir = new int[] { -5, -6, 5, 5, 6, 6 }; //{ 3, 4, -3, -3, -4, -4 };
 
             double mr = 0.076;
-            double Vel_a = 1.8; //m/s
+            //double Vel_a = 1.8; //m/s
+            double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+            double Vel_ave = 1.8;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+            AirDistribution VaDistri = new AirDistribution();
+            VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+            double[,] ma = new double[N_tube, Nelement];
+            double[,] ha = new double[N_tube, Nelement];
             double H = Pt * N_tube;
             double Hx = L * H;
             double rho_a_st = 1.2; //kg/m3
-
-            double Va = Vel_a * Hx;
-            double ma = Va * rho_a_st;//Va / 3600 * 1.2; //kg/s
             int curve = 1; //
             double za = 1; //Adjust factor
+            for (int i = 0; i < N_tube; i++)
+            {
+                for (int j = 0; j < Nelement; j++)
+                {
+                    ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
+                    ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve)*1.5;
+                    //ha[i, j] = 79;
+                }
+            }
 
-            double ha = AirHTC.alpha(Vel_a, za, curve) * 1.5;//71.84;//36.44;
+            //double Va = Vel_a * Hx;
+            //double ma = Va * rho_a_st;//Va / 3600 * 1.2; //kg/s
+
+
+            //double ha = AirHTC.alpha(Vel_a, za, curve) * 1.5;//71.84;//36.44;
 
             double eta_surface = 1;
             double zh = 1;
@@ -2414,7 +3091,7 @@ namespace Model
             geo.A_ratio = geo.A_r / geo.A_a;
 
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, te, pe, hri,
-                mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+                mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
 
             //res = Slab.SlabCalc(Npass, N_tubes_pass, fluid, composition, Dh, L, geo.A_a, geo.A_r_cs, geo.A_r, tai, tri, pe, hri,
             //    mr, ma, ha, eta_surface, zh, zdp);
@@ -2453,10 +3130,10 @@ namespace Model
             CircuitInfo.UnequalCir = new int[] { 5, 5, 6, 6, 0, 0 };
             double mr = 23.0 / 60;
             //double Vel_a = 1.2;
-            double[,] Vel_a = { { 1.0 } };
-            double Vel_ave = 1.2;
+            double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+            double Vel_ave = 1.2;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
             AirDistribution VaDistri = new AirDistribution();
-            VaDistri = DistributionConvert.VaConvert(Vel_a, N_tube, Nelement);
+            VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
             double[,] ma=new double[N_tube,Nelement];
             double[,] ha = new double[N_tube, Nelement];
             double H = Pt * N_tube;
