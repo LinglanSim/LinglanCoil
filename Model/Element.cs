@@ -33,8 +33,8 @@ namespace Model
             // **********Superheated state**********
             if (hri > h_v && fluid[0] != "Water")
             {
-                if (hri < 1.02 * h_v)
-                    Tri_mod = tri + 0.5;   //"for Tri modification in the transition region"
+                if (hri < 1.02 * h_v)          //ignore modification for now, ruhao,20180226
+                    Tri_mod = tri + 0.5 * 0;   //"for Tri modification in the transition region"  
                 else
                     Tri_mod = tri;
 
@@ -72,8 +72,8 @@ namespace Model
             //**********Subcooled state**********
             if (hri < h_l || fluid[0] == "Water")
             {
-                if (hri > 0.98 * h_l)
-                    Tri_mod = tri - 0.5;    //"for Tri modification in the transition region"
+                if (hri > 0.98 * h_l)            //ignore modification for now, ruhao,20180226
+                    Tri_mod = tri - 0.5 * 0;    //"for Tri modification in the transition region"
                 else
                     Tri_mod = tri;
 

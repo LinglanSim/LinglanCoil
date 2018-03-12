@@ -15,7 +15,6 @@ namespace Model
         {
             double r_metal = thickness / conductivity / Ar;
             double gg = 9.8;
-            //double temperature;
             int phase1 = 1;
             int phase2 = 2;
             double q_initial = 0.01;
@@ -27,8 +26,9 @@ namespace Model
             CalcResult res=new CalcResult();
             //res.Tao[0] = new double();          
             var r = new Refrigerant.SATTTotalResult();
-            //temperature = Refrigerant.SATP(fluid, composition, pri, phase1).Temperature;
-            r = Refrigerant.SATTTotal(fluid, composition, tri + 273.15).SATTTotalResult; //temperature
+            //recalc tri to make sure it is 2ph, ruhao, 20180225 
+            tri = Refrigerant.SATP(fluid, composition, pri, phase1).Temperature - 273.15; 
+            r = Refrigerant.SATTTotal(fluid, composition, tri + 273.15).SATTTotalResult; 
             res.x_i = (hri - r.EnthalpyL) / (r.EnthalpyV - r.EnthalpyL);   //+ 140 for reference state, to be changed
 
             RefHTCandDPResult htc_dp = new RefHTCandDPResult();

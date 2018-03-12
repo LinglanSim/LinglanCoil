@@ -66,6 +66,7 @@ namespace Model
             int restartDP_index = 0;
             int N_tube2 = 0;
             int[] index_cir = new int[Ncir];
+            int index_mr_ciri_base = 0;
             CalcResult[] r = new CalcResult[Ncir];
             CalcResult[] r1 = new CalcResult[Ncir];
             CalcResult[] r2 = new CalcResult[Ncir]; //for NinMout only
@@ -113,7 +114,18 @@ namespace Model
                 res_cir2 = new CalcResult[Nciro + 1];
 
                 flag_ciro = (index_outbig ? 1 : 0);
-                tri = Refrigerant.SATP(fluid, composition, pri, 1).Temperature - 273.15;
+                //te = Refrigerant.SATP(fluid, composition, pri, 1).Temperature - 273.15;
+                //tri = tri;
+                //制冷制热模块计算切换
+                if (hexType == 0)
+                {
+                    tri = Refrigerant.SATP(fluid, composition, pri, 1).Temperature - 273.15;
+                }
+                else
+                {
+                    te = Refrigerant.SATP(fluid, composition, pri, 1).Temperature - 273.15;
+                }
+
                 for (int j = 0; j < (flag_ciro == 1 ? (index_outbig ? Nciri + 1 : 1) : Nciro + 1); j++)
                 {
                     if (j >= Nciro)
@@ -175,8 +187,10 @@ namespace Model
                         {
                             if (flag_ciro == 1)
                             {
+                                //汇管计算
                                 if(CircuitInfo.UnequalCir[i]<=0)
                                 {
+                                    
                                     //for (int i = 0; i < Ncir; i++)
                                     r[i] = Circuit.CircuitCalc(i, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, dh, l, geo, ta, RH,
                                         tri_cir[i], pri_cir[i], hri_cir[i], mr_ciro[k], ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,Airdirection);
@@ -193,6 +207,7 @@ namespace Model
                             }
                             else if (Nciri == Nciro || CircuitInfo.UnequalCir[i] == Nciri + 1 + j)
                             {
+                                //均匀流路计算和不均匀流路开始部分（独立管）计算
                                 if (index == 0)
                                 {
                                     if (Nciri == Nciro)
@@ -202,7 +217,12 @@ namespace Model
                                     else
                                     {
                                         if (restartDP_index == 1 || !priconverge.flag)
-                                            mr_ciri[k] = mr_ciri_base[j][k] * mr_ciro[j] / (mr / Nciro);
+                                        {
+                                            var mm = mr_ciri_base[j].Sum();
+                                            //foreach (var item in mr_ciri_base[j])
+                                            //mm += item; 
+                                            mr_ciri[k] = mr_ciri_base[j][k] * mr_ciro[j] / mm;//(mr / Nciro);
+                                        }
                                         else
                                             mr_ciri[k] = mr_ciro[j] / Ngroupin[j];
                                     }
@@ -210,10 +230,13 @@ namespace Model
                                 //else mr_ciri_base.CopyTo(mr_ciri[k], 0);
 
                                 //for (int i = 0; i < Ncir; i++)
+
+                                //首次流路计算
+
                                 r[i] = Circuit.CircuitCalc(i, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, dh, l, geo, ta, RH,
                                     tri_cir[i], pri_cir[i], hri_cir[i], mr_ciri[k], ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,Airdirection);
                                 r1[k] = r[i].ShallowCopy();
-                                index_cir[k] = i;
+                                index_cir[k] = i;//不均匀流路的输出才会用到
                                 k++;
 
                                 if (k == (Nciri == Nciro ? Ncir : Ngroupin[j]))
@@ -230,6 +253,7 @@ namespace Model
                         index++;
                         //dPconverge = CheckDPforCircuits.CheckDPConverge(mr, mr_ciri, r, Ncir);
                         dPconverge = CheckDPforCircuits.CheckDPConverge(res_cir2, iterforPri, flag_ciro, mr_forDP, r1, Ncir_forDP);
+
                         if (flag_ciro == 0)
                         {
                             restartDP_index = 0;
@@ -255,11 +279,18 @@ namespace Model
                         #region //Result print out
                         if (dPconverge.flag)
                         {
-                            if (Nciri == Nciro) te_calc = Refrigerant.SATP(fluid, composition, r[j].Pro, 1).Temperature;
+                            if (Nciri == Nciro) 
+                                te_calc = Refrigerant.SATP(fluid, composition, r[j].Pro, 1).Temperature;
                             else
-                            {
+                            {                            
+                                if (mr_ciri_base.Count == Nciro && flag_ciro == 0)
+                                {
+                                    mr_ciri_base.RemoveAt(index_mr_ciri_base);
+                                    mr_ciri_base.Insert(index_mr_ciri_base, mr_forDP);
+                                    index_mr_ciri_base++;
+                                    index_mr_ciri_base %= mr_ciri_base.Count;
+                                }                                
                                 if (mr_ciri_base.Count < Nciro) mr_ciri_base.Add(mr_forDP); //keep original mr ratio for fast iter
-
                                 j = (flag_ciro == 1 ? j + Nciro : j);
                                 res_cir2[j] = new CalcResult();
                                 for (int i = 0; i < (flag_ciro == 1 ? Nciro : Ngroupin[j]); i++)
@@ -300,7 +331,7 @@ namespace Model
                         }
                         #endregion
 
-                    } while (!dPconverge.flag && iterforDP < 100);
+                    } while (!dPconverge.flag && iterforDP < 500);
 
                     if (Nciri == Nciro) break;
 
@@ -332,13 +363,15 @@ namespace Model
                 //}
 
 
-                if (restartDP_index == 1) priconverge.flag = false;
+                if (restartDP_index == 1) 
+                    priconverge.flag = false;
                 else if (hexType == 0 && (fluid[0] != "Water"))
                 {
                     priconverge = CheckPin.CheckPriConverge(te, te_calc - 273.15, pri, pe, r[Ncir-1].Pro); //res_slab.Pro
                     iterforPri++;
                     pri = priconverge.pri;
-                    if (priconverge.flag && iterforPri == 1 && iterforDP == 1) priconverge.flag = false; //to avoid not even iterate but converge by chance 
+                    if (priconverge.flag && iterforPri == 1 && iterforDP == 1) 
+                        priconverge.flag = false; //to avoid not even iterate but converge by chance 
                 }
                 else
                     priconverge.flag = true;
@@ -346,9 +379,9 @@ namespace Model
             } while (!priconverge.flag && iterforPri < 20);
 
 
-            if (iterforDP >= 100)
+            if (iterforDP >= 500)
             {
-                throw new Exception("iter for DPConverge > 100.");
+                throw new Exception("iter for DPConverge > 500.");
             }
             if (iterforPri >= 20)
             {

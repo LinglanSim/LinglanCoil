@@ -12,8 +12,9 @@ namespace Model.Basic
         public double Pro = 0;
         public double hro = 0;
         public double Tao = 0; //= new double[1];
-        public double[, ,] Tao_Detail = new double[100, 100, 100];
-        public double[, ,] RHo_Detail = new double[100, 100, 100];
+        //improve calc speed, ruhao, 20180309
+        public double[, ,] Tao_Detail; //= new double[100, 100, 100];
+        public double[, ,] RHo_Detail; //= new double[100, 100, 100];
         public double Q = 0;
         public double[,] Q_detail = new double[100, 100];//detail output
         public double[,] DP_detail = new double[100, 100];
