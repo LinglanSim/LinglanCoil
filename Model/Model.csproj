@@ -98,6 +98,42 @@
     <Compile Include="CirArrangement.cs" />
     <Compile Include="Basic\AirDistribution.cs" />
     <Compile Include="Basic\DistributionConvert.cs" />
+    <Compile Include="Coolprop\AbstractState.cs" />
+    <Compile Include="Coolprop\AbstractStateGenerator.cs" />
+    <Compile Include="Coolprop\backends.cs" />
+    <Compile Include="Coolprop\backend_families.cs" />
+    <Compile Include="Coolprop\composition_types.cs" />
+    <Compile Include="Coolprop\Configuration.cs" />
+    <Compile Include="Coolprop\ConfigurationDataTypes.cs" />
+    <Compile Include="Coolprop\ConfigurationItem.cs" />
+    <Compile Include="Coolprop\configuration_keys.cs" />
+    <Compile Include="Coolprop\CoolProp.cs" />
+    <Compile Include="Coolprop\CoolPropPINVOKE.cs" />
+    <Compile Include="Coolprop\CriticalState.cs" />
+    <Compile Include="Coolprop\DoubleVector.cs" />
+    <Compile Include="Coolprop\Example.cs" />
+    <Compile Include="Coolprop\fluid_types.cs" />
+    <Compile Include="Coolprop\GuessesStructure.cs" />
+    <Compile Include="Coolprop\input_pairs.cs" />
+    <Compile Include="Coolprop\parameters.cs" />
+    <Compile Include="Coolprop\PhaseEnvelopeData.cs" />
+    <Compile Include="Coolprop\phases.cs" />
+    <Compile Include="Coolprop\SimpleState.cs" />
+    <Compile Include="Coolprop\SpinodalData.cs" />
+    <Compile Include="Coolprop\SsatSimpleState.cs" />
+    <Compile Include="Coolprop\StringVector.cs" />
+    <Compile Include="Coolprop\SWIGTYPE_p_bool.cs" />
+    <Compile Include="Coolprop\SWIGTYPE_p_CoolPropDbl.cs" />
+    <Compile Include="Coolprop\SWIGTYPE_p_CoolProp__backend_families.cs" />
+    <Compile Include="Coolprop\SWIGTYPE_p_CoolProp__parameters.cs" />
+    <Compile Include="Coolprop\SWIGTYPE_p_double.cs" />
+    <Compile Include="Coolprop\SWIGTYPE_p_shared_ptrT_CoolProp__AbstractStateGenerator_t.cs" />
+    <Compile Include="Coolprop\SWIGTYPE_p_std__mapT_configuration_keys_CoolProp__ConfigurationItem_t.cs" />
+    <Compile Include="Coolprop\SWIGTYPE_p_std__string.cs" />
+    <Compile Include="Coolprop\SWIGTYPE_p_std__vectorT_CoolPropDbl_t.cs" />
+    <Compile Include="Coolprop\SWIGTYPE_p_std__vectorT_CoolProp__CriticalState_t.cs" />
+    <Compile Include="Coolprop\VectorOfDoubleVector.cs" />
+    <Compile Include="Coolprop\VectorOfStringVector.cs" />
     <Compile Include="Tube.cs" />
     <Compile Include="Element.cs" />
     <Compile Include="DataBase.Context.cs">
@@ -700,6 +736,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BrineProp.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CoolProp.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="refprop.dll">
