@@ -17,17 +17,16 @@ namespace Model
             double g = mr / A_r_cs;
 
             CalcResult res_tube = new CalcResult();
+            res_tube.Tao_Detail = new double[1, 1, Nelement];
             CalcResult[] r = new CalcResult[Nelement];
             for (int i = 0; i < Nelement; i++)
             {
-
                 r[i] = Element.ElementCal(fluid, composition, dh, l / Nelement, Aa_fin, Aa_tube, A_r_cs, Ar,
                     tai[i], RHi[i], tri, pri, hri, mr, g, ma[i], ha[i], eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);//elementtest
-
                 pri = r[i].Pro;
                 hri = r[i].hro;
                 tri = r[i].Tro;
-
+                res_tube.Tao_Detail[0, 0, i] = r[i].Tao;
                 res_tube.Tao += r[i].Tao;
                 res_tube.RHout+= r[i].RHout;
                 res_tube.DP += r[i].DP;
@@ -38,7 +37,7 @@ namespace Model
                 res_tube.R_1a += r[i].R_1a;
                 res_tube.R_1r += r[i].R_1r;
             }
-            res_tube.Tao = res_tube.Tao / Nelement; //to be modified....
+            res_tube.Tao = res_tube.Tao / Nelement; 
             res_tube.RHout = res_tube.RHout / Nelement;
             res_tube.href = res_tube.href / Nelement;
             res_tube.R_1 = res_tube.R_1 / Nelement;

@@ -198,7 +198,7 @@ namespace Model
             int[] Ntube = { 6, 6 };
             int N_tube = Ntube[0];
             double L = 914.4 * 0.001;
-            int Nelement = 5;
+            int Nelement = 10;
             int[,] CirArrange;
             //CirArrange = new int[,] { { 8, 6, 4, 2, 1, 3, 5, 7 } };//actual, counter-paralle,  Q=83.1
             //CirArrange = new int[,] { { 20, 18, 16, 14, 12, 10, 8, 6, 4, 2, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19 } };//actual, counter-paralle,  Q=83.1
@@ -260,15 +260,13 @@ namespace Model
                 for (int j = 0; j < Nelement; j++)
                 {
                     ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
-                    ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve) * 1.5;
+                    ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve);// *1.5;
                     //ha[i, j] = 79;
                 }
             }
             double eta_surface = 1;
             double zh = 1;
             double zdp = 1;
-
-
 
             double tai = 26.67;
             double RHi = 0.469;
@@ -316,6 +314,198 @@ namespace Model
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tri, pri, hri,
                 mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
 
+            return res;
+        }
+        public static CalcResult main_RACR32condenser_1()
+        {
+            //制冷剂制热模块计算
+            string[] fluid = new string[] { "R32" }; //;{ "R410A.MIX" }
+            double[] composition = new double[] { 1 };
+            CalcResult res = new CalcResult();
+            int Nrow = 2;
+            double[] FPI = new double[Nrow + 1];
+            FPI = new double[] { 19.54, 19.54 };
+            double Pt = 14.5 * 0.001;
+            double Pr = 20 * 0.001;
+            double Di = 4.84 * 0.001;//8 6.8944
+            double Do = 5.334 * 0.001;//8.4 7.35
+            double Fthickness = 0.095 * 0.001;
+            double thickness = 0.5 * (Do - Di);
+            int[] Ntube = { 32, 32 };
+            int N_tube = Ntube[0];
+            double L = 842.5 * 0.001;
+            int Nelement = 10;
+            int[,] CirArrange;
+            //CirArrange = new int[,] { { 38, 37, 36, 35, 1, 2, 3, 4 }, { 42, 41, 40, 39, 5, 6, 7, 8 }, { 46, 45, 44, 43, 9, 10, 11, 12 }, { 50, 49, 48, 47, 13, 14, 15, 16 }, 
+            //{ 54, 53, 52, 51, 17, 18, 19, 20 }, { 58, 57, 56, 55, 21, 22, 23, 24 }, { 62, 61, 60, 59, 25, 26, 27, 28 }, { 66, 65, 64, 63, 29, 30, 31, 32 } };
+            CirArrange = new int[,] { { 36, 35, 34, 33, 1, 2, 3, 4 }, { 40, 39, 38, 37, 5, 6, 7, 8 }, { 44, 43, 42, 41, 9, 10, 11, 12 }, { 48, 47, 46, 45, 13, 14, 15, 16 }, 
+            { 52, 51, 50, 49, 17, 18, 19, 20 }, { 56, 55, 54, 53, 21, 22, 23, 24 }, { 60, 59, 58, 57, 25, 26, 27, 28 }, { 64, 63, 62, 61, 29, 30, 31, 32 } };
+
+            CircuitNumber CircuitInfo = new CircuitNumber();
+            CircuitInfo.number = new int[] { 8, 8 }; 
+            CircuitInfo.TubeofCir = new int[] { 8, 8, 8, 8, 8, 8, 8, 8 };
+            CircuitInfo.UnequalCir = null;
+            double tai = 35;
+            double mr = 0.01725;
+            double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+            double Vel_ave = 2.032;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+            AirDistribution VaDistri = new AirDistribution();
+            VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+            double[,] ma = new double[N_tube, Nelement];
+            double[,] ha = new double[N_tube, Nelement];
+            double H = Pt * N_tube;
+            double Hx = L * H;
+            double rho_a_st = 1 / CoolProp.HAProps("Vha", "T", 273.15 + tai, "P", 101.325, "R", 0.469); //kg/m3
+            int curve = 1; //
+            double za = 1; //Adjust factor
+            for (int i = 0; i < N_tube; i++)
+            {
+                for (int j = 0; j < Nelement; j++)
+                {
+                    ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
+                    ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve) * 1.5;
+                    //ha[i, j] = 79;
+                }
+            }
+            double eta_surface = 1;
+            double zh = 1;
+            double zdp = 3.2;
+            double RHi = 0.469;
+            double tc = 46.23;
+            double pri = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
+            double tri = 95;//C
+            double conductivity = 386; //w/mK for Cu
+            double Pwater = 100.0;
+            int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
+            //double densityL = Refrigerant.SATT(fluid, composition, te + 273.15, 1).DensityV;
+            //double hri = Refrigerant.ENTHAL(fluid, composition, tri + 273.15, densityL).Enthalpy ;
+            double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
+            //hri = hri / wm - 140;
+            double hri = Refrigerant.TPFLSH(fluid, composition, tri + 273.15, pri).h / wm - (fluid[0] == "Water" ? 0 : 140);
+
+            double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+            double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
+
+            //string AirDirection="DowntoUp";
+            string AirDirection = "Counter";
+            ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
+            RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
+
+            GeometryResult geo = new GeometryResult();
+            //GeometryResult[,] geo_element = new GeometryResult[,] { };
+            GeometryResult[,] geo_element = new GeometryResult[N_tube, Nrow];
+            for (int k = 0; k < Nrow; k++)
+                for (int j = 0; j < N_tube; j++)
+                {
+                    geo_element[j, k] = Areas.Geometry(L / Nelement, FPI[k], Do, Di, Pt, Pr, Fthickness);
+                    //geo_element[i] = Areas.Geometry(L / element, FPI[i], Do, Di, Pt, Pr);
+                    geo.Aa_tube += geo_element[j, k].Aa_tube;
+                    geo.Aa_fin += geo_element[j, k].Aa_fin;
+                    geo.A_a += geo_element[j, k].A_a;
+                    geo.A_r += geo_element[j, k].A_r;
+                    geo.A_r_cs += geo_element[j, k].A_r_cs;
+                    //geo.A_ratio += geo_element[j,k].A_ratio;
+                }
+            geo.A_ratio = geo.A_r / geo.A_a;
+
+            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tri, pri, hri,
+                mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+
+            return res;
+        }
+        public static CalcResult main_RACR32condenser()
+        {
+            //制冷剂制热模块计算
+            string[] fluid = new string[] { "R32" }; //;{ "R410A.MIX" }
+            double[] composition = new double[] { 1 };
+            CalcResult res = new CalcResult();
+            int Nrow = 2;
+            double[] FPI = new double[Nrow + 1];
+            FPI = new double[] { 19.54, 19.54 };
+            double Pt = 14.5 * 0.001;
+            double Pr = 20 * 0.001;
+            double Di = 4.84 * 0.001;//8 6.8944
+            double Do = 5.334 * 0.001;//8.4 7.35
+            double Fthickness = 0.095 * 0.001;
+            double thickness = 0.5 * (Do - Di);
+            int[] Ntube = { 2, 2 };//****************modified 1
+            int N_tube = Ntube[0];
+            double L = 842.5 * 0.001;
+            int Nelement = 1;
+            int[,] CirArrange; //****************modified 2
+            CirArrange = new int[,] { { 1, 2 }, { 3, 4 } };
+            CircuitNumber CircuitInfo = new CircuitNumber();
+            CircuitInfo.number = new int[] { 2, 2 }; //****************modified 3
+            CircuitInfo.TubeofCir = new int[] { 2, 2 }; //****************modified 4
+            CircuitInfo.UnequalCir = null;
+
+            //double mr = 0.01725;  //****************modified 5
+            double tai = 35;           
+            double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+            double Vel_ave = 2.032;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+            AirDistribution VaDistri = new AirDistribution();
+            VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+            double[,] ma = new double[N_tube, Nelement];
+            double[,] ha = new double[N_tube, Nelement];
+            double H = Pt * N_tube;
+            double Hx = L * H;
+            double rho_a_st = 1 / CoolProp.HAProps("Vha", "T", 273.15 + tai, "P", 101.325, "R", 0.469); //kg/m3
+            int curve = 1; //
+            double za = 1; //Adjust factor
+            for (int i = 0; i < N_tube; i++)
+            {
+                for (int j = 0; j < Nelement; j++)
+                {
+                    ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
+                    ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve) * 1.5;
+                    //ha[i, j] = 79;
+                }
+            }
+            double eta_surface = 1;
+            double zh = 1;
+            double zdp = 1;
+            double RHi = 0.469;
+            double tc = 46.23;
+            //double pri = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure; //****************modified 6
+            //double tri = 84;//C   //****************modified 7
+            double conductivity = 386; //w/mK for Cu
+            double Pwater = 100.0;
+            int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
+            //double densityL = Refrigerant.SATT(fluid, composition, te + 273.15, 1).DensityV;
+            //double hri = Refrigerant.ENTHAL(fluid, composition, tri + 273.15, densityL).Enthalpy ;
+            double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
+            //hri = hri / wm - 140;
+            //double hri = Refrigerant.TPFLSH(fluid, composition, tri + 273.15, pri).h / wm - (fluid[0] == "Water" ? 0 : 140);  //****************modified 8
+
+            double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+            double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
+
+            //string AirDirection="DowntoUp";
+            string AirDirection = "Counter";
+            ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
+            RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
+
+            GeometryResult geo = new GeometryResult();
+            //GeometryResult[,] geo_element = new GeometryResult[,] { };
+            GeometryResult[,] geo_element = new GeometryResult[N_tube, Nrow];
+            for (int k = 0; k < Nrow; k++)
+                for (int j = 0; j < N_tube; j++)
+                {
+                    geo_element[j, k] = Areas.Geometry(L / Nelement, FPI[k], Do, Di, Pt, Pr, Fthickness);
+                    //geo_element[i] = Areas.Geometry(L / element, FPI[i], Do, Di, Pt, Pr);
+                    geo.Aa_tube += geo_element[j, k].Aa_tube;
+                    geo.Aa_fin += geo_element[j, k].Aa_fin;
+                    geo.A_a += geo_element[j, k].A_a;
+                    geo.A_r += geo_element[j, k].A_r;
+                    geo.A_r_cs += geo_element[j, k].A_r_cs;
+                    //geo.A_ratio += geo_element[j,k].A_ratio;
+                }
+            geo.A_ratio = geo.A_r / geo.A_a;
+
+            var r = main_RACR32condenser_1(); //****************modified 9
+            //****************modified 9
+            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, r.Tro, r.Pro, r.hro,
+                r.mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
             return res;
         }
 

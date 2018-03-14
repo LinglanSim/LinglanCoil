@@ -9,9 +9,9 @@ namespace Model
 {
     public class CheckAirConvergeforCircuits
     {
-        public static CheckAir CheckAirConverge(int Nrow, int N_tube, int Nelement, double[, ,] tain, double[, ,] RHin, double[, ,] taout, double[, ,] RHout)
+        public static CheckAir CheckAirConverge(int[,] TotalDirection, int Nrow, int N_tube, int Nelement, double[, ,] tain, double[, ,] RHin, CalcResult[] r)//, double[, ,] taout, double[, ,] RHout)
         {
-            CheckAir r=new CheckAir();
+            CheckAir rr=new CheckAir();
             int index = 0;
             bool flag = false;
             double err = 0.01;
@@ -21,38 +21,77 @@ namespace Model
             double devsum1 = 0;
             double[, ,] temp = tain;
             double[, ,] temp1 = RHin;
-            
-            for (int j = N_tube-1; j >= 0; j--)  //                    
-            { 
-                for (int k = 0; k < Nrow - 1; k++)
-                    //for (int j = 1; j <= N_tube; j++)
-                    for (int i = 0; i < Nelement; i++)
-                    {
-                        devsum = 0;
-                        devsum1 = 0;
+            double[, ,] taout = new double[Nelement, N_tube, Nrow];
+            double[, ,] RHout = new double[Nelement, N_tube, Nrow];
 
-                        dev = taout[i, j, k] - tain[i, j, k + 1];
-                        devsum += dev;
-                        temp[i, j, k + 1] = tain[i, j, k + 1] + (taout[i, j, k] == 0 ? 0 : devsum);
-
-                        dev1 = RHout[i, j, k] - RHin[i, j, k + 1];
-                        devsum1 += dev1;
-                        temp1[i, j, k + 1] = RHin[i, j, k + 1] + (RHout[i, j, k] == 0 ? 0 : devsum1);
-
-                        if (Math.Abs(dev) > err && Math.Abs(dev1) > err)
+            for (int m = 0; m < r.Count(); m++)
+                for (int k = 0; k < Nrow; k++)
+                    for (int j = 0; j < N_tube; j++)
+                        for (int i = 0; i < Nelement; i++)
                         {
-                            index += (taout[i, j, k] == 0 ? 0 : 1);
+                            taout[i, j, k] = r[m].Tao_Detail[i, j, k] == 0 ? taout[i, j, k] : r[m].Tao_Detail[i, j, k];
+                        }
+
+            for (int j = N_tube - 1; j >= 0; j--) 
+            {
+                for (int k = 0; k < Nrow - 1; k++)
+                //for (int j = 1; j <= N_tube; j++)
+                {
+                    //TotalDirection: 1 means in, 0 means out; ruhao 20180314
+                    if (TotalDirection[j, k] == TotalDirection[j, k + 1])
+                    {
+                        for (int i = 0; i < Nelement; i++)
+                        {
+                            devsum = 0;
+                            devsum1 = 0;
+
+                            dev = taout[i, j, k] - tain[i, j, k + 1];
+                            devsum += dev;
+                            temp[i, j, k + 1] = tain[i, j, k + 1] + (taout[i, j, k] == 0 ? 0 : devsum);
+
+                            dev1 = RHout[i, j, k] - RHin[i, j, k + 1];
+                            devsum1 += dev1;
+                            temp1[i, j, k + 1] = RHin[i, j, k + 1] + (RHout[i, j, k] == 0 ? 0 : devsum1);
+
+                            if (Math.Abs(dev) > err && Math.Abs(dev1) > err)
+                            {
+                                index += (taout[i, j, k] == 0 ? 0 : 1);
+                            }
                         }
                     }
-            }
+                    else
+                    {
+                        for (int i = 0; i < Nelement; i++)
+                        {
+                            devsum = 0;
+                            devsum1 = 0;
 
-            for (int j = 0; j < N_tube; j++)  //                                
+                            dev = taout[i, j, k] - tain[Nelement - i - 1, j, k + 1];
+                            devsum += dev;
+                            temp[Nelement - i - 1, j, k + 1] = tain[Nelement - i - 1, j, k + 1] + (taout[i, j, k] == 0 ? 0 : devsum);
+
+                            dev1 = RHout[i, j, k] - RHin[Nelement - i - 1, j, k + 1];
+                            devsum1 += dev1;
+                            temp1[Nelement - i - 1, j, k + 1] = RHin[Nelement - i - 1, j, k + 1] + (RHout[i, j, k] == 0 ? 0 : devsum1);
+
+                            if (Math.Abs(dev) > err && Math.Abs(dev1) > err)
+                            {
+                                index += (taout[i, j, k] == 0 ? 0 : 1);
+
+                            }
+
+                        }
+                    }
+                }
+            }
+            /*
+            for (int j = 0; j < N_tube; j++)
                 for (int i = 0; i < Nelement; i++)
                 {
                     temp[i, j, Nrow] = (taout[i, j, Nrow - 1] == 0 ? tain[i, j, Nrow] : taout[i, j, Nrow - 1]);
                     temp1[i, j, Nrow] = (RHout[i, j, Nrow - 1] == 0 ? RHin[i, j, Nrow] : RHout[i, j, Nrow - 1]);
                 }
-
+            */
 
             if (index == 0) flag = true;
             else
@@ -62,8 +101,7 @@ namespace Model
             }
                 
             //converge, or new good iter
-
-            return r = new CheckAir { flag = flag, ta = tain, RH = RHin };
+            return rr = new CheckAir { flag = flag, ta = tain, RH = RHin };
 
         }
 

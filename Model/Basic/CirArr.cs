@@ -10,7 +10,7 @@ namespace Model.Basic
     {
         public int iRow;
         public int iTube;
-
+        public int iDirection;
         //public int iRow
         //{
         //    get { return IRow; }
@@ -22,6 +22,12 @@ namespace Model.Basic
         //    set { ITube = value; }
         //}
 
+
+    }
+    public class CirArrforAir
+    {
+        public CirArr[] CirArr;
+        public int[,] TotalDirection;
 
     }
 }

@@ -9,14 +9,17 @@ namespace Model
 {
     public class CirArrangement
     {
-        public static CirArr[] ReadCirArr(int[,] CirArrange, CircuitNumber CircuitInfo, int Nrow, int[] Ntube)
+        public static CirArrforAir ReadCirArr(int[,] CirArrange, CircuitNumber CircuitInfo, int Nrow, int[] Ntube) //CirArr[]
         {
             int N_tube = Ntube[0];
             int Nciri = CircuitInfo.number[0];
             int Nciro = CircuitInfo.number[1];
             int Ncir = (Nciri == Nciro ? Nciri : Nciri + Nciro);
             //CirArr cirArr2 = new CirArr() { iRow = 0, iTube = 0 };
+            CirArrforAir cirArrforAir = new CirArrforAir();
             CirArr[] cirArr = new CirArr[Nrow * N_tube];
+
+            int[,] TotalDirection = new int[N_tube, Nrow];
             //int r = Convert.ToInt32(Math.Ceiling(10.0 / 3));
             //string s = CirArrange.ToString();
             for (int i = 0; i < Nrow * N_tube; i++)
@@ -27,7 +30,15 @@ namespace Model
                         cirArr[i] = new CirArr();
                         cirArr[i].iRow = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(CirArrange[j, k]) / N_tube)) - 1;
                         cirArr[i].iTube = CirArrange[j, k] % N_tube == 0 ? N_tube - 1 : CirArrange[j, k] % N_tube - 1;
+                        //for each circuit, ref inlet always at the same side..ruhao, 20180310
+                        /*
+                        |---->
+                        |---->
+                        */ 
+                        if (k % 2 == 0) cirArr[i].iDirection = 1; else cirArr[i].iDirection = 0;
+                        TotalDirection[cirArr[i].iTube, cirArr[i].iRow] = cirArr[i].iDirection;
                         i++;
+                        
                     }
 
             }
@@ -59,29 +70,11 @@ namespace Model
             //        this.CollectionP2S1.Add(new ChannelArrangementPart { Channel = channel, Number = channelNumber });
             //    }
             //}
-
-            return cirArr;
+            cirArrforAir.CirArr = cirArr;
+            cirArrforAir.TotalDirection = TotalDirection;
+            return cirArrforAir;
 
         }
-
-        //public int TubeofCircuit(int[,] CirArrange)
-        //{
-        //    get
-        //    {
-        //        int total = 0;
-        //        if (CirArrange != null)
-        //        {
-        //            foreach (var seg in CirArrange)
-        //            {
-        //                total += seg.
-        //            }
-        //        }
-
-        //        return total;
-        //    }
-        //}
-
-
 
     }
 }

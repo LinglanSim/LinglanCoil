@@ -52,9 +52,8 @@ namespace Model
             else
                 for (int i = 1; i <= index; i++)
                     index2 += TubeofCir[i - 1];
-
-            do
-            {
+            //do
+            //{
                 pri_tube = pri;
                 tri_tube = tri;
                 hri_tube = hri;
@@ -106,7 +105,7 @@ namespace Model
                     {
                         for(int j=0;j<Nelement;j++)
                         {
-                            taout_calc[j, iTube, iRow] = r[i].Tao;
+                            taout_calc[j, iTube, iRow] =r[i].Tao_Detail[0, 0, j];
                             RHout_calc[j, iTube, iRow] = r[i].RHout;
                         }
                     }
@@ -133,8 +132,8 @@ namespace Model
                     res_cir.R_1r += r[i].R_1r;
                     res_cir.Tri = r[i].Tri;
                     res_cir.x_i = r[i].x_i;
-
                 }
+            /*
                 if (Airdirection == "Parallel")
                     airConverge.flag = true;
                 else//Counter
@@ -144,16 +143,15 @@ namespace Model
                     RH = airConverge.RH;
                     iter++;
                 }
-
-
             } while (!airConverge.flag && iter < 100);
+            */
 
             //if (iter >= 100)
             //{
             //    throw new Exception("iter for AirConverge > 100.");
-            //}            
+            //}
             res_cir.mr = mr;
-            res_cir.Tao_Detail = ta;
+            res_cir.Tao_Detail = taout_calc;
             res_cir.RHo_Detail = RH;
             //res_cir.Tao = res_cir.Tao / Nelement;
             res_cir.href = res_cir.href / TubeofCir[index];

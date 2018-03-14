@@ -51,7 +51,10 @@ namespace Model
             int N_tube = Ntube[0];
             int N_tube_total = 0;
             CirArr[] cirArr = new CirArr[Nrow * N_tube];
-            cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube);
+            CirArrforAir cirArrforAir = new CirArrforAir();
+            cirArrforAir = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube);
+            cirArr = cirArrforAir.CirArr;
+
             CalcResult res_slab = new CalcResult();
 
             double[] pri_cir = new double[Ncir]; //[element, tube, row]
@@ -83,6 +86,7 @@ namespace Model
             int k;
             double te_calc = 0;
 
+            CheckAir airConverge = new CheckAir();
             CheckDP dPconverge=new CheckDP();
             CheckPri priconverge = new CheckPri();
             for (int i = 0; i < Nrow; i++) N_tube_total += Ntube[i];
@@ -103,7 +107,7 @@ namespace Model
                     //for (int i = 0; i < Nciri; i++) mr_ciri[i] = mr_ciro[j] / Ngroupin[j];
                 }
             }
-
+            int iterforAir = 0;
             int iterforDP = 0;
             int iterforPri = 0;
             //Starting properties
@@ -140,8 +144,12 @@ namespace Model
                     }
 
                     index = 0;
+                    #region //DPConverge
                     do
                     {
+                        #region //AirConverge
+                        do
+                        {
                         k = 0;
                         if(!index_outbig)
                         { 
@@ -182,7 +190,6 @@ namespace Model
                                 }
                             }
                         }
-
                         for (int i = 0; i < Ncir; i++)
                         {
                             if (flag_ciro == 1)
@@ -247,7 +254,17 @@ namespace Model
                                 }
                             }
                         }
-
+                        if (Airdirection == "Parallel")
+                            airConverge.flag = true;
+                        else//Counter
+                        {
+                            airConverge = CheckAirConvergeforCircuits.CheckAirConverge(cirArrforAir.TotalDirection, Nrow, N_tube, Nelement, ta, RH, r); //taout_calc, RHout_calc
+                            ta = airConverge.ta;
+                            RH = airConverge.RH;
+                            iterforAir++;
+                        }
+                        } while (!airConverge.flag && iterforAir < 100);
+                        #endregion
                         if (index_outbig && flag_ciro == 1) break;
 
                         index++;
@@ -330,7 +347,7 @@ namespace Model
 
                         }
                         #endregion
-
+                    #endregion
                     } while (!dPconverge.flag && iterforDP < 500);
 
                     if (Nciri == Nciro) break;
