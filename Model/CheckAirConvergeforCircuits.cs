@@ -14,7 +14,7 @@ namespace Model
             CheckAir rr=new CheckAir();
             int index = 0;
             bool flag = false;
-            double err = 0.01;
+            double err = 0.001;
             double dev = 0;
             double dev1 = 0;
             double devsum = 0;
