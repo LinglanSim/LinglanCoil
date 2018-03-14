@@ -24,7 +24,7 @@ namespace Model
             double[, ,] taout = new double[Nelement, N_tube, Nrow];
             double[, ,] RHout = new double[Nelement, N_tube, Nrow];
 
-            for (int m = 0; m < r.Count(); m++)
+            for (int m = 0; m < r.Count(s => s != null); m++)
                 for (int k = 0; k < Nrow; k++)
                     for (int j = 0; j < N_tube; j++)
                         for (int i = 0; i < Nelement; i++)
@@ -84,14 +84,14 @@ namespace Model
                     }
                 }
             }
-            /*
+            
             for (int j = 0; j < N_tube; j++)
                 for (int i = 0; i < Nelement; i++)
                 {
                     temp[i, j, Nrow] = (taout[i, j, Nrow - 1] == 0 ? tain[i, j, Nrow] : taout[i, j, Nrow - 1]);
                     temp1[i, j, Nrow] = (RHout[i, j, Nrow - 1] == 0 ? RHin[i, j, Nrow] : RHout[i, j, Nrow - 1]);
                 }
-            */
+            
 
             if (index == 0) flag = true;
             else
