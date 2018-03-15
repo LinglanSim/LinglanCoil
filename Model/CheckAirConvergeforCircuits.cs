@@ -14,7 +14,7 @@ namespace Model
             CheckAir rr=new CheckAir();
             int index = 0;
             bool flag = false;
-            double err = 0.001;
+            double err = 0.01;
             double dev = 0;
             double dev1 = 0;
             double devsum = 0;
@@ -91,15 +91,16 @@ namespace Model
                     temp[i, j, Nrow] = (taout[i, j, Nrow - 1] == 0 ? tain[i, j, Nrow] : taout[i, j, Nrow - 1]);
                     temp1[i, j, Nrow] = (RHout[i, j, Nrow - 1] == 0 ? RHin[i, j, Nrow] : RHout[i, j, Nrow - 1]);
                 }
-            
-
-            if (index == 0) flag = true;
+            //to avoid back and forth of iteration especially in 2ph critical region, ruhao, 20180315
+            //in the typical case of "MinNout", tube of [*, 19, 1], in first itertion is 2ph, while next iteration is superheat...  
+            //to be modified..
+            if (index == 0 || index < 0.3 * N_tube * Nelement && (r[r.Count() - 1].x_o > 1 || r[r.Count() - 1].x_o < 0)) flag = true; //index == 0
             else
             {
                 tain = temp;
                 RHin = temp1;
             }
-                
+
             //converge, or new good iter
             return rr = new CheckAir { flag = flag, ta = tain, RH = RHin };
 

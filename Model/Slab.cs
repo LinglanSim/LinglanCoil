@@ -113,6 +113,9 @@ namespace Model
             //Starting properties
             do
             {
+            #region //AirConverge
+            do
+            {
                 r = new CalcResult[Ncir];
                 r1 = new CalcResult[Ncir];
                 res_cir2 = new CalcResult[Nciro + 1];
@@ -147,9 +150,6 @@ namespace Model
                     #region //DPConverge
                     do
                     {
-                        #region //AirConverge
-                        do
-                        {
                         k = 0;
                         if(!index_outbig)
                         { 
@@ -254,17 +254,7 @@ namespace Model
                                 }
                             }
                         }
-                        if (Airdirection == "Parallel")
-                            airConverge.flag = true;
-                        else//Counter
-                        {
-                            airConverge = CheckAirConvergeforCircuits.CheckAirConverge(cirArrforAir.TotalDirection, Nrow, N_tube, Nelement, ta, RH, r); //taout_calc, RHout_calc
-                            ta = airConverge.ta;
-                            RH = airConverge.RH;
-                            iterforAir++;
-                        }
-                        } while (!airConverge.flag && iterforAir < 100);
-                        #endregion
+
                         if (index_outbig && flag_ciro == 1) break;
 
                         index++;
@@ -370,7 +360,18 @@ namespace Model
                         break;
                     }
                 }
-
+                if (Airdirection == "Parallel")
+                    airConverge.flag = true;
+                else//Counter
+                {
+                    airConverge = CheckAirConvergeforCircuits.CheckAirConverge(cirArrforAir.TotalDirection, Nrow, N_tube, Nelement, ta, RH, r); //taout_calc, RHout_calc
+                    ta = airConverge.ta;
+                    RH = airConverge.RH;
+                    iterforAir++;
+                }
+            } while (!airConverge.flag && iterforAir < 500);
+            
+            #endregion
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\MinNout.txt"))
                 //{
                     //for (int i = 0; i < Ncir; i++)
@@ -378,20 +379,18 @@ namespace Model
                         //wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}, mr, {6}", r[i].Q, r[i].DP, r[i].href, r[i].Ra_ratio, r[i].Tao, r[i].Tro, r[i].mr);
                     //}
                 //}
-
-
-                if (restartDP_index == 1) 
-                    priconverge.flag = false;
-                else if (hexType == 0 && (fluid[0] != "Water"))
-                {
-                    priconverge = CheckPin.CheckPriConverge(te, te_calc - 273.15, pri, pe, r[Ncir-1].Pro); //res_slab.Pro
-                    iterforPri++;
-                    pri = priconverge.pri;
-                    if (priconverge.flag && iterforPri == 1 && iterforDP == 1) 
-                        priconverge.flag = false; //to avoid not even iterate but converge by chance 
-                }
-                else
-                    priconverge.flag = true;
+            if (restartDP_index == 1)
+                priconverge.flag = false;
+            else if (hexType == 0 && (fluid[0] != "Water"))
+            {
+                priconverge = CheckPin.CheckPriConverge(te, te_calc - 273.15, pri, pe, r[Ncir - 1].Pro); //res_slab.Pro
+                iterforPri++;
+                pri = priconverge.pri;
+                if (priconverge.flag && iterforPri == 1 && iterforDP == 1)
+                    priconverge.flag = false; //to avoid not even iterate but converge by chance 
+            }
+            else
+                priconverge.flag = true;
 
             } while (!priconverge.flag && iterforPri < 20);
 
