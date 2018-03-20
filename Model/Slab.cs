@@ -127,10 +127,13 @@ namespace Model
                 if (hexType == 0)
                 {
                     tri = Refrigerant.SATP(fluid, composition, pri, 1).Temperature - 273.15;
+                    //tri = CoolProp.PropsSI("T", "P", pri * 1000, "Q", 0, "R410A.mix") - 273.15;
                 }
                 else
                 {
                     te = Refrigerant.SATP(fluid, composition, pri, 1).Temperature - 273.15;
+                    //te = CoolProp.PropsSI("T", "P", pri * 1000, "Q", 0, "R410A.mix") - 273.15;
+
                 }
 
                 for (int j = 0; j < (flag_ciro == 1 ? (index_outbig ? Nciri + 1 : 1) : Nciro + 1); j++)
@@ -462,21 +465,35 @@ namespace Model
             res_slab.R_1a = res_slab.R_1a / N_tube_total;
             res_slab.R_1r = res_slab.R_1r / N_tube_total;
 
-            te_calc = Refrigerant.SATP(fluid, composition, res_slab.Pro, 1).Temperature;            
+            te_calc = Refrigerant.SATP(fluid, composition, res_slab.Pro, 1).Temperature;
+            double te_calc1 = CoolProp.PropsSI("T", "P", res_slab.Pro * 1000, "Q", 0, "R410A.mix") - 273.15;
             double densityLo = Refrigerant.SATT(fluid, composition, te_calc, 1).DensityL;  //mol/L
+            double densityLo1 = CoolProp.PropsSI("D", "T", te_calc, "Q", 0, "R410A.mix");
             double densityVo = Refrigerant.SATT(fluid, composition, te_calc, 2).DensityV;  //mol/L
-            //double wm = Refrigerant.WM(fluid, composition).Wm;
+            double densityVo1 = CoolProp.PropsSI("D", "T", te_calc, "Q", 1, "R410A.mix");
+            //double wm1 = Refrigerant.WM(fluid, composition).Wm;
+            
             double hlo = Refrigerant.ENTHAL(fluid, composition, te_calc, densityLo).Enthalpy / wm - (fluid[0] == "Water" ? 0 : 140);
+            //double hlo2 = CoolProp.PropsSI("H", "T", te_calc, "D", densityLo1, "R410A") / 1000 - (fluid[0] == "Water" ? 0 : 140);
+            //double hlo3 = CoolProp.PropsSI("H", "T", te_calc, "D", densityLo1, "HEOS::R410A") / 1000 - (fluid[0] == "Water" ? 0 : 140);
+            //double hlo1 = CoolProp.PropsSI("H", "T", te_calc, "D", densityLo1, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140);//语句无法计算
             double hvo = Refrigerant.ENTHAL(fluid, composition, te_calc, densityVo).Enthalpy / wm - (fluid[0] == "Water" ? 0 : 140);
+            //double hlo2 = CoolProp.PropsSI("H", "T", te_calc, "D", densityVo1, "R410A") / 1000 - (fluid[0] == "Water" ? 0 : 140);
+            //double hlo3 = CoolProp.PropsSI("H", "T", te_calc, "D", densityVo1, "HEOS::R410A") / 1000 - (fluid[0] == "Water" ? 0 : 140);
+            //double hlo1 = CoolProp.PropsSI("H", "T", te_calc, "D", densityVo1, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140);//语句无法计算
+
             res_slab.x_o = (res_slab.hro - hlo) / (hvo - hlo);
             double densityLi = Refrigerant.SATT(fluid, composition, tri + 273.15, 1).DensityL;  //mol/L
             double densityVi = Refrigerant.SATT(fluid, composition, tri + 273.15, 2).DensityV;  //mol/L
             //double wm = Refrigerant.WM(fluid, composition).Wm;
             double hli = Refrigerant.ENTHAL(fluid, composition, tri + 273.15, densityLi).Enthalpy / wm - (fluid[0] == "Water" ? 0 : 140);
             double hvi = Refrigerant.ENTHAL(fluid, composition, tri + 273.15, densityVi).Enthalpy / wm - (fluid[0] == "Water" ? 0 : 140);
+            //double hli1 = CoolProp.PropsSI("H", "T", te_calc, "Q", 0, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140);
+            //double hvi1 = CoolProp.PropsSI("H", "T", te_calc, "Q", 1, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140);
             res_slab.x_i = (res_slab.hri - hli) / (hvi - hli);
             res_slab.Tro = Refrigerant.PHFLSH(fluid, composition, res_slab.Pro, (res_slab.hro + (fluid[0] == "Water" ? 0 : 140)) * wm).t - 273.15;
-
+            double  h = (res_slab.hro + (fluid[0] == "Water" ? 0 : 140));
+            //double Tro1 = CoolProp.PropsSI("T", "P", res_slab.Pro * 1000, "H", h, "R410A.mix") - 273.15; 
             for (int j = 0; j < N_tube; j++)
                 for (int i = 0; i < Nelement; i++)
                 {
