@@ -125,7 +125,7 @@ namespace Model
             //pe的结果多样
             //flu = "R410A.mix";
             double pe = Refrigerant.SATT(fluid, composition, te + 273.15, 1).Pressure;
-            //double pe3 = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, "R410A.mix") / 1000;
+            double pe3 = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, "R410A.mix") / 1000;
             //double pe4 = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid1) / 1000;
             /*
             double pe1 = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 1, "R410A.mix") / 1000;
@@ -151,7 +151,7 @@ namespace Model
             double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
             //hri = hri / wm - 140;
             double hri = Refrigerant.TPFLSH(fluid, composition, T_exv + 273.15, P_exv).h / wm - (fluid[0] == "Water" ? 0 : 140);
-            //double hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, "R410A.mix") / 1000 - 140;
+            double hri1 = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, "R410A.mix") / 1000 - 140;
             //double hri1 = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid1) / 1000 - 140;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];

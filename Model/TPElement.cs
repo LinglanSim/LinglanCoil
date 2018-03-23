@@ -27,10 +27,12 @@ namespace Model
             //res.Tao[0] = new double();          
             var r = new Refrigerant.SATTTotalResult();
             //recalc tri to make sure it is 2ph, ruhao, 20180225 
-            tri = Refrigerant.SATP(fluid, composition, pri, phase1).Temperature - 273.15; 
-            r = Refrigerant.SATTTotal(fluid, composition, tri + 273.15).SATTTotalResult; 
+            tri = Refrigerant.SATP(fluid, composition, pri, phase1).Temperature - 273.15;
+            double tri1 = CoolProp.PropsSI("T", "P", pri * 1000, "Q", 0, "R410A.mix") - 273.15;
+            r = Refrigerant.SATTTotal(fluid, composition, tri + 273.15).SATTTotalResult;
+            double EnthalpylL1 = CoolProp.PropsSI("H", "T", tri + 273.15, "Q", 0, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140);
+            double EnthalpyV1 = CoolProp.PropsSI("H", "T", tri + 273.15, "Q", 1, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140);
             res.x_i = (hri - r.EnthalpyL) / (r.EnthalpyV - r.EnthalpyL);   //+ 140 for reference state, to be changed
-
             RefHTCandDPResult htc_dp = new RefHTCandDPResult();
 
             do
@@ -57,8 +59,11 @@ namespace Model
                 res.x_o = (res.hro - r.EnthalpyL) / (r.EnthalpyV - r.EnthalpyL); //+ 139.17 for reference state, to be changed
                 //res.DP = 0;
                 res.Pro = pri - res.DP;
-                res.Tro = Refrigerant.PHFLSH(fluid, composition, res.Pro, (res.hro + (fluid[0] == "Water" ? 0 : 140)) * r.Wm).t; // 
+                res.Tro = Refrigerant.PHFLSH(fluid, composition, res.Pro, (res.hro + (fluid[0] == "Water" ? 0 : 140)) * r.Wm).t; //
+                double hh = (res.hro + (fluid[0] == "Water" ? 0 : 140));
+                //double Tro1 = CoolProp.PropsSI("T", "P", res.Pro, "H",hh,"R410A.mix");这样无法计算密度，可能要尝试新的方法
                 double rho_o = Refrigerant.TQFLSH(fluid, composition, res.Tro, res.x_o).D * r.Wm;
+                double rho_o1 = CoolProp.PropsSI("D", "T", res.Tro, "Q", res.x_o, "R410A.mix");//CoolProp和RefProp的计算结果差别大
                 //    .TPFLSH(fluid, composition, res.Tro, res.Pro).D * r.Wm;//wrong value
                 //double rho_o = Refrigerant.PHFLSH(fluid, composition, res.Pro, (res.hro + 140) * r.Wm).D * r.Wm;
                 //if (res.x_o > 1 || res.x_o < 0)

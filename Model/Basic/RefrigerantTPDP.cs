@@ -11,7 +11,7 @@ namespace Model.Basic
         //For smooth tube for now;
         public static double deltap_smooth(string[] fluid, double[] composition, double d, double g, double p, double x, double l)
         {
-            double Co=0.01;
+            double Co = 0.01;
             double f_oil = 0;
             if (x == 1) f_oil = 1.0; else f_oil = 1.15;
             double m_to_ft = 1000 / (12 * 25.4);
@@ -20,7 +20,12 @@ namespace Model.Basic
             int phase2 = 2;
             var r = new Refrigerant.SATTTotalResult();
             double tsat = Refrigerant.SATP(fluid, composition, p, phase1).Temperature;
+            //double tsat1 = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, "R410A.mix");
             r = Refrigerant.SATTTotal(fluid, composition, tsat).SATTTotalResult;
+            //double densityLo1 = CoolProp.PropsSI("D", "T", tsat, "Q", 0, "R410A.mix");
+            //double densityVo1 = CoolProp.PropsSI("D", "T", tsat, "Q", 1, "R410A.mix");
+            double ViscosityL1 = CoolProp.PropsSI("V", "T", tsat, "Q", 0, "R410A.mix");//Coolprop和RefProp的计算结果差别很大
+            double ViscosityV1 = CoolProp.PropsSI("V", "T", tsat, "Q", 1, "R410A.mix");
 
             double Re_l = g * d / r.ViscosityL;
             double Re_v = g * d / r.ViscosityV;
@@ -56,7 +61,12 @@ namespace Model.Basic
             //int phase2 = 2;
             var r = new Refrigerant.SATTTotalResult();
             double tsat = Refrigerant.SATP(fluid, composition, p, phase1).Temperature;
+            //double tsat1 = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, "R410A.mix");
             r = Refrigerant.SATTTotal(fluid, composition, tsat).SATTTotalResult;
+            //double densityLo1 = CoolProp.PropsSI("D", "T", tsat, "Q", 0, "R410A.mix");
+            //double densityVo1 = CoolProp.PropsSI("D", "T", tsat, "Q", 1, "R410A.mix");
+            //double ViscosityL1 = CoolProp.PropsSI("V", "T", tsat, "Q", 0, "R410A.mix");//Coolprop和RefProp的计算结果差别很大
+            //double ViscosityV1 = CoolProp.PropsSI("V", "T", tsat, "Q", 1, "R410A.mix");
 
             double Re_l = g * d / r.ViscosityL;
             double f_sp = RefrigerantSPDP.ff_Friction(Re_l);
@@ -103,7 +113,12 @@ namespace Model.Basic
             //int phase2 = 2;
             var r = new Refrigerant.SATTTotalResult();
             double tsat = Refrigerant.SATP(fluid, composition, p, phase1).Temperature;
+            //double tsat1 = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, "R410A.mix");
             r = Refrigerant.SATTTotal(fluid, composition, tsat).SATTTotalResult;
+            //double densityLo1 = CoolProp.PropsSI("D", "T", tsat, "Q", 0, "R410A.mix");
+            //double densityVo1 = CoolProp.PropsSI("D", "T", tsat, "Q", 1, "R410A.mix");
+            //double ViscosityL1 = CoolProp.PropsSI("V", "T", tsat, "Q", 0, "R410A.mix");//Coolprop和RefProp的计算结果差别很大
+            //double ViscosityV1 = CoolProp.PropsSI("V", "T", tsat, "Q", 1, "R410A.mix");
 
             double Re_l = g * (1 - x) * d / r.ViscosityL;
             double Re_v = g * x * d / r.ViscosityV;
@@ -139,8 +154,6 @@ namespace Model.Basic
 
             return dp;
 
-
-
             //double DP_tp = 0;
             //if (x <= 0.8)
             //{
@@ -162,12 +175,6 @@ namespace Model.Basic
             //}
 
             //return dp;
-
-
-
-
-
-
         }
 
     }

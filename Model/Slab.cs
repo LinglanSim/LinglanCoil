@@ -110,6 +110,9 @@ namespace Model
             int iterforAir = 0;
             int iterforDP = 0;
             int iterforPri = 0;
+
+            double tri1 = 0;
+            double te1 = 0;
             //Starting properties
             do
             {
@@ -127,12 +130,12 @@ namespace Model
                 if (hexType == 0)
                 {
                     tri = Refrigerant.SATP(fluid, composition, pri, 1).Temperature - 273.15;
-                    //tri = CoolProp.PropsSI("T", "P", pri * 1000, "Q", 0, "R410A.mix") - 273.15;
+                    tri1 = CoolProp.PropsSI("T", "P", pri * 1000, "Q", 0, "R410A.mix") - 273.15;
                 }
                 else
                 {
                     te = Refrigerant.SATP(fluid, composition, pri, 1).Temperature - 273.15;
-                    //te = CoolProp.PropsSI("T", "P", pri * 1000, "Q", 0, "R410A.mix") - 273.15;
+                    te1 = CoolProp.PropsSI("T", "P", pri * 1000, "Q", 0, "R410A.mix") - 273.15;
 
                 }
 
@@ -474,11 +477,11 @@ namespace Model
             //double wm1 = Refrigerant.WM(fluid, composition).Wm;
             
             double hlo = Refrigerant.ENTHAL(fluid, composition, te_calc, densityLo).Enthalpy / wm - (fluid[0] == "Water" ? 0 : 140);
-            //double hlo2 = CoolProp.PropsSI("H", "T", te_calc, "D", densityLo1, "R410A") / 1000 - (fluid[0] == "Water" ? 0 : 140);
+            double hlo2 = CoolProp.PropsSI("H", "T", te_calc, "D", densityLo1, "R410A") / 1000 - (fluid[0] == "Water" ? 0 : 140);
             //double hlo3 = CoolProp.PropsSI("H", "T", te_calc, "D", densityLo1, "HEOS::R410A") / 1000 - (fluid[0] == "Water" ? 0 : 140);
-            //double hlo1 = CoolProp.PropsSI("H", "T", te_calc, "D", densityLo1, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140);//语句无法计算
+            double hlo1 = CoolProp.PropsSI("H", "T", te_calc, "D", densityLo1, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140);//语句无法计算
             double hvo = Refrigerant.ENTHAL(fluid, composition, te_calc, densityVo).Enthalpy / wm - (fluid[0] == "Water" ? 0 : 140);
-            //double hlo2 = CoolProp.PropsSI("H", "T", te_calc, "D", densityVo1, "R410A") / 1000 - (fluid[0] == "Water" ? 0 : 140);
+            double hVo2 = CoolProp.PropsSI("H", "T", te_calc, "D", densityVo1, "R410A") / 1000 - (fluid[0] == "Water" ? 0 : 140);
             //double hlo3 = CoolProp.PropsSI("H", "T", te_calc, "D", densityVo1, "HEOS::R410A") / 1000 - (fluid[0] == "Water" ? 0 : 140);
             //double hlo1 = CoolProp.PropsSI("H", "T", te_calc, "D", densityVo1, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140);//语句无法计算
 
@@ -488,8 +491,8 @@ namespace Model
             //double wm = Refrigerant.WM(fluid, composition).Wm;
             double hli = Refrigerant.ENTHAL(fluid, composition, tri + 273.15, densityLi).Enthalpy / wm - (fluid[0] == "Water" ? 0 : 140);
             double hvi = Refrigerant.ENTHAL(fluid, composition, tri + 273.15, densityVi).Enthalpy / wm - (fluid[0] == "Water" ? 0 : 140);
-            //double hli1 = CoolProp.PropsSI("H", "T", te_calc, "Q", 0, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140);
-            //double hvi1 = CoolProp.PropsSI("H", "T", te_calc, "Q", 1, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140);
+            double hli1 = CoolProp.PropsSI("H", "T", te_calc, "Q", 0, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140);
+            double hvi1 = CoolProp.PropsSI("H", "T", te_calc, "Q", 1, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140);
             res_slab.x_i = (res_slab.hri - hli) / (hvi - hli);
             res_slab.Tro = Refrigerant.PHFLSH(fluid, composition, res_slab.Pro, (res_slab.hro + (fluid[0] == "Water" ? 0 : 140)) * wm).t - 273.15;
             double  h = (res_slab.hro + (fluid[0] == "Water" ? 0 : 140));
