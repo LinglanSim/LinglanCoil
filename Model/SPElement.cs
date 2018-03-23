@@ -24,16 +24,17 @@ namespace Model
             string NameofRef = "R410A.mix";
             double rho_r = r.D * wm;
             double cp_r = r.cp / wm * 1000;
-            double Pr_r = cp_r * mu_r / k_r;
+        
             double mu_r1 = CoolProp.PropsSI("V", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, NameofRef);
             
             double mu_r2 = CoolProp.PropsSI("V", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");
             double k_r1 = CoolProp.PropsSI("L", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");
             double rho_r1 = CoolProp.PropsSI("D", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");
             double cp_r1 = CoolProp.PropsSI("C", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");
-            //double Pr_r1 = CoolProp.PropsSI("Pr", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");//普朗特数调用格式不对
-            
 
+            //double Pr_r1 = CoolProp.PropsSI("Pr", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");//普朗特数调用格式不对,计算来的，不是调用
+            double Pr_r = cp_r * mu_r / k_r;//普朗特数的计算有了
+            //double Pr_l = r.CpL * r.ViscosityL / r.KL * 1000;
             //for debugging, to check if the 1ph property is in 2ph region but not in 1ph, ruhao20180209
             /*
             var rr = new Refrigerant.SATTTotalResult();
@@ -104,7 +105,7 @@ namespace Model
             double k_r = Refrigerant.TRNPRP(fluid, composition, tri + 273.15, r.D).ThermalConductivity;
             double rho_r = r.D * wm;//rho很不准,比refprop大15-10
             double cp_r = r.cp / wm * 1000;
-            double Pr_r = cp_r * mu_r / k_r;
+            
 
             /*
            double mu_r1 = CoolProp.PropsSI("V", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");
@@ -113,7 +114,7 @@ namespace Model
            double cp_r1 = CoolProp.PropsSI("C", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");
            double Pr_r1 = CoolProp.PropsSI("Pr", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");//普朗特数调用格式不对
            */
-
+            double Pr_r = cp_r * mu_r / k_r;//普朗特数的计算有了
             res.Vel_r = g / rho_r;
             double Re_r = rho_r * res.Vel_r * dh / mu_r;
             double fh = RefrigerantSPHTC.ff_CHURCHILL(Re_r);

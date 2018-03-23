@@ -24,10 +24,10 @@ namespace Model.Basic
             r = Refrigerant.SATTTotal(fluid, composition, tsat).SATTTotalResult;
             //double densityLo1 = CoolProp.PropsSI("D", "T", tsat, "Q", 0, "R410A.mix");
             //double densityVo1 = CoolProp.PropsSI("D", "T", tsat, "Q", 1, "R410A.mix");
-            double ViscosityL1 = CoolProp.PropsSI("V", "T", tsat, "Q", 0, "R410A.mix");//Coolprop和RefProp的计算结果差别很大
-            double ViscosityV1 = CoolProp.PropsSI("V", "T", tsat, "Q", 1, "R410A.mix");
+            //double ViscosityL1 = CoolProp.PropsSI("V", "T", tsat, "Q", 0, "R410A");
+            //double ViscosityV1 = CoolProp.PropsSI("V", "T", tsat, "Q", 1, "R410A");
 
-            double Re_l = g * d / r.ViscosityL;
+            double Re_l = g * d / r.ViscosityL;// r.ViscosityL;
             double Re_v = g * d / r.ViscosityV;
             double f_l = RefrigerantSPDP.ff_Friction(Re_l);
             double f_v = RefrigerantSPDP.ff_Friction(Re_v);
@@ -65,8 +65,8 @@ namespace Model.Basic
             r = Refrigerant.SATTTotal(fluid, composition, tsat).SATTTotalResult;
             //double densityLo1 = CoolProp.PropsSI("D", "T", tsat, "Q", 0, "R410A.mix");
             //double densityVo1 = CoolProp.PropsSI("D", "T", tsat, "Q", 1, "R410A.mix");
-            //double ViscosityL1 = CoolProp.PropsSI("V", "T", tsat, "Q", 0, "R410A.mix");//Coolprop和RefProp的计算结果差别很大
-            //double ViscosityV1 = CoolProp.PropsSI("V", "T", tsat, "Q", 1, "R410A.mix");
+            //double ViscosityL1 = CoolProp.PropsSI("V", "T", tsat, "Q", 0, "R410A");
+            //double ViscosityV1 = CoolProp.PropsSI("V", "T", tsat, "Q", 1, "R410A");
 
             double Re_l = g * d / r.ViscosityL;
             double f_sp = RefrigerantSPDP.ff_Friction(Re_l);
@@ -117,8 +117,8 @@ namespace Model.Basic
             r = Refrigerant.SATTTotal(fluid, composition, tsat).SATTTotalResult;
             //double densityLo1 = CoolProp.PropsSI("D", "T", tsat, "Q", 0, "R410A.mix");
             //double densityVo1 = CoolProp.PropsSI("D", "T", tsat, "Q", 1, "R410A.mix");
-            //double ViscosityL1 = CoolProp.PropsSI("V", "T", tsat, "Q", 0, "R410A.mix");//Coolprop和RefProp的计算结果差别很大
-            //double ViscosityV1 = CoolProp.PropsSI("V", "T", tsat, "Q", 1, "R410A.mix");
+            //double ViscosityL1 = CoolProp.PropsSI("V", "T", tsat, "Q", 0, "R410A");
+            //double ViscosityV1 = CoolProp.PropsSI("V", "T", tsat, "Q", 1, "R410A");
 
             double Re_l = g * (1 - x) * d / r.ViscosityL;
             double Re_v = g * x * d / r.ViscosityV;

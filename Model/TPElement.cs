@@ -60,8 +60,7 @@ namespace Model
                 //res.DP = 0;
                 res.Pro = pri - res.DP;
                 res.Tro = Refrigerant.PHFLSH(fluid, composition, res.Pro, (res.hro + (fluid[0] == "Water" ? 0 : 140)) * r.Wm).t; //
-                double hh = (res.hro + (fluid[0] == "Water" ? 0 : 140));
-                //double Tro1 = CoolProp.PropsSI("T", "P", res.Pro, "H",hh,"R410A.mix");这样无法计算密度，可能要尝试新的方法
+                double Tro2 = CoolProp.PropsSI("T", "P", res.Pro * 1000, "H", (res.hro + (fluid[0] == "Water" ? 0 : 140)) * 1000, "R410A");
                 double rho_o = Refrigerant.TQFLSH(fluid, composition, res.Tro, res.x_o).D * r.Wm;
                 double rho_o1 = CoolProp.PropsSI("D", "T", res.Tro, "Q", res.x_o, "R410A.mix");//CoolProp和RefProp的计算结果差别大
                 //    .TPFLSH(fluid, composition, res.Tro, res.Pro).D * r.Wm;//wrong value
