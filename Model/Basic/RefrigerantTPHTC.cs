@@ -16,19 +16,27 @@ namespace Model.Basic
             double temperature;
             int phase1 = 1;
             int phase2 = 2;
-           
-            temperature = Refrigerant.SATP(fluid, composition, p, phase1).Temperature;
+            string fluidname = "R410A";
+            //temperature = Refrigerant.SATP(fluid, composition, p, phase1).Temperature;
             //double tsat1 = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, "R410A.mix");
+            temperature = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, fluidname);
             r = Refrigerant.SATTTotal(fluid, composition, temperature).SATTTotalResult;
+
             //double densityLo1 = CoolProp.PropsSI("D", "T", temperature, "Q", 0, "R410A.mix");
+            r.DensityL = CoolProp.PropsSI("D", "T", temperature, "Q", 0, fluidname);
             //double densityVo1 = CoolProp.PropsSI("D", "T", temperature, "Q", 1, "R410A.mix");
+            r.DensityV = CoolProp.PropsSI("D", "T", temperature, "Q", 1, fluidname);
             //double EnthalpyL1 = CoolProp.PropsSI("H", "T", temperature, "Q", 0, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140); 
+            r.EnthalpyL = CoolProp.PropsSI("H", "T", temperature, "Q", 0, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
             //double EnthalpyV1 = CoolProp.PropsSI("H", "T", temperature, "Q", 1, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140);
-            double ViscosityL2 = CoolProp.PropsSI("V", "T", temperature, "Q", 0, "R410A");
-            double ViscosityL1 = CoolProp.PropsSI("V", "T", temperature, "Q", 0, "R410A.mix");//Coolprop和RefProp的计算结果差别很大
+            r.EnthalpyV = CoolProp.PropsSI("H", "T", temperature, "Q", 1, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
+            //double ViscosityL2 = CoolProp.PropsSI("V", "T", temperature, "Q", 0, "R410A");
+            r.ViscosityL = CoolProp.PropsSI("V", "T", temperature, "Q", 0, fluidname);
+            //double ViscosityL1 = CoolProp.PropsSI("V", "T", temperature, "Q", 0, "R410A.mix");//Coolprop和RefProp的计算结果差别很大
             //double CpL1 = CoolProp.PropsSI("C", "T", temperature, "Q", 0, "R410A.mix") / 1000;
             //double KL1 = CoolProp.PropsSI("L", "T", temperature, "Q", 0, "R410A.mix") / 1000;//Coolprop和RefProp的计算结果差别很大
-            double KL2 = CoolProp.PropsSI("L", "T", temperature, "Q", 0, "R410A");
+            //double KL2 = CoolProp.PropsSI("L", "T", temperature, "Q", 0, "R410A");
+            r.KL = CoolProp.PropsSI("L", "T", temperature, "Q", 0, fluidname);
             double Pr_l = r.CpL * r.ViscosityL / r.KL * 1000;
  
             double h_fg = r.EnthalpyV - r.EnthalpyL; //"KJ"
@@ -60,21 +68,30 @@ namespace Model.Basic
            double temperature;
            double a_g = 9.8;
            int phase1 = 1;
+           string fluidname = "R410A";
            //int phase2 = 2;
-           temperature = Refrigerant.SATP(fluid, composition, p, phase1).Temperature;//danwei
+           //temperature = Refrigerant.SATP(fluid, composition, p, phase1).Temperature;//danwei
            //double tsat1 = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, "R410A.mix");
+           temperature = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, fluidname);
+
            r = Refrigerant.SATTTotal(fluid, composition, temperature).SATTTotalResult;
            //double densityLo1 = CoolProp.PropsSI("D", "T", temperature, "Q", 0, "R410A.mix");
+           r.DensityL = CoolProp.PropsSI("D", "T", temperature, "Q", 0, fluidname);
            //double densityVo1 = CoolProp.PropsSI("D", "T", temperature, "Q", 1, "R410A.mix");
+           r.DensityV = CoolProp.PropsSI("D", "T", temperature, "Q", 1, fluidname);
            //double EnthalpyL1 = CoolProp.PropsSI("H", "T", temperature, "Q", 0, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140); 
+           r.EnthalpyL = CoolProp.PropsSI("H", "T", temperature, "Q", 0, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
            //double EnthalpyV1 = CoolProp.PropsSI("H", "T", temperature, "Q", 1, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140);
-           double ViscosityL2 = CoolProp.PropsSI("V", "T", temperature, "Q", 0, "R410A");
+           r.EnthalpyV = CoolProp.PropsSI("H", "T", temperature, "Q", 1, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
+           //double ViscosityL2 = CoolProp.PropsSI("V", "T", temperature, "Q", 0, "R410A");
+           r.ViscosityL = CoolProp.PropsSI("V", "T", temperature, "Q", 0, fluidname);
            //double ViscosityL1 = CoolProp.PropsSI("V", "T", temperature, "Q", 0, "R410A.mix");//Coolprop和RefProp的计算结果差别很大
            //double CpL1 = CoolProp.PropsSI("C", "T", temperature, "Q", 0, "R410A.mix") / 1000;
            //double KL1 = CoolProp.PropsSI("L", "T", temperature, "Q", 0, "R410A.mix") / 1000;//Coolprop和RefProp的计算结果差别很大
-           double KL2 = CoolProp.PropsSI("L", "T", temperature, "Q", 0, "R410A");
-
+           //double KL2 = CoolProp.PropsSI("L", "T", temperature, "Q", 0, "R410A");
+           r.KL = CoolProp.PropsSI("L", "T", temperature, "Q", 0, fluidname);
            double Pr_l = r.CpL * r.ViscosityL / r.KL * 1000;
+
            double Re_l = g * d * (1 - x) / r.ViscosityL;
            double h_fg = (r.EnthalpyV - r.EnthalpyL);
            double qflux = q / (l * 3.14159 * d);
@@ -117,20 +134,28 @@ namespace Model.Basic
            double a_g = 9.8;
            double sigma = 1;
            int phase1 = 1;
+           string fluidname = "R410A";
            //int phase2 = 2;
-           temperature = Refrigerant.SATP(fluid, composition, p, phase1).Temperature;//danwei
+           //temperature = Refrigerant.SATP(fluid, composition, p, phase1).Temperature;//danwei
            //double tsat1 = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, "R410A.mix");
+           temperature = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, fluidname);
+
            r = Refrigerant.SATTTotal(fluid, composition, temperature).SATTTotalResult;
            //double densityLo1 = CoolProp.PropsSI("D", "T", temperature, "Q", 0, "R410A.mix");
+           r.DensityL = CoolProp.PropsSI("D", "T", temperature, "Q", 0, fluidname);
            //double densityVo1 = CoolProp.PropsSI("D", "T", temperature, "Q", 1, "R410A.mix");
+           r.DensityV = CoolProp.PropsSI("D", "T", temperature, "Q", 1, fluidname);
            //double EnthalpyL1 = CoolProp.PropsSI("H", "T", temperature, "Q", 0, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140); 
+           r.EnthalpyL = CoolProp.PropsSI("H", "T", temperature, "Q", 0, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
            //double EnthalpyV1 = CoolProp.PropsSI("H", "T", temperature, "Q", 1, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140);
+           r.EnthalpyV = CoolProp.PropsSI("H", "T", temperature, "Q", 1, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
+           //double ViscosityL2 = CoolProp.PropsSI("V", "T", temperature, "Q", 0, "R410A");
+           r.ViscosityL = CoolProp.PropsSI("V", "T", temperature, "Q", 0, fluidname);
            //double ViscosityL1 = CoolProp.PropsSI("V", "T", temperature, "Q", 0, "R410A.mix");//Coolprop和RefProp的计算结果差别很大
-           double ViscosityL2 = CoolProp.PropsSI("V", "T", temperature, "Q", 0, "R410A");
-           //double ViscosityL1 = CoolProp.PropsSI("V", "T", temperature, "Q", 1, "R410A.mix");
            //double CpL1 = CoolProp.PropsSI("C", "T", temperature, "Q", 0, "R410A.mix") / 1000;
            //double KL1 = CoolProp.PropsSI("L", "T", temperature, "Q", 0, "R410A.mix") / 1000;//Coolprop和RefProp的计算结果差别很大
-           double KL2 = CoolProp.PropsSI("L", "T", temperature, "Q", 0, "R410A");
+           //double KL2 = CoolProp.PropsSI("L", "T", temperature, "Q", 0, "R410A");
+           r.KL = CoolProp.PropsSI("L", "T", temperature, "Q", 0, fluidname);
 
            double Pr_l = r.CpL * r.ViscosityL / r.KL * 1000;
            double Re_l = g * d * (1 - x) / r.ViscosityL;
@@ -200,22 +225,31 @@ namespace Model.Basic
            double pc;
            double a_g = 9.8;
            int phase1 = 1;
+           string fluidname = "R410A";
            //int phase2 = 2;
-           temperature = Refrigerant.SATP(fluid, composition, p, phase1).Temperature;
+           //temperature = Refrigerant.SATP(fluid, composition, p, phase1).Temperature;
            //double tsat1 = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, "R410A.mix");
-           pc = Refrigerant.CRIT(fluid, composition).p;
-           double pc1 = CoolProp.Props1SI("R410A", "Pcrit") / 1000;
+           temperature = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, fluidname);
+           //pc = Refrigerant.CRIT(fluid, composition).p;
+           pc = CoolProp.Props1SI(fluidname, "Pcrit") / 1000;
            double pr = p / pc;
 
            r = Refrigerant.SATTTotal(fluid, composition, temperature).SATTTotalResult;
            //double densityLo1 = CoolProp.PropsSI("D", "T", temperature, "Q", 0, "R410A.mix");
+           r.DensityL = CoolProp.PropsSI("D", "T", temperature, "Q", 0, fluidname);
            //double densityVo1 = CoolProp.PropsSI("D", "T", temperature, "Q", 1, "R410A.mix");
+           r.DensityV = CoolProp.PropsSI("D", "T", temperature, "Q", 1, fluidname);
+           //double EnthalpyL1 = CoolProp.PropsSI("H", "T", temperature, "Q", 0, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140); 
+           r.EnthalpyL = CoolProp.PropsSI("H", "T", temperature, "Q", 0, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
+           //double EnthalpyV1 = CoolProp.PropsSI("H", "T", temperature, "Q", 1, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140);
+           r.EnthalpyV = CoolProp.PropsSI("H", "T", temperature, "Q", 1, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
+           //double ViscosityL2 = CoolProp.PropsSI("V", "T", temperature, "Q", 0, "R410A");
+           r.ViscosityL = CoolProp.PropsSI("V", "T", temperature, "Q", 0, fluidname);
            //double ViscosityL1 = CoolProp.PropsSI("V", "T", temperature, "Q", 0, "R410A.mix");//Coolprop和RefProp的计算结果差别很大
-           double ViscosityL2 = CoolProp.PropsSI("V", "T", temperature, "Q", 0, "R410A");
-           //double ViscosityV1 = CoolProp.PropsSI("V", "T", temperature, "Q", 1, "R410A.mix");
            //double CpL1 = CoolProp.PropsSI("C", "T", temperature, "Q", 0, "R410A.mix") / 1000;
            //double KL1 = CoolProp.PropsSI("L", "T", temperature, "Q", 0, "R410A.mix") / 1000;//Coolprop和RefProp的计算结果差别很大
-           double KL2 = CoolProp.PropsSI("L", "T", temperature, "Q", 0, "R410A");
+           //double KL2 = CoolProp.PropsSI("L", "T", temperature, "Q", 0, "R410A");
+           r.KL = CoolProp.PropsSI("L", "T", temperature, "Q", 0, fluidname);
 
            double Pr_l = r.CpL * r.ViscosityL / r.KL * 1000.0;
            double Re_l = g * (1.0 - x) * d / r.ViscosityL;
@@ -273,21 +307,26 @@ namespace Model.Basic
            //double pc;
            double a_g = 9.80665;
            int phase1 = 1;
+           string fluidname = "R410A";
            //int phase2 = 2;
-           temperature = Refrigerant.SATP(fluid, composition, p, phase1).Temperature;
-           //double tsat1 = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, "R410A.mix");
+           temperature = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, fluidname);
 
            r = Refrigerant.SATTTotal(fluid, composition, temperature).SATTTotalResult;
            //double densityLo1 = CoolProp.PropsSI("D", "T", temperature, "Q", 0, "R410A.mix");
+           r.DensityL = CoolProp.PropsSI("D", "T", temperature, "Q", 0, fluidname);
            //double densityVo1 = CoolProp.PropsSI("D", "T", temperature, "Q", 1, "R410A.mix");
+           r.DensityV = CoolProp.PropsSI("D", "T", temperature, "Q", 1, fluidname);
            //double EnthalpyL1 = CoolProp.PropsSI("H", "T", temperature, "Q", 0, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140); 
+           r.EnthalpyL = CoolProp.PropsSI("H", "T", temperature, "Q", 0, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
            //double EnthalpyV1 = CoolProp.PropsSI("H", "T", temperature, "Q", 1, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140);
+           r.EnthalpyV = CoolProp.PropsSI("H", "T", temperature, "Q", 1, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
+           //double ViscosityL2 = CoolProp.PropsSI("V", "T", temperature, "Q", 0, "R410A");
+           r.ViscosityL = CoolProp.PropsSI("V", "T", temperature, "Q", 0, fluidname);
            //double ViscosityL1 = CoolProp.PropsSI("V", "T", temperature, "Q", 0, "R410A.mix");//Coolprop和RefProp的计算结果差别很大
-           double ViscosityL2 = CoolProp.PropsSI("V", "T", temperature, "Q", 0, "R410A");
-           //double ViscosityL1 = CoolProp.PropsSI("V", "T", temperature, "Q", 1, "R410A.mix");
            //double CpL1 = CoolProp.PropsSI("C", "T", temperature, "Q", 0, "R410A.mix") / 1000;
            //double KL1 = CoolProp.PropsSI("L", "T", temperature, "Q", 0, "R410A.mix") / 1000;//Coolprop和RefProp的计算结果差别很大
-           double KL2 = CoolProp.PropsSI("L", "T", temperature, "Q", 0, "R410A");
+           //double KL2 = CoolProp.PropsSI("L", "T", temperature, "Q", 0, "R410A");
+           r.KL = CoolProp.PropsSI("L", "T", temperature, "Q", 0, fluidname);
 
            double Pr_l = r.CpL * r.ViscosityL / r.KL * 1000;
            double Re_l = g * (1.0 - x) * d / r.ViscosityL;

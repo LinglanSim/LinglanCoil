@@ -17,21 +17,26 @@ namespace Model
             double gg = 9.8;
             int phase1 = 1;
             int phase2 = 2;
+            string fluidname = "R410A";
             double q_initial = 0.01;
             double q = q_initial;
             double err = 0.01;
             bool flag = false;
             int iter = 1;
-
+            //string Nref = "dfa";
             CalcResult res=new CalcResult();
             //res.Tao[0] = new double();          
             var r = new Refrigerant.SATTTotalResult();
             //recalc tri to make sure it is 2ph, ruhao, 20180225 
-            tri = Refrigerant.SATP(fluid, composition, pri, phase1).Temperature - 273.15;
-            double tri1 = CoolProp.PropsSI("T", "P", pri * 1000, "Q", 0, "R410A.mix") - 273.15;
+            //tri = Refrigerant.SATP(fluid, composition, pri, phase1).Temperature - 273.15;
+            //double tri1 = CoolProp.PropsSI("T", "P", pri * 1000, "Q", 0, "R410A.mix") - 273.15;
+            tri = CoolProp.PropsSI("T", "P", pri * 1000, "Q", 0, fluidname) - 273.15;
             r = Refrigerant.SATTTotal(fluid, composition, tri + 273.15).SATTTotalResult;
-            double EnthalpylL1 = CoolProp.PropsSI("H", "T", tri + 273.15, "Q", 0, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140);
-            double EnthalpyV1 = CoolProp.PropsSI("H", "T", tri + 273.15, "Q", 1, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140);
+            //double EnthalpylL1 = CoolProp.PropsSI("H", "T", tri + 273.15, "Q", 0, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140);
+            //double EnthalpyV1 = CoolProp.PropsSI("H", "T", tri + 273.15, "Q", 1, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140);
+            r.EnthalpyL = CoolProp.PropsSI("H", "T", tri + 273.15, "Q", 0, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
+            r.EnthalpyV = CoolProp.PropsSI("H", "T", tri + 273.15, "Q", 1, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
+
             res.x_i = (hri - r.EnthalpyL) / (r.EnthalpyV - r.EnthalpyL);   //+ 140 for reference state, to be changed
             RefHTCandDPResult htc_dp = new RefHTCandDPResult();
 
@@ -59,10 +64,23 @@ namespace Model
                 res.x_o = (res.hro - r.EnthalpyL) / (r.EnthalpyV - r.EnthalpyL); //+ 139.17 for reference state, to be changed
                 //res.DP = 0;
                 res.Pro = pri - res.DP;
-                res.Tro = Refrigerant.PHFLSH(fluid, composition, res.Pro, (res.hro + (fluid[0] == "Water" ? 0 : 140)) * r.Wm).t; //
-                double Tro2 = CoolProp.PropsSI("T", "P", res.Pro * 1000, "H", (res.hro + (fluid[0] == "Water" ? 0 : 140)) * 1000, "R410A");
-                double rho_o = Refrigerant.TQFLSH(fluid, composition, res.Tro, res.x_o).D * r.Wm;
-                double rho_o1 = CoolProp.PropsSI("D", "T", res.Tro, "Q", res.x_o, "R410A.mix");//CoolProp和RefProp的计算结果差别大
+                //res.Tro = Refrigerant.PHFLSH(fluid, composition, res.Pro, (res.hro + (fluid[0] == "Water" ? 0 : 140)) * r.Wm).t; //
+                res.Tro = CoolProp.PropsSI("T", "P", res.Pro * 1000, "H", (res.hro + (fluid[0] == "Water" ? 0 : 140)) * 1000, fluidname);
+                //double Tro2 = CoolProp.PropsSI("T", "P", res.Pro * 1000, "H", (res.hro + (fluid[0] == "Water" ? 0 : 140)) * 1000, "R410A");
+                //double rho_o = Refrigerant.TQFLSH(fluid, composition, res.Tro, res.x_o).D * r.Wm;
+
+                double rho_o = CoolProp.PropsSI("D", "T", res.Tro, "Q", res.x_o, "R410A.mix");
+                
+                //double rho_o7 = CoolProp.PropsSI("D", "T", res.Tro, "Q", 1, "R410A");
+                //double rho_o8 = 1 / (res.x_o / rho_o6 + (1 - res.x_o) / rho_o7);
+
+                //double rho_o5 = CoolProp.PropsSI("D", "T", res.Tro, "Q", res.x_o, "HEOS::R410A");
+                //double rho_o4 = CoolProp.PropsSI("D", "H", (res.hro + (fluid[0] == "Water" ? 0 : 140)) * 1000, "Q", res.x_o, "R410A");//CoolProp和RefProp的计算结果差别大
+                //double rho_o1 = CoolProp.PropsSI("D", "T", res.Tro, "Q", res.x_o, "R410A.mix");//CoolProp和RefProp的计算结果差别大
+                //double rho_o3 = CoolProp.PropsSI("D", "T", res.Tro, "Q", res.x_o, "R410A");
+                //double rho_o2 = CoolProp.PropsSI("D", "T", res.Tro, "H", (res.hro + (fluid[0] == "Water" ? 0 : 140)) * 1000, "R410A");
+                //double rho_o3 = CoolProp.PropsSI("D", "T", res.Tro, "Q", res.x_o, "HEOS::R410A");
+                //double rho_o7 = CoolProp.PropsSI("D", "T", res.Tro, "Q", res.x_o, "R410A");
                 //    .TPFLSH(fluid, composition, res.Tro, res.Pro).D * r.Wm;//wrong value
                 //double rho_o = Refrigerant.PHFLSH(fluid, composition, res.Pro, (res.hro + 140) * r.Wm).D * r.Wm;
                 //if (res.x_o > 1 || res.x_o < 0)

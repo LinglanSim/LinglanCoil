@@ -15,6 +15,8 @@ namespace Model
         {
             //string[] fluid = new string[] { "Water" };
             string[] fluid = new string[] { "R410A.MIX" };
+            string fluidname = "R410A";
+            //string fluid = new string { "R410A.mix" };
             //string[] fluid = new string[] { "ISOBUTAN" };
             //string[] fluida = new string[] { "R410A.mix" };
            // string fluid1 = fluida[0];
@@ -91,7 +93,7 @@ namespace Model
             //double zdp = 1;
 
 
-            double mr = 0.015;
+            double mr = 0.02;
             //double Vel_a = 1.8; //m/s
             double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
             double Vel_ave = 2.032;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
@@ -124,8 +126,9 @@ namespace Model
             double te = tri;
             //pe的结果多样
             //flu = "R410A.mix";
-            double pe = Refrigerant.SATT(fluid, composition, te + 273.15, 1).Pressure;
-            double pe3 = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, "R410A.mix") / 1000;
+            //double pe = Refrigerant.SATT(fluid, composition, te + 273.15, 1).Pressure;
+            //double pe3 = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, "R410A.mix") / 1000;
+            double pe = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluidname) / 1000;
             //double pe4 = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid1) / 1000;
             /*
             double pe1 = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 1, "R410A.mix") / 1000;
@@ -150,8 +153,9 @@ namespace Model
             //CoolProp物性的计算不需要摩尔质量
             double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
             //hri = hri / wm - 140;
-            double hri = Refrigerant.TPFLSH(fluid, composition, T_exv + 273.15, P_exv).h / wm - (fluid[0] == "Water" ? 0 : 140);
-            double hri1 = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, "R410A.mix") / 1000 - 140;
+            //double hri = Refrigerant.TPFLSH(fluid, composition, T_exv + 273.15, P_exv).h / wm - (fluid[0] == "Water" ? 0 : 140);
+            //double hri1 = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, "R410A.mix") / 1000 - 140;
+            double hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
             //double hri1 = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid1) / 1000 - 140;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
@@ -197,6 +201,7 @@ namespace Model
             //制冷剂制热模块计算
             //string[] fluid = new string[] { "Water" };
             string[] fluid = new string[] { "R32" }; //;{ "R410A.MIX" }
+            string fluidname = "R32";
             //string[] fluid = new string[] { "ISOBUTAN" };
             double[] composition = new double[] { 1 };
             CalcResult res = new CalcResult();
@@ -290,7 +295,9 @@ namespace Model
             double tai = 26.67;
             double RHi = 0.469;
             double tc = 45.0;
-            double pri = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
+            //double pri = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
+
+            double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluidname) / 1000;
             //double P_exv = 1842.28;//kpa
             double tri = 78;//C
             double conductivity = 386; //w/mK for Cu
@@ -300,8 +307,8 @@ namespace Model
             //double hri = Refrigerant.ENTHAL(fluid, composition, tri + 273.15, densityL).Enthalpy ;
             double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
             //hri = hri / wm - 140;
-            double hri = Refrigerant.TPFLSH(fluid, composition, tri + 273.15, pri).h / wm - (fluid[0] == "Water" ? 0 : 140);
-
+            //double hri = Refrigerant.TPFLSH(fluid, composition, tri + 273.15, pri).h / wm - (fluid[0] == "Water" ? 0 : 140);
+            double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
             //double hri = 354.6;
             //double xin = 0.57;
 
@@ -339,6 +346,7 @@ namespace Model
         {
             //制冷剂制热模块计算
             string[] fluid = new string[] { "R32" }; //;{ "R410A.MIX" }
+            string fluidname = "R32";
             double[] composition = new double[] { 1 };
             CalcResult res = new CalcResult();
             int Nrow = 2;
@@ -391,7 +399,8 @@ namespace Model
             double zdp = 3.2;
             double RHi = 0.469;
             double tc = 46.23;
-            double pri = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
+            //double pri = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
+            double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluidname) / 1000;
             double tri = 95;//C
             double conductivity = 386; //w/mK for Cu
             double Pwater = 100.0;
@@ -400,7 +409,8 @@ namespace Model
             //double hri = Refrigerant.ENTHAL(fluid, composition, tri + 273.15, densityL).Enthalpy ;
             double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
             //hri = hri / wm - 140;
-            double hri = Refrigerant.TPFLSH(fluid, composition, tri + 273.15, pri).h / wm - (fluid[0] == "Water" ? 0 : 140);
+            //double hri = Refrigerant.TPFLSH(fluid, composition, tri + 273.15, pri).h / wm - (fluid[0] == "Water" ? 0 : 140);
+            double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -436,6 +446,7 @@ namespace Model
         {
             //制冷剂制热模块计算
             string[] fluid = new string[] { "R32" }; //;{ "R410A.MIX" }
+            string fluidname = "R32";
             double[] composition = new double[] { 1 };
             CalcResult res = new CalcResult();
             int Nrow = 2;
@@ -531,6 +542,7 @@ namespace Model
         public static CalcResult Water_Midea5()
         {
             string[] fluid = new string[] { "Water" };
+            string fluidname = "Water";
             //string[] fluid = new string[] { "R410A.MIX" };
             //string[] fluid = new string[] { "ISOBUTAN" };
             double[] composition = new double[] { 1 };
@@ -638,7 +650,8 @@ namespace Model
             double RHi = 0.469;
             double tri = 45;
             double tc = tri;
-            double pc = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
+            //double pc1 = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
+            double pc = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluidname) / 1000;
             double Pwater = 305;//kpa
             double conductivity = 386; //w/mK for Cu
             int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
@@ -646,9 +659,8 @@ namespace Model
             //double hri = Refrigerant.ENTHAL(fluid, composition, tri + 273.15, densityL).Enthalpy ;
             double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
             //hri = hri / wm - 140;
-            double hri = Refrigerant.TPFLSH(fluid, composition, tc + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
-            double hr = CoolProp.PropsSI("H", "P", Pwater, "T", tc + 273.15, "Water");
-
+            //double hri1 = Refrigerant.TPFLSH(fluid, composition, tc + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+            double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
 
             double hhh = CoolProp.PropsSI("T","P",101325,"Q",0,"Water");
             double sss = CoolProp.PropsSI("T", "P", 101325, "Q", 0, "Water");
@@ -700,7 +712,7 @@ namespace Model
         public static CalcResult Water_Midea9()
         {
             string[] fluid = new string[] { "Water" };
-
+            string fluidname = "Water";
             double[] composition = new double[] { 1 };
             CalcResult res = new CalcResult();
             int Nrow = 1;
@@ -771,12 +783,14 @@ namespace Model
             double RHi = 0.469;
             double tri = 44.98;
             double tc = tri;
-            double pc = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
+            //double pc = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
+            double pc = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluidname) / 1000;
             double Pwater = 395;//kpa
             double conductivity = 386; //w/mK for Cu
             int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
             double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
-            double hri = Refrigerant.TPFLSH(fluid, composition, tc + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+            //double hri = Refrigerant.TPFLSH(fluid, composition, tc + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+            double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -811,7 +825,7 @@ namespace Model
         public static CalcResult Water_Cool_Midea9()
         {
             string[] fluid = new string[] { "Water" };
-
+            string fluidname = "Water";
             double[] composition = new double[] { 1 };
             CalcResult res = new CalcResult();
             int Nrow = 1;
@@ -891,13 +905,15 @@ namespace Model
                 double[] tri = new double[] { 9.98, 10.0, 9.98, 10.0, 9.99, 10.0, 9.98, 10.0, 9.99, 10.0, 10.01, 9.99, 10.02, 10.0, 10.01, 9.99, 9.99, 9.98, 9.99, 10.0, 10.0, 10.0, 9.99, 9.99, 9.99, 9.99, 9.99, 9.99 };
                 double[] tc = tri;
                 double[] pc = new double[N];
-                pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
+                //pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
+                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 0, fluidname) / 1000;
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
                 double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
                 double[] hri = new double[N];
                 hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -935,7 +951,7 @@ namespace Model
         public static CalcResult Water_Heat_Midea9()
         {
             string[] fluid = new string[] { "Water" };
-
+            string fluidname = "Water";
             double[] composition = new double[] { 1 };
             CalcResult res = new CalcResult();
             int Nrow = 1;
@@ -1017,13 +1033,15 @@ namespace Model
                 double[] tri = new double[] { 45.01, 45.01, 44.99, 44.99, 45.0, 45.0, 44.99, 44.99, 45.01, 44.99, 45.01, 44.99, 45.01, 45.01, 45.0, 45.01, 44.99, 45.01, 45.01, 44.99, 45.01, 44.98, 45.01, 44.99, 45.0, 45.0, 45.01, 45.0 };
                 double[] tc = tri;
                 double[] pc = new double[N];
-                pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
+                //pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
+                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 0, fluidname) / 1000;
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
                 double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
                 double[] hri = new double[N];
-                hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+                //hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -1061,7 +1079,7 @@ namespace Model
         public static CalcResult Water_Heat_Jiayong6()
         {
             string[] fluid = new string[] { "Water" };
-
+            string fluidname = "Water";
             double[] composition = new double[] { 1 };
             CalcResult res = new CalcResult();
             int Nrow = 2;
@@ -1162,13 +1180,15 @@ namespace Model
                 double[] tri = new double[] { 45.01, 45.00, 44.98, 44.99, 45.01, 44.99, 45.00, 44.99, 45.01, 44.99, 44.99, 44.99, 45.00, 44.99, 44.98, 45.01 };
                 double[] tc = tri;
                 double[] pc = new double[N];
-                pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
+                //pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
+                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 0, fluidname) / 1000;
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
                 double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
                 double[] hri = new double[N];
-                hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+                //hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];

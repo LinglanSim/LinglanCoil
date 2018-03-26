@@ -18,14 +18,21 @@ namespace Model.Basic
             double dp = 0.0;
             int phase1 = 1;
             int phase2 = 2;
+            string fluidname = "R410A";
             var r = new Refrigerant.SATTTotalResult();
-            double tsat = Refrigerant.SATP(fluid, composition, p, phase1).Temperature;
-            //double tsat1 = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, "R410A.mix");
+            //double tsat = Refrigerant.SATP(fluid, composition, p, phase1).Temperature;
+            //double tsat = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, "R410A.mix");
+            double tsat = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, fluidname);
             r = Refrigerant.SATTTotal(fluid, composition, tsat).SATTTotalResult;
-            //double densityLo1 = CoolProp.PropsSI("D", "T", tsat, "Q", 0, "R410A.mix");
-            //double densityVo1 = CoolProp.PropsSI("D", "T", tsat, "Q", 1, "R410A.mix");
             //double ViscosityL1 = CoolProp.PropsSI("V", "T", tsat, "Q", 0, "R410A");
             //double ViscosityV1 = CoolProp.PropsSI("V", "T", tsat, "Q", 1, "R410A");
+            //double densityLo1 = CoolProp.PropsSI("D", "T", tsat, "Q", 0, "R410A");
+            //double densityVo1 = CoolProp.PropsSI("D", "T", tsat, "Q", 1, "R410A");
+
+            r.DensityL = CoolProp.PropsSI("D", "T", tsat, "Q", 0, fluidname);
+            r.DensityV = CoolProp.PropsSI("D", "T", tsat, "Q", 1, fluidname);
+            r.ViscosityL = CoolProp.PropsSI("V", "T", tsat, "Q", 0, fluidname);
+            r.ViscosityV = CoolProp.PropsSI("V", "T", tsat, "Q", 1, fluidname);
 
             double Re_l = g * d / r.ViscosityL;// r.ViscosityL;
             double Re_v = g * d / r.ViscosityV;
@@ -59,14 +66,21 @@ namespace Model.Basic
         {
             int phase1 = 1;
             //int phase2 = 2;
+            string fluidname = "R410A";
             var r = new Refrigerant.SATTTotalResult();
-            double tsat = Refrigerant.SATP(fluid, composition, p, phase1).Temperature;
+            //double tsat = Refrigerant.SATP(fluid, composition, p, phase1).Temperature;
             //double tsat1 = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, "R410A.mix");
+            double tsat = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, fluidname);
             r = Refrigerant.SATTTotal(fluid, composition, tsat).SATTTotalResult;
             //double densityLo1 = CoolProp.PropsSI("D", "T", tsat, "Q", 0, "R410A.mix");
             //double densityVo1 = CoolProp.PropsSI("D", "T", tsat, "Q", 1, "R410A.mix");
             //double ViscosityL1 = CoolProp.PropsSI("V", "T", tsat, "Q", 0, "R410A");
             //double ViscosityV1 = CoolProp.PropsSI("V", "T", tsat, "Q", 1, "R410A");
+
+            r.DensityL = CoolProp.PropsSI("D", "T", tsat, "Q", 0, fluidname);
+            r.DensityV = CoolProp.PropsSI("D", "T", tsat, "Q", 1, fluidname);
+            r.ViscosityL = CoolProp.PropsSI("V", "T", tsat, "Q", 0, fluidname);
+            r.ViscosityV = CoolProp.PropsSI("V", "T", tsat, "Q", 1, fluidname);
 
             double Re_l = g * d / r.ViscosityL;
             double f_sp = RefrigerantSPDP.ff_Friction(Re_l);
@@ -109,16 +123,23 @@ namespace Model.Basic
             //if (x == 1) f_oil = 1.0; else f_oil = 1.15;
             //double m_to_ft = 1000 / (12 * 25.4);
             //double dp = 0.0;
+            string fluidname = "R410A";
             int phase1 = 1;
             //int phase2 = 2;
             var r = new Refrigerant.SATTTotalResult();
-            double tsat = Refrigerant.SATP(fluid, composition, p, phase1).Temperature;
+            //double tsat = Refrigerant.SATP(fluid, composition, p, phase1).Temperature;
             //double tsat1 = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, "R410A.mix");
+            double tsat = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, fluidname);
             r = Refrigerant.SATTTotal(fluid, composition, tsat).SATTTotalResult;
             //double densityLo1 = CoolProp.PropsSI("D", "T", tsat, "Q", 0, "R410A.mix");
             //double densityVo1 = CoolProp.PropsSI("D", "T", tsat, "Q", 1, "R410A.mix");
             //double ViscosityL1 = CoolProp.PropsSI("V", "T", tsat, "Q", 0, "R410A");
             //double ViscosityV1 = CoolProp.PropsSI("V", "T", tsat, "Q", 1, "R410A");
+
+            r.DensityL = CoolProp.PropsSI("D", "T", tsat, "Q", 0, fluidname);
+            r.DensityV = CoolProp.PropsSI("D", "T", tsat, "Q", 1, fluidname);
+            r.ViscosityL = CoolProp.PropsSI("V", "T", tsat, "Q", 0, fluidname);
+            r.ViscosityV = CoolProp.PropsSI("V", "T", tsat, "Q", 1, fluidname);
 
             double Re_l = g * (1 - x) * d / r.ViscosityL;
             double Re_v = g * x * d / r.ViscosityV;

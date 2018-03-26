@@ -20,16 +20,19 @@ namespace Model
             double tsat;
             int phase1 = 1;
             int phase2 = 2;
+
+            string fluidname = "R410A";
             tsat = Refrigerant.SATP(fluid, composition, pri, phase1).Temperature;
             //double tsat1 = CoolProp.PropsSI("T", "P", pri * 1000, "Q", 0, "R410A.mix");
             r = Refrigerant.SATTTotal(fluid, composition, tsat).SATTTotalResult;
             
-
             double Vol_tubes = A_r_cs * l;   //Tube volume, for charge calculation
-            double h_l = r.EnthalpyL;
-            double h_v = r.EnthalpyV;
+            //double h_l = r.EnthalpyL;
+            //double h_v = r.EnthalpyV;
             //double hl1 = CoolProp.PropsSI("H", "T", tsat, "Q", 0, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140);
+            double h_l = CoolProp.PropsSI("H", "T", tsat, "Q", 0, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
             //double hv1 = CoolProp.PropsSI("H", "T", tsat, "Q", 1, "R410A.mix") / 1000 - (fluid[0] == "Water" ? 0 : 140);
+            double h_v = CoolProp.PropsSI("H", "T", tsat, "Q", 1, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
             double Tri_mod;
             double alpha;
             double M;
@@ -51,6 +54,7 @@ namespace Model
                 double P_avg = (pri + res_element.Pro) / 2; //Average pressure of the element
                 double rho = Refrigerant.TPFLSH(fluid, composition, T_avg + 273.15, P_avg).D*r.Wm;//density(ref$, T=T_avg, P=P_avg) 
                 //double rho1 = CoolProp.PropsSI("D", "P", P_avg * 1000, "T", T_avg + 273.15, "R410A.mix");
+                double rho1 = CoolProp.PropsSI("D", "P", P_avg * 1000, "T", T_avg + 273.15, "R410A.mix");//计算结果相差较大
                 M = Vol_tubes * rho; //"Mass calculated"
             }
          
@@ -68,10 +72,12 @@ namespace Model
                 alpha = 1;
                 //{Equations are for charge calculation}
                 double P_avg = (pri + res_element.Pro) / 2; //Average pressure of the element
-                double rho_l = Refrigerant.SATP(fluid, composition, P_avg, phase1).DensityL*r.Wm;
-                double rho_v = Refrigerant.SATP(fluid, composition, P_avg, phase2).DensityV*r.Wm;
+                //double rho_l = Refrigerant.SATP(fluid, composition, P_avg, phase1).DensityL*r.Wm;
+                //double rho_v = Refrigerant.SATP(fluid, composition, P_avg, phase2).DensityV*r.Wm;
                 //double rho_l1 = CoolProp.PropsSI("D", "P", P_avg * 1000, "Q", 0, "R410A.mix");
                 //double rho_v1 = CoolProp.PropsSI("D", "P", P_avg * 1000, "Q", 1, "R410A.mix");
+                double rho_l = CoolProp.PropsSI("D", "P", P_avg * 1000, "Q", 0, fluidname);
+                double rho_v = CoolProp.PropsSI("D", "P", P_avg * 1000, "Q", 1, fluidname);
                 //{Call VOIDFRACTION_pressure(ref$, x_avg, P_avg : alpha_p)  "Baroczy void fraction model"     }
                 M = Vol_tubes * (alpha * rho_v + (1 - alpha) * rho_l);  //Mass calculated   
             }
@@ -96,8 +102,9 @@ namespace Model
                 //{Equations are for charge calculation}
                 double T_avg = (tri + res_element.Tro) / 2; //Average temperature of the element
                 double P_avg = (pri + res_element.Pro) / 2; //Average pressure of the element
-                double rho = Refrigerant.TPFLSH(fluid, composition, T_avg, P_avg).D * r.Wm; //density(ref$, T=T_avg, P=P_avg) 
+                //double rho = Refrigerant.TPFLSH(fluid, composition, T_avg, P_avg).D * r.Wm; //density(ref$, T=T_avg, P=P_avg) 
                 //double rho1 = CoolProp.PropsSI("D", "P", P_avg * 1000, "T", T_avg + 273.15, "R410A.mix");
+                double rho = CoolProp.PropsSI("D", "P", P_avg * 1000, "T", T_avg + 273.15, fluidname);
                 M = Vol_tubes * rho; //Mass calculated
             }
 

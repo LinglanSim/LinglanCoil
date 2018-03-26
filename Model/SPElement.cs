@@ -15,23 +15,25 @@ namespace Model
         {
             double r_metal = thickness / conductivity / Ar;
             double gg = 9.8;
+            string fluidname = "R410A";
             CalcResult res=new CalcResult();
             Refrigerant.TPFLSHResult r = new Refrigerant.TPFLSHResult();
             r = Refrigerant.TPFLSH(fluid, composition, tri + 273.15, fluid[0] == "Water" ? Pwater : pri);
             double wm = Refrigerant.WM(fluid, composition).Wm;
-            double mu_r = Refrigerant.TRNPRP(fluid, composition, tri + 273.15, r.D).Viscosity / Math.Pow(10, 6);
-            double k_r = Refrigerant.TRNPRP(fluid, composition, tri + 273.15, r.D).ThermalConductivity;
-            string NameofRef = "R410A.mix";
-            double rho_r = r.D * wm;
-            double cp_r = r.cp / wm * 1000;
-        
-            double mu_r1 = CoolProp.PropsSI("V", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, NameofRef);
-            
-            double mu_r2 = CoolProp.PropsSI("V", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");
-            double k_r1 = CoolProp.PropsSI("L", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");
-            double rho_r1 = CoolProp.PropsSI("D", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");
-            double cp_r1 = CoolProp.PropsSI("C", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");
+            //double mu_r = Refrigerant.TRNPRP(fluid, composition, tri + 273.15, r.D).Viscosity / Math.Pow(10, 6);
+            //double k_r = Refrigerant.TRNPRP(fluid, composition, tri + 273.15, r.D).ThermalConductivity;
+            //string NameofRef = "R410A.mix";
+            //double rho_r = r.D * wm;
+            //double cp_r = r.cp / wm * 1000;
 
+            //double mu_r1 = CoolProp.PropsSI("V", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");
+            double mu_r = CoolProp.PropsSI("V", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, fluidname);
+            //double k_r1 = CoolProp.PropsSI("L", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");
+            double k_r = CoolProp.PropsSI("L", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, fluidname);
+            //double rho_r1 = CoolProp.PropsSI("D", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");
+            double rho_r = CoolProp.PropsSI("D", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, fluidname);
+            //double cp_r1 = CoolProp.PropsSI("C", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");
+            double cp_r = CoolProp.PropsSI("C", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, fluidname);
             //double Pr_r1 = CoolProp.PropsSI("Pr", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");//普朗特数调用格式不对,计算来的，不是调用
             double Pr_r = cp_r * mu_r / k_r;//普朗特数的计算有了
             //double Pr_l = r.CpL * r.ViscosityL / r.KL * 1000;
@@ -97,15 +99,20 @@ namespace Model
         {
             double r_metal = thickness / conductivity / Ar;
             double gg = 9.8;
+            string fluidname = "R410A";
             CalcResult res = new CalcResult();
             Refrigerant.TPFLSHResult r = new Refrigerant.TPFLSHResult();
             r = Refrigerant.TPFLSH(fluid, composition, tri + 273.15, fluid[0] == "Water" ? Pwater : pri);
             double wm = Refrigerant.WM(fluid, composition).Wm;
-            double mu_r = Refrigerant.TRNPRP(fluid, composition, tri + 273.15, r.D).Viscosity / Math.Pow(10, 6);
-            double k_r = Refrigerant.TRNPRP(fluid, composition, tri + 273.15, r.D).ThermalConductivity;
-            double rho_r = r.D * wm;//rho很不准,比refprop大15-10
-            double cp_r = r.cp / wm * 1000;
-            
+            //double mu_r = Refrigerant.TRNPRP(fluid, composition, tri + 273.15, r.D).Viscosity / Math.Pow(10, 6);
+            //double k_r = Refrigerant.TRNPRP(fluid, composition, tri + 273.15, r.D).ThermalConductivity;
+            //double rho_r = r.D * wm;//rho很不准,比refprop大15-10
+            //double cp_r = r.cp / wm * 1000;
+
+            double mu_r = CoolProp.PropsSI("V", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, fluidname);
+            double k_r = CoolProp.PropsSI("L", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, fluidname);
+            double rho_r = CoolProp.PropsSI("D", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, fluidname);
+            double cp_r = CoolProp.PropsSI("C", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, fluidname);
 
             /*
            double mu_r1 = CoolProp.PropsSI("V", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");
