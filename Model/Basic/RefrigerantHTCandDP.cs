@@ -8,7 +8,7 @@ namespace Model.Basic
 {
     public class RefrigerantHTCandDP
     {
-        public static RefHTCandDPResult HTCandDP(string[] fluid, double[] composition, double d, double g, double p, double x, double l, double q, double zh, double zdp, double hexType)
+        public static RefHTCandDPResult HTCandDP(string fluid, double d, double g, double p, double x, double l, double q, double zh, double zdp, double hexType)
         {
             //Main function for 2-phase flow HTC and calculation
             double href = 0;
@@ -20,20 +20,20 @@ namespace Model.Basic
             {
                 if (x <= 0.95 && x >= 0)
                 {
-                    href = RefrigerantTPHTC.Shah_Evap_href(fluid, composition, d, g, p, x, q, l);
+                    href = RefrigerantTPHTC.Shah_Evap_href(fluid, d, g, p, x, q, l);
                     //href = RefrigerantTPHTC.Kandlikar_Evap_href(fluid, composition, d, g, p, x, q, l);
                     //href = RefrigerantTPHTC.JR_Evap_href(fluid, composition, d, g, p, x, q, l);
-                    PressD = RefrigerantTPDP.deltap_smooth(fluid, composition, d, g, p, x, l);
+                    PressD = RefrigerantTPDP.deltap_smooth(fluid, d, g, p, x, l);
                     //PressD = RefrigerantTPDP.deltap_JR(fluid, composition, d, g, p, x, l);
                     //PressD = RefrigerantTPDP.deltap_MS(fluid, composition, d, g, p, x, l);
                 }
 
                 if (x < 1 && x > 0.95) //vapor to 2-phase
                 {
-                    href = RefrigerantTPHTC.Shah_Evap_href(fluid, composition, d, g, p, x, q, l);
+                    href = RefrigerantTPHTC.Shah_Evap_href(fluid, d, g, p, x, q, l);
                     //href = RefrigerantTPHTC.Kandlikar_Evap_href(fluid, composition, d, g, p, x, q, l);
                     //href = RefrigerantTPHTC.JR_Evap_href(fluid, composition, d, g, p, x, q, l);
-                    PressD = RefrigerantTPDP.deltap_smooth(fluid, composition, d, g, p, x, l);
+                    PressD = RefrigerantTPDP.deltap_smooth(fluid, d, g, p, x, l);
                     //PressD = RefrigerantTPDP.deltap_JR(fluid, composition, d, g, p, x, l);
                     //PressD = RefrigerantTPDP.deltap_MS(fluid, composition, d, g, p, x, l);
                 }
@@ -44,18 +44,18 @@ namespace Model.Basic
             {
                 if (x <= 0.95 && x >= 0)
                 {
-                    href = RefrigerantTPHTC.Shah_Cond_href(fluid, composition, d, g, p, x, q, l);
+                    href = RefrigerantTPHTC.Shah_Cond_href(fluid, d, g, p, x, q, l);
                     //href = RefrigerantTPHTC.Dobson_Cond_href(fluid, composition, d, g, p, x, Ts, l);//需要考虑Ts的参数传递
-                    PressD = RefrigerantTPDP.deltap_smooth(fluid, composition, d, g, p, x, l);
+                    PressD = RefrigerantTPDP.deltap_smooth(fluid, d, g, p, x, l);
                     //PressD = RefrigerantTPDP.deltap_JR(fluid, composition, d, g, p, x, l);
                     //PressD = RefrigerantTPDP.deltap_MS(fluid, composition, d, g, p, x, l);
                 }
 
                 if (x < 1 && x > 0.95) //vapor to 2-phase
                 {
-                    href = RefrigerantTPHTC.Shah_Cond_href(fluid, composition, d, g, p, x, q, l);
+                    href = RefrigerantTPHTC.Shah_Cond_href(fluid, d, g, p, x, q, l);
                     //href = RefrigerantTPHTC.Dobson_Cond_href(fluid, composition, d, g, p, x, Ts, l);//需要考虑Ts的参数传递
-                    PressD = RefrigerantTPDP.deltap_smooth(fluid, composition, d, g, p, x, l);
+                    PressD = RefrigerantTPDP.deltap_smooth(fluid, d, g, p, x, l);
                     //PressD = RefrigerantTPDP.deltap_JR(fluid, composition, d, g, p, x, l);
                     //PressD = RefrigerantTPDP.deltap_MS(fluid, composition, d, g, p, x, l);
                 }

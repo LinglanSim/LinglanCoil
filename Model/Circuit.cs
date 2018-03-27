@@ -9,7 +9,7 @@ namespace Model
 {
     public class Circuit
     {
-        public static CalcResult CircuitCalc(int index, CirArr[] cirArr, CircuitNumber CircuitInfo, int Nrow, int[] Ntube, int Nelement, string[] fluid, double[] composition,
+        public static CalcResult CircuitCalc(int index, CirArr[] cirArr, CircuitNumber CircuitInfo, int Nrow, int[] Ntube, int Nelement, string fluid,
             double dh, double l, GeometryResult[,] geo, double[, ,] ta, double[, ,] RH,
             double tri, double pri, double hri, double mr, double[,] ma, double[,] ha,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater,string Airdirection)
@@ -91,7 +91,7 @@ namespace Model
                         ha_tube[j] = ha[iTube, j];
                     }
 
-                    r[i] = Tube.TubeCalc(Nelement, fluid, composition, dh, l, Aa_fin, Aa_tube, Ar_cs, Ar, tai, RHi, tri_tube, pri_tube, hri_tube,
+                    r[i] = Tube.TubeCalc(Nelement, fluid, dh, l, Aa_fin, Aa_tube, Ar_cs, Ar, tai, RHi, tri_tube, pri_tube, hri_tube,
                         mr, ma_tube, ha_tube, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
                     if (Airdirection=="Parallel")
                     {

@@ -13,14 +13,9 @@ namespace Model
     {
         public static CalcResult main_evaporator()
         {
-            //string[] fluid = new string[] { "Water" };
-            string[] fluid = new string[] { "R410A.MIX" };
-            string fluidname = "R410A";
+            string fluid = "R410A";
             //string fluid = new string { "R410A.mix" };
-            //string[] fluid = new string[] { "ISOBUTAN" };
-            //string[] fluida = new string[] { "R410A.mix" };
-           // string fluid1 = fluida[0];
-            double[] composition = new double[] { 1 };
+            //string fluid = new string[] { "ISOBUTAN" };
             CalcResult res = new CalcResult();
             int Nrow = 2;
             double[] FPI = new double[Nrow + 1];
@@ -128,7 +123,7 @@ namespace Model
             //flu = "R410A.mix";
             //double pe = Refrigerant.SATT(fluid, composition, te + 273.15, 1).Pressure;
             //double pe3 = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, "R410A.mix") / 1000;
-            double pe = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluidname) / 1000;
+            double pe = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid) / 1000;
             //double pe4 = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid1) / 1000;
             /*
             double pe1 = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 1, "R410A.mix") / 1000;
@@ -151,11 +146,11 @@ namespace Model
             //double densityL = Refrigerant.SATT(fluid, composition, te + 273.15, 1).DensityV;
             //double hri = Refrigerant.ENTHAL(fluid, composition, tri + 273.15, densityL).Enthalpy ;
             //CoolProp物性的计算不需要摩尔质量
-            double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
+            //double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
             //hri = hri / wm - 140;
-            //double hri = Refrigerant.TPFLSH(fluid, composition, T_exv + 273.15, P_exv).h / wm - (fluid[0] == "Water" ? 0 : 140);
+            //double hri = Refrigerant.TPFLSH(fluid, composition, T_exv + 273.15, P_exv).h / wm - (fluid == "Water" ? 0 : 140);
             //double hri1 = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, "R410A.mix") / 1000 - 140;
-            double hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
+            double hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
             //double hri1 = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid1) / 1000 - 140;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
@@ -183,7 +178,7 @@ namespace Model
                 }
             geo.A_ratio = geo.A_r / geo.A_a;
 
-            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, te, pe, hri,
+            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo_element, ta, RH, te, pe, hri,
                 mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
 
             //res = Slab.SlabCalc(Npass, N_tubes_pass, fluid, composition, Dh, L, geo.A_a, geo.A_r_cs, geo.A_r, tai, tri, pe, hri,
@@ -199,11 +194,9 @@ namespace Model
         public static CalcResult main_condenser()
         {
             //制冷剂制热模块计算
-            //string[] fluid = new string[] { "Water" };
-            string[] fluid = new string[] { "R32" }; //;{ "R410A.MIX" }
-            string fluidname = "R32";
-            //string[] fluid = new string[] { "ISOBUTAN" };
-            double[] composition = new double[] { 1 };
+            //string fluid = new string[] { "Water" };
+            string fluid = "R32";
+            //string fluid = new string[] { "ISOBUTAN" };
             CalcResult res = new CalcResult();
             int Nrow = 2;
             double[] FPI = new double[Nrow + 1];
@@ -297,7 +290,7 @@ namespace Model
             double tc = 45.0;
             //double pri = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
 
-            double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluidname) / 1000;
+            double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
             //double P_exv = 1842.28;//kpa
             double tri = 78;//C
             double conductivity = 386; //w/mK for Cu
@@ -305,10 +298,9 @@ namespace Model
             int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
             //double densityL = Refrigerant.SATT(fluid, composition, te + 273.15, 1).DensityV;
             //double hri = Refrigerant.ENTHAL(fluid, composition, tri + 273.15, densityL).Enthalpy ;
-            double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
             //hri = hri / wm - 140;
-            //double hri = Refrigerant.TPFLSH(fluid, composition, tri + 273.15, pri).h / wm - (fluid[0] == "Water" ? 0 : 140);
-            double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
+            //double hri = Refrigerant.TPFLSH(fluid, composition, tri + 273.15, pri).h / wm - (fluid == "Water" ? 0 : 140);
+            double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
             //double hri = 354.6;
             //double xin = 0.57;
 
@@ -337,7 +329,7 @@ namespace Model
                 }
             geo.A_ratio = geo.A_r / geo.A_a;
 
-            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tri, pri, hri,
+            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo_element, ta, RH, tri, pri, hri,
                 mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
 
             return res;
@@ -345,9 +337,7 @@ namespace Model
         public static CalcResult main_RACR32condenser_1()
         {
             //制冷剂制热模块计算
-            string[] fluid = new string[] { "R32" }; //;{ "R410A.MIX" }
-            string fluidname = "R32";
-            double[] composition = new double[] { 1 };
+            string fluid = "R32";
             CalcResult res = new CalcResult();
             int Nrow = 2;
             double[] FPI = new double[Nrow + 1];
@@ -400,17 +390,16 @@ namespace Model
             double RHi = 0.469;
             double tc = 46.23;
             //double pri = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
-            double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluidname) / 1000;
+            double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
             double tri = 95;//C
             double conductivity = 386; //w/mK for Cu
             double Pwater = 100.0;
             int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
             //double densityL = Refrigerant.SATT(fluid, composition, te + 273.15, 1).DensityV;
             //double hri = Refrigerant.ENTHAL(fluid, composition, tri + 273.15, densityL).Enthalpy ;
-            double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
             //hri = hri / wm - 140;
-            //double hri = Refrigerant.TPFLSH(fluid, composition, tri + 273.15, pri).h / wm - (fluid[0] == "Water" ? 0 : 140);
-            double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
+            //double hri = Refrigerant.TPFLSH(fluid, composition, tri + 273.15, pri).h / wm - (fluid == "Water" ? 0 : 140);
+            double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -437,7 +426,7 @@ namespace Model
                 }
             geo.A_ratio = geo.A_r / geo.A_a;
 
-            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tri, pri, hri,
+            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo_element, ta, RH, tri, pri, hri,
                 mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
 
             return res;
@@ -445,9 +434,7 @@ namespace Model
         public static CalcResult main_RACR32condenser()
         {
             //制冷剂制热模块计算
-            string[] fluid = new string[] { "R32" }; //;{ "R410A.MIX" }
-            string fluidname = "R32";
-            double[] composition = new double[] { 1 };
+            string fluid = "R32";
             CalcResult res = new CalcResult();
             int Nrow = 2;
             double[] FPI = new double[Nrow + 1];
@@ -503,9 +490,8 @@ namespace Model
             int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
             //double densityL = Refrigerant.SATT(fluid, composition, te + 273.15, 1).DensityV;
             //double hri = Refrigerant.ENTHAL(fluid, composition, tri + 273.15, densityL).Enthalpy ;
-            double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
             //hri = hri / wm - 140;
-            //double hri = Refrigerant.TPFLSH(fluid, composition, tri + 273.15, pri).h / wm - (fluid[0] == "Water" ? 0 : 140);  //****************modified 8
+            //double hri = Refrigerant.TPFLSH(fluid, composition, tri + 273.15, pri).h / wm - (fluid == "Water" ? 0 : 140);  //****************modified 8
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -534,18 +520,16 @@ namespace Model
 
             var r = main_RACR32condenser_1(); //****************modified 9
             //****************modified 9
-            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, r.Tro, r.Pro, r.hro,
+            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo_element, ta, RH, r.Tro, r.Pro, r.hro,
                 r.mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
             return res;
         }
 
         public static CalcResult Water_Midea5()
         {
-            string[] fluid = new string[] { "Water" };
-            string fluidname = "Water";
-            //string[] fluid = new string[] { "R410A.MIX" };
-            //string[] fluid = new string[] { "ISOBUTAN" };
-            double[] composition = new double[] { 1 };
+            string fluid = "Water";
+            //string fluid = new string[] { "R410A.MIX" };
+            //string fluid = new string[] { "ISOBUTAN" };
             CalcResult res = new CalcResult();
             int Nrow = 3;
             double[] FPI = new double[Nrow + 1];
@@ -594,30 +578,6 @@ namespace Model
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
             //  Ncir=1, 20in, 20->19 1out
 
-            //int total = 0;
-            //if (CirArrange != null)
-            //{
-            //    foreach (var seg in CirArrange)
-            //    {
-            //        total += seg.
-            //    }
-            //}
-
-            //double mr = 23.0 / 60;
-            //double Vel_a = 1.2; //m/s
-            //double H = Pt * N_tube;
-            //double Hx = L * H;
-            //double rho_a_st = 1.2; //kg/m3
-
-            //double Va = Vel_a * Hx;
-            //double ma = Va * rho_a_st;//Va / 3600 * 1.2; //kg/s
-            //int curve = 1; //
-            //double za = 1; //Adjust factor
-            //double zh = 1;
-            //double zdp = 1;
-            //double eta_surface = 0.89;
-            //double ha = AirHTC.alpha(Vel_a, za, curve);//71.84;//36.44;
-
             double mr = 23.0 / 60;
             //double Vel_a = 1.8; //m/s
             double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
@@ -643,33 +603,18 @@ namespace Model
             double eta_surface = 0.89;
             double zh = 1;
             double zdp = 1;
-            
-            
-            
+                  
             double tai = 20;
             double RHi = 0.469;
             double tri = 45;
             double tc = tri;
             //double pc1 = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
-            double pc = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluidname) / 1000;
+            double pc = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
             double Pwater = 305;//kpa
             double conductivity = 386; //w/mK for Cu
             int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-            //double densityL = Refrigerant.SATT(fluid, composition, te + 273.15, 1).DensityV;
-            //double hri = Refrigerant.ENTHAL(fluid, composition, tri + 273.15, densityL).Enthalpy ;
-            double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
-            //hri = hri / wm - 140;
-            //double hri1 = Refrigerant.TPFLSH(fluid, composition, tc + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
-            double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
+            double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
 
-            double hhh = CoolProp.PropsSI("T","P",101325,"Q",0,"Water");
-            double sss = CoolProp.PropsSI("T", "P", 101325, "Q", 0, "Water");
-            double cp = CoolProp.PropsSI("C", "P", 101325, "T", 300, "Water");
-            string ccc = CoolProp.PhaseSI("P", 101325, "T", 300, "Water");
-            //double ddd = CoolProp.PropsSI("C", "P", 101325, "T", 300, "REFPROP::Water");
-            double ddd1 = CoolProp.PropsSI("C", "P", 101325, "T", 300, "Water");
-            //double hri = 354.6;
-            //double xin = 0.57;
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
@@ -695,7 +640,7 @@ namespace Model
                 }
             geo.A_ratio = geo.A_r / geo.A_a;
 
-            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc, pc, hri,
+            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo_element, ta, RH, tc, pc, hri,
                 mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
 
             //res = Slab.SlabCalc(Npass, N_tubes_pass, fluid, composition, Dh, L, geo.A_a, geo.A_r_cs, geo.A_r, tai, tri, pe, hri,
@@ -711,9 +656,7 @@ namespace Model
 
         public static CalcResult Water_Midea9()
         {
-            string[] fluid = new string[] { "Water" };
-            string fluidname = "Water";
-            double[] composition = new double[] { 1 };
+            string fluid = "Water";
             CalcResult res = new CalcResult();
             int Nrow = 1;
             double[] FPI = new double[Nrow + 1];
@@ -737,21 +680,6 @@ namespace Model
             // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
 
-            //double mr = 9.99 / 60;
-            //double Vel_a = 2; //m/s
-            //double H = Pt * N_tube;
-            //double Hx = L * H;
-            //double rho_a_st = 1.188; //kg/m3
-
-            //double Va = Vel_a * Hx;
-            //double ma = Va * rho_a_st;//Va / 3600 * 1.2; //kg/s
-            //int curve = 1; //
-            //double za = 1; //Adjust factor
-            //double zh = 1;
-            //double zdp = 1;
-            //double eta_surface = 0.8284;
-            //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 77.42;//71.84;//36.44;
-
             double mr = 9.99/60;
             //double Vel_a = 1.8; //m/s
             double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
@@ -771,26 +699,23 @@ namespace Model
                 {
                     ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
                     ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve) * 1.5;
-                    //ha[i, j] = 79;
                 }
             }
             double eta_surface = 0.8284;
             double zh = 1;
-            double zdp = 1;
-            
+            double zdp = 1;           
             
             double tai = 19.98;
             double RHi = 0.469;
             double tri = 44.98;
             double tc = tri;
             //double pc = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
-            double pc = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluidname) / 1000;
+            double pc = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
             double Pwater = 395;//kpa
             double conductivity = 386; //w/mK for Cu
             int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-            double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
-            //double hri = Refrigerant.TPFLSH(fluid, composition, tc + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
-            double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
+            //double hri = Refrigerant.TPFLSH(fluid, composition, tc + 273.15, Pwater).h / wm - 0.5 - (fluid == "Water" ? 0 : 140);
+            double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -816,7 +741,7 @@ namespace Model
                 }
             geo.A_ratio = geo.A_r / geo.A_a;
 
-            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc, pc, hri,
+            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo_element, ta, RH, tc, pc, hri,
                 mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
 
             return res;
@@ -824,9 +749,7 @@ namespace Model
 
         public static CalcResult Water_Cool_Midea9()
         {
-            string[] fluid = new string[] { "Water" };
-            string fluidname = "Water";
-            double[] composition = new double[] { 1 };
+            string fluid = "Water";
             CalcResult res = new CalcResult();
             int Nrow = 1;
             double[] FPI = new double[Nrow + 1];
@@ -850,26 +773,6 @@ namespace Model
             int N = 28;
             for (int i = 6; i < 7; i++)
             {
-                //double[] mr = new double[] { 10.0, 14.01, 18.0, 21.01, 25.01, 29.0, 31.01, 10.01, 14.01, 18.01, 21.01, 25.01, 29.01, 31.01, 10.01, 14.01, 18.0, 21.0, 25.01, 29.0, 31.01, 10.01, 14.01, 18.01, 21.01, 25.01, 29.01, 31.0 }; // 60;
-                //mr[i] = mr[i] / 60;
-                //double[] Vel_a = new double[] { 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0 }; //m/s
-                //double H = Pt * N_tube;
-                //double Hx = L * H;
-                //double rho_a_st = 1.157; //kg/m3
-
-                //double[] Va = new double[N];
-                //Va[i] = Vel_a[i] * Hx;
-                //double[] ma = new double[N];
-                //ma[i] = Va[i] * rho_a_st;//Va / 3600 * 1.2; //kg/s
-                //int curve = 1; //
-                //double za = 1; //Adjust factor
-                //double zh = 1;
-                //double zdp = 1;
-                //double[] eta_surface = new double[] { 0.845, 0.845, 0.845, 0.845, 0.845, 0.845, 0.845, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.835, 0.83, 0.83, 0.83, 0.83, 0.83, 0.83, 0.83 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                //double[] ha = new double[] { 72.64, 72.64, 72.64, 72.64, 72.64, 72.64, 73.6, 77.2, 77.2, 77.2, 77.2, 77.2, 77.2, 77.2, 78.67, 78.67, 78.67, 78.67, 78.67, 78.67, 78.67, 83.09, 83.09, 83.09, 83.09, 83.09, 83.09, 83.09 };
-
-
                 double[] mr = new double[] { 10.0, 14.01, 18.0, 21.01, 25.01, 29.0, 31.01, 10.01, 14.01, 18.01, 21.01, 25.01, 29.01, 31.01, 10.01, 14.01, 18.0, 21.0, 25.01, 29.0, 31.01, 10.01, 14.01, 18.01, 21.01, 25.01, 29.01, 31.0 }; // 60;
                 mr[i] = mr[i] / 60;
                 double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
@@ -906,14 +809,12 @@ namespace Model
                 double[] tc = tri;
                 double[] pc = new double[N];
                 //pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
-                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 0, fluidname) / 1000;
+                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 0, fluid) / 1000;
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
-                double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
                 double[] hri = new double[N];
-                hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -938,7 +839,7 @@ namespace Model
 
                 geo.A_ratio = geo.A_r / geo.A_a;
 
-                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
+                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
                     mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_cool.txt"))
                 //{
@@ -950,9 +851,7 @@ namespace Model
 
         public static CalcResult Water_Heat_Midea9()
         {
-            string[] fluid = new string[] { "Water" };
-            string fluidname = "Water";
-            double[] composition = new double[] { 1 };
+            string fluid = "Water";
             CalcResult res = new CalcResult();
             int Nrow = 1;
             double[] FPI = new double[Nrow + 1];
@@ -976,27 +875,6 @@ namespace Model
             int N = 28;
             for (int i = 0; i < N; i++)
             {
-                //double[] mr = new double[] { 10.01, 14.01, 18.0, 21.0, 25.0, 29.01, 31.0, 9.99, 14.01, 18.01, 21.01, 25.0, 29.01, 31.0, 10.01, 14.01, 18.01, 21.01, 25.0, 29.01, 31.01, 9.99, 14.0, 18.0, 21.0, 24.99, 29.0, 31.01 }; // 60;
-                //mr[i] = mr[i] / 60;
-                //double[] Vel_a = new double[] { 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0 }; //m/s
-                //double H = Pt * N_tube;
-                //double Hx = L * H;
-                //double rho_a_st = 1.188; //kg/m3
-
-                //double[] Va = new double[N];
-                //Va[i] = Vel_a[i] * Hx;
-                //double[] ma = new double[N];
-                //ma[i] = Va[i] * rho_a_st;//Va / 3600 * 1.2; //kg/s
-                //int curve = 1; //
-                //double za = 1; //Adjust factor
-                //double zh = 1;
-                //double zdp = 1;
-                //double[] eta_surface = new double[] { 0.8764, 0.8764, 0.8764, 0.8764, 0.8764, 0.8764, 0.8764, 0.865, 0.865, 0.865, 0.865, 0.865, 0.865, 0.865, 0.855, 0.855, 0.855, 0.855, 0.855, 0.855, 0.855, 0.846, 0.846, 0.846, 0.846, 0.846, 0.846, 0.846 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
-                //double[] ha = new double[] { 58.51, 58.51, 58.51, 58.51, 58.51, 58.51, 58.51, 64.92, 64.92, 64.92, 64.92, 64.92, 64.92, 64.92, 70.41, 70.41, 70.41, 70.41, 70.41, 70.41, 70.41, 75.42, 75.42, 75.42, 75.42, 75.42, 75.42, 75.42 };
-
-
                 double[] mr = new double[] { 10.01, 14.01, 18.0, 21.0, 25.0, 29.01, 31.0, 9.99, 14.01, 18.01, 21.01, 25.0, 29.01, 31.0, 10.01, 14.01, 18.01, 21.01, 25.0, 29.01, 31.01, 9.99, 14.0, 18.0, 21.0, 24.99, 29.0, 31.01 }; // 60;
                 mr[i] = mr[i] / 60;
                 double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
@@ -1034,14 +912,13 @@ namespace Model
                 double[] tc = tri;
                 double[] pc = new double[N];
                 //pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
-                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 0, fluidname) / 1000;
+                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 0, fluid) / 1000;
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-                double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
                 double[] hri = new double[N];
-                //hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
+                //hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -1067,7 +944,7 @@ namespace Model
 
                 geo.A_ratio = geo.A_r / geo.A_a;
 
-                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
+                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
                     mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
@@ -1078,9 +955,7 @@ namespace Model
         }
         public static CalcResult Water_Heat_Jiayong6()
         {
-            string[] fluid = new string[] { "Water" };
-            string fluidname = "Water";
-            double[] composition = new double[] { 1 };
+            string fluid = "Water";
             CalcResult res = new CalcResult();
             int Nrow = 2;
             double[] FPI = new double[Nrow + 1];
@@ -1124,27 +999,6 @@ namespace Model
             int N = 16;
             for (int i = 0; i < N; i++)
             {
-                //double[] mr = new double[] { 13.01, 17.01, 21.00, 25.00, 13.00, 17.01, 21.00, 25.00, 13.00, 17.00, 21.00, 25.01, 13.01, 17.00, 21.01, 25.00 }; // 60;
-                //mr[i] = mr[i] / 60;
-                //double[] Vel_a = new double[] { 0.70550, 0.70395, 0.70348, 0.70329, 1.00285, 1.00238, 1.00203, 1.00366, 1.30551, 1.30599, 1.30520, 1.30471, 1.58699, 1.58381, 1.58356, 1.58275 }; //m/s
-                //double H = Pt * N_tube;
-                //double Hx = L * H;
-                //double[] rho_a_st = { 1.19767, 1.19763, 1.19766, 1.19767, 1.19772, 1.19773, 1.19772, 1.19776, 1.19779, 1.19771, 1.19775, 1.19771, 1.19767, 1.19774, 1.19768, 1.19768 }; //kg/m3
-
-                //double[] Va = new double[N];
-                //Va[i] = Vel_a[i] * Hx;
-                //double[] ma = new double[N];
-                //ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
-                //int curve = 1; //
-                //double za = 1; //Adjust factor
-                //double zh = 1;
-                //double zdp = 1;
-                //double[] eta_surface = new double[] { 0.86998, 0.872736, 0.8747438, 0.8761934, 0.84895, 0.851907, 0.8535928, 0.8544665, 0.82776, 0.830934, 0.8327302, 0.8339071, 0.81128, 0.81624, 0.81832, 0.81969 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
-                //double[] ha = new double[] { 40.297, 39.319, 38.610, 38.100, 47.975, 46.873, 46.248, 45.925, 56.106, 54.862, 54.162, 53.705, 62.722, 60.704, 59.864, 59.315 };
-
-
                 double[] mr = new double[] { 13.01, 17.01, 21.00, 25.00, 13.00, 17.01, 21.00, 25.00, 13.00, 17.00, 21.00, 25.01, 13.01, 17.00, 21.01, 25.00 }; // 60;
                 mr[i] = mr[i] / 60;
                 double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
@@ -1181,14 +1035,13 @@ namespace Model
                 double[] tc = tri;
                 double[] pc = new double[N];
                 //pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
-                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 0, fluidname) / 1000;
+                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 0, fluid) / 1000;
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-                double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
                 double[] hri = new double[N];
-                //hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluidname) / 1000 - (fluid[0] == "Water" ? 0 : 140);
+                //hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -1198,7 +1051,7 @@ namespace Model
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
 
-                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
+                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
                     mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
@@ -1210,9 +1063,7 @@ namespace Model
         }
         public static CalcResult Water_Cool_Jiayong6()
         {
-            string[] fluid = new string[] { "Water" };
-
-            double[] composition = new double[] { 1 };
+            string fluid = "Water";
             CalcResult res = new CalcResult();
             int Nrow = 2;
             double[] FPI = new double[Nrow + 1];
@@ -1256,27 +1107,6 @@ namespace Model
             int N = 16;
             for (int i = 0; i < 1; i++)
             {
-                //double[] mr = new double[] { 13.01, 17.01, 21.01, 25.00, 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.01, 25.00, 13.01, 17.01, 21.01, 25.00 }; // 60;
-                //mr[i] = mr[i] / 60;
-                //double[] Vel_a = new double[] { 0.70538, 0.70457, 0.70465, 0.70472, 1.00341, 1.00451, 1.00502, 1.00570, 1.30334, 1.30465, 1.30518, 1.30566, 1.58873, 1.58858, 1.58567, 1.58517 }; //m/s
-                //double H = Pt * N_tube;
-                //double Hx = L * H;
-                //double[] rho_a_st = { 1.16847, 1.16850, 1.16849, 1.16853, 1.16842, 1.16846, 1.16856, 1.16840, 1.16848, 1.16840, 1.16844, 1.16848, 1.16845, 1.16845, 1.16848, 1.16849 }; //kg/m3
-
-                //double[] Va = new double[N];
-                //Va[i] = Vel_a[i] * Hx;
-                //double[] ma = new double[N];
-                //ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
-                //int curve = 1; //
-                //double za = 1; //Adjust factor
-                //double zh = 1;
-                //double zdp = 1;
-                //double[] eta_surface = new double[] { 0.86197, 0.863491, 0.8652783, 0.8663570, 0.83131, 0.830614, 0.8305166, 0.8318977, 0.80813, 0.809165, 0.8107805, 0.8109122, 0.78758, 0.78951, 0.79302, 0.79641 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
-                //double[] ha = new double[] { 40.297, 39.319, 38.610, 38.100, 47.975, 46.873, 46.248, 45.925, 56.106, 54.862, 54.162, 53.705, 62.722, 60.704, 59.864, 59.315 };
-
-
                 double[] mr = new double[] { 13.01, 17.01, 21.01, 25.00, 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.01, 25.00, 13.01, 17.01, 21.01, 25.00 }; // 60;
                 mr[i] = mr[i] / 60;
                 double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
@@ -1312,13 +1142,12 @@ namespace Model
                 double[] tri = new double[] { 9.98, 10.01, 10.02, 10.01, 9.99, 10.03, 9.99, 10.03, 9.99, 9.99, 10.01, 10.00, 10.00, 10.01, 9.98, 10.02 };
                 double[] tc = tri;
                 double[] pc = new double[N];
-                pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
+                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
-                double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
                 double[] hri = new double[N];
-                hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -1328,7 +1157,7 @@ namespace Model
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
 
-                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
+                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
                     mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
@@ -1340,9 +1169,7 @@ namespace Model
         }
         public static CalcResult Water_Heat_Jiayong2()
         {
-            string[] fluid = new string[] { "Water" };
-
-            double[] composition = new double[] { 1 };
+            string fluid = "Water";
             CalcResult res = new CalcResult();
             int Nrow = 2;
             double[] FPI = new double[Nrow + 1];
@@ -1387,27 +1214,6 @@ namespace Model
             int N = 16;
             for (int i = 0; i < N; i++)
             {
-                //double[] mr = new double[] { 13.00, 17.00, 21.00, 25.00, 13.00, 17.01, 21.01, 25.00, 13.01, 17.00, 21.00, 25.00, 13.01, 17.00, 21.01, 25.00 }; // 60;
-                //mr[i] = mr[i] / 60;
-                //double[] Vel_a = new double[] { 0.702466, 0.70428, 0.70592, 0.70592, 1.00585, 1.00475, 1.00716, 1.00635, 1.31044, 1.30957, 1.30901, 1.30781, 1.58978, 1.58832, 1.58607, 1.59028 }; //m/s
-                //double H = Pt * N_tube;
-                //double Hx = L * H;
-                //double[] rho_a_st = { 1.19772, 1.19771, 1.19777, 1.19762, 1.19773, 1.19773, 1.19775, 1.19767, 1.19772, 1.19773, 1.19770, 1.19772, 1.19766, 1.19771, 1.19771, 1.19775 }; //kg/m3
-
-                //double[] Va = new double[N];
-                //Va[i] = Vel_a[i] * Hx;
-                //double[] ma = new double[N];
-                //ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
-                //int curve = 1; //
-                //double za = 1; //Adjust factor
-                //double zh = 1;
-                //double zdp = 1;
-                //double[] eta_surface = new double[] { 0.93687, 0.936250, 0.9295073, 0.9333229, 0.92812, 0.927387, 0.9259171, 0.9252950, 0.92324, 0.92239, 0.92222, 0.92211, 0.91866, 0.91823, 0.91817, 0.91800 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
-                //double[] ha = new double[] { 56.798, 57.390, 63.920, 60.213, 65.277, 65.993, 67.436, 68.048, 70.078, 70.917, 71.086, 71.197, 74.628, 75.059, 75.112, 75.283 };
-
-
                 double[] mr = new double[] { 13.00, 17.00, 21.00, 25.00, 13.00, 17.01, 21.01, 25.00, 13.01, 17.00, 21.00, 25.00, 13.01, 17.00, 21.01, 25.00 }; // 60;
                 mr[i] = mr[i] / 60;
                 double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
@@ -1443,13 +1249,13 @@ namespace Model
                 double[] tri = new double[] { 44.99, 44.99, 45.01, 44.99, 45.02, 45.02, 44.99, 45.01, 45.01, 45.03, 44.98, 44.99, 45.02, 44.98, 45.03, 44.99 };
                 double[] tc = tri;
                 double[] pc = new double[N];
-                pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
+                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
+
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-                double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
                 double[] hri = new double[N];
-                hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -1459,7 +1265,7 @@ namespace Model
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
 
-                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
+                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
                     mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
@@ -1471,9 +1277,7 @@ namespace Model
         }
         public static CalcResult Water_Cool_Jiayong2()
         {
-            string[] fluid = new string[] { "Water" };
-
-            double[] composition = new double[] { 1 };
+            string fluid = "Water";
             CalcResult res = new CalcResult();
             int Nrow = 2;
             double[] FPI = new double[Nrow + 1];
@@ -1517,27 +1321,6 @@ namespace Model
             int N = 16;
             for (int i = 0; i < N; i++)
             {
-                //double[] mr = new double[] { 13.01, 17.01, 21.01, 25.00, 13.00, 17.00, 21.01, 25.00, 13.00, 17.00, 21.00, 25.01, 13.01, 17.01, 21.00, 25.00 }; // 60;
-                //mr[i] = mr[i] / 60;
-                //double[] Vel_a = new double[] { 0.70813, 0.70656, 0.70680, 0.70728, 1.00764, 1.005388, 1.00521, 1.00649, 1.30721, 1.30791, 1.30833, 1.30897, 1.58697, 1.58870, 1.59016, 1.58798 }; //m/s
-                //double H = Pt * N_tube;
-                //double Hx = L * H;
-                //double[] rho_a_st = { 1.16850, 1.16845, 1.16841, 1.16846, 1.16850, 1.16849, 1.16849, 1.16845, 1.16848, 1.16846, 1.16848, 1.16850, 1.16848, 1.16846, 1.16842, 1.16847 }; //kg/m3
-
-                //double[] Va = new double[N];
-                //Va[i] = Vel_a[i] * Hx;
-                //double[] ma = new double[N];
-                //ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
-                //int curve = 1; //
-                //double za = 1; //Adjust factor
-                //double zh = 1;
-                //double zdp = 1;
-                //double[] eta_surface = new double[] { 0.93114, 0.928620, 0.9280530, 0.9278466, 0.92327, 0.920580, 0.9193262, 0.9188672, 0.91820, 0.91618, 0.91352, 0.90995, 0.91237, 0.90993, 0.90838, 0.90781 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
-                //double[] ha = new double[] { 56.798, 57.390, 63.920, 60.213, 65.277, 65.993, 67.436, 68.048, 70.078, 70.917, 71.086, 71.197, 74.628, 75.059, 75.112, 75.283 };
-
-
                 double[] mr = new double[] { 13.01, 17.01, 21.01, 25.00, 13.00, 17.00, 21.01, 25.00, 13.00, 17.00, 21.00, 25.01, 13.01, 17.01, 21.00, 25.00 }; // 60;
                 mr[i] = mr[i] / 60;
                 double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
@@ -1573,13 +1356,13 @@ namespace Model
                 double[] tri = new double[] { 10.02, 10.00, 9.98, 10.00, 10.01, 10.00, 10.00, 10.01, 9.98, 9.99, 10.02, 10.00, 10.00, 10.02, 10.01, 10.01 };
                 double[] tc = tri;
                 double[] pc = new double[N];
-                pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
+                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
+
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
-                double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
                 double[] hri = new double[N];
-                hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -1589,7 +1372,7 @@ namespace Model
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
 
-                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
+                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
                     mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
@@ -1602,9 +1385,7 @@ namespace Model
 
         public static CalcResult Water_Heat_Jiayong6_reverse()
         {
-            string[] fluid = new string[] { "Water" };
-
-            double[] composition = new double[] { 1 };
+            string fluid = "Water";
             CalcResult res = new CalcResult();
             int Nrow = 2;
             double[] FPI = new double[Nrow + 1];
@@ -1664,27 +1445,6 @@ namespace Model
             int N = 16;
             for (int i = 0; i < N; i++)
             {
-                //double[] mr = new double[] { 13.01, 17.01, 21.00, 25.00, 13.00, 17.01, 21.00, 25.00, 13.00, 17.00, 21.00, 25.01, 13.01, 17.00, 21.01, 25.00 }; // 60;
-                //mr[i] = mr[i] / 60;
-                //double[] Vel_a = new double[] { 0.70550, 0.70395, 0.70348, 0.70329, 1.00285, 1.00238, 1.00203, 1.00366, 1.30551, 1.30599, 1.30520, 1.30471, 1.58699, 1.58381, 1.58356, 1.58275 }; //m/s
-                //double H = Pt * N_tube;
-                //double Hx = L * H;
-                //double[] rho_a_st = { 1.19767, 1.19763, 1.19766, 1.19767, 1.19772, 1.19773, 1.19772, 1.19776, 1.19779, 1.19771, 1.19775, 1.19771, 1.19767, 1.19774, 1.19768, 1.19768 }; //kg/m3
-
-                //double[] Va = new double[N];
-                //Va[i] = Vel_a[i] * Hx;
-                //double[] ma = new double[N];
-                //ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
-                //int curve = 1; //
-                //double za = 1; //Adjust factor
-                //double zh = 1;
-                //double zdp = 1;
-                //double[] eta_surface = new double[] { 0.86998, 0.872736, 0.8747438, 0.8761934, 0.84895, 0.851907, 0.8535928, 0.8544665, 0.82776, 0.830934, 0.8327302, 0.8339071, 0.81128, 0.81624, 0.81832, 0.81969 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
-                //double[] ha = new double[] { 40.297, 39.319, 38.610, 38.100, 47.975, 46.873, 46.248, 45.925, 56.106, 54.862, 54.162, 53.705, 62.722, 60.704, 59.864, 59.315 };
-
-
                 double[] mr = new double[] { 13.01, 17.01, 21.00, 25.00, 13.00, 17.01, 21.00, 25.00, 13.00, 17.00, 21.00, 25.01, 13.01, 17.00, 21.01, 25.00 }; // 60;
                 mr[i] = mr[i] / 60;
                 double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
@@ -1720,13 +1480,13 @@ namespace Model
                 double[] tri = new double[] { 45.01, 45.00, 44.98, 44.99, 45.01, 44.99, 45.00, 44.99, 45.01, 44.99, 44.99, 44.99, 45.00, 44.99, 44.98, 45.01 };
                 double[] tc = tri;
                 double[] pc = new double[N];
-                pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
+                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
+
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-                double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
                 double[] hri = new double[N];
-                hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -1736,7 +1496,7 @@ namespace Model
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
 
-                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
+                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
                     mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
@@ -1748,9 +1508,7 @@ namespace Model
         }
         public static CalcResult Water_Heat_Jiayong2_reverse()
         {
-            string[] fluid = new string[] { "Water" };
-
-            double[] composition = new double[] { 1 };
+            string fluid = "Water";
             CalcResult res = new CalcResult();
             int Nrow = 2;
             double[] FPI = new double[Nrow + 1];
@@ -1798,27 +1556,6 @@ namespace Model
             int N = 16;
             for (int i = 0; i < N; i++)
             {
-                //double[] mr = new double[] { 13.00, 17.00, 21.00, 25.00, 13.00, 17.01, 21.01, 25.00, 13.01, 17.00, 21.00, 25.00, 13.01, 17.00, 21.01, 25.00 }; // 60;
-                //mr[i] = mr[i] / 60;
-                //double[] Vel_a = new double[] { 0.702466, 0.70428, 0.70592, 0.70592, 1.00585, 1.00475, 1.00716, 1.00635, 1.31044, 1.30957, 1.30901, 1.30781, 1.58978, 1.58832, 1.58607, 1.59028 }; //m/s
-                //double H = Pt * N_tube;
-                //double Hx = L * H;
-                //double[] rho_a_st = { 1.19772, 1.19771, 1.19777, 1.19762, 1.19773, 1.19773, 1.19775, 1.19767, 1.19772, 1.19773, 1.19770, 1.19772, 1.19766, 1.19771, 1.19771, 1.19775 }; //kg/m3
-
-                //double[] Va = new double[N];
-                //Va[i] = Vel_a[i] * Hx;
-                //double[] ma = new double[N];
-                //ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
-                //int curve = 1; //
-                //double za = 1; //Adjust factor
-                //double zh = 1;
-                //double zdp = 1;
-                //double[] eta_surface = new double[] { 0.93687, 0.936250, 0.9295073, 0.9333229, 0.92812, 0.927387, 0.9259171, 0.9252950, 0.92324, 0.92239, 0.92222, 0.92211, 0.91866, 0.91823, 0.91817, 0.91800 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
-                //double[] ha = new double[] { 56.798, 57.390, 63.920, 60.213, 65.277, 65.993, 67.436, 68.048, 70.078, 70.917, 71.086, 71.197, 74.628, 75.059, 75.112, 75.283 };
-
-
                 double[] mr = new double[] { 13.00, 17.00, 21.00, 25.00, 13.00, 17.01, 21.01, 25.00, 13.01, 17.00, 21.00, 25.00, 13.01, 17.00, 21.01, 25.00 }; // 60;
                 mr[i] = mr[i] / 60;
                 double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
@@ -1854,13 +1591,13 @@ namespace Model
                 double[] tri = new double[] { 44.99, 44.99, 45.01, 44.99, 45.02, 45.02, 44.99, 45.01, 45.01, 45.03, 44.98, 44.99, 45.02, 44.98, 45.03, 44.99 };
                 double[] tc = tri;
                 double[] pc = new double[N];
-                pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
+                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
+
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-                double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
                 double[] hri = new double[N];
-                hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -1870,7 +1607,7 @@ namespace Model
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
 
-                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
+                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
                     mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
@@ -1882,9 +1619,7 @@ namespace Model
         }
         public static CalcResult Water_Midea9_reverse()
         {
-            string[] fluid = new string[] { "Water" };
-
-            double[] composition = new double[] { 1 };
+            string fluid = "Water";
             CalcResult res = new CalcResult();
             int Nrow = 1;
             double[] FPI = new double[Nrow + 1];
@@ -1911,22 +1646,6 @@ namespace Model
             //Circuit-Reverse module
             bool reverse = true; //*********************************false:origin, true:reverse******************************************
             CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
-
-            //double mr = 9.99 / 60;
-            //double Vel_a = 2; //m/s
-            //double H = Pt * N_tube;
-            //double Hx = L * H;
-            //double rho_a_st = 1.188; //kg/m3
-
-            //double Va = Vel_a * Hx;
-            //double ma = Va * rho_a_st;//Va / 3600 * 1.2; //kg/s
-            //int curve = 1; //
-            //double za = 1; //Adjust factor
-            //double zh = 1;
-            //double zdp = 1;
-            //double eta_surface = 0.8284;
-            //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 77.42;//71.84;//36.44;
-
             double mr = 9.99/60;
             double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
             double Vel_ave = 2;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
@@ -1956,12 +1675,12 @@ namespace Model
             double RHi = 0.469;
             double tri = 44.98;
             double tc = tri;
-            double pc = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
+            double pc = CoolProp.PropsSI("P", "T", tc+ 273.15, "Q", 1, fluid) / 1000;
             double Pwater = 395;//kpa
             double conductivity = 386; //w/mK for Cu
             int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-            double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
-            double hri = Refrigerant.TPFLSH(fluid, composition, tc + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+            double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -1987,16 +1706,14 @@ namespace Model
                 }
             geo.A_ratio = geo.A_r / geo.A_a;
 
-            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc, pc, hri,
+            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo_element, ta, RH, tc, pc, hri,
                 mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
 
             return res;
         }
         public static CalcResult Water_Heat_Zhongyang1_reverse()
         {
-            string[] fluid = new string[] { "Water" };
-
-            double[] composition = new double[] { 1 };
+            string fluid = "Water";
             CalcResult res = new CalcResult();
             int Nrow = 3;
             double[] FPI = new double[Nrow + 1];
@@ -2044,27 +1761,6 @@ namespace Model
             int N = 16;
             for (int i = 0; i < N; i++)
             {
-                //double[] mr = new double[] { 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.00, 25.00, 13.00, 17.01, 21.01, 25.00, 13.00, 17.00, 21.01, 25.00 }; // 60;
-                //mr[i] = mr[i] / 60;
-                //double[] Vel_a = new double[] { 0.60061, 0.60059, 0.59874, 0.60039, 0.89766, 0.89707, 0.89755, 0.89636, 1.09706, 1.09812, 1.09922, 1.09919, 1.29987, 1.29968, 1.29857, 1.29670 }; //m/s
-                //double H = Pt * N_tube;
-                //double Hx = L * H;
-                //double[] rho_a_st = { 1.19775, 1.19775, 1.19766, 1.19778, 1.19777, 1.19769, 1.19770, 1.19770, 1.19754, 1.19770, 1.19777, 1.19767, 1.19780, 1.19761, 1.19751, 1.19766 }; //kg/m3
-
-                //double[] Va = new double[N];
-                //Va[i] = Vel_a[i] * Hx;
-                //double[] ma = new double[N];
-                //ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
-                //int curve = 1; //
-                //double za = 1; //Adjust factor
-                //double zh = 1;
-                //double zdp = 1;
-                //double[] eta_surface = new double[] { 0.91638, 0.917989, 0.9188580, 0.9193723, 0.88357, 0.884134, 0.8849341, 0.8834665, 0.86450, 0.865326, 0.8658559, 0.8664762, 0.85036, 0.85115, 0.85198, 0.85284 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
-                //double[] ha = new double[] { 32.230, 31.553, 31.189, 30.974, 46.541, 46.285, 45.924, 46.587, 55.360, 54.968, 54.718, 54.426, 62.153, 61.768, 61.363, 60.944 };
-
-
                 double[] mr = new double[] { 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.00, 25.00, 13.00, 17.01, 21.01, 25.00, 13.00, 17.00, 21.01, 25.00 }; // 60;
                 mr[i] = mr[i] / 60;
                 double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
@@ -2100,13 +1796,14 @@ namespace Model
                 double[] tri = new double[] { 45.00, 45.00, 44.99, 45.00, 45.03, 45.02, 45.01, 44.99, 45.01, 45.01, 45.00, 44.99, 45.03, 45.01, 45.01, 45.02 };
                 double[] tc = tri;
                 double[] pc = new double[N];
-                pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
+                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
+
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-                double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
                 double[] hri = new double[N];
-                hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -2114,7 +1811,7 @@ namespace Model
                 string AirDirection = "Counter";
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
-                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
+                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
                     mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
@@ -2126,9 +1823,7 @@ namespace Model
         }
         public static CalcResult Water_Heat_Jiayong6_autosplitCir_New()
         {
-            string[] fluid = new string[] { "Water" };
-
-            double[] composition = new double[] { 1 };
+            string fluid = "Water";
             CalcResult res = new CalcResult();
             int Nrow = 2;
             double[] FPI = new double[Nrow + 1];
@@ -2186,27 +1881,6 @@ namespace Model
             int N = 16;
             for (int i = 0; i < N; i++)
             {
-                //double[] mr = new double[] { 13.01, 17.01, 21.00, 25.00, 13.00, 17.01, 21.00, 25.00, 13.00, 17.00, 21.00, 25.01, 13.01, 17.00, 21.01, 25.00 }; // 60;
-                //mr[i] = mr[i] / 60;
-                //double[] Vel_a = new double[] { 0.70550, 0.70395, 0.70348, 0.70329, 1.00285, 1.00238, 1.00203, 1.00366, 1.30551, 1.30599, 1.30520, 1.30471, 1.58699, 1.58381, 1.58356, 1.58275 }; //m/s
-                //double H = Pt * N_tube;
-                //double Hx = L * H;
-                //double[] rho_a_st = { 1.19767, 1.19763, 1.19766, 1.19767, 1.19772, 1.19773, 1.19772, 1.19776, 1.19779, 1.19771, 1.19775, 1.19771, 1.19767, 1.19774, 1.19768, 1.19768 }; //kg/m3
-
-                //double[] Va = new double[N];
-                //Va[i] = Vel_a[i] * Hx;
-                //double[] ma = new double[N];
-                //ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
-                //int curve = 1; //
-                //double za = 1; //Adjust factor
-                //double zh = 1;
-                //double zdp = 1;
-                //double[] eta_surface = new double[] { 0.86998, 0.872736, 0.8747438, 0.8761934, 0.84895, 0.851907, 0.8535928, 0.8544665, 0.82776, 0.830934, 0.8327302, 0.8339071, 0.81128, 0.81624, 0.81832, 0.81969 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
-                //double[] ha = new double[] { 40.297, 39.319, 38.610, 38.100, 47.975, 46.873, 46.248, 45.925, 56.106, 54.862, 54.162, 53.705, 62.722, 60.704, 59.864, 59.315 };
-
-
                 double[] mr = new double[] { 13.01, 17.01, 21.00, 25.00, 13.00, 17.01, 21.00, 25.00, 13.00, 17.00, 21.00, 25.01, 13.01, 17.00, 21.01, 25.00 }; // 60;
                 mr[i] = mr[i] / 60;
                 double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
@@ -2242,13 +1916,13 @@ namespace Model
                 double[] tri = new double[] { 45.01, 45.00, 44.98, 44.99, 45.01, 44.99, 45.00, 44.99, 45.01, 44.99, 44.99, 44.99, 45.00, 44.99, 44.98, 45.01 };
                 double[] tc = tri;
                 double[] pc = new double[N];
-                pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
+                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
+
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-                double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
                 double[] hri = new double[N];
-                hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -2258,7 +1932,7 @@ namespace Model
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
 
-                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
+                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
                     mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
@@ -2271,9 +1945,7 @@ namespace Model
         }
         public static CalcResult Water_Heat_Jiayong2_autosplitCir()
         {
-            string[] fluid = new string[] { "Water" };
-
-            double[] composition = new double[] { 1 };
+            string fluid = "Water";
             CalcResult res = new CalcResult();
             int Nrow = 2;
             double[] FPI = new double[Nrow + 1];
@@ -2330,26 +2002,6 @@ namespace Model
             int N = 16;
             for (int i = 0; i < N; i++)
             {
-                //double[] mr = new double[] { 13.00, 17.00, 21.00, 25.00, 13.00, 17.01, 21.01, 25.00, 13.01, 17.00, 21.00, 25.00, 13.01, 17.00, 21.01, 25.00 }; // 60;
-                //mr[i] = mr[i] / 60;
-                //double[] Vel_a = new double[] { 0.702466, 0.70428, 0.70592, 0.70592, 1.00585, 1.00475, 1.00716, 1.00635, 1.31044, 1.30957, 1.30901, 1.30781, 1.58978, 1.58832, 1.58607, 1.59028 }; //m/s
-                //double H = Pt * N_tube;
-                //double Hx = L * H;
-                //double[] rho_a_st = { 1.19772, 1.19771, 1.19777, 1.19762, 1.19773, 1.19773, 1.19775, 1.19767, 1.19772, 1.19773, 1.19770, 1.19772, 1.19766, 1.19771, 1.19771, 1.19775 }; //kg/m3
-                //double[] Va = new double[N];
-                //Va[i] = Vel_a[i] * Hx;
-                //double[] ma = new double[N];
-                //ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
-                //int curve = 1; //
-                //double za = 1; //Adjust factor
-                //double zh = 1;
-                //double zdp = 1;
-                //double[] eta_surface = new double[] { 0.93687, 0.936250, 0.9295073, 0.9333229, 0.92812, 0.927387, 0.9259171, 0.9252950, 0.92324, 0.92239, 0.92222, 0.92211, 0.91866, 0.91823, 0.91817, 0.91800 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
-                //double[] ha = new double[] { 56.798, 57.390, 63.920, 60.213, 65.277, 65.993, 67.436, 68.048, 70.078, 70.917, 71.086, 71.197, 74.628, 75.059, 75.112, 75.283 };
-
-
                 double[] mr = new double[] { 13.00, 17.00, 21.00, 25.00, 13.00, 17.01, 21.01, 25.00, 13.01, 17.00, 21.00, 25.00, 13.01, 17.00, 21.01, 25.00 }; // 60;
                 mr[i] = mr[i] / 60;
                 double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
@@ -2386,13 +2038,13 @@ namespace Model
                 double[] tri = new double[] { 44.99, 44.99, 45.01, 44.99, 45.02, 45.02, 44.99, 45.01, 45.01, 45.03, 44.98, 44.99, 45.02, 44.98, 45.03, 44.99 };
                 double[] tc = tri;
                 double[] pc = new double[N];
-                pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
+                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
+
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-                double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
                 double[] hri = new double[N];
-                hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -2402,7 +2054,7 @@ namespace Model
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
 
-                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
+                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
                     mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
@@ -2414,9 +2066,7 @@ namespace Model
         }
         public static CalcResult Water_Heat_Zhongyang1_autosplitCir()
         {
-            string[] fluid = new string[] { "Water" };
-
-            double[] composition = new double[] { 1 };
+            string fluid = "Water";
             CalcResult res = new CalcResult();
             int Nrow = 3;
             double[] FPI = new double[Nrow + 1];
@@ -2470,26 +2120,6 @@ namespace Model
             int N = 16;
             for (int i = 0; i < N; i++)
             {
-                //double[] mr = new double[] { 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.00, 25.00, 13.00, 17.01, 21.01, 25.00, 13.00, 17.00, 21.01, 25.00 }; // 60;
-                //mr[i] = mr[i] / 60;
-                //double[] Vel_a = new double[] { 0.60061, 0.60059, 0.59874, 0.60039, 0.89766, 0.89707, 0.89755, 0.89636, 1.09706, 1.09812, 1.09922, 1.09919, 1.29987, 1.29968, 1.29857, 1.29670 }; //m/s
-                //double H = Pt * N_tube;
-                //double Hx = L * H;
-                //double[] rho_a_st = { 1.19775, 1.19775, 1.19766, 1.19778, 1.19777, 1.19769, 1.19770, 1.19770, 1.19754, 1.19770, 1.19777, 1.19767, 1.19780, 1.19761, 1.19751, 1.19766 }; //kg/m3
-                //double[] Va = new double[N];
-                //Va[i] = Vel_a[i] * Hx;
-                //double[] ma = new double[N];
-                //ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
-                //int curve = 1; //
-                //double za = 1; //Adjust factor
-                //double zh = 1;
-                //double zdp = 1;
-                //double[] eta_surface = new double[] { 0.91638, 0.917989, 0.9188580, 0.9193723, 0.88357, 0.884134, 0.8849341, 0.8834665, 0.86450, 0.865326, 0.8658559, 0.8664762, 0.85036, 0.85115, 0.85198, 0.85284 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
-                //double[] ha = new double[] { 32.230, 31.553, 31.189, 30.974, 46.541, 46.285, 45.924, 46.587, 55.360, 54.968, 54.718, 54.426, 62.153, 61.768, 61.363, 60.944 };
-
-
                 double[] mr = new double[] { 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.00, 25.00, 13.00, 17.01, 21.01, 25.00, 13.00, 17.00, 21.01, 25.00 }; // 60;
                 mr[i] = mr[i] / 60;
                 double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
@@ -2525,13 +2155,13 @@ namespace Model
                 double[] tri = new double[] { 45.00, 45.00, 44.99, 45.00, 45.03, 45.02, 45.01, 44.99, 45.01, 45.01, 45.00, 44.99, 45.03, 45.01, 45.01, 45.02 };
                 double[] tc = tri;
                 double[] pc = new double[N];
-                pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
+                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
+
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-                double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
                 double[] hri = new double[N];
-                hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -2539,7 +2169,7 @@ namespace Model
                 string AirDirection = "Counter";
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
-                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
+                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
                     mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
@@ -2552,9 +2182,7 @@ namespace Model
 
         public static CalcResult Water_Heat_Zhongyang1()
         {
-            string[] fluid = new string[] { "Water" };
-
-            double[] composition = new double[] { 1 };
+            string fluid = "Water";
             CalcResult res = new CalcResult();
             int Nrow = 3;
             double[] FPI = new double[Nrow + 1];
@@ -2598,27 +2226,6 @@ namespace Model
             int N = 16;
             for (int i = 0; i < N; i++)
             {
-                //double[] mr = new double[] { 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.00, 25.00, 13.00, 17.01, 21.01, 25.00, 13.00, 17.00, 21.01, 25.00 }; // 60;
-                //mr[i] = mr[i] / 60;
-                //double[] Vel_a = new double[] { 0.60061, 0.60059, 0.59874, 0.60039, 0.89766, 0.89707, 0.89755, 0.89636, 1.09706, 1.09812, 1.09922, 1.09919, 1.29987, 1.29968, 1.29857, 1.29670 }; //m/s
-                //double H = Pt * N_tube;
-                //double Hx = L * H;
-                //double[] rho_a_st = { 1.19775, 1.19775, 1.19766, 1.19778, 1.19777, 1.19769, 1.19770, 1.19770, 1.19754, 1.19770, 1.19777, 1.19767, 1.19780, 1.19761, 1.19751, 1.19766 }; //kg/m3
-
-                //double[] Va = new double[N];
-                //Va[i] = Vel_a[i] * Hx;
-                //double[] ma = new double[N];
-                //ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
-                //int curve = 1; //
-                //double za = 1; //Adjust factor
-                //double zh = 1;
-                //double zdp = 1;
-                //double[] eta_surface = new double[] { 0.91638, 0.917989, 0.9188580, 0.9193723, 0.88357, 0.884134, 0.8849341, 0.8834665, 0.86450, 0.865326, 0.8658559, 0.8664762, 0.85036, 0.85115, 0.85198, 0.85284 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
-                //double[] ha = new double[] { 32.230, 31.553, 31.189, 30.974, 46.541, 46.285, 45.924, 46.587, 55.360, 54.968, 54.718, 54.426, 62.153, 61.768, 61.363, 60.944 };
-
-
                 double[] mr = new double[] { 13.01, 17.01, 21.01, 25.01, 13.01, 17.01, 21.01, 25.00, 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.00, 25.00 }; // 60;
                 mr[i] = mr[i] / 60;
                 double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
@@ -2655,13 +2262,13 @@ namespace Model
                 double[] tri = new double[] { 45.00, 45.00, 44.99, 45.00, 45.03, 45.02, 45.01, 44.99, 45.01, 45.01, 45.00, 44.99, 45.03, 45.01, 45.01, 45.02 };
                 double[] tc = tri;
                 double[] pc = new double[N];
-                pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
+                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
+
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-                double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
                 double[] hri = new double[N];
-                hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -2669,7 +2276,7 @@ namespace Model
                 string AirDirection = "Counter";
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
-                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
+                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
                     mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
@@ -2681,9 +2288,7 @@ namespace Model
         }
         public static CalcResult Water_Cool_Zhongyang1()
         {
-            string[] fluid = new string[] { "Water" };
-
-            double[] composition = new double[] { 1 };
+            string fluid = "Water";
             CalcResult res = new CalcResult();
             int Nrow = 3;
             double[] FPI = new double[Nrow + 1];
@@ -2726,26 +2331,6 @@ namespace Model
             int N = 16;
             for (int i = 0; i < N; i++)
             {
-                //double[] mr = new double[] { 13.01, 17.01, 21.01, 25.01, 13.01, 17.01, 21.01, 25.00, 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.00, 25.00 }; // 60;
-                //mr[i] = mr[i] / 60;
-                //double[] Vel_a = new double[] { 0.59953, 0.59918, 0.59937, 0.59932, 0.89662, 0.89764, 0.89871, 0.89920, 1.09872, 1.09853, 1.09848, 1.09934, 1.29794, 1.29856, 1.29909, 1.29948 }; //m/s
-                //double H = Pt * N_tube;
-                //double Hx = L * H;
-                //double[] rho_a_st = { 1.16838, 1.16839, 1.16860, 1.16853, 1.16846, 1.16857, 1.16846, 1.16847, 1.16849, 1.16849, 1.16849, 1.16846, 1.16839, 1.16847, 1.16844, 1.16847 }; //kg/m3
-
-                //double[] Va = new double[N];
-                //Va[i] = Vel_a[i] * Hx;
-                //double[] ma = new double[N];
-                //ma[i] = Va[i] * rho_a_st[i];//Va / 3600 * 1.2; //kg/s
-                //int curve = 1; //
-                //double za = 1; //Adjust factor
-                //double zh = 1;
-                //double zdp = 1;
-                //double[] eta_surface = new double[] { 0.89596, 0.896814, 0.8966571, 0.8980433, 0.86571, 0.864929, 0.8638292, 0.8638503, 0.84928, 0.846912, 0.8477477, 0.8480225, 0.83348, 0.83280, 0.83285, 0.83317 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
-                //double[] ha = new double[] { 32.230, 31.553, 31.189, 30.974, 46.541, 46.285, 45.924, 46.587, 55.360, 54.968, 54.718, 54.426, 62.153, 61.768, 61.363, 60.944 };
-
                 double[] mr = new double[] { 13.01, 17.01, 21.01, 25.01, 13.01, 17.01, 21.01, 25.00, 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.00, 25.00 }; // 60;
                 mr[i] = mr[i] / 60;
                 double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
@@ -2781,13 +2366,13 @@ namespace Model
                 double[] tri = new double[] { 10.01, 10.01, 10.00, 10.00, 10.01, 10.00, 10.00, 10.02, 9.99, 10.00, 10.00, 10.01, 10.00, 10.02, 10.00, 9.99 };
                 double[] tc = tri;
                 double[] pc = new double[N];
-                pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
+                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
+
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
-                double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
                 double[] hri = new double[N];
-                hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -2797,7 +2382,7 @@ namespace Model
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
 
-                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
+                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
                     mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
@@ -2809,9 +2394,7 @@ namespace Model
         }
         public static CalcResult Water_Heat_Zhongyang2()
         {
-            string[] fluid = new string[] { "Water" };
-
-            double[] composition = new double[] { 1 };
+            string fluid = "Water";
             CalcResult res = new CalcResult();
             int Nrow = 3;
             double[] FPI = new double[Nrow + 1];
@@ -2831,21 +2414,6 @@ namespace Model
             CircuitNumber CircuitInfo = new CircuitNumber();
             CircuitInfo.number = new int[] { 3, 3 };
              CircuitInfo.TubeofCir = new int[] { 18, 14, 16 };  //{ 4, 8 };
-
-            //double mr = 9.99 / 60;
-            //double Vel_a = 2; //m/s
-            //double H = Pt * N_tube;
-            //double Hx = L * H;
-            //double rho_a_st = 1.188; //kg/m3
-
-            //double Va = Vel_a * Hx;
-            //double ma = Va * rho_a_st;//Va / 3600 * 1.2; //kg/s
-            //int curve = 1; //
-            //double za = 1; //Adjust factor
-            //double zh = 1;
-            //double zdp = 1;
-            //double eta_surface = 0.8284;
-            //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 77.42;//71.84;//36.44;
              double mr = 9.99/60;
              double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
              double Vel_ave = 2;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
@@ -2875,12 +2443,12 @@ namespace Model
             double RHi = 0.469;
             double tri = 44.98;
             double tc = tri;
-            double pc = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
+            double pc = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 1, fluid) / 1000;
+
             double Pwater = 395;//kpa
             double conductivity = 386; //w/mK for Cu
             int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-            double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
-            double hri = Refrigerant.TPFLSH(fluid, composition, tc + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+            double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -2906,16 +2474,14 @@ namespace Model
                     //geo.A_ratio += geo_element[j,k].A_ratio;
                 }
 
-            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc, pc, hri,
+            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo_element, ta, RH, tc, pc, hri,
                 mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
 
             return res;
         }
         public static CalcResult Water_Cool_Zhongyang2()
         {
-            string[] fluid = new string[] { "Water" };
-
-            double[] composition = new double[] { 1 };
+            string fluid = "Water";
             CalcResult res = new CalcResult();
             int Nrow = 3;
             double[] FPI = new double[Nrow + 1];
@@ -2959,38 +2525,6 @@ namespace Model
             int N = 20;
             for (int i = 0; i < N; i++)
             {
-                /*double[] mr = new double[] { 13.00, 17.01, 21.01, 25.00, 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.01, 25.01, 13.01, 17.01, 21.00, 25.01, 13.01, 17.00, 21.01, 25.00 }; // 60;
-                mr[i] = mr[i] / 60;
-                double[] Vel_a = new double[] { 0.65233, 0.65247, 0.65203, 0.65231, 0.97535, 0.97611, 0.97615, 0.97600, 1.19102, 1.19266, 1.19328, 1.19184, 1.41083, 1.41189, 1.41016, 1.41338, 1.45545, 1.45630, 1.45670, 1.45692 }; //m/s
-                double H = Pt * N_tube;
-                double Hx = L * H;
-                double[] rho_a_st = { 1.16851, 1.16850, 1.16847, 1.16847, 1.16844, 1.16845, 1.16845, 1.16846, 1.16840, 1.16840, 1.16845, 1.16850, 1.16848, 1.16847, 1.16840, 1.16843, 1.16849, 1.16852, 1.16845, 1.16845 }; //kg/m3
-
-                double[] Va = new double[N];
-                Va[i] = Vel_a[i] * Hx;
-                double[] ma = new double[N];
-                ma[i] = Va[i] * rho_a_st[i]/N_tube/Nelement;//Va / 3600 * 1.2; //kg/s
-                int curve = 1; //
-                double za = 1; //Adjust factor
-                double zh = 1;
-                double zdp = 1;
-                double[] eta_surface = new double[] { 0.88953, 0.887951, 0.8871507, 0.8877251, 0.86188, 0.858276, 0.8577662, 0.8573741, 0.84928, 0.845690, 0.8435979, 0.8437980, 0.83914, 0.83524, 0.83448, 0.83279, 0.83796, 0.83381, 0.83292, 0.83561 };
-                //double ha = AirHTC.alpha(Vel_a, za, curve) / 79 * 78.7;//71.84;//36.44;
-                //double[] ha = new double[] { 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 58.92, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 65.61, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 71.19, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95, 75.95 };
-
-                double[] ha = new double[] { 42.843, 42.385, 41.940, 41.554, 58.081, 58.063, 57.780, 57.606, 66.621, 66.605, 66.459, 66.143, 72.389, 72.531, 72.751, 72.677, 72.605, 72.414, 72.389, 72.491 };
-                double[,] maa = new double[N_tube,Nelement];
-                double[,] haa = new double[N_tube, Nelement];
-                for (int j = 0; j < N_tube; j++)
-                {
-                    for (int k = 0; k < Nelement; k++)
-                    {
-                        maa[j, k] = ma[i];
-                        //ha[j, k] = AirHTC.alpha(VaDistri.Va[j, k] * (Vel_ave / VaDistri.Va_ave), za, curve);
-                        haa[j, k] = ha[i];
-                    }
-                }*/
-
                 double[] mr = new double[] { 13.00, 17.01, 21.01, 25.00, 13.01, 17.01, 21.00, 25.00, 13.01, 17.01, 21.01, 25.01, 13.01, 17.01, 21.00, 25.01, 13.01, 17.00, 21.01, 25.00 }; // 60;
                 mr[i] = mr[i] / 60;
                 double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
@@ -3026,13 +2560,13 @@ namespace Model
 
                 double[] tc = tri;
                 double[] pc = new double[N];
-                pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
+                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
+
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
-                double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
                 double[] hri = new double[N];
-                hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -3042,7 +2576,7 @@ namespace Model
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
 
-                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
+                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo_element, ta, RH, tc[i], pc[i], hri[i],
                     mr[i], ma, ha, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
@@ -3055,9 +2589,9 @@ namespace Model
 
         public static CalcResult MinNout()
         {
-            //string[] fluid = new string[] { "Water" };
-            string[] fluid = new string[] { "R410A.MIX" };
-            //string[] fluid = new string[] { "ISOBUTAN" };
+            //string fluid = new string[] { "Water" };
+            string fluid = "R410A";
+            //string fluid = new string[] { "ISOBUTAN" };
             double[] composition = new double[] { 1 };
             CalcResult res = new CalcResult();
             int Nrow = 2;
@@ -3104,17 +2638,6 @@ namespace Model
             CircuitInfo.TubeofCir = new int[] { 8, 6, 8, 10, 6, 10 };  //{ 4, 8 };
             CircuitInfo.UnequalCir = new int[] { 5, 5, 6, 6, 0, 0 };
 
-            /*double mr = 0.06;
-            double Vel_a = 1.8; //m/s
-            double H = Pt * N_tube;
-            double Hx = L * H;
-            double rho_a_st = 1.2; //kg/m3
-
-            double Va = Vel_a * Hx;
-            double ma = Va * rho_a_st;//Va / 3600 * 1.2; //kg/s
-            int curve = 1; //
-            double za = 1; //Adjust factor
-            double ha = AirHTC.alpha(Vel_a, za, curve);//71.84;//36.44;*/
             double mr =0.06;
             double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
             double Vel_ave = 1.6;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
@@ -3144,20 +2667,14 @@ namespace Model
             double RHi = 0.469;
             double tri = 7.2;
             double te = tri;
-            double pe = Refrigerant.SATT(fluid, composition, te + 273.15, 1).Pressure;
+            double pe = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid) / 1000;
+
             double P_exv = 1842.28;//kpa
             double T_exv = 24;//C
             double conductivity = 386; //w/mK for Cu
             double Pwater = 0;
             int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
-            //double densityL = Refrigerant.SATT(fluid, composition, te + 273.15, 1).DensityV;
-            //double hri = Refrigerant.ENTHAL(fluid, composition, tri + 273.15, densityL).Enthalpy ;
-            double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
-            //hri = hri / wm - 140;
-            double hri = Refrigerant.TPFLSH(fluid, composition, T_exv + 273.15, P_exv).h / wm - (fluid[0] == "Water" ? 0 : 140);
-
-            //double hri = 354.6;
-            //double xin = 0.57;
+            double hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -3184,26 +2701,17 @@ namespace Model
                 }
             geo.A_ratio = geo.A_r / geo.A_a;
 
-            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, te, pe, hri,
+            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo_element, ta, RH, te, pe, hri,
                 mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
-
-            //res = Slab.SlabCalc(Npass, N_tubes_pass, fluid, composition, Dh, L, geo.A_a, geo.A_r_cs, geo.A_r, tai, tri, pe, hri,
-            //    mr, ma, ha, eta_surface, zh, zdp);
-            //Tsh_calc = res.Tro - (Refrigerant.SATP(fluid, composition, res.Pro, 1).Temperature - 273.15);
-
-            // res = Slab.SlabCalc(Npass, N_tubes_pass, fluid, composition, Dh, L, geo.A_a, geo.A_r_cs, geo.A_r, tai, tri, pe, hri,
-            //     mr, ma, ha, eta_surface, zh, zdp);
-            // Tsh_calc = res.Tro - (Refrigerant.SATP(fluid, composition, res.Pro, 1).Temperature - 273.15);
 
             return res;
         }
 
         public static CalcResult NinMout()
         {
-            //string[] fluid = new string[] { "Water" };
-            string[] fluid = new string[] { "R410A.MIX" };
-            //string[] fluid = new string[] { "ISOBUTAN" };
-            double[] composition = new double[] { 1 };
+            //string fluid = new string[] { "Water" };
+            string fluid = "R410A";
+            //string fluid = new string[] { "ISOBUTAN" };
             CalcResult res = new CalcResult();
             int Nrow = 2;
             double[] FPI = new double[Nrow + 1];
@@ -3273,12 +2781,6 @@ namespace Model
                 }
             }
 
-            //double Va = Vel_a * Hx;
-            //double ma = Va * rho_a_st;//Va / 3600 * 1.2; //kg/s
-
-
-            //double ha = AirHTC.alpha(Vel_a, za, curve) * 1.5;//71.84;//36.44;
-
             double eta_surface = 1;
             double zh = 1;
             double zdp = 1;
@@ -3286,20 +2788,14 @@ namespace Model
             double RHi = 0.469;
             double tri = 7.2;
             double te = tri;
-            double pe = Refrigerant.SATT(fluid, composition, te + 273.15, 1).Pressure;
+            double pe = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid) / 1000;
+
             double P_exv = 1842.28;//kpa
             double T_exv = 24;//C
             double conductivity = 386; //w/mK for Cu
             double Pwater = 0;
             int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
-            //double densityL = Refrigerant.SATT(fluid, composition, te + 273.15, 1).DensityV;
-            //double hri = Refrigerant.ENTHAL(fluid, composition, tri + 273.15, densityL).Enthalpy ;
-            double wm = Refrigerant.WM(fluid, composition).Wm; //g/mol
-            //hri = hri / wm - 140;
-            double hri = Refrigerant.TPFLSH(fluid, composition, T_exv + 273.15, P_exv).h / wm - (fluid[0] == "Water" ? 0 : 140);
-
-            //double hri = 354.6;
-            //double xin = 0.57;
+            double hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -3326,7 +2822,7 @@ namespace Model
                 }
             geo.A_ratio = geo.A_r / geo.A_a;
 
-            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, te, pe, hri,
+            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo_element, ta, RH, te, pe, hri,
                 mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
 
             //res = Slab.SlabCalc(Npass, N_tubes_pass, fluid, composition, Dh, L, geo.A_a, geo.A_r_cs, geo.A_r, tai, tri, pe, hri,
@@ -3343,8 +2839,7 @@ namespace Model
         public static CalcResult Water_Midea_cir6()
         {
             CalcResult res = new CalcResult();
-            string[] fluid = new string[] { "Water" };
-            double[] composition = new double[] { 1 };
+            string fluid = "Water";
             int Nrow = 3;
             int[] Ntube = { 14, 14, 14 };
             int N_tube = Ntube[0];
@@ -3396,12 +2891,13 @@ namespace Model
             double RHi = 0.469;
             double tri = 45;
             double tc = tri;
-            double pc = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
+            double pc = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 1, fluid) / 1000;
+
             double Pwater = 305;//kPa
             double conductivity = 386;
             int hexType = 1;//0-eva,1-con
-            double wm = Refrigerant.WM(fluid, composition).Wm;
-            double hri = Refrigerant.TPFLSH(fluid, composition, tc + 273.15, Pwater).h / wm - 0.5 - (fluid[0] == "Water" ? 0 : 140);//??
+            double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
             string AirDirection = "Counter";
@@ -3422,7 +2918,7 @@ namespace Model
                 }
             }
             geo.A_ratio = geo.A_r / geo.A_a;
-            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, composition, Di, L, geo_element, ta, RH, tc, pc, hri,
+            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo_element, ta, RH, tc, pc, hri,
                 mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
             return res;
         }
