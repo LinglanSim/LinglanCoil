@@ -104,7 +104,14 @@ namespace Model
             double H = Pt * N_tube;
             double Hx = L * H;
             double rho_a_st = 1.2; //kg/m3
+            
+            //空气侧几何结构选择
+            //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+            //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
             int curve = 1; //
+            
             double za = 1; //Adjust factor
             for (int i = 0; i < N_tube; i++)
             {
@@ -277,7 +284,14 @@ namespace Model
             double H = Pt * N_tube;
             double Hx = L * H;
             double rho_a_st = 1.2; //kg/m3
+
+            //空气侧几何结构选择
+            //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+            //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
             int curve = 1; //
+
             double za = 1; //Adjust factor
             for (int i = 0; i < N_tube; i++)
             {
@@ -383,7 +397,14 @@ namespace Model
             double H = Pt * N_tube;
             double Hx = L * H;
             double rho_a_st = 1 / CoolProp.HAProps("Vha", "T", 273.15 + tai, "P", 101.325, "R", 0.469); //kg/m3
+
+            //空气侧几何结构选择
+            //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+            //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
             int curve = 1; //
+
             double za = 1; //Adjust factor
             for (int i = 0; i < N_tube; i++)
             {
@@ -480,7 +501,14 @@ namespace Model
             double H = Pt * N_tube;
             double Hx = L * H;
             double rho_a_st = 1 / CoolProp.HAProps("Vha", "T", 273.15 + tai, "P", 101.325, "R", 0.469); //kg/m3
+            
+            //空气侧几何结构选择
+            //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+            //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
             int curve = 1; //
+
             double za = 1; //Adjust factor
             for (int i = 0; i < N_tube; i++)
             {
@@ -629,7 +657,14 @@ namespace Model
             double H = Pt * N_tube;
             double Hx = L * H;
             double rho_a_st = 1.2; //kg/m3
+            
+            //空气侧几何结构选择
+            //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+            //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
             int curve = 1; //
+
             double za = 1; //Adjust factor
             for (int i = 0; i < N_tube; i++)
             {
@@ -763,7 +798,14 @@ namespace Model
             double H = Pt * N_tube;
             double Hx = L * H;
             double rho_a_st = 1.188; //kg/m3
+
+            //空气侧几何结构选择
+            //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+            //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
             int curve = 1; //
+
             double za = 1; //Adjust factor
             for (int i = 0; i < N_tube; i++)
             {
@@ -882,7 +924,14 @@ namespace Model
                 double H = Pt * N_tube;
                 double Hx = L * H;
                 double rho_a_st = 1.188;
+
+                //空气侧几何结构选择
+                //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+                //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
                 int curve = 1; //
+
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
@@ -1009,7 +1058,14 @@ namespace Model
                 double H = Pt * N_tube;
                 double Hx = L * H;
                 double rho_a_st = 1.188;
+
+                //空气侧几何结构选择
+                //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+                //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
                 int curve = 1; //
+
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
@@ -1157,7 +1213,14 @@ namespace Model
                 double H = Pt * N_tube;
                 double Hx = L * H;
                 double[] rho_a_st = { 1.19767, 1.19763, 1.19766, 1.19767, 1.19772, 1.19773, 1.19772, 1.19776, 1.19779, 1.19771, 1.19775, 1.19771, 1.19767, 1.19774, 1.19768, 1.19768 }; //kg/m3
+                
+                //空气侧几何结构选择
+                //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+                //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
                 int curve = 1; //
+
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
@@ -1289,7 +1352,14 @@ namespace Model
                 double H = Pt * N_tube;
                 double Hx = L * H;
                 double[] rho_a_st = { 1.16847, 1.16850, 1.16849, 1.16853, 1.16842, 1.16846, 1.16856, 1.16840, 1.16848, 1.16840, 1.16844, 1.16848, 1.16845, 1.16845, 1.16848, 1.16849 }; //kg/m3
+
+                //空气侧几何结构选择
+                //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+                //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
                 int curve = 1; //
+
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
@@ -1420,7 +1490,14 @@ namespace Model
                 double H = Pt * N_tube;
                 double Hx = L * H;
                 double[] rho_a_st = { 1.19772, 1.19771, 1.19777, 1.19762, 1.19773, 1.19773, 1.19775, 1.19767, 1.19772, 1.19773, 1.19770, 1.19772, 1.19766, 1.19771, 1.19771, 1.19775 }; //kg/m3
+
+                //空气侧几何结构选择
+                //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+                //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
                 int curve = 1; //
+
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
@@ -1550,7 +1627,14 @@ namespace Model
                 double H = Pt * N_tube;
                 double Hx = L * H;
                 double[] rho_a_st = { 1.16850, 1.16845, 1.16841, 1.16846, 1.16850, 1.16849, 1.16849, 1.16845, 1.16848, 1.16846, 1.16848, 1.16850, 1.16848, 1.16846, 1.16842, 1.16847 }; //kg/m3
+                
+                //空气侧几何结构选择
+                //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+                //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
                 int curve = 1; //
+
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
@@ -1697,7 +1781,14 @@ namespace Model
                 double H = Pt * N_tube;
                 double Hx = L * H;
                 double[] rho_a_st = { 1.19767, 1.19763, 1.19766, 1.19767, 1.19772, 1.19773, 1.19772, 1.19776, 1.19779, 1.19771, 1.19775, 1.19771, 1.19767, 1.19774, 1.19768, 1.19768 }; //kg/m3
+
+                //空气侧几何结构选择
+                //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+                //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
                 int curve = 1; //
+
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
@@ -1831,7 +1922,14 @@ namespace Model
                 double H = Pt * N_tube;
                 double Hx = L * H;
                 double[] rho_a_st = { 1.19772, 1.19771, 1.19777, 1.19762, 1.19773, 1.19773, 1.19775, 1.19767, 1.19772, 1.19773, 1.19770, 1.19772, 1.19766, 1.19771, 1.19771, 1.19775 }; //kg/m3
+
+                //空气侧几何结构选择
+                //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+                //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
                 int curve = 1; //
+
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
@@ -1938,7 +2036,14 @@ namespace Model
             double Hx = L * H;
             double rho_a_st = 1.188;
             double za = 1;
+
+            //空气侧几何结构选择
+            //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+            //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
             int curve = 1;
+
             for (int i = 0; i < N_tube; i++)
             {
                 for (int j = 0; j < Nelement; j++)
@@ -2077,7 +2182,14 @@ namespace Model
                 double H = Pt * N_tube;
                 double Hx = L * H;
                 double[] rho_a_st = { 1.19775, 1.19775, 1.19766, 1.19778, 1.19777, 1.19769, 1.19770, 1.19770, 1.19754, 1.19770, 1.19777, 1.19767, 1.19780, 1.19761, 1.19751, 1.19766 }; //kg/m3
+
+                //空气侧几何结构选择
+                //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+                //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
                 int curve = 1; //
+
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
@@ -2219,7 +2331,14 @@ namespace Model
                 double H = Pt * N_tube;
                 double Hx = L * H;
                 double[] rho_a_st = { 1.19767, 1.19763, 1.19766, 1.19767, 1.19772, 1.19773, 1.19772, 1.19776, 1.19779, 1.19771, 1.19775, 1.19771, 1.19767, 1.19774, 1.19768, 1.19768 }; //kg/m3
+
+                //空气侧几何结构选择
+                //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+                //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
                 int curve = 1; //
+
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
@@ -2362,7 +2481,14 @@ namespace Model
                 double H = Pt * N_tube;
                 double Hx = L * H;
                 double[] rho_a_st = { 1.19772, 1.19771, 1.19777, 1.19762, 1.19773, 1.19773, 1.19775, 1.19767, 1.19772, 1.19773, 1.19770, 1.19772, 1.19766, 1.19771, 1.19771, 1.19775 }; //kg/m3
+
+                //空气侧几何结构选择
+                //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+                //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
                 int curve = 1; //
+
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
@@ -2502,7 +2628,14 @@ namespace Model
                 double H = Pt * N_tube;
                 double Hx = L * H;
                 double[] rho_a_st = { 1.19775, 1.19775, 1.19766, 1.19778, 1.19777, 1.19769, 1.19770, 1.19770, 1.19754, 1.19770, 1.19777, 1.19767, 1.19780, 1.19761, 1.19751, 1.19766 }; //kg/m3
+
+                //空气侧几何结构选择
+                //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+                //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
                 int curve = 1; //
+
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
@@ -2631,7 +2764,14 @@ namespace Model
                 double H = Pt * N_tube;
                 double Hx = L * H;
                 double[] rho_a_st = { 1.19775, 1.19775, 1.19766, 1.19778, 1.19777, 1.19769, 1.19770, 1.19770, 1.19754, 1.19770, 1.19777, 1.19767, 1.19780, 1.19761, 1.19751, 1.19766 }; //kg/m3
+
+                //空气侧几何结构选择
+                //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+                //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
                 int curve = 1; //
+
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
@@ -2758,7 +2898,14 @@ namespace Model
                 double H = Pt * N_tube;
                 double Hx = L * H;
                 double[] rho_a_st = { 1.16838, 1.16839, 1.16860, 1.16853, 1.16846, 1.16857, 1.16846, 1.16847, 1.16849, 1.16849, 1.16849, 1.16846, 1.16839, 1.16847, 1.16844, 1.16847 }; //kg/m3
+
+                //空气侧几何结构选择
+                //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+                //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
                 int curve = 1; //
+
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
@@ -2857,7 +3004,14 @@ namespace Model
              double Hx = L * H;
              double rho_a_st = 1.188;
              double za = 1;
+
+             //空气侧几何结构选择
+             //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+             //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+             //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+             //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
              int curve = 1;
+
              double eta_surface = 1;
              double zh = 1;
              double zdp = 1.5;
@@ -3003,7 +3157,14 @@ namespace Model
                 double H = Pt * N_tube;
                 double Hx = L * H;
                 double[] rho_a_st = { 1.16851, 1.16850, 1.16847, 1.16847, 1.16844, 1.16845, 1.16845, 1.16846, 1.16840, 1.16840, 1.16845, 1.16850, 1.16848, 1.16847, 1.16840, 1.16843, 1.16849, 1.16852, 1.16845, 1.16845 }; //kg/m3
+
+                //空气侧几何结构选择
+                //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+                //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+                //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
                 int curve = 1; //
+
                 double za = 1; //Adjust factor
                 double zh = 1;
                 double zdp = 1;
@@ -3126,7 +3287,14 @@ namespace Model
             double Hx = L * H;
             double rho_a_st = 1.2;
             double za = 1;
+
+            //空气侧几何结构选择
+            //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+            //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
             int curve = 1;
+
             for (int i = 0; i < N_tube; i++)
             {
                 for (int j = 0; j < Nelement; j++)
@@ -3261,7 +3429,14 @@ namespace Model
             double H = Pt * N_tube;
             double Hx = L * H;
             double rho_a_st = 1.2; //kg/m3
+
+            //空气侧几何结构选择
+            //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+            //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
             int curve = 1; //
+
             double za = 1; //Adjust factor
             for (int i = 0; i < N_tube; i++)
             {
@@ -3376,7 +3551,14 @@ namespace Model
             double Hx = L * H;
             double rho_a_st = 1.2;
             double za = 1;
+
+            //空气侧几何结构选择
+            //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+            //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
             int curve=1;
+
             for(int i=0;i<N_tube;i++)
             {
                 for(int j=0;j<Nelement;j++)

@@ -12,11 +12,10 @@ namespace Model.Basic
         {
             DataEntities me = new DataEntities();
             double ha;
-            var data = me.AirCoef.First(a => a.Curve == curve);
+            var data = me.AirCoef.First(a => a.Curve == curve);//首先取得字段
             ha = data.creHT.Value * Math.Pow(vel, data.reexpHT.Value);
             ha = ha * za;
             return ha;
-
         }
     }
 }
