@@ -11,7 +11,7 @@ namespace Model
 {
     public class Main
     {
-        public static CalcResult main_evaporator_txt()
+        public  CalcResult main_evaporator_txt(double mr_in, double te_in, double P_exv_in, double T_exv_in, double Va_in, double tai_in, double RHi_in, double ha_in)
         {
             CalcResult res = new CalcResult();
             //******制冷剂和换热器类型定义******//
@@ -132,10 +132,20 @@ namespace Model
             CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
             CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
 
-            double mr = 0.02;
+            //******制冷剂、风进口参数输入******//
+            double mr = mr_in;//0.01;
+            double Va = Va_in;//2.032; //m/s
+            double tai = tai_in;//26.67;
+            double RHi = RHi_in;//0.469;
+            double te = te_in;//45.0;
+            double P_exv = P_exv_in;
+            double T_exv = T_exv_in;
+            //******制冷剂、风进口参数输入完成******//
+
+            //double mr = 0.02;
             //double Vel_a = 1.8; //m/s
             double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
-            double Vel_ave = 2.032;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+            //double Vel_ave = 2.032;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
             AirDistribution VaDistri = new AirDistribution();
             VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
             double[,] ma = new double[N_tube, Nelement];
@@ -143,6 +153,8 @@ namespace Model
             double H = Pt * N_tube;
             double Hx = L * H;
             double rho_a_st = 1.2; //kg/m3
+
+            double Vel_ave = Va / Hx;
 
             //空气侧几何结构选择
             //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
@@ -157,7 +169,7 @@ namespace Model
                 for (int j = 0; j < Nelement; j++)
                 {
                     ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
-                    ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve) * 1.5;
+                    ha[i, j] = ha_in;// AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve) * 1.5;
                     //ha[i, j] = 79;
                 }
             }
@@ -166,13 +178,13 @@ namespace Model
             double zdp = 1;
 
 
-            double tai = 26.67;
-            double RHi = 0.469;
-            double tri = 7.2;
-            double te = tri;
+            //double tai = 26.67;
+            //double RHi = 0.469;
+            //double tri = 7.2;
+            //double te = tri;
             double pe = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid) / 1000;
-            double P_exv = 1842.28;//kpa
-            double T_exv = 20;//C
+            //double P_exv = 1842.28;//kpa
+            //double T_exv = 20;//C
             double conductivity = 386; //w/mK for Cu
             double Pwater = 0;
             double hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
@@ -207,7 +219,7 @@ namespace Model
 
             return res;
         }
-        public static CalcResult main_condenser_txt()
+        public  CalcResult main_condenser_txt(double mr_in, double tc_in, double tri_in, double Va_in, double tai_in, double RHi_in, double ha_in)
         {
 
             //******制冷剂和换热器类型定义******//
@@ -332,10 +344,19 @@ namespace Model
             CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
             CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
 
-             double mr = 0.01;
+            //******制冷剂、风进口参数输入******//
+            double mr = mr_in;//0.01;
+            double Va = Va_in;//2.032; //m/s
+            double tai = tai_in;//26.67;
+            double RHi = RHi_in;//0.469;
+            double tc = tc_in;//45.0;
+            double tri = tri_in;//78;//C
+            //******制冷剂、风进口参数输入完成******//
+
+            //double mr = 0.01;
             //double Vel_a = 1.8; //m/s
             double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
-            double Vel_ave =2.032;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+            //double Vel_ave =2.032;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
             AirDistribution VaDistri = new AirDistribution();
             VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
             double[,] ma = new double[N_tube, Nelement];
@@ -343,6 +364,8 @@ namespace Model
             double H = Pt * N_tube;
             double Hx = L * H;
             double rho_a_st = 1.2; //kg/m3
+
+            double Vel_ave = Va / Hx;
 
             //空气侧几何结构选择
             //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
@@ -357,7 +380,7 @@ namespace Model
                 for (int j = 0; j < Nelement; j++)
                 {
                     ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
-                    ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve);// *1.5;
+                    ha[i, j] = ha_in;// AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve);// *1.5;
                     //ha[i, j] = 79;
                 }
             }
@@ -365,13 +388,13 @@ namespace Model
             double zh = 1;
             double zdp = 1;
 
-            double tai = 26.67;
-            double RHi = 0.469;
-            double tc = 45.0;
+            //double tai = 26.67;
+            //double RHi = 0.469;
+            //double tc = 45.0;
 
             double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
             //double P_exv = 1842.28;//kpa
-            double tri = 78;//C
+            //double tri = 78;//C
             double conductivity = 386; //w/mK for Cu
             double Pwater = 100.0;
             double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
