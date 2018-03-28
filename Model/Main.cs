@@ -11,6 +11,401 @@ namespace Model
 {
     public class Main
     {
+        public static CalcResult main_evaporator_txt()
+        {
+            CalcResult res = new CalcResult();
+            //******制冷剂和换热器类型定义******//
+            string fluid_in = null;
+            int hexType_in = 0;
+
+            //******几何结构定义******//
+            double Pt_in = 0;// = 21 * 0.001;
+            double Pr_in = 0;// = 18.19 * 0.001;
+            double Di_in = 0;// = 6.8944 * 0.001;//8
+            double Do_in = 0;// = 7.35 * 0.001;//8.4
+            double L_in = 0;// = 410 * 0.001;
+            double FPI_in = 0;
+            double Fthickness_in = 0;
+            int Nrow_in = 0;
+            int Ntube_in = 0;//6,6
+            int CirNum_in = 0;//流路数目
+
+            //***读取txt文件***//
+            StreamReader rd = File.OpenText(@"Evap_first.txt");//打开txt数据源文件
+            string s = rd.ReadLine();
+            string[] ss = s.Split(' ');//读取第一条语句并分割
+
+            while (s != null)
+            {
+                ss = s.Split(' ');
+                string ss0 = string.Format(ss[0]);
+
+                if (ss0 == "'startRefrigerant'")
+                {
+                    s = rd.ReadLine();
+                    ss = s.Split(' ');
+                    fluid_in = string.Format(ss[1]);
+                }
+
+                if (ss0 == "'starthextype'")
+                {
+                    s = rd.ReadLine();
+                    ss = s.Split(' ');
+                    if (string.Format(ss[0]) == "condenser") hexType_in = 1;
+                }
+
+                if (ss0 == "'startGeometry'")
+                {
+                    double[] Geo_Para = new double[10];
+                    int i = 0;
+                    s = rd.ReadLine();
+                    ss = s.Split(' ');
+                    while (string.Format(ss[0]) != "'endGeometry'")
+                    {
+                        Geo_Para[i] = double.Parse(ss[1]);
+                        i++;
+                        s = rd.ReadLine();
+                        ss = s.Split(' ');
+                    }
+
+                    Pt_in = Geo_Para[0];
+                    Pr_in = Geo_Para[1];
+                    Di_in = Geo_Para[2];
+                    Do_in = Geo_Para[3];
+                    L_in = Geo_Para[4];
+                    FPI_in = Geo_Para[5];
+                    Fthickness_in = Geo_Para[6];
+                    Nrow_in = (int)Geo_Para[7];
+                    Ntube_in = (int)Geo_Para[8];
+                    CirNum_in = (int)Geo_Para[9];
+                }
+                s = rd.ReadLine();//逐行读取下一条语句
+            }
+
+            rd.Close();
+            //***读取txt文件完成***//
+
+            //***制冷剂和换热器类型赋值***//
+            //string[] fluid = new string[] { "Water" };
+            string fluid = fluid_in;
+            double[] composition = new double[] { 1 };
+            int hexType = hexType_in; //***0 is evap, 1 is cond***//
+            //***制冷剂和换热器类型赋值完成***//
+
+            //***几何结构赋值***//
+            
+
+            int Nrow = Nrow_in;//2
+            int[] Ntube = { Ntube_in, Ntube_in };
+            int N_tube = Ntube[0];
+
+            double Pt = Pt_in * 0.001;//1 * 25.4 * 0.001;
+            double Pr = Pr_in * 0.001;//0.75 * 25.4 * 0.001;
+            double Di = Di_in * 0.001;//8.4074 * 0.001;//8 6.8944
+            double Do = Do_in * 0.001;//10.0584 * 0.001;//8.4 7.35
+            double L = L_in * 0.001;//914.4 * 0.001;
+            double thickness = 0.5 * (Do - Di);
+
+            double[] FPI = new double[Nrow + 1];
+            FPI = new double[] { FPI_in, FPI_in };
+            double Fthickness = Fthickness_in * 0.001;//0.095 * 0.001;
+            //***几何结构赋值完成***//
+
+            int CirNum = CirNum_in;//流路数目赋值
+            int Nelement = 1;// Nelement_in;//5;单管单元格数赋值
+
+            //流路均分设计
+            int[,] CirArrange;
+
+            CircuitNumber CircuitInfo = new CircuitNumber();
+            CircuitInfo.number = new int[] { CirNum, CirNum };
+            //Avoid invalid Ncir input 
+            if (CircuitInfo.number[0] > Ntube[0])
+            {
+                throw new Exception("circuit number is beyond range.");
+            }
+
+            CircuitInfo.TubeofCir = new int[CircuitInfo.number[0]];
+
+            //Get AutoCircuitry
+            CircuitInfo = AutoCircuiting.GetTubeofCir(Nrow, N_tube, CircuitInfo);
+            CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
+            CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
+
+            double mr = 0.02;
+            //double Vel_a = 1.8; //m/s
+            double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+            double Vel_ave = 2.032;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+            AirDistribution VaDistri = new AirDistribution();
+            VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+            double[,] ma = new double[N_tube, Nelement];
+            double[,] ha = new double[N_tube, Nelement];
+            double H = Pt * N_tube;
+            double Hx = L * H;
+            double rho_a_st = 1.2; //kg/m3
+
+            //空气侧几何结构选择
+            //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+            //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
+            int curve = 1; //
+
+            double za = 1; //Adjust factor
+            for (int i = 0; i < N_tube; i++)
+            {
+                for (int j = 0; j < Nelement; j++)
+                {
+                    ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
+                    ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve) * 1.5;
+                    //ha[i, j] = 79;
+                }
+            }
+            double eta_surface = 1;
+            double zh = 1;
+            double zdp = 1;
+
+
+            double tai = 26.67;
+            double RHi = 0.469;
+            double tri = 7.2;
+            double te = tri;
+            double pe = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid) / 1000;
+            double P_exv = 1842.28;//kpa
+            double T_exv = 20;//C
+            double conductivity = 386; //w/mK for Cu
+            double Pwater = 0;
+            double hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+
+            double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+            double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
+
+            //string AirDirection="DowntoUp";
+            string AirDirection = "Counter";
+            ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, te, AirDirection);
+            RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, te, AirDirection);
+
+            GeometryResult geo = new GeometryResult();
+            //GeometryResult[,] geo_element = new GeometryResult[,] { };
+            GeometryResult[,] geo_element = new GeometryResult[N_tube, Nrow];
+            for (int k = 0; k < Nrow; k++)
+                for (int j = 0; j < N_tube; j++)
+                {
+                    geo_element[j, k] = Areas.Geometry(L / Nelement, FPI[k], Do, Di, Pt, Pr, Fthickness);
+                    //geo_element[i] = Areas.Geometry(L / element, FPI[i], Do, Di, Pt, Pr);
+                    geo.Aa_tube += geo_element[j, k].Aa_tube;
+                    geo.Aa_fin += geo_element[j, k].Aa_fin;
+                    geo.A_a += geo_element[j, k].A_a;
+                    geo.A_r += geo_element[j, k].A_r;
+                    geo.A_r_cs += geo_element[j, k].A_r_cs;
+                    //geo.A_ratio += geo_element[j,k].A_ratio;
+                }
+            geo.A_ratio = geo.A_r / geo.A_a;
+
+            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo_element, ta, RH, te, pe, hri,
+                mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+
+            return res;
+        }
+        public static CalcResult main_condenser_txt()
+        {
+
+            //******制冷剂和换热器类型定义******//
+            string fluid_in = null;
+            int hexType_in = 0;
+
+            //******几何结构定义******//
+            double Pt_in = 0;// = 21 * 0.001;
+            double Pr_in = 0;// = 18.19 * 0.001;
+            double Di_in = 0;// = 6.8944 * 0.001;//8
+            double Do_in = 0;// = 7.35 * 0.001;//8.4
+            double L_in = 0;// = 410 * 0.001;
+            double FPI_in = 0;
+            double Fthickness_in = 0;
+            int Nrow_in = 0;
+            int Ntube_in = 0;//6,6
+            int Nelement_in = 0;//单管单元格数
+            int CirNum_in = 0;//流路数目
+
+            //***读取txt文件***//
+            //string path = AppDomain.CurrentDomain.BaseDirectory;
+            //StreamReader rd = File.OpenText( path + @".\Cond_first.txt");//打开txt数据源文件
+            StreamReader rd = File.OpenText(@"Cond_first.txt");//打开txt数据源文件
+            //StreamReader rd = File.OpenText(@".\Cond_first.txt");//打开txt数据源文件
+            string s = rd.ReadLine();
+            string[] ss = s.Split(' ');//读取第一条语句并分割
+
+            while (s != null)
+            {
+                ss = s.Split(' ');
+                string ss0 = string.Format(ss[0]);
+
+                if (ss0 == "'startRefrigerant'")
+                {
+                    s = rd.ReadLine();
+                    ss = s.Split(' ');
+                    fluid_in = string.Format(ss[1]);
+                }
+
+                if (ss0 == "'starthextype'")
+                {
+                    s = rd.ReadLine();
+                    ss = s.Split(' ');
+                    if (string.Format(ss[0]) == "condenser") hexType_in = 1;
+                }
+
+                if (ss0 == "'startGeometry'")
+                {
+                    double[] Geo_Para = new double[10];
+                    int i = 0;
+                    s = rd.ReadLine();
+                    ss = s.Split(' ');
+                    while (string.Format(ss[0]) != "'endGeometry'")
+                    {
+                        Geo_Para[i] = double.Parse(ss[1]);
+                        i++;
+                        s = rd.ReadLine();
+                        ss = s.Split(' ');
+                    }
+
+                    Pt_in = Geo_Para[0];
+                    Pr_in = Geo_Para[1];
+                    Di_in = Geo_Para[2];
+                    Do_in = Geo_Para[3];
+                    L_in = Geo_Para[4];
+                    FPI_in = Geo_Para[5];
+                    Fthickness_in = Geo_Para[6];
+                    Nrow_in = (int)Geo_Para[7];
+                    Ntube_in = (int)Geo_Para[8];
+                    CirNum_in = (int)Geo_Para[9];
+                }
+                s = rd.ReadLine();//逐行读取下一条语句
+            }
+
+            rd.Close();
+            //***读取txt文件完成***//
+
+            //***制冷剂和换热器类型赋值***//
+            //string[] fluid = new string[] { "Water" };
+            string fluid = fluid_in;
+            double[] composition = new double[] { 1 };
+            int hexType = hexType_in; //***0 is evap, 1 is cond***//
+            //***制冷剂和换热器类型赋值完成***//
+
+            //***几何结构赋值***//
+            CalcResult res = new CalcResult();
+
+            int Nrow = Nrow_in;//2
+            int[] Ntube = { Ntube_in, Ntube_in };
+            int N_tube = Ntube[0];
+
+            double Pt = Pt_in * 0.001;//1 * 25.4 * 0.001;
+            double Pr = Pr_in * 0.001;//0.75 * 25.4 * 0.001;
+            double Di = Di_in * 0.001;//8.4074 * 0.001;//8 6.8944
+            double Do = Do_in * 0.001;//10.0584 * 0.001;//8.4 7.35
+            double L = L_in * 0.001;//914.4 * 0.001;
+            double thickness = 0.5 * (Do - Di);
+
+            double[] FPI = new double[Nrow + 1];
+            FPI = new double[] { FPI_in, FPI_in };
+            double Fthickness = Fthickness_in * 0.001;//0.095 * 0.001;
+            //***几何结构赋值完成***//
+
+            int CirNum = CirNum_in;//流路数目赋值
+            int Nelement = 5;//5;单管单元格数赋值
+
+            //流路均分设计
+            int[,] CirArrange;
+
+            CircuitNumber CircuitInfo = new CircuitNumber();
+            CircuitInfo.number = new int[] { CirNum, CirNum };
+            //Avoid invalid Ncir input 
+            if (CircuitInfo.number[0] > Ntube[0])
+            {
+                throw new Exception("circuit number is beyond range.");
+            }
+
+            CircuitInfo.TubeofCir = new int[CircuitInfo.number[0]];
+
+            //Get AutoCircuitry
+            CircuitInfo = AutoCircuiting.GetTubeofCir(Nrow, N_tube, CircuitInfo);
+            CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
+            CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
+
+             double mr = 0.01;
+            //double Vel_a = 1.8; //m/s
+            double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+            double Vel_ave =2.032;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+            AirDistribution VaDistri = new AirDistribution();
+            VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+            double[,] ma = new double[N_tube, Nelement];
+            double[,] ha = new double[N_tube, Nelement];
+            double H = Pt * N_tube;
+            double Hx = L * H;
+            double rho_a_st = 1.2; //kg/m3
+
+            //空气侧几何结构选择
+            //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+            //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
+            int curve = 1; //
+
+            double za = 1; //Adjust factor
+            for (int i = 0; i < N_tube; i++)
+            {
+                for (int j = 0; j < Nelement; j++)
+                {
+                    ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
+                    ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve);// *1.5;
+                    //ha[i, j] = 79;
+                }
+            }
+            double eta_surface = 1;
+            double zh = 1;
+            double zdp = 1;
+
+            double tai = 26.67;
+            double RHi = 0.469;
+            double tc = 45.0;
+
+            double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
+            //double P_exv = 1842.28;//kpa
+            double tri = 78;//C
+            double conductivity = 386; //w/mK for Cu
+            double Pwater = 100.0;
+            double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+
+            double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+            double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
+
+            //string AirDirection="DowntoUp";
+            string AirDirection = "Counter";
+            ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
+            RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
+
+            GeometryResult geo = new GeometryResult();
+            //GeometryResult[,] geo_element = new GeometryResult[,] { };
+            GeometryResult[,] geo_element = new GeometryResult[N_tube, Nrow];
+            for (int k = 0; k < Nrow; k++)
+                for (int j = 0; j < N_tube; j++)
+                {
+                    geo_element[j, k] = Areas.Geometry(L / Nelement, FPI[k], Do, Di, Pt, Pr, Fthickness);
+                    //geo_element[i] = Areas.Geometry(L / element, FPI[i], Do, Di, Pt, Pr);
+                    geo.Aa_tube += geo_element[j, k].Aa_tube;
+                    geo.Aa_fin += geo_element[j, k].Aa_fin;
+                    geo.A_a += geo_element[j, k].A_a;
+                    geo.A_r += geo_element[j, k].A_r;
+                    geo.A_r_cs += geo_element[j, k].A_r_cs;
+                    //geo.A_ratio += geo_element[j,k].A_ratio;
+                }
+            geo.A_ratio = geo.A_r / geo.A_a;
+
+            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo_element, ta, RH, tri, pri, hri,
+                mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+
+            return res;
+        }
         public static CalcResult main_evaporator()
         {
             string fluid = "R410A";
