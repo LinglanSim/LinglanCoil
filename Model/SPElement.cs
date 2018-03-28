@@ -9,34 +9,21 @@ namespace Model
 {
     public class SPElement
     {
-        public static CalcResult ElementCalc(string[] fluid, double[] composition, double dh, double l, double Aa_fin, double Aa_tube, double A_r_cs, double Ar, double tai,
+        public static CalcResult ElementCalc(string fluid, double dh, double l, double Aa_fin, double Aa_tube, double A_r_cs, double Ar, double tai,
             double RHi, double tri, double pri, double hri, double mr, double g, double ma, double ha,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater)
         {
             double r_metal = thickness / conductivity / Ar;
             double gg = 9.8;
-            string fluidname = "R410A";
             CalcResult res=new CalcResult();
-            Refrigerant.TPFLSHResult r = new Refrigerant.TPFLSHResult();
-            r = Refrigerant.TPFLSH(fluid, composition, tri + 273.15, fluid[0] == "Water" ? Pwater : pri);
-            double wm = Refrigerant.WM(fluid, composition).Wm;
-            //double mu_r = Refrigerant.TRNPRP(fluid, composition, tri + 273.15, r.D).Viscosity / Math.Pow(10, 6);
-            //double k_r = Refrigerant.TRNPRP(fluid, composition, tri + 273.15, r.D).ThermalConductivity;
-            //string NameofRef = "R410A.mix";
             //double rho_r = r.D * wm;
             //double cp_r = r.cp / wm * 1000;
 
-            //double mu_r1 = CoolProp.PropsSI("V", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");
-            double mu_r = CoolProp.PropsSI("V", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, fluidname);
-            //double k_r1 = CoolProp.PropsSI("L", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");
-            double k_r = CoolProp.PropsSI("L", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, fluidname);
-            //double rho_r1 = CoolProp.PropsSI("D", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");
-            double rho_r = CoolProp.PropsSI("D", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, fluidname);
-            //double cp_r1 = CoolProp.PropsSI("C", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");
-            double cp_r = CoolProp.PropsSI("C", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, fluidname);
-            //double Pr_r1 = CoolProp.PropsSI("Pr", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");//普朗特数调用格式不对,计算来的，不是调用
+            double mu_r = CoolProp.PropsSI("V", "T", tri + 273.15, "P", (fluid == "Water" ? Pwater : pri) * 1000, fluid);
+            double k_r = CoolProp.PropsSI("L", "T", tri + 273.15, "P", (fluid == "Water" ? Pwater : pri) * 1000, fluid);
+            double rho_r = CoolProp.PropsSI("D", "T", tri + 273.15, "P", (fluid == "Water" ? Pwater : pri) * 1000, fluid);
+            double cp_r = CoolProp.PropsSI("C", "T", tri + 273.15, "P", (fluid == "Water" ? Pwater : pri) * 1000, fluid);
             double Pr_r = cp_r * mu_r / k_r;//普朗特数的计算有了
-            //double Pr_l = r.CpL * r.ViscosityL / r.KL * 1000;
             //for debugging, to check if the 1ph property is in 2ph region but not in 1ph, ruhao20180209
             /*
             var rr = new Refrigerant.SATTTotalResult();
@@ -87,40 +74,25 @@ namespace Model
             }
             double f_sp = RefrigerantSPDP.ff_Friction(Re_r);
             res.DP = zdp * f_sp * l / dh * Math.Pow(g, 2.0) / rho_r / 2000;
-            res.Pro = fluid[0] == "Water" ? pri : pri - res.DP;
+            res.Pro = fluid == "Water" ? pri : pri - res.DP;
             res.hro = hri + Math.Pow(-1, hexType) * res.Q / mr;
             res.RHout = 1.1 * RHi;
             return res; 
 
         }
-        public static CalcResult ElementCalc1(string[] fluid, double[] composition, double dh, double l, double Aa_fin, double Aa_tube, double A_r_cs, double Ar, double tai,
+        public static CalcResult ElementCalc1(string fluid, double dh, double l, double Aa_fin, double Aa_tube, double A_r_cs, double Ar, double tai,
             double RHi, double tri, double pri, double hri, double mr, double g, double ma, double ha,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater)
         {
             double r_metal = thickness / conductivity / Ar;
             double gg = 9.8;
-            string fluidname = "R410A";
             CalcResult res = new CalcResult();
-            Refrigerant.TPFLSHResult r = new Refrigerant.TPFLSHResult();
-            r = Refrigerant.TPFLSH(fluid, composition, tri + 273.15, fluid[0] == "Water" ? Pwater : pri);
-            double wm = Refrigerant.WM(fluid, composition).Wm;
-            //double mu_r = Refrigerant.TRNPRP(fluid, composition, tri + 273.15, r.D).Viscosity / Math.Pow(10, 6);
-            //double k_r = Refrigerant.TRNPRP(fluid, composition, tri + 273.15, r.D).ThermalConductivity;
-            //double rho_r = r.D * wm;//rho很不准,比refprop大15-10
-            //double cp_r = r.cp / wm * 1000;
 
-            double mu_r = CoolProp.PropsSI("V", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, fluidname);
-            double k_r = CoolProp.PropsSI("L", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, fluidname);
-            double rho_r = CoolProp.PropsSI("D", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, fluidname);
-            double cp_r = CoolProp.PropsSI("C", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, fluidname);
+            double mu_r = CoolProp.PropsSI("V", "T", tri + 273.15, "P", (fluid == "Water" ? Pwater : pri) * 1000, fluid);
+            double k_r = CoolProp.PropsSI("L", "T", tri + 273.15, "P", (fluid == "Water" ? Pwater : pri) * 1000, fluid);
+            double rho_r = CoolProp.PropsSI("D", "T", tri + 273.15, "P", (fluid == "Water" ? Pwater : pri) * 1000, fluid);
+            double cp_r = CoolProp.PropsSI("C", "T", tri + 273.15, "P", (fluid == "Water" ? Pwater : pri) * 1000, fluid);
 
-            /*
-           double mu_r1 = CoolProp.PropsSI("V", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");
-           double k_r1 = CoolProp.PropsSI("L", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");
-           double rho_r1 = CoolProp.PropsSI("D", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");
-           double cp_r1 = CoolProp.PropsSI("C", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");
-           double Pr_r1 = CoolProp.PropsSI("Pr", "T", tri + 273.15, "P", (fluid[0] == "Water" ? Pwater : pri) * 1000, "R410A.mix");//普朗特数调用格式不对
-           */
             double Pr_r = cp_r * mu_r / k_r;//普朗特数的计算有了
             res.Vel_r = g / rho_r;
             double Re_r = rho_r * res.Vel_r * dh / mu_r;
@@ -611,7 +583,7 @@ namespace Model
             res.Tro = Tout_r;
             double f_sp = RefrigerantSPDP.ff_Friction(Re_r);
             res.DP = zdp * f_sp * l / dh * Math.Pow(g, 2.0) / rho_r / 2000;
-            res.Pro = fluid[0] == "Water" ? pri : pri - res.DP;
+            res.Pro = fluid == "Water" ? pri : pri - res.DP;
             res.hro = hri + Math.Pow(-1, hexType) * res.Q / mr;
 
 

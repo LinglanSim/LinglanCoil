@@ -9,7 +9,7 @@ namespace Model
 {
     public class Tube
     {
-        public static CalcResult TubeCalc(int Nelement, string[] fluid, double[] composition,
+        public static CalcResult TubeCalc(int Nelement, string fluid,
             double dh, double l, double Aa_fin, double Aa_tube, double A_r_cs, double Ar, double[] tai,
             double[] RHi, double tri, double pri, double hri, double mr, double[] ma, double[] ha,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater)
@@ -21,7 +21,7 @@ namespace Model
             CalcResult[] r = new CalcResult[Nelement];
             for (int i = 0; i < Nelement; i++)
             {
-                r[i] = Element.ElementCal(fluid, composition, dh, l / Nelement, Aa_fin, Aa_tube, A_r_cs, Ar,
+                r[i] = Element.ElementCal(fluid, dh, l / Nelement, Aa_fin, Aa_tube, A_r_cs, Ar,
                     tai[i], RHi[i], tri, pri, hri, mr, g, ma[i], ha[i], eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);//elementtest
                 pri = r[i].Pro;
                 hri = r[i].hro;
