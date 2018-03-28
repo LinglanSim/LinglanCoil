@@ -489,9 +489,9 @@ namespace Model
                     res_slab.Tao += res_slab.Tao_Detail[i, j, Nrow];
                     res_slab.RHout += res_slab.RHo_Detail[i, j, Nrow];
                 }
-                    
-            res_slab.Tao = res_slab.Tao / N_tube;
-            res_slab.RHout = res_slab.RHout / N_tube;
+
+            res_slab.Tao = res_slab.Tao / (N_tube * Nelement);
+            res_slab.RHout = res_slab.RHout / (N_tube * Nelement);
             res_slab.Ra_ratio = res_slab.R_1a / res_slab.R_1;
             for (int i = 0; i < ma.GetLength(0); i++)
                 for (int j = 0; j < ma.GetLength(1); j++)

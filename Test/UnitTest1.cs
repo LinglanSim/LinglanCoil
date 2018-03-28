@@ -12,8 +12,8 @@ namespace Test
         {
             //var r = Main.main_evaporator_txt();
             //var r = Main.main_condenser_txt();
-            var r = Main.main_evaporator();
-            //var r1 = Main.main_condenser();
+            //var r = Main.main_evaporator();
+            var r1 = Main.main_condenser();
             //var r = Main.Water_Midea5();
             //var rr = Main.Water_Midea9();
             //var rrr = Main.Water_Cool_Midea9();
