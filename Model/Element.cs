@@ -44,9 +44,11 @@ namespace Model
                 //{Equations are for charge calculation}
                 double T_avg = (tri + res_element.Tro) / 2; //Average temperature of the element
                 double P_avg = (pri + res_element.Pro) / 2; //Average pressure of the element
+                double H_avg = CoolProp.PropsSI("H", "P", P_avg * 1000, "T", T_avg + 273.15, fluid);
+
                 //double rho = Refrigerant.TPFLSH(fluid, composition, T_avg + 273.15, P_avg).D*r.Wm;//density(ref$, T=T_avg, P=P_avg) 
                 //double rho1 = CoolProp.PropsSI("D", "P", P_avg * 1000, "T", T_avg + 273.15, "R410A.mix");
-                double rho1 = CoolProp.PropsSI("D", "P", P_avg * 1000, "T", T_avg + 273.15, (fluid == "R410A" ? "R410A.mix" : fluid));//计算结果相差较大
+                double rho1 = CoolProp.PropsSI("D", "P", P_avg * 1000, "H", H_avg, fluid);
                 M = Vol_tubes * rho1; //"Mass calculated"
             }
          
@@ -90,9 +92,10 @@ namespace Model
                 //{Equations are for charge calculation}
                 double T_avg = (tri + res_element.Tro) / 2; //Average temperature of the element
                 double P_avg = (pri + res_element.Pro) / 2; //Average pressure of the element
+                double H_avg = CoolProp.PropsSI("H", "P", P_avg * 1000, "T", T_avg + 273.15, fluid);
                 //double rho = Refrigerant.TPFLSH(fluid, composition, T_avg, P_avg).D * r.Wm; //density(ref$, T=T_avg, P=P_avg) 
                 //double rho1 = CoolProp.PropsSI("D", "P", P_avg * 1000, "T", T_avg + 273.15, "R410A.mix");
-                double rho = CoolProp.PropsSI("D", "P", P_avg * 1000, "T", T_avg + 273.15, fluid);
+                double rho = CoolProp.PropsSI("D", "P", P_avg * 1000, "H", H_avg, fluid);
                 M = Vol_tubes * rho; //Mass calculated
             }
 

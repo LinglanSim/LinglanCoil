@@ -55,9 +55,7 @@ namespace Model
                 //res.DP = 0;
                 res.Pro = pri - res.DP;
                 res.Tro = CoolProp.PropsSI("T", "P", res.Pro * 1000, "H", (res.hro + (fluid == "Water" ? 0 : 140)) * 1000, fluid);
-                //ruhao, 20180327, to be modified...
-                double rho_o = CoolProp.PropsSI("D", "T", res.Tro, "Q", res.x_o, (fluid == "R410A" ? "R410A.mix" : fluid));
-
+                double rho_o= CoolProp.PropsSI("D", "P", res.Pro * 1000, "H", (res.hro + (fluid == "Water" ? 0 : 140)) * 1000, fluid);
                 res.Tro = res.Tro - 273.15;
                 res.Vel_r = g / rho_o;
                 if (Math.Abs(q - res.Q) / res.Q > err)

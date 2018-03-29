@@ -474,10 +474,9 @@ namespace Model
             double hlo = CoolProp.PropsSI("H", "T", te_calc + 273.15, "D", densityLo, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
             double hvo = CoolProp.PropsSI("H", "T", te_calc + 273.15, "D", densityVo, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
             res_slab.x_o = (res_slab.hro - hlo) / (hvo - hlo);
-            double densityLi = CoolProp.PropsSI("D", "T", tri + 273.15, "Q", 0, fluid);
-            double densityVi = CoolProp.PropsSI("D", "T", tri + 273.15, "Q", 1, fluid);
-            double hli = CoolProp.PropsSI("H", "T", tri + 273.15, "D", densityLi, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
-            double hvi = CoolProp.PropsSI("H", "T", tri + 273.15, "D", densityVi, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+
+            double hli = CoolProp.PropsSI("H", "P", pri * 1000, "Q", 0, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+            double hvi = CoolProp.PropsSI("H", "P", pri * 1000, "Q", 1, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
 
             res_slab.x_i = (res_slab.hri - hli) / (hvi - hli);
             res_slab.Tro = CoolProp.PropsSI("T", "P", res_slab.Pro * 1000, "H", (res_slab.hro + (fluid == "Water" ? 0 : 140)) * 1000, fluid) - 273.15;
