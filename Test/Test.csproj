@@ -75,7 +75,9 @@
   </Choose>
   <ItemGroup>
     <Compile Include="PropertyTest.cs" />
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="TestforPython.cs" />
+    <Compile Include="TestforRef.cs" />
+    <Compile Include="TestforWater.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
