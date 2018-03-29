@@ -83,6 +83,9 @@
     <Compile Include="Basic\CircuitReverse.cs" />
     <Compile Include="Basic\Fluid.cs" />
     <Compile Include="Basic\FluidCategory.cs" />
+    <Compile Include="Basic\AirStateInput.cs" />
+    <Compile Include="Basic\RefStateInput.cs" />
+    <Compile Include="Basic\GeometryInput.cs" />
     <Compile Include="Basic\GeometryResult.cs" />
     <Compile Include="Basic\RefHTCandDPResult.cs" />
     <Compile Include="Basic\Refrigerant.cs" />
