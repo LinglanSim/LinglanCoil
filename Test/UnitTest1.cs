@@ -43,11 +43,11 @@ namespace Test
             geoInput.Nrow = 2;
             geoInput.Ntube = 6;
             geoInput.CirNum = 2;
-            //var r = Main.main_evaporator_txt();
             var rr = Main.main_condenser_py(refInput, airInput, geoInput);
             var r = Main.main_evaporator_py(refInput, airInput, geoInput);
             //var r = Main.main_evaporator();
             //var r1 = Main.main_condenser();
+
             //var r = Main.Water_Midea5();
             //var rr = Main.Water_Midea9();
             //var rrr = Main.Water_Cool_Midea9();
