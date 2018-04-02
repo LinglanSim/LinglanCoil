@@ -25,7 +25,8 @@ namespace Test
             //for evaporator
             refInput.te = 7.2; 
             refInput.P_exv = CoolProp.PropsSI("P", "T", refInput.tc + 273.15, "Q", 0, refInput.FluidName) / 1000;
-            refInput.T_exv = refInput.tc - 8; 
+            refInput.T_exv = refInput.tc - 8;
+            refInput.H_exv = 260.3011650506246;
 
             //air input
             airInput.Volumetricflowrate = 0.28317; //m3/s

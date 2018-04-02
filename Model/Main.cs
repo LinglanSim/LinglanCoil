@@ -102,7 +102,12 @@ namespace Model
             //double T_exv = 20;//C
             double conductivity = 386; //w/mK for Cu
             double Pwater = 0;
-            double hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000 ;
+            double hri=0;
+            if (refInput.H_exv != 0)
+                hri = refInput.H_exv;
+            else if (P_exv != 0)
+                hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000;
+            else hri = 0;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
