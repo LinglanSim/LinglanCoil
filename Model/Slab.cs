@@ -502,6 +502,10 @@ namespace Model
             res_slab.DP_detail = DP_detail;
             res_slab.Tro_detail = Tro_detail;
             res_slab.href_detail = href_detail;
+            res_slab.Aa = geo.total.A_a;
+            res_slab.Ar = geo.total.A_r;
+            res_slab.AHx = geo.total.A_hx;
+
             return res_slab;
             #endregion
         }

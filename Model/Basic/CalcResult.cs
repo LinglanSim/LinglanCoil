@@ -39,6 +39,9 @@ namespace Model.Basic
         public double Va = 0;
         public double RHout = 0;
 
+        public double Aa = 0;
+        public double Ar = 0;
+        public double AHx = 0;
 
         public CalcResult ShallowCopy()
         {
