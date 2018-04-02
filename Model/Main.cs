@@ -49,6 +49,10 @@ namespace Model
             CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
             CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
 
+            //Circuit-Reverse module
+            bool reverse = true; //*********************************false:origin, true:reverse******************************************
+            CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
+
             int hexType = 0; //***0 is evap, 1 is cond***//
             //******制冷剂、风进口参数输入******//
             string fluid = refInput.FluidName;
