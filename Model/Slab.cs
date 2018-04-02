@@ -11,7 +11,7 @@ namespace Model
     public class Slab
     {
         public static CalcResult SlabCalc(int[,] CirArrange, CircuitNumber CircuitInfo, int Nrow, int[] Ntube, int Nelement, string fluid, //double Npass, int[] N_tubes_pass, 
-            double dh, double l, GeometryResult[,] geo, double[, ,] ta, double[, ,] RH,
+            double dh, double l, AreaResult geo, double[, ,] ta, double[, ,] RH,
             double te, double pe, double hri, double mr, double[,] ma, double[,] ha,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater,string Airdirection)
    
@@ -200,7 +200,7 @@ namespace Model
                                 {
                                     
                                     //for (int i = 0; i < Ncir; i++)
-                                    r[i] = Circuit.CircuitCalc(i, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, dh, l, geo, ta, RH,
+                                    r[i] = Circuit.CircuitCalc(i, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, dh, l, geo.element, ta, RH,
                                         tri_cir[i], pri_cir[i], hri_cir[i], mr_ciro[k], ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,Airdirection);
                                     r1[k] = r[i].ShallowCopy();
                                     r2[k] = r[i].ShallowCopy();
@@ -241,7 +241,7 @@ namespace Model
 
                                 //首次流路计算
 
-                                r[i] = Circuit.CircuitCalc(i, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, dh, l, geo, ta, RH,
+                                r[i] = Circuit.CircuitCalc(i, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, dh, l, geo.element, ta, RH,
                                     tri_cir[i], pri_cir[i], hri_cir[i], mr_ciri[k], ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,Airdirection);
                                 r1[k] = r[i].ShallowCopy();
                                 index_cir[k] = i;//不均匀流路的输出才会用到

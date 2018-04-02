@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace Model.Basic
 {
+    public class AreaResult
+    {
+        public GeometryResult[,] element;
+        public GeometryResult total;
+    }
     public class GeometryResult
     {
         public double A_r_cs;
@@ -18,4 +23,5 @@ namespace Model.Basic
         public double Aa_fin;
         public double A_ratio;
     }
+
 }

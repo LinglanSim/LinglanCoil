@@ -9,7 +9,7 @@ namespace Model
 {
     public class Areas
     {
-        public static GeometryResult Geometry(double L_element, double FPI, double Do, double Di,
+        public static GeometryResult Areas_element(double L_element, double FPI, double Do, double Di,
             double Pt, double Pr, double Fthickness)
         {
             GeometryResult r = new GeometryResult();
@@ -34,6 +34,31 @@ namespace Model
 
         }
 
+        public static AreaResult Area(int Nrow, int N_tube, int Nelement, double L, double[] FPI, double Do, double Di,
+            double Pt, double Pr, double Fthickness)
+        {
+            AreaResult geo = new AreaResult();
+            geo.total = new GeometryResult();
+            geo.element = new GeometryResult[N_tube, Nrow];
+            //GeometryResult[,] r = new GeometryResult();
+            for (int k = 0; k < Nrow; k++)
+                for (int j = 0; j < N_tube; j++)
+                {
+                    geo.element[j, k] = Areas.Areas_element(L / Nelement, FPI[k], Do, Di, Pt, Pr, Fthickness);
+                    //geo_element[i] = Areas.Geometry(L / element, FPI[i], Do, Di, Pt, Pr);
+
+                    geo.total.Aa_tube += geo.element[j, k].Aa_tube;
+                    geo.total.Aa_fin += geo.element[j, k].Aa_fin;
+                    geo.total.A_a += geo.element[j, k].A_a;
+                    geo.total.A_r += geo.element[j, k].A_r;
+                    geo.total.A_r_cs += geo.element[j, k].A_r_cs;
+                    //geo.A_ratio += geo_element[j,k].A_ratio;
+                }
+            geo.total.A_hx = L * N_tube * Pt;
+            geo.total.A_ratio = geo.total.A_r / geo.total.A_a;
+            return geo;
+
+        }
 
     }
 }
