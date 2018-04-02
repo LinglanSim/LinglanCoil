@@ -88,7 +88,6 @@
     <Compile Include="Basic\GeometryInput.cs" />
     <Compile Include="Basic\GeometryResult.cs" />
     <Compile Include="Basic\RefHTCandDPResult.cs" />
-    <Compile Include="Basic\Refrigerant.cs" />
     <Compile Include="Basic\RefrigerantHTCandDP.cs" />
     <Compile Include="Basic\RefrigerantSPDP.cs" />
     <Compile Include="Basic\RefrigerantSPHTC.cs" />
