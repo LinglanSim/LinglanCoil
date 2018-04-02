@@ -49,7 +49,7 @@ namespace Model
                 //double rho = Refrigerant.TPFLSH(fluid, composition, T_avg + 273.15, P_avg).D*r.Wm;//density(ref$, T=T_avg, P=P_avg) 
                 //double rho1 = CoolProp.PropsSI("D", "P", P_avg * 1000, "T", T_avg + 273.15, "R410A.mix");
                 double rho1 = CoolProp.PropsSI("D", "P", P_avg * 1000, "H", H_avg, fluid);
-                M = Vol_tubes * rho1; //"Mass calculated"
+                res_element.M = Vol_tubes * rho1; //"Mass calculated"
             }
          
             // **********Twophase state**********"
@@ -68,8 +68,9 @@ namespace Model
                 double P_avg = (pri + res_element.Pro) / 2; //Average pressure of the element
                 double rho_l = CoolProp.PropsSI("D", "P", P_avg * 1000, "Q", 0, fluid);
                 double rho_v = CoolProp.PropsSI("D", "P", P_avg * 1000, "Q", 1, fluid);
-                //{Call VOIDFRACTION_pressure(ref$, x_avg, P_avg : alpha_p)  "Baroczy void fraction model"     }
-                M = Vol_tubes * (alpha * rho_v + (1 - alpha) * rho_l);  //Mass calculated   
+                //{Call VOIDFRACTION_pressure(ref$, x_avg, P_avg : alpha_p)  "Baroczy void fraction model"     } 
+                double alpha_homog = 1 / (1 + (1 - x_avg) / x_avg * (rho_v / rho_l)); // Homogeneous model, Intermittent flow void fraction
+                res_element.M = Vol_tubes * (alpha_homog * rho_v + (1 - alpha_homog) * rho_l);  //Mass calculated   
             }
             
             //**********Subcooled state**********
@@ -93,10 +94,8 @@ namespace Model
                 double T_avg = (tri + res_element.Tro) / 2; //Average temperature of the element
                 double P_avg = (pri + res_element.Pro) / 2; //Average pressure of the element
                 double H_avg = CoolProp.PropsSI("H", "P", P_avg * 1000, "T", T_avg + 273.15, fluid);
-                //double rho = Refrigerant.TPFLSH(fluid, composition, T_avg, P_avg).D * r.Wm; //density(ref$, T=T_avg, P=P_avg) 
-                //double rho1 = CoolProp.PropsSI("D", "P", P_avg * 1000, "T", T_avg + 273.15, "R410A.mix");
                 double rho = CoolProp.PropsSI("D", "P", P_avg * 1000, "H", H_avg, fluid);
-                M = Vol_tubes * rho; //Mass calculated
+                res_element.M = Vol_tubes * rho; //Mass calculated
             }
 
 
