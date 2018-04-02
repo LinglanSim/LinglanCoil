@@ -336,8 +336,7 @@ namespace Model
                                 if (fluid == "Water")
                                     res_cir2[j].Tro = res_cir2[j].Tro / (flag_ciro == 1 ? mr : mr_ciro[j]);
                                 else
-                                    //res_cir2[j].Tro = Refrigerant.PHFLSH(fluid, composition, res_cir2[j].Pro, (res_cir2[j].hro + 140) * wm).t - 273.15;
-                                    res_cir2[j].Tro = CoolProp.PropsSI("T", "P", res_cir2[j].Pro * 1000, "H", (res_cir2[j].hro + 140) * 1000, fluid);
+                                    res_cir2[j].Tro = CoolProp.PropsSI("T", "P", res_cir2[j].Pro * 1000, "H", res_cir2[j].hro * 1000, fluid);
                             }
 
                         }
@@ -471,17 +470,17 @@ namespace Model
             te_calc = CoolProp.PropsSI("T", "P", res_slab.Pro * 1000, "Q", 0, fluid) - 273.15;
             double densityLo = CoolProp.PropsSI("D", "T", te_calc + 273.15, "Q", 0, fluid);
             double densityVo = CoolProp.PropsSI("D", "T", te_calc + 273.15, "Q", 1, fluid);
-            double hlo = CoolProp.PropsSI("H", "T", te_calc + 273.15, "D", densityLo, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
-            double hvo = CoolProp.PropsSI("H", "T", te_calc + 273.15, "D", densityVo, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+            double hlo = CoolProp.PropsSI("H", "T", te_calc + 273.15, "D", densityLo, fluid) / 1000 ;
+            double hvo = CoolProp.PropsSI("H", "T", te_calc + 273.15, "D", densityVo, fluid) / 1000 ;
             res_slab.x_o = (res_slab.hro - hlo) / (hvo - hlo);
 
-            double hli = CoolProp.PropsSI("H", "P", pri * 1000, "Q", 0, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
-            double hvi = CoolProp.PropsSI("H", "P", pri * 1000, "Q", 1, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+            double hli = CoolProp.PropsSI("H", "P", pri * 1000, "Q", 0, fluid) / 1000 ;
+            double hvi = CoolProp.PropsSI("H", "P", pri * 1000, "Q", 1, fluid) / 1000 ;
 
             res_slab.x_i = (res_slab.hri - hli) / (hvi - hli);
-            res_slab.Tro = CoolProp.PropsSI("T", "P", res_slab.Pro * 1000, "H", (res_slab.hro + (fluid == "Water" ? 0 : 140)) * 1000, fluid) - 273.15;
+            res_slab.Tro = CoolProp.PropsSI("T", "P", res_slab.Pro * 1000, "H", res_slab.hro  * 1000, fluid) - 273.15;
 
-            double  h = (res_slab.hro + (fluid == "Water" ? 0 : 140));
+            double h = res_slab.hro;
             for (int j = 0; j < N_tube; j++)
                 for (int i = 0; i < Nelement; i++)
                 {

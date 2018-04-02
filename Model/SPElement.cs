@@ -16,10 +16,10 @@ namespace Model
             double r_metal = thickness / conductivity / Ar;
             double gg = 9.8;
             CalcResult res=new CalcResult();
-            double mu_r = CoolProp.PropsSI("V", "H", (hri + (fluid == "Water" ? 0 : 140)) * 1000, "P", (fluid == "Water" ? Pwater : pri) * 1000, fluid);
-            double k_r = CoolProp.PropsSI("L", "H", (hri + (fluid == "Water" ? 0 : 140)) * 1000, "P", (fluid == "Water" ? Pwater : pri) * 1000, fluid);
-            double rho_r = CoolProp.PropsSI("D", "H", (hri + (fluid == "Water" ? 0 : 140)) * 1000, "P", (fluid == "Water" ? Pwater : pri) * 1000, fluid);
-            double cp_r = CoolProp.PropsSI("C", "H", (hri + (fluid == "Water" ? 0 : 140)) * 1000, "P", (fluid == "Water" ? Pwater : pri) * 1000, fluid);
+            double mu_r = CoolProp.PropsSI("V", "H", hri * 1000, "P", (fluid == "Water" ? Pwater : pri) * 1000, fluid);
+            double k_r = CoolProp.PropsSI("L", "H", hri * 1000, "P", (fluid == "Water" ? Pwater : pri) * 1000, fluid);
+            double rho_r = CoolProp.PropsSI("D", "H", hri * 1000, "P", (fluid == "Water" ? Pwater : pri) * 1000, fluid);
+            double cp_r = CoolProp.PropsSI("C", "H", hri * 1000, "P", (fluid == "Water" ? Pwater : pri) * 1000, fluid);
             double Pr_r = cp_r * mu_r / k_r;
             //for debugging, to check if the 1ph property is in 2ph region but not in 1ph, ruhao20180209
             /*

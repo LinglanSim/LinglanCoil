@@ -102,7 +102,7 @@ namespace Model
             //double T_exv = 20;//C
             double conductivity = 386; //w/mK for Cu
             double Pwater = 0;
-            double hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+            double hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000 ;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -208,7 +208,7 @@ namespace Model
             double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
             double conductivity = 386; 
             double Pwater = 100.0;
-            double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+            double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000 ;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -321,7 +321,7 @@ namespace Model
             double conductivity = 386; //w/mK for Cu
             double Pwater = 0;
             int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
-            double hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+            double hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000 ;
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
@@ -432,7 +432,7 @@ namespace Model
             double conductivity = 386; //w/mK for Cu
             double Pwater = 100.0;
             int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-            double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+            double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000 ;
             //double hri = 354.6;
             //double xin = 0.57;
 
@@ -519,7 +519,7 @@ namespace Model
             double conductivity = 386; //w/mK for Cu
             double Pwater = 100.0;
             int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-            double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+            double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000 ;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -712,7 +712,7 @@ namespace Model
             double Pwater = 305;//kpa
             double conductivity = 386; //w/mK for Cu
             int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-            double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+            double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -796,7 +796,7 @@ namespace Model
             double Pwater = 395;//kpa
             double conductivity = 386; //w/mK for Cu
             int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-            double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+            double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -888,7 +888,7 @@ namespace Model
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -983,8 +983,7 @@ namespace Model
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                //hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid == "Water" ? 0 : 140);
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -1081,8 +1080,8 @@ namespace Model
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                //hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 - (fluid == "Water" ? 0 : 140);
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+                //hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 ;
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -1178,7 +1177,7 @@ namespace Model
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -1275,7 +1274,7 @@ namespace Model
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -1372,7 +1371,7 @@ namespace Model
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -1486,7 +1485,7 @@ namespace Model
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -1587,7 +1586,7 @@ namespace Model
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -1676,7 +1675,7 @@ namespace Model
             double Pwater = 395;//kpa
             double conductivity = 386; //w/mK for Cu
             int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-            double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+            double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
@@ -1775,7 +1774,7 @@ namespace Model
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
@@ -1885,7 +1884,7 @@ namespace Model
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -1997,7 +1996,7 @@ namespace Model
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -2104,7 +2103,7 @@ namespace Model
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -2201,7 +2200,7 @@ namespace Model
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -2296,7 +2295,7 @@ namespace Model
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -2379,7 +2378,7 @@ namespace Model
             double Pwater = 395;//kpa
             double conductivity = 386; //w/mK for Cu
             int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-            double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+            double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -2473,7 +2472,7 @@ namespace Model
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -2588,7 +2587,7 @@ namespace Model
             double conductivity = 386; //w/mK for Cu
             double Pwater = 0;
             int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
-            double hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+            double hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000 ;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -2701,7 +2700,7 @@ namespace Model
             double conductivity = 386; //w/mK for Cu
             double Pwater = 0;
             int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
-            double hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+            double hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000 ;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -2794,7 +2793,7 @@ namespace Model
             double Pwater = 305;//kPa
             double conductivity = 386;
             int hexType = 1;//0-eva,1-con
-            double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+            double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];

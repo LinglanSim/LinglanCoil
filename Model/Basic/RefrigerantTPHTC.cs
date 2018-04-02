@@ -17,8 +17,8 @@ namespace Model.Basic
             temperature = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, fluid);
             DensityL = CoolProp.PropsSI("D", "T", temperature, "Q", 0, fluid);
             DensityV = CoolProp.PropsSI("D", "T", temperature, "Q", 1, fluid);
-            EnthalpyL = CoolProp.PropsSI("H", "T", temperature, "Q", 0, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
-            EnthalpyV = CoolProp.PropsSI("H", "T", temperature, "Q", 1, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+            EnthalpyL = CoolProp.PropsSI("H", "T", temperature, "Q", 0, fluid) / 1000 ;
+            EnthalpyV = CoolProp.PropsSI("H", "T", temperature, "Q", 1, fluid) / 1000 ;
             ViscosityL = CoolProp.PropsSI("V", "T", temperature, "Q", 0, fluid);
             //double ViscosityL1 = CoolProp.PropsSI("V", "T", temperature, "Q", 0, "R410A.mix");//Coolprop和RefProp的计算结果差别很大
             CpL = CoolProp.PropsSI("C", "T", temperature, "Q", 0, fluid) / 1000;
@@ -59,8 +59,8 @@ namespace Model.Basic
 
            DensityL = CoolProp.PropsSI("D", "T", temperature, "Q", 0, fluid);
            DensityV = CoolProp.PropsSI("D", "T", temperature, "Q", 1, fluid);
-           EnthalpyL = CoolProp.PropsSI("H", "T", temperature, "Q", 0, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
-           EnthalpyV = CoolProp.PropsSI("H", "T", temperature, "Q", 1, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+           EnthalpyL = CoolProp.PropsSI("H", "T", temperature, "Q", 0, fluid) / 1000 ;
+           EnthalpyV = CoolProp.PropsSI("H", "T", temperature, "Q", 1, fluid) / 1000 ;
            ViscosityL = CoolProp.PropsSI("V", "T", temperature, "Q", 0, fluid);
            CpL = CoolProp.PropsSI("C", "T", temperature, "Q", 0, fluid) / 1000; //"R410A.mix"
            KL = CoolProp.PropsSI("L", "T", temperature, "Q", 0, fluid);
@@ -112,8 +112,8 @@ namespace Model.Basic
 
            DensityL = CoolProp.PropsSI("D", "T", temperature, "Q", 0, fluid);
            DensityV = CoolProp.PropsSI("D", "T", temperature, "Q", 1, fluid);
-           EnthalpyL = CoolProp.PropsSI("H", "T", temperature, "Q", 0, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
-           EnthalpyV = CoolProp.PropsSI("H", "T", temperature, "Q", 1, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+           EnthalpyL = CoolProp.PropsSI("H", "T", temperature, "Q", 0, fluid) / 1000 ;
+           EnthalpyV = CoolProp.PropsSI("H", "T", temperature, "Q", 1, fluid) / 1000 ;
            ViscosityL = CoolProp.PropsSI("V", "T", temperature, "Q", 0, fluid);
            ViscosityV = CoolProp.PropsSI("V", "T", temperature, "Q", 1, fluid);
            CpL = CoolProp.PropsSI("C", "T", temperature, "Q", 0, fluid) / 1000;
@@ -193,8 +193,8 @@ namespace Model.Basic
 
            DensityL = CoolProp.PropsSI("D", "T", temperature, "Q", 0, fluid);
            DensityV = CoolProp.PropsSI("D", "T", temperature, "Q", 1, fluid);
-           EnthalpyL = CoolProp.PropsSI("H", "T", temperature, "Q", 0, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
-           EnthalpyV = CoolProp.PropsSI("H", "T", temperature, "Q", 1, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+           EnthalpyL = CoolProp.PropsSI("H", "T", temperature, "Q", 0, fluid) / 1000 ;
+           EnthalpyV = CoolProp.PropsSI("H", "T", temperature, "Q", 1, fluid) / 1000 ;
            ViscosityL = CoolProp.PropsSI("V", "T", temperature, "Q", 0, fluid);
            ViscosityV = CoolProp.PropsSI("V", "T", temperature, "Q", 1, fluid);
            //double ViscosityL1 = CoolProp.PropsSI("V", "T", temperature, "Q", 0, "R410A.mix");//Coolprop和RefProp的计算结果差别很大
@@ -259,8 +259,8 @@ namespace Model.Basic
 
            DensityL = CoolProp.PropsSI("D", "T", temperature, "Q", 0, fluid);
            DensityV = CoolProp.PropsSI("D", "T", temperature, "Q", 1, fluid);
-           EnthalpyL = CoolProp.PropsSI("H", "T", temperature, "Q", 0, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
-           EnthalpyV = CoolProp.PropsSI("H", "T", temperature, "Q", 1, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+           EnthalpyL = CoolProp.PropsSI("H", "T", temperature, "Q", 0, fluid) / 1000 ;
+           EnthalpyV = CoolProp.PropsSI("H", "T", temperature, "Q", 1, fluid) / 1000 ;
            ViscosityL = CoolProp.PropsSI("V", "T", temperature, "Q", 0, fluid);
            ViscosityV = CoolProp.PropsSI("V", "T", temperature, "Q", 1, fluid);
            //double ViscosityL1 = CoolProp.PropsSI("V", "T", temperature, "Q", 0, "R410A.mix");//Coolprop和RefProp的计算结果差别很大

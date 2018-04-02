@@ -23,8 +23,8 @@ namespace Model
             tsat = CoolProp.PropsSI("T", "P", pri * 1000, "Q", 0, fluid);
             
             double Vol_tubes = A_r_cs * l;   //Tube volume, for charge calculation
-            double h_l = CoolProp.PropsSI("H", "T", tsat, "Q", 0, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
-            double h_v = CoolProp.PropsSI("H", "T", tsat, "Q", 1, fluid) / 1000 - (fluid == "Water" ? 0 : 140);
+            double h_l = CoolProp.PropsSI("H", "T", tsat, "Q", 0, fluid) / 1000 ;
+            double h_v = CoolProp.PropsSI("H", "T", tsat, "Q", 1, fluid) / 1000 ;
             double Tri_mod;
             double alpha;
             double M;
