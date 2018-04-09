@@ -50,8 +50,8 @@ namespace Model
             CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
 
             //Circuit-Reverse module
-            bool reverse = true; //*********************************false:origin, true:reverse******************************************
-            CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
+            //bool reverse = true; //*********************************false:origin, true:reverse******************************************
+            //CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
 
             int hexType = 0; //***0 is evap, 1 is cond***//
             //******制冷剂、风进口参数输入******//
