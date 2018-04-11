@@ -58,7 +58,7 @@ namespace Model
             double epsilon_counterflow = (1 - Math.Exp(-NTU * (1 - C_ratio))) / (1 - C_ratio * Math.Exp(-NTU * (1 - C_ratio)));
 
             double epsilon = epsilon_counterflow;
-            res.Q = epsilon * C_min * Math.Abs(tri - tai);
+            res.Q = epsilon * C_min * (tai - tri) * Math.Pow(-1, hexType);
             if (C_r < C_a)
             { // hexType=0 :evap, 1:cond
                 res.Tro = tri + Math.Pow(-1, hexType) * epsilon * (tai - tri);//Math.Abs(tai - tri);
