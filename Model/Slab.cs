@@ -368,7 +368,7 @@ namespace Model
                     airConverge.flag = true;
                 else//Counter
                 {
-                    airConverge = CheckAirConvergeforCircuits.CheckAirConverge(cirArrforAir.TotalDirection, Nrow, N_tube, Nelement, ta, RH, r); //taout_calc, RHout_calc
+                    airConverge = CheckAirConvergeforCircuits.CheckAirConverge(iterforAir, cirArrforAir.TotalDirection, Nrow, N_tube, Nelement, ta, RH, r); //taout_calc, RHout_calc
                     ta = airConverge.ta;
                     RH = airConverge.RH;
                     iterforAir++;

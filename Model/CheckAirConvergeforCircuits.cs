@@ -9,12 +9,12 @@ namespace Model
 {
     public class CheckAirConvergeforCircuits
     {
-        public static CheckAir CheckAirConverge(int[,] TotalDirection, int Nrow, int N_tube, int Nelement, double[, ,] tain, double[, ,] RHin, CalcResult[] r)//, double[, ,] taout, double[, ,] RHout)
+        public static CheckAir CheckAirConverge(int iterforAir, int[,] TotalDirection, int Nrow, int N_tube, int Nelement, double[, ,] tain, double[, ,] RHin, CalcResult[] r)//, double[, ,] taout, double[, ,] RHout)
         {
             CheckAir rr=new CheckAir();
             int index = 0;
             bool flag = false;
-            double err = 0.01;
+            double err = iterforAir > 8 ? 0.2 : 0.01;
             double dev = 0;
             double dev1 = 0;
             double devsum = 0;
@@ -94,7 +94,7 @@ namespace Model
             //to avoid back and forth of iteration especially in 2ph critical region, ruhao, 20180315
             //in the typical case of "MinNout", tube of [*, 19, 1], in first itertion is 2ph, while next iteration is superheat...  
             //to be modified..
-            if (index == 0 || index < 0.3 * N_tube * Nelement && (r[r.Count() - 1].x_o > 1 || r[r.Count() - 1].x_o < 0)) flag = true; //index == 0
+            if (index == 0 || index < 0.3 * N_tube * Nelement) flag = true; //index == 0  //&& (r[r.Count() - 1].x_o > 1 || r[r.Count() - 1].x_o < 0))
             else
             {
                 tain = temp;
