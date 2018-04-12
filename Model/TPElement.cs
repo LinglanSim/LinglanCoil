@@ -47,7 +47,7 @@ namespace Model
                 double UA = 1 / res.R_1;
                 double NTU = UA / (C_a * 1000);
                 double epsilon = 1 - Math.Exp(-NTU);
-                res.Q = epsilon * C_a * Math.Abs(tai - tri);
+                res.Q = epsilon * C_a * (tai - tri) * Math.Pow(-1, hexType);//Math.Abs(tai - tri)
                 res.Tao = tai + Math.Pow(-1, (hexType + 1)) * res.Q / C_a;
                 res.hro = hri + Math.Pow(-1, hexType) * res.Q / mr;
                 //0:evap, 1:cond
