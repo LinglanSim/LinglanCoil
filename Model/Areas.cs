@@ -54,6 +54,11 @@ namespace Model
                     geo.total.A_r_cs += geo.element[j, k].A_r_cs;
                     //geo.A_ratio += geo_element[j,k].A_ratio;
                 }
+            geo.total.Aa_tube *= Nelement;
+            geo.total.Aa_fin *= Nelement;
+            geo.total.A_a *= Nelement;
+            geo.total.A_r *= Nelement;
+            geo.total.A_r_cs *= Nelement;
             geo.total.A_hx = L * N_tube * Pt;
             geo.total.A_ratio = geo.total.A_r / geo.total.A_a;
             return geo;
