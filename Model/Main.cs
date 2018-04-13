@@ -29,7 +29,7 @@ namespace Model
             FPI = new double[] { geoInput.FPI, geoInput.FPI };
             double Fthickness = geoInput.Fthickness * 0.001;
             int CirNum = geoInput.CirNum;//流路数目赋值
-            int Nelement = 1;//5;单管单元格数赋值
+            int Nelement = 5;//单管单元格数赋值
 
             //流路均分设计
             int[,] CirArrange;
