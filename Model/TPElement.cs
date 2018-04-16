@@ -34,7 +34,7 @@ namespace Model
             do
             {
                 flag = false;
-                htc_dp = RefrigerantHTCandDP.HTCandDP(fluid, dh, g, pri, res.x_i, l, q, zh, zdp, hexType);
+                htc_dp = RefrigerantHTCandDP.HTCandDP_2p(fluid, dh, g, pri, res.x_i, l, q, zh, zdp, hexType);
 
                 res.href = htc_dp.Href;
                 res.DP = htc_dp.DPref;
@@ -160,7 +160,7 @@ namespace Model
             do
             {
                 flag = false;
-                htc_dp = RefrigerantHTCandDP.HTCandDP(fluid, dh, g, pri, res.x_i, l, q, zh, zdp, hexType);
+                htc_dp = RefrigerantHTCandDP.HTCandDP_2p(fluid, dh, g, pri, res.x_i, l, q, zh, zdp, hexType);
 
                 res.href = htc_dp.Href;
                 res.DP = htc_dp.DPref;
