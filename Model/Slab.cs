@@ -396,14 +396,14 @@ namespace Model
             else
                 priconverge.flag = true;
 
-            } while (!priconverge.flag && iterforPri < 20);
+            } while (!priconverge.flag && iterforPri < 100);
 
 
             if (iterforDP >= 500)
             {
                 throw new Exception("iter for DPConverge > 500.");
             }
-            if (iterforPri >= 20)
+            if (iterforPri >= 100)
             {
                 throw new Exception("iter for DPPri > 20.");
             }
