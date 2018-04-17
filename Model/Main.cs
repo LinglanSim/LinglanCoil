@@ -99,8 +99,8 @@ namespace Model
                 }
             }
             double eta_surface = 1;
-            double zh = 1;
-            double zdp = 1;
+            double zh = 3;
+            double zdp = 3;
             double pe = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid) / 1000;
             //double P_exv = 1842.28;//kpa
             //double T_exv = 20;//C
@@ -117,7 +117,7 @@ namespace Model
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
-            string AirDirection = "Counter";
+            string AirDirection = "Parallel";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, te, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, te, AirDirection);
 
@@ -212,8 +212,8 @@ namespace Model
                 }
             }
             double eta_surface = 1;
-            double zh = 1;
-            double zdp = 1;
+            double zh = 3;
+            double zdp = 3;
             double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
             double conductivity = 386; 
             double Pwater = 100.0;
@@ -2690,7 +2690,7 @@ namespace Model
                 for (int j = 0; j < Nelement; j++)
                 {
                     ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
-                    ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve)*1.5;
+                    ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve) * 1.5;
                     //ha[i, j] = 79;
                 }
             }
