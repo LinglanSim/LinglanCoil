@@ -94,7 +94,7 @@ namespace Model
             //to avoid back and forth of iteration especially in 2ph critical region, ruhao, 20180315
             //in the typical case of "MinNout", tube of [*, 19, 1], in first itertion is 2ph, while next iteration is superheat...  
             //to be modified..
-            if (index == 0 || index < 0.3 * N_tube * Nelement && (r[r.Count() - 1].x_o > 1 || r[r.Count() - 1].x_o < 0)) flag = true; //index == 0
+            if (index < 0.3 * N_tube * Nelement) flag = true; //&& (r[r.Count() - 1].x_o > 1 || r[r.Count() - 1].x_o < 0)) index == 0
             else
             {
                 tain = temp;
