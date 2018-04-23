@@ -54,6 +54,7 @@ namespace Model
                 res.x_o = (res.hro - EnthalpyL) / (EnthalpyV - EnthalpyL); //+ 139.17 for reference state, to be changed
                 //res.DP = 0;
                 res.Pro = pri - res.DP;
+                if (res.Pro < 0) { res.Pro = -10000000; return res; }
                 res.Tro = CoolProp.PropsSI("T", "P", res.Pro * 1000, "H", res.hro * 1000, fluid);
                 double rho_o= CoolProp.PropsSI("D", "P", res.Pro * 1000, "H", res.hro  * 1000, fluid);
                 res.Tro = res.Tro - 273.15;

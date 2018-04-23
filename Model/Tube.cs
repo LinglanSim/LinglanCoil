@@ -23,6 +23,7 @@ namespace Model
             {
                 r[i] = Element.ElementCal(fluid, dh, l / Nelement, Aa_fin, Aa_tube, A_r_cs, Ar,
                     tai[i], RHi[i], tri, pri, hri, mr, g, ma[i], ha[i], eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);//elementtest
+                if (r[i].Pro < 0) { res_tube.Pro = -10000000; return res_tube; }
                 pri = r[i].Pro;
                 hri = r[i].hro;
                 tri = r[i].Tro;

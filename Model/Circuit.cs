@@ -93,6 +93,7 @@ namespace Model
 
                     r[i] = Tube.TubeCalc(Nelement, fluid, dh, l, Aa_fin, Aa_tube, Ar_cs, Ar, tai, RHi, tri_tube, pri_tube, hri_tube,
                         mr, ma_tube, ha_tube, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+                    if (r[i].Pro < 0) { res_cir.Pro = -10000000; return res_cir; }
                     if (Airdirection=="Parallel")
                     {
                         for (int j = 0; j < Nelement; j++)
