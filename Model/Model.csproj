@@ -74,6 +74,7 @@
     <Compile Include="Basic\Brine.cs" />
     <Compile Include="Basic\CalcCirArr.cs" />
     <Compile Include="Basic\CalcResult.cs" />
+    <Compile Include="Basic\AirCoef_res.cs" />
     <Compile Include="Basic\CheckPri.cs" />
     <Compile Include="Basic\CheckDP.cs" />
     <Compile Include="Basic\CheckAir.cs" />
