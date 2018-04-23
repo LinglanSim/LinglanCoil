@@ -202,6 +202,7 @@ namespace Model
                                     //for (int i = 0; i < Ncir; i++)
                                     r[i] = Circuit.CircuitCalc(i, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, dh, l, geo.element, ta, RH,
                                         tri_cir[i], pri_cir[i], hri_cir[i], mr_ciro[k], ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,Airdirection);
+                                    if (r[i].Pro < 0) { res_slab.Pro = -10000000; return res_slab; }
                                     r1[k] = r[i].ShallowCopy();
                                     r2[k] = r[i].ShallowCopy();
                                     if (!index_outbig) r1[k].DP += res_cir2[k].DP;
@@ -243,6 +244,7 @@ namespace Model
 
                                 r[i] = Circuit.CircuitCalc(i, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, dh, l, geo.element, ta, RH,
                                     tri_cir[i], pri_cir[i], hri_cir[i], mr_ciri[k], ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,Airdirection);
+                                if (r[i].Pro < 0) { res_slab.Pro = -10000000; return res_slab; }
                                 r1[k] = r[i].ShallowCopy();
                                 index_cir[k] = i;//不均匀流路的输出才会用到
                                 k++;

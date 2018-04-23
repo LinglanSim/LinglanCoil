@@ -72,6 +72,7 @@ namespace Model
             double f_sp = RefrigerantSPDP.ff_Friction(Re_r);
             res.DP = zdp * f_sp * l / dh * Math.Pow(g, 2.0) / rho_r / 2000;
             res.Pro = fluid == "Water" ? pri : pri - res.DP;
+            if (res.Pro < 0) { res.Pro = -10000000; return res; }
             res.hro = hri + Math.Pow(-1, hexType) * res.Q / mr;
             res.RHout = 1.1 * RHi;
             return res; 
