@@ -344,7 +344,7 @@ namespace Model
                         }
                         #endregion
                     #endregion
-                    } while (!dPconverge.flag && iterforDP < 500);
+                    } while (!dPconverge.flag && iterforDP < 100);
 
                     if (Nciri == Nciro) break;
 
@@ -375,7 +375,7 @@ namespace Model
                     RH = airConverge.RH;
                     iterforAir++;
                 }
-            } while (!airConverge.flag && iterforAir < 500);
+            } while (!airConverge.flag && iterforAir < 50);
             
             #endregion
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\MinNout.txt"))
@@ -398,16 +398,18 @@ namespace Model
             else
                 priconverge.flag = true;
 
-            } while (!priconverge.flag && iterforPri < 100);
+            } while (!priconverge.flag && iterforPri < 50);
 
 
-            if (iterforDP >= 500)
+            if (iterforDP >= 100)
             {
-                throw new Exception("iter for DPConverge > 500.");
+                return res_slab;
+                throw new Exception("iter for DPConverge > 100.");
             }
-            if (iterforPri >= 100)
+            if (iterforPri >= 50)
             {
-                throw new Exception("iter for DPPri > 20.");
+                return res_slab;
+                throw new Exception("iter for Pri > 50.");
             }
 
             #region //Result print out
