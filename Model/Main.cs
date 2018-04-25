@@ -871,7 +871,7 @@ namespace Model
 
             double mr = 9.99/60;
             //double Vel_a = 1.8; //m/s
-            double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+            double[,] Vel_distribution = { { 1 }, {2} };//distribution,do not must be real velocity!
             double Vel_ave = 2;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
             AirDistribution VaDistri = new AirDistribution();
             VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
@@ -895,10 +895,12 @@ namespace Model
                 {
                     ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
                     //ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve) * 1.5;
-                    ha[i, j] = AirHTC.alpha1(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve, geoInput_air, hexType).ha;
+                    //ha[i, j] = AirHTC.alpha1(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve, geoInput_air, hexType).ha;
                 }
             }
 
+            ha = AirHTC_CAL.alpha_cal(ha, VaDistri.Va, VaDistri.Va_ave, Vel_ave, za, curve, geoInput_air, hexType, N_tube, Nelement);
+     
             res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
 
             double eta_surface = 0.8284;
