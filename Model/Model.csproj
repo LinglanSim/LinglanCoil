@@ -70,6 +70,7 @@
     <Compile Include="BaroczyVoidFraction.cs">
       <DependentUpon>DataBase.tt</DependentUpon>
     </Compile>
+    <Compile Include="Basic\AirHTC_CAL.cs" />
     <Compile Include="Basic\AirHTC.cs" />
     <Compile Include="Basic\Brine.cs" />
     <Compile Include="Basic\CalcCirArr.cs" />
