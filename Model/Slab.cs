@@ -41,6 +41,7 @@ namespace Model
            // CirArrange = new int[,] { { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 } };
            // Nrow=2
            // Ncir=2
+            double[] Q1 = new double[50];
             double tri = te; //Refrigerant.SATP(fluid, composition, pri, 1).Temperature - 273.15;
             double pri = pe;
             int Nciri = CircuitInfo.number[0];
@@ -375,6 +376,13 @@ namespace Model
                     RH = airConverge.RH;
                     iterforAir++;
                 }
+                //Add Q converge criterion to avoid results oscillation, ruhao 20180426
+                for (int i = 0; i < Ncir; i++) Q1[iterforAir] += r[i].Q;
+                if (Q1[iterforAir] < Q1[iterforAir - 1] && Math.Abs(Q1[iterforAir] - Q1[iterforAir - 2]) / Q1[iterforAir] < 0.0001)
+                {
+                    airConverge.flag = true;
+                }
+
             } while (!airConverge.flag && iterforAir < 50);
             
             #endregion
