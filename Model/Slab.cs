@@ -377,12 +377,14 @@ namespace Model
                     iterforAir++;
                 }
                 //Add Q converge criterion to avoid results oscillation, ruhao 20180426
-                for (int i = 0; i < Ncir; i++) Q1[iterforAir] += r[i].Q;
-                if (Q1[iterforAir] < Q1[iterforAir - 1] && Math.Abs(Q1[iterforAir] - Q1[iterforAir - 2]) / Q1[iterforAir] < 0.0001)
+                if (Airdirection != "Parallel") //No airConverge iter for Parallel
                 {
-                    airConverge.flag = true;
+                    for (int i = 0; i < Ncir; i++) Q1[iterforAir] += r[i].Q;
+                    if ( Q1[iterforAir] < Q1[iterforAir - 1] && Math.Abs(Q1[iterforAir] - Q1[iterforAir - 2]) / Q1[iterforAir] < 0.0001)
+                    {
+                        airConverge.flag = true;
+                    }
                 }
-
             } while (!airConverge.flag && iterforAir < 50);
             
             #endregion
