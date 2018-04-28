@@ -7,7 +7,7 @@ using System.IO;
 namespace Test
 {
     [TestClass]
-    public class TestforPython
+    public class TestMultiRun
     {
         [TestMethod]
         public void TestMethod1()
