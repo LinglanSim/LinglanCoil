@@ -43,7 +43,7 @@ namespace Model
                 res_element.x_o = (res_element.hro - h_l) / (h_v - h_l);
                 alpha = 1; //set void fraction to 1 to identify a superheated state
                 //{Equations are for charge calculation}
-                double T_avg = (tri + res_element.Tro) / 2; //Average temperature of the element
+                double T_avg = (tri + res_element.Tro) / 2 < tsat - 273.15 + 0.1 ? tsat - 273.15 + 0.1 : (tri + res_element.Tro) / 2; //Average temperature of the element
                 double P_avg = (pri + res_element.Pro) / 2; //Average pressure of the element
                 double H_avg = CoolProp.PropsSI("H", "P", P_avg * 1000, "T", T_avg + 273.15, fluid);
 
