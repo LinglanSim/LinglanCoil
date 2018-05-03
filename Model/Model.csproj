@@ -102,6 +102,7 @@
     <Compile Include="CirArrangement.cs" />
     <Compile Include="Basic\AirDistribution.cs" />
     <Compile Include="Basic\DistributionConvert.cs" />
+    <Compile Include="Basic\CircuitIdentification.cs" />
     <Compile Include="Coolprop\AbstractState.cs" />
     <Compile Include="Coolprop\AbstractStateGenerator.cs" />
     <Compile Include="Coolprop\backends.cs" />

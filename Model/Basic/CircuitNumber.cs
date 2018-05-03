@@ -11,6 +11,7 @@ namespace Model.Basic
         public int[] number;
         public int[] TubeofCir;
         public int[] UnequalCir;
+        public CircuitType CirType;
 
         //public double[, ,] ta;
     }

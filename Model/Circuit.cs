@@ -152,7 +152,7 @@ namespace Model
             //    throw new Exception("iter for AirConverge > 100.");
             //}
             res_cir.mr = mr;
-            res_cir.Tao_Detail = taout_calc;
+            res_cir.Tao_Detail = ta;//taout_calc;
             res_cir.RHo_Detail = RH;
             //res_cir.Tao = res_cir.Tao / Nelement;
             res_cir.href = res_cir.href / TubeofCir[index];

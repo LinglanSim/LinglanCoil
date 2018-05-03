@@ -1145,6 +1145,12 @@ namespace Model
             CircuitInfo.number = new int[] { 4, 4 };
             CircuitInfo.TubeofCir = new int[] { 8, 8, 8, 8 };  //{ 4, 8 };
 
+            CirArr[] cirArr = new CirArr[Nrow * N_tube];
+            cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube).CirArr;
+            //CircuitType CirType = new CircuitType();
+            CircuitInfo.CirType = CircuitIdentification.CircuitIdentify(CircuitInfo.number, CircuitInfo.TubeofCir, cirArr);
+
+
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             double[] Q = new double[16];
