@@ -10,7 +10,7 @@ namespace Model
     public class TPElement
     {
         public static CalcResult ElementCalc(string fluid, double dh, double l, double Aa_fin, double Aa_tube, double A_r_cs, double Ar, double tai, 
-            double tri, double pri, double hri, double mr, double g, double ma, double ha,
+            double tri, double pri, double hri, double mr, double g, double ma, double ha,double haw,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity)
         {
             double r_metal = thickness / conductivity / Ar;
