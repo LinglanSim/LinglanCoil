@@ -181,6 +181,12 @@ namespace Model
             CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
             CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
 
+            CirArr[] cirArr = new CirArr[Nrow * N_tube];
+            cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube).CirArr;
+            //CircuitType CirType = new CircuitType();
+            CircuitInfo.CirType = CircuitIdentification.CircuitIdentify(CircuitInfo.number, CircuitInfo.TubeofCir, cirArr);
+
+
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
             geoInput_air.Pr = Pr;
