@@ -61,20 +61,22 @@ namespace Model
             res.Q = epsilon * C_min * (tai - tri) * Math.Pow(-1, hexType);
             if (C_r < C_a)
             { // hexType=0 :evap, 1:cond
-                //res.Tro = tri + epsilon * (tai - tri);//Math.Abs(tai - tri);
+                res.Tro = tri + epsilon * (tai - tri);//Math.Abs(tai - tri);
                 res.Tao = tai - C_r * ((res.Tro - tri) / C_a);//Math.Abs(res.Tro - tri)
             }
             else
             {
                 res.Tao = tai - epsilon * (tai - tri);//Math.Abs(tai - tri)
-                //res.Tro = tri + C_a * ((tai - res.Tao) / C_r);//(Math.Abs(tai - res.Tao) / C_r)
+                res.Tro = tri + C_a * ((tai - res.Tao) / C_r);//(Math.Abs(tai - res.Tao) / C_r)
             }
             double f_sp = RefrigerantSPDP.ff_Friction(Re_r);
             res.DP = zdp * f_sp * l / dh * Math.Pow(g, 2.0) / rho_r / 2000;
             res.Pro = fluid == "Water" ? pri : pri - res.DP;
             if (res.Pro < 0) { res.Pro = -10000000; return res; }
             res.hro = hri + Math.Pow(-1, hexType) * res.Q / mr;
-            res.Tro = CoolProp.PropsSI("T", "P", res.Pro * 1000, "H", res.hro * 1000, fluid) - 273.15;
+            //re-calc tro for refrigerant to avoid Tro < Tsat
+            if (fluid != "Water") res.Tro = CoolProp.PropsSI("T", "P", res.Pro * 1000, "H", res.hro * 1000, fluid) - 273.15;
+
             res.RHout = 1.1 * RHi;
             return res; 
 

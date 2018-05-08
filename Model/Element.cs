@@ -95,12 +95,11 @@ namespace Model
                 alpha = -1; //set void fraction to -100 to identify a subcooled state
                 //{Equations are for charge calculation}
                 double T_avg = (tri + res_element.Tro) / 2; //Average temperature of the element
-                double P_avg = (pri + res_element.Pro) / 2; //Average pressure of the element
+                double P_avg = (fluid == "Water" ? Pwater : (pri + res_element.Pro) / 2); //Average pressure of the element
                 double H_avg = CoolProp.PropsSI("H", "P", P_avg * 1000, "T", T_avg + 273.15, fluid);
                 double rho = CoolProp.PropsSI("D", "P", P_avg * 1000, "H", H_avg, fluid);
                 res_element.M = Vol_tubes * rho; //Mass calculated
             }
-
 
             return res_element;
         }
