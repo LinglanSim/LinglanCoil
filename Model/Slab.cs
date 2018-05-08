@@ -128,6 +128,7 @@ namespace Model
                 r = new CalcResult[Ncir];
                 r1 = new CalcResult[Ncir];
                 res_cir2 = new CalcResult[Nciro + 1];
+                res_type = new CalcResult[Nciri + 1];
 
                 flag_ciro = (index_outbig ? 1 : 0);
                 //tri = tri;
@@ -276,6 +277,8 @@ namespace Model
                                         r[i].DP_detail = new double[N_tube, Nrow];
                                         r[i].Tro_detail = new double[N_tube, Nrow];
                                         r[i].href_detail = new double[N_tube, Nrow];
+                                        r[i].Tao_Detail = new double[Nelement,N_tube, Nrow];
+                                        r[i].RHo_Detail = new double[Nelement, N_tube, Nrow];
                                         for (int m = 0; m < CircuitInfo.TubeofCir[i]; m++)
                                         {
                                             index_o = 0;
@@ -301,12 +304,15 @@ namespace Model
                                             r[i].href_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].href_detail[iTube_o, iRow];
                                             for (int p = 0; p < Nelement; p++)
                                             {
-                                                ta[p, iTube_n, iRow + 1] = res_type[CircuitInfo.CirType.type[i, 1]].Tao_Detail[p, iTube_o, iRow + 1];
-                                                RH[p, iTube_n, iRow + 1] = res_type[CircuitInfo.CirType.type[i, 1]].RHo_Detail[p, iTube_o, iRow + 1];
+                                                //ta[p, iTube_n, iRow + 1] = res_type[CircuitInfo.CirType.type[i, 1]].Tao_Detail[p, iTube_o, iRow + 1];
+                                                //RH[p, iTube_n, iRow + 1] = res_type[CircuitInfo.CirType.type[i, 1]].RHo_Detail[p, iTube_o, iRow + 1];
+                                                r[i].Tao_Detail[p,iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].Tao_Detail[p,iTube_o, iRow];
+                                                r[i].RHo_Detail[p, iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].RHo_Detail[p, iTube_o, iRow];
+
                                             }
                                         }
-                                        r[i].Tao_Detail = ta;
-                                        r[i].RHo_Detail = RH;
+                                        //r[i].Tao_Detail = ta;
+                                        //r[i].RHo_Detail = RH;
                                     }
                                     else
                                     {

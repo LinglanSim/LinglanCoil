@@ -49,6 +49,11 @@ namespace Model
             CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
             CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
 
+            CirArr[] cirArr = new CirArr[Nrow * N_tube];
+            cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube).CirArr;
+            CircuitInfo.CirType = CircuitIdentification.CircuitIdentify(CircuitInfo.number, CircuitInfo.TubeofCir, cirArr);
+
+
             //Circuit-Reverse module
             bool reverse = true; //*********************************false:origin, true:reverse******************************************
             CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
