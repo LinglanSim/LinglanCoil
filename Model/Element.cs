@@ -56,7 +56,7 @@ namespace Model
             // **********Twophase state**********"
             if (hri <= h_v && hri >= h_l && fluid != "Water")
             {
-                res_element = TPElement.ElementCalc(fluid, dh, l, Aa_fin, Aa_tube, A_r_cs, Ar, tai, tri, pri, hri, mr, g, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity);
+                res_element = TPElement.ElementCalc(fluid, dh, l, Aa_fin, Aa_tube, A_r_cs, Ar, tai, RHi,tri, pri, hri, mr, g, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity);
                 if (res_element.Pro < 0) return res_element;
                 //x=x_o  "outlet quality of the element" 
                 double x_avg = (res_element.x_i + res_element.x_o) / 2; //Average quality of the element
