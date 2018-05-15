@@ -11,6 +11,9 @@
             <MenuItem Header="文件" Click="MenuItem_Click_3">
                 <MenuItem Header="退出" Click="MenuItem_Click_4"  ></MenuItem>
             </MenuItem>
+            <MenuItem Header="仿真">
+                <MenuItem Header="运行" Click="MenuItem_Click_0"></MenuItem>
+            </MenuItem>
             <MenuItem Header="帮助">
                 <MenuItem Header="关于我们"></MenuItem>
             </MenuItem>
@@ -22,7 +25,7 @@
                 <Grid Background="#FFE5E5E5">
                     <TextBox HorizontalAlignment="Left"  Height="305" Margin="0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="562"/>
                     <TextBlock HorizontalAlignment="Left" Margin="65,74,0,0" TextWrapping="Wrap" Text="换热器类型" VerticalAlignment="Top" Height="27" Width="73"/>
-                    <ComboBox Name="ComboBox2" HorizontalAlignment="Left" Margin="200,70,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="ComboBox_SelectionChanged" Height="27"/>
+                    <ComboBox Name="ComboBox_hextype" HorizontalAlignment="Left" Margin="200,70,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="ComboBox_SelectionChanged" Height="27"/>
                 </Grid>
             </TabItem>
 
@@ -31,24 +34,24 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <TextBox HorizontalAlignment="Left"  Height="305" Margin="-28,0,-27,-37" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="562"/>
+                    <TextBox HorizontalAlignment="Left"  Height="305" Margin="-28,10,-27,-47" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="562"/>
                     <TextBlock  HorizontalAlignment="Left" Margin="34,67,0,0" TextWrapping="Wrap" Text="管间距" VerticalAlignment="Top" Height="15" Width="54"/>
                     <TextBlock  HorizontalAlignment="Left" Margin="34,106,0,0" TextWrapping="Wrap" Text="列间距" VerticalAlignment="Top" Height="15" Width="54"/>
-                    <TextBlock  HorizontalAlignment="Left" Margin="34,144,0,0" TextWrapping="Wrap" Text="管排" VerticalAlignment="Top" Height="16" Width="54"/>
+                    <TextBlock  Cursor="Hand" Background="Black" Foreground="Red" FontWeight="Bold" FontSize="14" FontStyle="Oblique" HorizontalAlignment="Left" Margin="34,144,0,0" TextWrapping="Wrap" Text="管排" VerticalAlignment="Top" Height="16" Width="54"/>
                     <TextBlock  HorizontalAlignment="Left" Margin="34,183,0,0" TextWrapping="Wrap" Text="管外径" VerticalAlignment="Top" Height="15" Width="54"/>
                     <TextBlock HorizontalAlignment="Left" Margin="269,70,0,0" TextWrapping="Wrap" Text="管/排" VerticalAlignment="Top" Height="15" Width="36"/>
-                    <TextBox Name="Pt" HorizontalAlignment="Left" Height="24" Margin="136,62,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="114"/>
-                    <TextBox Name="Pr" HorizontalAlignment="Left" Height="24" Margin="136,101,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="114"/>
-                    <TextBox Name="Row" HorizontalAlignment="Left" Height="24" Margin="136,138,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="114"/>
-                    <TextBox Name="Do" HorizontalAlignment="Left" Height="24" Margin="136,177,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="114"/>
-                    <TextBox HorizontalAlignment="Left" Height="24" Margin="371,65,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="114"/>
+                    <TextBox Name="Pt" HorizontalAlignment="Left" Height="24" Margin="136,62,0,0" TextWrapping="Wrap" Text="25.4" VerticalAlignment="Top" Width="114"/>
+                    <TextBox Name="Pr" HorizontalAlignment="Left" Height="24" Margin="136,101,0,0" TextWrapping="Wrap" Text="19.05" VerticalAlignment="Top" Width="114"/>
+                    <TextBox Name="Row" HorizontalAlignment="Left" Height="24" Margin="136,138,0,0" TextWrapping="Wrap" Text="2" VerticalAlignment="Top" Width="114"/>
+                    <TextBox Name="Do" HorizontalAlignment="Left" Height="24" Margin="136,177,0,0" TextWrapping="Wrap" Text="10.0584" VerticalAlignment="Top" Width="114"/>
+                    <TextBox Name="tube_per" HorizontalAlignment="Left" Height="24" Margin="371,65,0,0" TextWrapping="Wrap" Text="6" VerticalAlignment="Top" Width="114"/>
                     <ComboBox Name="ComboBox1" HorizontalAlignment="Center" Width="286" Margin="88,26,133,211" SelectionChanged="ComboBox_SelectionChanged_1"></ComboBox>
                     <TextBlock HorizontalAlignment="Left" Margin="269,109,0,0" TextWrapping="Wrap" Text="管壁厚" VerticalAlignment="Top" Height="15" Width="36"/>
-                    <TextBox HorizontalAlignment="Left" Height="24" Margin="371,104,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="114"/>
+                    <TextBox Name="thick_tube" HorizontalAlignment="Left" Height="24" Margin="371,104,0,0" TextWrapping="Wrap" Text="1.651" VerticalAlignment="Top" Width="114"/>
                     <TextBlock HorizontalAlignment="Left" Margin="269,147,0,0" TextWrapping="Wrap" Text="管长" VerticalAlignment="Top" Height="15" Width="36"/>
-                    <TextBox HorizontalAlignment="Left" Height="24" Margin="371,142,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="114"/>
+                    <TextBox Name="L" HorizontalAlignment="Left" Height="24" Margin="371,142,0,0" TextWrapping="Wrap" Text="914.4" VerticalAlignment="Top" Width="114"/>
                     <TextBlock HorizontalAlignment="Left" Margin="269,179,0,0" TextWrapping="Wrap" Text="管种类" VerticalAlignment="Top" Height="15" Width="36"/>
-                    <ComboBox Name="ComboBox4" HorizontalAlignment="Left" Margin="372,179,0,0" VerticalAlignment="Top" Width="112" SelectionChanged="ComboBox_SelectionChanged_3"/>
+                    <ComboBox Name="ComboBox_tubetype" HorizontalAlignment="Left" Margin="372,179,0,0" VerticalAlignment="Top" Width="112" SelectionChanged="ComboBox_SelectionChanged_3"/>
                 </Grid>
             </TabItem>
 
@@ -57,10 +60,10 @@
                     <TextBox HorizontalAlignment="Left"  Height="269" Margin="0,0,0,-1" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="506"/>
                     <TextBlock HorizontalAlignment="Left" Margin="51,31,0,0" TextWrapping="Wrap" Text="每英尺翅片数" VerticalAlignment="Top" Height="22" Width="108"/>
                     <TextBlock HorizontalAlignment="Left" Margin="51,66,0,0" TextWrapping="Wrap" Text="翅片厚度" VerticalAlignment="Top" Height="22" Width="72"/>
-                    <TextBox HorizontalAlignment="Left" Height="25" Margin="204,28,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="225"/>
-                    <TextBox HorizontalAlignment="Left" Height="25" Margin="204,62,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="225"/>
+                    <TextBox Name="Fnum" HorizontalAlignment="Left" Height="25" Margin="204,28,0,0" TextWrapping="Wrap" Text="15" VerticalAlignment="Top" Width="225"/>
+                    <TextBox Name="Fthick" HorizontalAlignment="Left" Height="25" Margin="204,62,0,0" TextWrapping="Wrap" Text="0.095" VerticalAlignment="Top" Width="225"/>
                     <TextBlock HorizontalAlignment="Left" Margin="51,109,0,0" TextWrapping="Wrap" Text="翅片种类" VerticalAlignment="Top" Height="22" Width="72"/>
-                    <ComboBox Name="ComboBox5" HorizontalAlignment="Left" Margin="225,108,0,0" VerticalAlignment="Top" Width="172" SelectionChanged="ComboBox5_SelectionChanged"/>
+                    <ComboBox Name="ComboBox_fintype" HorizontalAlignment="Left" Margin="243,109,0,0" VerticalAlignment="Top" Width="120"/>
                 </Grid>
             </TabItem>
 
@@ -69,20 +72,20 @@
                     <TextBox HorizontalAlignment="Left"  Height="305" Margin="0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="562"/>
                     <TextBlock HorizontalAlignment="Left" Margin="41,129,0,0" TextWrapping="Wrap" Text="流动形式" VerticalAlignment="Top" Width="59"/>
                     <TextBlock HorizontalAlignment="Left" Margin="41,71,0,0" TextWrapping="Wrap" Text="流路数" VerticalAlignment="Top" Width="59"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="145,68,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="186"/>
-                    <ComboBox Name="ComboBox6" HorizontalAlignment="Left" Margin="160,126,0,0" VerticalAlignment="Top" Width="155" SelectionChanged="ComboBox6_SelectionChanged"/>
+                    <TextBox Name="Cirnum" HorizontalAlignment="Left" Height="23" Margin="145,68,0,0" TextWrapping="Wrap" Text="2" VerticalAlignment="Top" Width="186"/>
+                    <ComboBox Name="ComboBox_flowtype" HorizontalAlignment="Left" Margin="168,123,0,0" VerticalAlignment="Top" Width="120"/>
                 </Grid>
             </TabItem>
 
             <TabItem Header="制冷剂">
                 <Grid Background="#FFE5E5E5">
                     <TextBlock HorizontalAlignment="Left" Margin="80,176,0,0" TextWrapping="Wrap" Text="进口温度" VerticalAlignment="Top" Width="61"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="80,89,0,0" TextWrapping="Wrap" Text="制冷剂流量" VerticalAlignment="Top" Width="76"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="80,131,0,0" TextWrapping="Wrap" Text="饱和温度" VerticalAlignment="Top" Width="61"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="80,52,0,0" TextWrapping="Wrap" Text="制冷剂" VerticalAlignment="Top" Width="46"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="202,86,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="152"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="202,128,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="152"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="202,174,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="152"/>
+                    <TextBlock  HorizontalAlignment="Left" Margin="80,89,0,0" TextWrapping="Wrap" Text="制冷剂流量" VerticalAlignment="Top" Width="76"/>
+                    <TextBlock  HorizontalAlignment="Left" Margin="80,131,0,0" TextWrapping="Wrap" Text="饱和温度" VerticalAlignment="Top" Width="61"/>
+                    <TextBlock  HorizontalAlignment="Left" Margin="80,52,0,0" TextWrapping="Wrap" Text="制冷剂" VerticalAlignment="Top" Width="46"/>
+                    <TextBox Name="mr" HorizontalAlignment="Left" Height="23" Margin="202,86,0,0" TextWrapping="Wrap" Text="0.01" VerticalAlignment="Top" Width="152"/>
+                    <TextBox Name="tc" HorizontalAlignment="Left" Height="23" Margin="202,128,0,0" TextWrapping="Wrap" Text="45" VerticalAlignment="Top" Width="152"/>
+                    <TextBox Name="tri" HorizontalAlignment="Left" Height="23" Margin="202,174,0,0" TextWrapping="Wrap" Text="78" VerticalAlignment="Top" Width="152"/>
                     <ComboBox Name="ComboBox3" HorizontalAlignment="Left" Margin="202,49,0,0" VerticalAlignment="Top" Width="152" SelectionChanged="ComboBox_SelectionChanged_2" RenderTransformOrigin="0.067,1.318"/>
                 </Grid>
             </TabItem>
@@ -90,37 +93,57 @@
             <TabItem Header="风">
                 <Grid Background="#FFE5E5E5">
                     <TextBox HorizontalAlignment="Left"  Height="305" Margin="10,-56,-10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="562"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="74,34,0,0" TextWrapping="Wrap" Text="进风温度" VerticalAlignment="Top" Width="59"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="74,76,0,0" TextWrapping="Wrap" Text="进风相对湿度" VerticalAlignment="Top" Width="88"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="74,121,0,0" TextWrapping="Wrap" Text="体积流量" VerticalAlignment="Top" Width="59"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="192,31,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="147"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="192,73,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="147"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="192,119,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="147"/>
+                    <TextBlock  HorizontalAlignment="Left" Margin="74,34,0,0" TextWrapping="Wrap" Text="进风温度" VerticalAlignment="Top" Width="59"/>
+                    <TextBlock  HorizontalAlignment="Left" Margin="74,76,0,0" TextWrapping="Wrap" Text="进风相对湿度" VerticalAlignment="Top" Width="88"/>
+                    <TextBlock  HorizontalAlignment="Left" Margin="74,121,0,0" TextWrapping="Wrap" Text="体积流量" VerticalAlignment="Top" Width="59"/>
+                    <TextBox Name="tai" HorizontalAlignment="Left" Height="23" Margin="192,31,0,0" TextWrapping="Wrap" Text="26.67" VerticalAlignment="Top" Width="147"/>
+                    <TextBox Name="RHi" HorizontalAlignment="Left" Height="23" Margin="192,73,0,0" TextWrapping="Wrap" Text="0.5" VerticalAlignment="Top" Width="147"/>
+                    <TextBox Name="Va" HorizontalAlignment="Left" Height="23" Margin="192,119,0,0" TextWrapping="Wrap" Text="100" VerticalAlignment="Top" Width="147"/>
                 </Grid>
             </TabItem>
 
             <TabItem Header="计算结果">
-                <Grid Background="#FFE5E5E5" Margin="0,-3,-8,-10">
-                    <TextBlock HorizontalAlignment="Left" Margin="24,25,0,0" TextWrapping="Wrap" Text="换热量" VerticalAlignment="Top"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="24,64,0,0" TextWrapping="Wrap" Text="压降" VerticalAlignment="Top"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="24,104,0,0" TextWrapping="Wrap" Text="制冷剂出口压力" VerticalAlignment="Top"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="24,141,0,0" TextWrapping="Wrap" Text="制冷剂出口焓" VerticalAlignment="Top"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="24,171,0,0" TextWrapping="Wrap" Text="制冷剂出口温度" VerticalAlignment="Top"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="24,198,0,0" TextWrapping="Wrap" Text="风侧出口温度" VerticalAlignment="Top"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="24,222,0,0" TextWrapping="Wrap" Text="风侧出口湿度" VerticalAlignment="Top"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="285,33,0,0" TextWrapping="Wrap" Text="风侧热阻" VerticalAlignment="Top" Width="69" Height="18"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="282,71,0,0" TextWrapping="Wrap" Text="制冷剂侧热阻" VerticalAlignment="Top"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="285,113,0,0" TextWrapping="Wrap" Text="风侧热阻占比" VerticalAlignment="Top"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="120,23,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="120,61,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="120,102,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="120,139,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="120,170,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="120,196,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="120,222,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="362,26,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="363,69,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="362,110,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+                <Grid Background="#FFE5E5E5" Margin="1,-4,-9,-9" Height="281" VerticalAlignment="Bottom">
+                    <Line X1="130" Y1="0" X2="130" Y2="300" Stroke="Orange" StrokeThickness="5" ></Line>
+                    <Line X1="260" Y1="0" X2="260" Y2="300" Stroke="Orange" StrokeThickness="5"></Line>
+                    <Line X1="390" Y1="0" X2="390" Y2="300" Stroke="Orange" StrokeThickness="5"></Line>
+
+                    <!--综合仿真结果-->
+                    <TextBlock Text="综合仿真结果" TextAlignment="Center" Background="AntiqueWhite" HorizontalAlignment="Left" VerticalAlignment="Top" Width="127" Height="22"/>
+                    <TextBlock Text="换热量" HorizontalAlignment="Left" Margin="15,37,0,0"  VerticalAlignment="Top" Height="16" Width="36"/>
+                    <TextBlock Text="制冷剂压降" HorizontalAlignment="Left" Margin="3,71,0,0" VerticalAlignment="Top" Height="16" Width="60"/>
+                    <TextBlock Text="风侧压降" HorizontalAlignment="Left" Margin="8,113,0,0" VerticalAlignment="Top" Height="16" Width="55"/>
+                    <TextBlock Text="空气换热系数" HorizontalAlignment="Left" Margin="6,145,0,0" VerticalAlignment="Top" Width="80" Height="18"/>
+                    <TextBlock Text="制冷剂换热系数" HorizontalAlignment="Left" Margin="3,183,0,0" VerticalAlignment="Top" Height="16" Width="72"/>
+                    <TextBlock Text="风侧热阻占比" HorizontalAlignment="Left" Margin="6,225,0,0" VerticalAlignment="Top" Height="16" Width="72"/>
+                    <TextBlock Name="Q" Text="" Background="AliceBlue" HorizontalAlignment="Left" Margin="64,37,0,0"  VerticalAlignment="Top" Height="23" Width="48"/>
+                    <TextBlock Name="DP_ref" Text=""  Background="AliceBlue" HorizontalAlignment="Left" Margin="74,68,0,0" VerticalAlignment="Top" Height="23" Width="45"/>
+                    <TextBlock Name="DP_air" Text=""  Background="AliceBlue" HorizontalAlignment="Left" Margin="74,109,0,0" VerticalAlignment="Top" Height="23" Width="45"/>
+                    <TextBlock Name="R_1a" Text="" Background="AliceBlue" HorizontalAlignment="Left"  Margin="83,138,0,0" VerticalAlignment="Top" Height="23" Width="36"/>
+                    <TextBlock Name="R_1r" Text="" Background="AliceBlue" HorizontalAlignment="Left" Margin="84,181,0,0" VerticalAlignment="Top" Height="23" Width="35"/>
+                    <TextBlock Name="Ra_ratio" Text="" Background="AliceBlue" HorizontalAlignment="Left" Margin="83,222,0,0" VerticalAlignment="Top" Height="23" Width="36"/>
+
+                    <!--制冷剂-->
+                    <TextBlock Text="制冷剂" TextAlignment="Center" Background="AntiqueWhite" VerticalAlignment="Top" Width="124" Height="22" Margin="133,0,258,0"/>
+                    <TextBlock Text="出口压力" HorizontalAlignment="Left" Margin="140,81,0,0" VerticalAlignment="Top" Height="16" Width="50"/>
+                    <TextBlock Text="出口焓" HorizontalAlignment="Left" Margin="140,118,0,0" VerticalAlignment="Top" Height="16" Width="50"/>
+                    <TextBlock Text="出口温度" HorizontalAlignment="Left" Margin="140,148,0,0" VerticalAlignment="Top" Height="16" Width="50"/>
+                    <TextBlock Text="流量" HorizontalAlignment="Left" Margin="140,185,0,0" VerticalAlignment="Top" Height="16" Width="50"/>
+                    <TextBlock Name="Pro" Text=""  Background="AliceBlue" HorizontalAlignment="Left" Margin="204,79,0,0" VerticalAlignment="Top" Height="23" Width="46"/>
+                    <TextBlock Name="hro" Text=""  Background="AliceBlue" HorizontalAlignment="Left" Margin="204,116,0,0" VerticalAlignment="Top" Height="23" Width="46"/>
+                    <TextBlock Name="Tro" Text=""  Background="AliceBlue" HorizontalAlignment="Left" Margin="204,147,0,0" VerticalAlignment="Top" Height="23" Width="46"/>
+                    <TextBlock Name="mro" Text=""  Background="AliceBlue" HorizontalAlignment="Left" Margin="204,182,0,0" VerticalAlignment="Top" Height="23" Width="46"/>
+
+                    <!--风-->
+                    <TextBlock Text="风" TextAlignment="Center" Background="AntiqueWhite" VerticalAlignment="Top" Width="124" Height="22" Margin="263,0,128,0"/>
+                    <TextBlock Text="出口温度" HorizontalAlignment="Left" Margin="269,73,0,0" VerticalAlignment="Top" Height="16" Width="50"/>
+                    <TextBlock Text="出口湿度" HorizontalAlignment="Left" Margin="269,111,0,0" VerticalAlignment="Top" Height="16" Width="50"/>
+                    <TextBlock Text="风量" HorizontalAlignment="Left" Margin="269,152,0,0" VerticalAlignment="Top" Height="16" Width="50"/>
+                    <TextBlock Name="Tao" Text=""  Background="AliceBlue" HorizontalAlignment="Left" Margin="322,68,0,0" VerticalAlignment="Top" Height="23" Width="56"/>
+                    <TextBlock Name="RHout" Text=""  Background="AliceBlue" HorizontalAlignment="Left" Margin="322,107,0,0" VerticalAlignment="Top" Height="23" Width="56"/>
+                    <TextBlock Name="mao" Text=""  Background="AliceBlue" HorizontalAlignment="Left" Margin="322,148,0,0" VerticalAlignment="Top" Height="23" Width="56"/>
+
+
                 </Grid>
             </TabItem>
 
