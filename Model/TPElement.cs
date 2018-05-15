@@ -167,7 +167,7 @@ namespace Model
                             Q_dry=ma*cp_a*(tai-T_ac);
                         }
 
-                        double c_s=(CoolProp.HAPropsSI("H","T",tri+273.15+0.01,"P",101325,"R",1.0)-CoolProp.HAPropsSI("H","T",tri+273.15-0.01,"P",101325,"R",1.0))/2;
+                        double c_s=(CoolProp.HAPropsSI("H","T",tri+273.15+0.01,"P",101325,"R",1.0)-CoolProp.HAPropsSI("H","T",tri+273.15-0.01,"P",101325,"R",1.0))/0.02;
                         m = Math.Pow((2 * haw / 237 / Fthickness), 0.5);
                         fai = (rf_r - 1) * (1 + (0.3 + Math.Pow((m * r_eta * (rf_r - r_eta) / 2.5), (1.5 - 1 / 12 * rf_r)) * (0.26 * Math.Pow(rf_r, 0.3) - 0.3)) * Math.Log(rf_r));
                         double eta_wet = Math.Tanh(m * r_eta * fai) / m / r_eta / fai * Math.Cos(0.1 * m * r_eta * fai);
@@ -177,7 +177,7 @@ namespace Model
                         double UA_wet=1/(c_s/UA_i+cp_a/UA_o);
                         double Ntu_wet=UA_wet/ma;
                         double epsilon_wet=1-Math.Exp(-(1-f_dry)*Ntu_wet);
-                        double h_s_s_o=CoolProp.HAPropsSI("H","T",tri, "P",101325,"R", 1.0);          
+                        double h_s_s_o=CoolProp.HAPropsSI("H","T",tri+273.15, "P",101325,"R", 1.0);          
                         double Q_wet=epsilon_wet*ma*(h_ac-h_s_s_o);
                         Q=Q_wet+Q_dry;
                         double hao=h_ac-Q_wet/ma;

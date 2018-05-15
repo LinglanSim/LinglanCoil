@@ -496,7 +496,7 @@ namespace Model
             res.Tro = Tout_r;
             res.Q = Q / 1000;
             res.RHout = CoolProp.HAPropsSI("R", "T", Tout_a + 273.15, "P", 101325, "H", hin_a + Math.Pow(-1, hexType + 1) * Q / ma);
-            res.hro = (hri + Math.Pow(-1, hexType) * res.Q / mr);
+            //res.hro = (hri + Math.Pow(-1, hexType) * res.Q / mr);
             double f_sp = RefrigerantSPDP.ff_Friction(Re_r);
             res.DP = zdp * f_sp * l / dh * Math.Pow(g, 2.0) / rho_r / 2000;
             res.Pro = fluid == "Water" ? pri : pri - res.DP;
