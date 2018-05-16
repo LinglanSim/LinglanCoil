@@ -107,11 +107,13 @@ namespace Model
                 for (int j = 0; j < Nelement; j++)
                 {
                     ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
-                    ha[i, j] = airInput.ha;// AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve) * 1.5;
+                    //ha[i, j] = airInput.ha;// AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve) * 1.5;
                     //ha[i, j] = 79;
                     //ha[i, j] = AirHTC.alpha1(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve, geoInput_air, hexType).ha;
                 }
             }
+            ha = AirHTC_CAL.alpha_cal(ha, VaDistri.Va, VaDistri.Va_ave, Vel_ave, za, curve, geoInput_air, hexType, N_tube, Nelement);
+
             double[,] haw = ha;
 
             res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
@@ -239,11 +241,12 @@ namespace Model
                 for (int j = 0; j < Nelement; j++)
                 {
                     ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
-                    ha[i, j] = airInput.ha;// AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve);// *1.5;
+                    //ha[i, j] = airInput.ha;// AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve);// *1.5;
                     //ha[i, j] = 79;
                     //ha[i, j] = AirHTC.alpha1(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve, geoInput_air, hexType).ha;
                 }
             }
+            ha = AirHTC_CAL.alpha_cal(ha, VaDistri.Va, VaDistri.Va_ave, Vel_ave, za, curve, geoInput_air, hexType, N_tube, Nelement);
             double[,] haw = ha;
 
             res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
