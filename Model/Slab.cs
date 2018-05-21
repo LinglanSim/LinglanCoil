@@ -55,6 +55,7 @@ namespace Model
             int iTube_n = 0;
             int index_o = 0;
             int index_n = 0;
+            double te_calc_org = 0;
             CirArr[] cirArr = new CirArr[Nrow * N_tube];
             CirArrforAir cirArrforAir = new CirArrforAir();
             cirArrforAir = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube);
@@ -500,9 +501,10 @@ namespace Model
                 priconverge.flag = false;
             else if (hexType == 0 && (fluid != "Water"))
             {
-                priconverge = CheckPin.CheckPriConverge(te, te_calc - 273.15, pri, pe, r[Ncir - 1].Pro); //res_slab.Pro
+                priconverge = CheckPin.CheckPriConverge(te, te_calc - 273.15, te_calc_org - 273.15, pri, pe, r[Ncir - 1].Pro); //res_slab.Pro
                 iterforPri++;
                 pri = priconverge.pri;
+                te_calc_org = te_calc;
                 if (priconverge.flag && iterforPri == 1 && iterforDP == 1)
                     priconverge.flag = false; //to avoid not even iterate but converge by chance 
             }
