@@ -228,11 +228,11 @@ namespace Model
                                 //均匀流路计算和不均匀流路开始部分（独立管）计算
                                 if (index == 0)
                                 {
-                                    if (Nciri == Nciro)
+                                    if (Nciri == Nciro && iterforPri == 0)
                                     {
                                         mr_ciro.CopyTo(mr_ciri, 0);
                                     }
-                                    else
+                                    else if (Nciri != Nciro)
                                     {
                                         if (restartDP_index == 1 || !priconverge.flag)
                                         {
