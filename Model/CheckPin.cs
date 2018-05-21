@@ -13,7 +13,7 @@ namespace Model
         {
             CheckPri res = new CheckPri();
             bool flag = false;//means not converge
-            double err = 0.01;
+            double err = 0.02; //to be updated, need to be 0.02 if err for dp is 0.02...
 
             if (Math.Abs(te_calc - te) <= err)
                 flag = true;
