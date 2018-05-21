@@ -12,5 +12,7 @@ namespace Model.Basic
         public double tai;
         public double RHi;
         public double ha;
+        public double za;
+        public double zdpa;
     }
 }

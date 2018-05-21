@@ -112,15 +112,15 @@ namespace Model
                     //ha[i, j] = AirHTC.alpha1(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve, geoInput_air, hexType).ha;
                 }
             }
-            ha = AirHTC_CAL.alpha_cal(ha, VaDistri.Va, VaDistri.Va_ave, Vel_ave, za, curve, geoInput_air, hexType, N_tube, Nelement);
+            ha = AirHTC_CAL.alpha_cal(ha, VaDistri.Va, VaDistri.Va_ave, Vel_ave, airInput.za, curve, geoInput_air, hexType, N_tube, Nelement);
 
             double[,] haw = ha;
 
-            res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
+            res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a * airInput.zdpa;
 
             double eta_surface = 1;
-            double zh = 3;
-            double zdp = 3;
+            double zh = refInput.zh;
+            double zdp = refInput.zdp;
             double pe = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid) / 1000;
             //double P_exv = 1842.28;//kpa
             //double T_exv = 20;//C
@@ -144,7 +144,7 @@ namespace Model
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, te, pe, hri,
-                mr, ma, ha, haw,eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
 
             return res;
         }
@@ -246,14 +246,14 @@ namespace Model
                     //ha[i, j] = AirHTC.alpha1(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve, geoInput_air, hexType).ha;
                 }
             }
-            ha = AirHTC_CAL.alpha_cal(ha, VaDistri.Va, VaDistri.Va_ave, Vel_ave, za, curve, geoInput_air, hexType, N_tube, Nelement);
+            ha = AirHTC_CAL.alpha_cal(ha, VaDistri.Va, VaDistri.Va_ave, Vel_ave, airInput.za, curve, geoInput_air, hexType, N_tube, Nelement);
             double[,] haw = ha;
 
-            res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
+            res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a * airInput.zdpa;
 
             double eta_surface = 1;
-            double zh = 3;
-            double zdp = 3;
+            double zh = refInput.zh;
+            double zdp = refInput.zdp;
             double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
             double conductivity = 386; 
             double Pwater = 100.0;

@@ -16,5 +16,7 @@ namespace Model.Basic
         public double P_exv;
         public double T_exv;
         public double H_exv;
+        public double zh;
+        public double zdp;
     }
 }
