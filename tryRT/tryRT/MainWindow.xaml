@@ -39,13 +39,13 @@
                     <TextBlock Text="管壁厚" HorizontalAlignment="Left" Margin="269,109,0,0" VerticalAlignment="Top" Height="15" Width="36"/>
                     <TextBlock Text="管长" HorizontalAlignment="Left" Margin="269,147,0,0" VerticalAlignment="Top" Height="15" Width="36"/>
                     <TextBlock Text="管种类" HorizontalAlignment="Left" Margin="269,179,0,0" VerticalAlignment="Top" Height="15" Width="36"/>
-                    <TextBlock Name="Pt" Text="25.4" Background="AliceBlue" HorizontalAlignment="Left" Margin="136,62,0,0" VerticalAlignment="Top" Height="24" Width="114"/>
-                    <TextBlock Name="Pr" Text="19.05" Background="AliceBlue" HorizontalAlignment="Left" Margin="136,101,0,0"  VerticalAlignment="Top" Height="24" Width="114"/>
-                    <TextBlock Name="Row" Text="2" Background="AliceBlue" HorizontalAlignment="Left" Margin="136,138,0,0"  VerticalAlignment="Top" Height="24" Width="114"/>
-                    <TextBlock Name="Do" Text="10.0584" Background="AliceBlue" HorizontalAlignment="Left" Margin="136,177,0,0"  VerticalAlignment="Top" Height="24" Width="114"/>
-                    <TextBlock Name="tube_per" Text="6" Background="AliceBlue" HorizontalAlignment="Left" Margin="371,65,0,0"  VerticalAlignment="Top" Height="24" Width="114"/>
-                    <TextBlock Name="thick_tube" Text="1.651" Background="AliceBlue" HorizontalAlignment="Left" Margin="371,104,0,0" VerticalAlignment="Top" Height="24" Width="114"/>
-                    <TextBlock Name="L" Text="914.4" Background="AliceBlue" HorizontalAlignment="Left" Margin="371,142,0,0" VerticalAlignment="Top" Height="24" Width="114"/>
+                    <TextBox Name="Pt" Text="25.4" IsEnabled="False" HorizontalAlignment="Left" Margin="136,62,0,0" VerticalAlignment="Top" Height="24" Width="114"/>
+                    <TextBox Name="Pr" Text="19.05" IsEnabled="False" HorizontalAlignment="Left" Margin="136,101,0,0"  VerticalAlignment="Top" Height="24" Width="114"/>
+                    <TextBox Name="Row" Text="2" IsEnabled="False" HorizontalAlignment="Left" Margin="136,138,0,0"  VerticalAlignment="Top" Height="24" Width="114"/>
+                    <TextBox Name="Do" Text="10.0584" IsEnabled="False" HorizontalAlignment="Left" Margin="136,177,0,0"  VerticalAlignment="Top" Height="24" Width="114"/>
+                    <TextBox Name="tube_per" Text="6" HorizontalAlignment="Left" Margin="371,65,0,0"  VerticalAlignment="Top" Height="24" Width="114"/>
+                    <TextBox Name="thick_tube" Text="1.651" HorizontalAlignment="Left" Margin="371,104,0,0" VerticalAlignment="Top" Height="24" Width="114"/>
+                    <TextBox Name="L" Text="914.4" HorizontalAlignment="Left" Margin="371,142,0,0" VerticalAlignment="Top" Height="24" Width="114"/>
                     <ComboBox Name="ComboBox_tubetype" HorizontalAlignment="Left" Margin="372,179,0,0" VerticalAlignment="Top" Width="112" SelectionChanged="ComboBox_SelectionChanged_3"/>
                 </Grid>
             </TabItem>
