@@ -140,9 +140,6 @@
                   
                     <Button x:Name="sgr" Content="单排换热量" Click="sgr_Click" HorizontalAlignment="Left" Margin="423,60,0,0" VerticalAlignment="Top" Width="75"/>
 
-                    <!--显示内容-->
-                    <Frame  x:Name="mainFrame" Source="/Index.xaml"  NavigationUIVisibility="Hidden"/>
-
                 </Grid>
             </TabItem>
 

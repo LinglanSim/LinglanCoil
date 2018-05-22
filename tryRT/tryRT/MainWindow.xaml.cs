@@ -204,7 +204,7 @@ namespace tryRT
             int aaaa = 4;
             //Show("计算结果");
 
-            //this.TabControl1.SelectedItem = this.TabControl1.Items[6];
+            this.TabControl1.SelectedItem = this.TabControl1.Items[6];
 
         }
 
