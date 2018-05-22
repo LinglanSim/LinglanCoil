@@ -20,6 +20,15 @@ namespace tryRT
     /// </summary>
     public partial class MainWindow : Window
     {
+        //public int aq { get; set; }//①定义一个可读可写的公用的整型：getName
+
+        private Object _parameter = null;
+        public Object frmPara
+        {
+            get { return _parameter; }
+            set { _parameter = value; }
+        }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -191,6 +200,12 @@ namespace tryRT
             R_1a.Text = Convert.ToString(Convert.ToSingle(r.R_1a));
             R_1r.Text = Convert.ToString(Convert.ToSingle(r.R_1r));
             Ra_ratio.Text = Convert.ToString(Convert.ToSingle(r.Ra_ratio));
+            _parameter = r.N_row;
+            int aaaa = 4;
+            //Show("计算结果");
+
+            //this.TabControl1.SelectedItem = this.TabControl1.Items[6];
+
         }
 
         private void MenuItem_Click_3(object sender, RoutedEventArgs e)
@@ -236,6 +251,19 @@ namespace tryRT
         {
             //string aa = ComboBox6.SelectedItem.ToString();
             //return aa;
+        }
+
+        private void sgr_Click(object sender, RoutedEventArgs e)
+        {
+            GUI.Window1 a = new GUI.Window1();
+            //double aaa = Convert.ToDouble(Q.Text);
+            int aaa = Convert.ToInt16(_parameter);
+            a.getName = Convert.ToInt16(_parameter);
+            a.Show();
+
+            int aa = 5;
+
+
         }
 
     }

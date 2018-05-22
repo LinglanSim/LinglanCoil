@@ -43,6 +43,8 @@ namespace Model.Basic
         public double Ar = 0;
         public double AHx = 0;
 
+        public int N_row = 0;
+
         public CalcResult ShallowCopy()
         {
             return (CalcResult)this.MemberwiseClone();
