@@ -1,13 +1,22 @@
 ﻿<Window x:Class="GUI.Window1"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Window1" Height="300" Width="345" Loaded="LoadData">
+        Title="Window1" Height="300" Width="655" Loaded="LoadData">
     <Grid>
-        <DataGrid x:Name="dataGrid" HorizontalAlignment="Left" VerticalAlignment="Top" Height="270" Width="335" AutoGenerateColumns="False">
-        <DataGrid.Columns>
-            <DataGridTextColumn Header="管排" Binding="{Binding row}" Width="170" />
-                <DataGridTextColumn Header="换热量" Binding="{Binding heat}" Width="170" />
-            </DataGrid.Columns>
+        <DataGrid x:Name="dataGrid" HorizontalAlignment="Left" VerticalAlignment="Top" Height="270" Width="637" AutoGenerateColumns="False">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="换热管" Binding="{Binding tube}" Width="70" />
+            <DataGridTextColumn Header="控制单元" Binding="{Binding element}" Width="70" />
+            <DataGridTextColumn Header="进口压力" Binding="{Binding Pri}" Width="70" />
+            <DataGridTextColumn Header="进口温度" Binding="{Binding Tri}" Width="70" />
+            <DataGridTextColumn Header="进口焓值" Binding="{Binding Hri}" Width="70" />
+            <DataGridTextColumn Header="出口压力" Binding="{Binding Pro}" Width="70" />
+            <DataGridTextColumn Header="出口温度" Binding="{Binding Tro}" Width="70" />
+            <DataGridTextColumn Header="出口焓值" Binding="{Binding Hro}" Width="70" />
+            <DataGridTextColumn Header="换热系数" Binding="{Binding HTC}" Width="70" />
+            <DataGridTextColumn Header="换热量" Binding="{Binding Q}" Width="70" />
+             <DataGridTextColumn Header="制冷剂流量" Binding="{Binding mr}" Width="70" />
+          </DataGrid.Columns>
         </DataGrid>
     </Grid>
 </Window>

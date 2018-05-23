@@ -10,6 +10,7 @@ namespace Model.Basic
     {
         public double Tro = 0;
         public double Pro = 0;
+        public double[, ,] Pro_Detail; 
         public double hro = 0;
         public double Tao = 0; //= new double[1];
         //improve calc speed, ruhao, 20180309

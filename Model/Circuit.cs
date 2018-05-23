@@ -27,6 +27,7 @@ namespace Model
             double[] tai = new double[Nelement];
             double[] RHi = new double[Nelement];
             double[, ,] taout_calc = new double[Nelement, N_tube, Nrow];
+            //double[, ,] Pro_calc = new double[Nelement, N_tube, Nrow];//
             double[, ,] RHout_calc = new double[Nelement, N_tube, Nrow];
             double[,] Q_detail = new double[N_tube,Nrow];//detail output
             double[,] DP_detail = new double[N_tube, Nrow];
@@ -107,6 +108,7 @@ namespace Model
                         for(int j=0;j<Nelement;j++)
                         {
                             taout_calc[j, iTube, iRow] =r[i].Tao_Detail[0, 0, j];
+                            //Pro_calc[j, iTube, iRow] = r[i].Pro_Detail[0, 0, j];//
                             RHout_calc[j, iTube, iRow] = r[i].RHout;
                         }
                     }
@@ -153,6 +155,7 @@ namespace Model
             //}
             res_cir.mr = mr;
             res_cir.Tao_Detail = taout_calc;
+            //res_cir.Pro_Detail = Pro_calc;//
             res_cir.RHo_Detail = RH;
             //res_cir.Tao = res_cir.Tao / Nelement;
             res_cir.href = res_cir.href / TubeofCir[index];

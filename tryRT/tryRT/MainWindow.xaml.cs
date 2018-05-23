@@ -20,13 +20,82 @@ namespace tryRT
     /// </summary>
     public partial class MainWindow : Window
     {
-        //public int aq { get; set; }//①定义一个可读可写的公用的整型：getName
-
-        private Object _parameter = null;
-        public Object frmPara
+        //输出到window1的定义
+        private Object tube;
+        public Object frmPara0
         {
-            get { return _parameter; }
-            set { _parameter = value; }
+            get { return tube; }
+            set { tube = value; }
+        }
+
+        private Object element;
+        public Object frmPara1
+        {
+            get { return element; }
+            set { element = value; }
+        }
+
+        private Object Pri1;
+        public Object frmPara2
+        {
+            get { return Pri1; }
+            set { Pri1 = value; }
+        }
+
+        private Object Tri1;
+        public Object frmPara3
+        {
+            get { return Tri1; }
+            set { Tri1 = value; }
+        }
+
+        private Object Hri1;
+        public Object frmPara4
+        {
+            get { return Hri1; }
+            set { Hri1 = value; }
+        }
+
+        private Object Pro1;
+        public Object frmPara5
+        {
+            get { return Pro1; }
+            set { Pro1 = value; }
+        }
+
+        private Object Tro1;
+        public Object frmPara6
+        {
+            get { return Tro1; }
+            set { Tro1 = value; }
+        }
+
+        private Object Hro1;
+        public Object frmPara7
+        {
+            get { return Hro1; }
+            set { Hro1 = value; }
+        }
+
+        private Object HTC1;
+        public Object frmPara8
+        {
+            get { return HTC1; }
+            set { HTC1 = value; }
+        }
+
+        private Object Q1;
+        public Object frmPara9
+        {
+            get { return Q1; }
+            set { Q1 = value; }
+        }
+
+        private Object mr1;
+        public Object frmPara10
+        {
+            get { return mr1; }
+            set { mr1 = value; }
         }
 
         public MainWindow()
@@ -202,12 +271,20 @@ namespace tryRT
             R_1a.Text = Convert.ToString(Convert.ToSingle(r.R_1a));
             R_1r.Text = Convert.ToString(Convert.ToSingle(r.R_1r));
             Ra_ratio.Text = Convert.ToString(Convert.ToSingle(r.Ra_ratio));
-            _parameter = r.N_row;
-            int aaaa = 4;
-            //Show("计算结果");
+            //输出到window1
+            tube = r.Q_detail;
+            element = 0;
+            Pri1 = 0;
+            Tri1 = 0;
+            Hri1 = 0;
+            Pro1 = 0;
+            Tro1 = 0;
+            Hro1 = 0;
+            HTC1 = 0;
+            Q1 = r.Q_detail;
+            mr1 = 0;
 
             this.TabControl1.SelectedItem = this.TabControl1.Items[6];
-
         }
 
         private void MenuItem_Click_3(object sender, RoutedEventArgs e)
@@ -268,14 +345,19 @@ namespace tryRT
         private void sgr_Click(object sender, RoutedEventArgs e)
         {
             GUI.Window1 a = new GUI.Window1();
-            //double aaa = Convert.ToDouble(Q.Text);
-            int aaa = Convert.ToInt16(_parameter);
-            a.getName = Convert.ToInt16(_parameter);
+            //a.getName[0]= Convert.ToString(tube);
+            //a.getName[1] = Convert.ToString(element);
+            //a.getName_Pri = Convert.ToString(Pri1);
+            //a.getName = Convert.ToString(Tri1);
+            //a.getName[4] = Convert.ToString(Hri1);
+            //a.getName[5] = Convert.ToString(Pro1);
+            //a.getName[6] = Convert.ToString(Tro1);
+            //a.getName[7] = Convert.ToString(Hro1);
+            //a.getName[8] = Convert.ToString(HTC1);
+            //a.getName[9] = Convert.ToString(Q1);
+            //a.getName[10] = Convert.ToString(mr1);
+
             a.Show();
-
-            int aa = 5;
-
-
         }
 
     }
