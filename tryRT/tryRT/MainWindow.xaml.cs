@@ -12,13 +12,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Office.Interop.Excel; 
 
 namespace tryRT
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : System.Windows.Window
     {
         //输出到window1的定义
         private Object tube;
@@ -27,75 +28,89 @@ namespace tryRT
             get { return tube; }
             set { tube = value; }
         }
-
-        private Object element;
+  
+        private Object Q_inter;
         public Object frmPara1
         {
-            get { return element; }
-            set { element = value; }
+            get { return Q_inter; }
+            set { Q_inter = value; }
         }
 
-        private Object Pri1;
+        private Object DP_inter;
         public Object frmPara2
         {
-            get { return Pri1; }
-            set { Pri1 = value; }
+            get { return DP_inter; }
+            set { DP_inter = value; }
         }
 
-        private Object Tri1;
+        private Object ha_inter;
         public Object frmPara3
         {
-            get { return Tri1; }
-            set { Tri1 = value; }
+            get { return ha_inter; }
+            set { ha_inter = value; }
         }
 
-        private Object Hri1;
+        private Object href_inter;
         public Object frmPara4
         {
-            get { return Hri1; }
-            set { Hri1 = value; }
+            get { return href_inter; }
+            set { href_inter = value; }
         }
 
-        private Object Pro1;
+        private Object Ra_ratio_inter;
         public Object frmPara5
         {
-            get { return Pro1; }
-            set { Pro1 = value; }
+            get { return Ra_ratio_inter; }
+            set { Ra_ratio_inter = value; }
         }
 
-        private Object Tro1;
+        private Object Pro_inter;
         public Object frmPara6
         {
-            get { return Tro1; }
-            set { Tro1 = value; }
+            get { return Pro_inter; }
+            set { Pro_inter = value; }
         }
 
-        private Object Hro1;
+        private Object hro_inter;
         public Object frmPara7
         {
-            get { return Hro1; }
-            set { Hro1 = value; }
+            get { return hro_inter; }
+            set { hro_inter = value; }
         }
 
-        private Object HTC1;
+        private Object Tro_inter;
         public Object frmPara8
         {
-            get { return HTC1; }
-            set { HTC1 = value; }
+            get { return Tro_inter; }
+            set { Tro_inter = value; }
         }
 
-        private Object Q1;
+        private Object mr_inter;
         public Object frmPara9
         {
-            get { return Q1; }
-            set { Q1 = value; }
+            get { return mr_inter; }
+            set { mr_inter = value; }
         }
 
-        private Object mr1;
+        private Object Tao_inter;
         public Object frmPara10
         {
-            get { return mr1; }
-            set { mr1 = value; }
+            get { return Tao_inter; }
+            set { Tao_inter = value; }
+        }
+
+        private Object RHout_inter;
+        public Object frmPara11
+        {
+            get { return RHout_inter; }
+            set { RHout_inter = value; }
+        }
+
+        private Object ma_inter;
+        public Object frmPara12
+        {
+            get { return ma_inter; }
+            set { ma_inter = value; }
         }
 
         public MainWindow()
@@ -273,16 +288,18 @@ namespace tryRT
             Ra_ratio.Text = Convert.ToString(Convert.ToSingle(r.Ra_ratio));
             //输出到window1
             tube = r.Q_detail;
-            element = 0;
-            Pri1 = 0;
-            Tri1 = 0;
-            Hri1 = 0;
-            Pro1 = 0;
-            Tro1 = 0;
-            Hro1 = 0;
-            HTC1 = 0;
-            Q1 = r.Q_detail;
-            mr1 = 0;
+            Q_inter = r.Q;
+            DP_inter = r.DP;
+            ha_inter = r.ha;
+            href_inter = r.href;
+            Ra_ratio_inter = r.Ra_ratio;
+            Pro_inter = r.Pro;
+            hro_inter = r.hro;
+            Tro_inter = r.Tro;
+            mr_inter = r.mr;
+            Tao_inter = r.Tao;
+            RHout_inter = r.RHout;
+            ma_inter = r.ma;
 
             this.TabControl1.SelectedItem = this.TabControl1.Items[6];
         }
@@ -358,6 +375,119 @@ namespace tryRT
             //a.getName[10] = Convert.ToString(mr1);
 
             a.Show();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            //首先模拟建立将要导出的数据，这些数据都存于DataTable中
+
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("参数", typeof(string));
+            dt.Columns.Add("数值", typeof(string));
+            dt.Columns.Add("单位", typeof(string));
+
+            //System.Data.DataRow
+            System.Data.DataRow row = dt.NewRow();
+            row["参数"] = "参数";
+            row["数值"] = "数值";
+            row["单位"] = "单位";
+            dt.Rows.Add(row);
+
+            //综合仿真结果
+            row = dt.NewRow();
+            row["参数"] = "换热量";
+            row["数值"] = Q_inter;
+            row["单位"] = "kJ";
+            dt.Rows.Add(row);
+
+            row = dt.NewRow();
+            row["参数"] = "制冷剂压降";
+            row["数值"] = DP_inter;
+            row["单位"] = "kPa";
+            dt.Rows.Add(row);
+
+            row = dt.NewRow();
+            row["参数"] = "空气换热系数";
+            row["数值"] = ha_inter;
+            row["单位"] = "W/(m2*K)";
+            dt.Rows.Add(row);
+
+            row = dt.NewRow();
+            row["参数"] = "制冷剂换热系数";
+            row["数值"] = href_inter;
+            row["单位"] = "W/(m2*K)";
+            dt.Rows.Add(row);
+
+            row = dt.NewRow();
+            row["参数"] = "风侧热阻占比";
+            row["数值"] = Ra_ratio_inter;
+            row["单位"] = "1";
+            dt.Rows.Add(row);
+
+            //制冷剂
+            row = dt.NewRow();
+            row["参数"] = "出口压力";
+            row["数值"] = Pro_inter;
+            row["单位"] = "kPa";
+            dt.Rows.Add(row);
+
+            row = dt.NewRow();
+            row["参数"] = "出口焓";
+            row["数值"] = hro_inter;
+            row["单位"] = "kJ";
+            dt.Rows.Add(row);
+
+            row = dt.NewRow();
+            row["参数"] = "出口温度";
+            row["数值"] = Tro_inter;
+            row["单位"] = "C";
+            dt.Rows.Add(row);
+
+            row = dt.NewRow();
+            row["参数"] = "流量";
+            row["数值"] = "数值";
+            row["单位"] = "kg/s";
+            dt.Rows.Add(row);
+
+            //风
+            row = dt.NewRow();
+            row["参数"] = "出口温度";
+            row["数值"] = Tao_inter;
+            row["单位"] = "C";
+            dt.Rows.Add(row);
+
+            row = dt.NewRow();
+            row["参数"] = "出口湿度";
+            row["数值"] = RHout_inter;
+            row["单位"] = "1";
+            dt.Rows.Add(row);
+
+            row = dt.NewRow();
+            row["参数"] = "风量";
+            row["数值"] = ma_inter;
+            row["单位"] = "m3/s";
+            dt.Rows.Add(row);
+
+
+            //创建Excel
+
+            Microsoft.Office.Interop.Excel.Application excelApp = new Microsoft.Office.Interop.Excel.Application();
+            Workbook excelWB = excelApp.Workbooks.Add(System.Type.Missing);    //创建工作簿（WorkBook：即Excel文件主体本身）
+            Worksheet excelWS = (Worksheet)excelWB.Worksheets[1];   //创建工作表（即Excel里的子表sheet） 1表示在子表sheet1里进行数据导出
+
+            //excelWS.Cells.NumberFormat = "@";     //  如果数据中存在数字类型 可以让它变文本格式显示
+            //将数据导入到工作表的单元格
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                for (int j = 0; j < dt.Columns.Count; j++)
+                {
+                    excelWS.Cells[i + 1, j + 1] = dt.Rows[i][j].ToString();   //Excel单元格第一个从索引1开始
+                }
+            }
+
+            excelWB.SaveAs("D:\\sanjiawan.xlsx");  //将其进行保存到指定的路径
+            excelWB.Close();
+            excelApp.Quit();  //KillAllExcel(excelApp); 释放可能还没释放的进程
         }
 
     }

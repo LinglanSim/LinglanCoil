@@ -139,6 +139,7 @@
                     <TextBlock Text="具体结果" TextAlignment="Center" Background="AntiqueWhite" VerticalAlignment="Top" Width="124" Height="22" Margin="393,0,1,0"/>
                   
                     <Button x:Name="sgr" Content="单排换热量" Click="sgr_Click" HorizontalAlignment="Left" Margin="423,60,0,0" VerticalAlignment="Top" Width="75"/>
+                    <Button Content="Excel Output" HorizontalAlignment="Left" Margin="410,161,0,0" VerticalAlignment="Top" Width="90" Click="Button_Click"/>
 
                 </Grid>
             </TabItem>
