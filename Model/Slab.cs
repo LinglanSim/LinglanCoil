@@ -429,9 +429,9 @@ namespace Model
                                 te_calc = CoolProp.PropsSI("T", "P", res_cir2[j].Pro * 1000, "Q", 0, fluid);
 
                                 if (fluid == "Water")
-                                    res_cir2[j].Tro = res_cir2[j].Tro / (flag_ciro == 1 ? mr : mr_ciro[j]);
+                                    res_cir2[j].Tro = res_cir2[j].Tro / (flag_ciro == 1 ? mr : mr_ciro[j]) - 273.15;
                                 else
-                                    res_cir2[j].Tro = CoolProp.PropsSI("T", "P", res_cir2[j].Pro * 1000, "H", res_cir2[j].hro * 1000, fluid);
+                                    res_cir2[j].Tro = CoolProp.PropsSI("T", "P", res_cir2[j].Pro * 1000, "H", res_cir2[j].hro * 1000, fluid) - 273.15;
                             }
 
                         }
