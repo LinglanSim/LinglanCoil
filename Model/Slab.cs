@@ -55,6 +55,7 @@ namespace Model
             int iTube_n = 0;
             int index_o = 0;
             int index_n = 0;
+            double te_calc_org = 0;
             CirArr[] cirArr = new CirArr[Nrow * N_tube];
             CirArrforAir cirArrforAir = new CirArrforAir();
             cirArrforAir = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube);
@@ -128,7 +129,7 @@ namespace Model
                 r = new CalcResult[Ncir];
                 r1 = new CalcResult[Ncir];
                 res_cir2 = new CalcResult[Nciro + 1];
-                //res_type = new CalcResult[Nciri + 1];
+                
 
                 flag_ciro = (index_outbig ? 1 : 0);
                 //tri = tri;
@@ -228,11 +229,11 @@ namespace Model
                                 //均匀流路计算和不均匀流路开始部分（独立管）计算
                                 if (index == 0)
                                 {
-                                    if (Nciri == Nciro)
+                                    if (Nciri == Nciro && iterforPri == 0)
                                     {
                                         mr_ciro.CopyTo(mr_ciri, 0);
                                     }
-                                    else
+                                    else if (Nciri != Nciro)
                                     {
                                         if (restartDP_index == 1 || !priconverge.flag)
                                         {
@@ -428,9 +429,9 @@ namespace Model
                                 te_calc = CoolProp.PropsSI("T", "P", res_cir2[j].Pro * 1000, "Q", 0, fluid);
 
                                 if (fluid == "Water")
-                                    res_cir2[j].Tro = res_cir2[j].Tro / (flag_ciro == 1 ? mr : mr_ciro[j]);
+                                    res_cir2[j].Tro = res_cir2[j].Tro / (flag_ciro == 1 ? mr : mr_ciro[j]) - 273.15;
                                 else
-                                    res_cir2[j].Tro = CoolProp.PropsSI("T", "P", res_cir2[j].Pro * 1000, "H", res_cir2[j].hro * 1000, fluid);
+                                    res_cir2[j].Tro = CoolProp.PropsSI("T", "P", res_cir2[j].Pro * 1000, "H", res_cir2[j].hro * 1000, fluid) - 273.15;
                             }
 
                         }
@@ -500,9 +501,10 @@ namespace Model
                 priconverge.flag = false;
             else if (hexType == 0 && (fluid != "Water"))
             {
-                priconverge = CheckPin.CheckPriConverge(te, te_calc - 273.15, pri, pe, r[Ncir - 1].Pro); //res_slab.Pro
+                priconverge = CheckPin.CheckPriConverge(te, te_calc - 273.15, te_calc_org - 273.15, pri, pe, r[Ncir - 1].Pro); //res_slab.Pro
                 iterforPri++;
                 pri = priconverge.pri;
+                te_calc_org = te_calc;
                 if (priconverge.flag && iterforPri == 1 && iterforDP == 1)
                     priconverge.flag = false; //to avoid not even iterate but converge by chance 
             }
