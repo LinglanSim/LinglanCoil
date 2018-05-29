@@ -529,6 +529,7 @@ namespace Model
             res_slab.Ar = geo.total.A_r;
             res_slab.AHx = geo.total.A_hx;
             res_slab.N_row = Nrow;
+            res_slab.tube_row = N_tube;
 
             return res_slab;
             #endregion

@@ -6,7 +6,7 @@
         <DataGrid x:Name="dataGrid" HorizontalAlignment="Left" VerticalAlignment="Top" Height="270" Width="637" AutoGenerateColumns="False">
           <DataGrid.Columns>
             <DataGridTextColumn Header="换热管" Binding="{Binding tube}" Width="70" />
-            <DataGridTextColumn Header="控制单元" Binding="{Binding element}" Width="70" />
+            <DataGridTextColumn Header="管排" Binding="{Binding element}" Width="70" />
             <DataGridTextColumn Header="进口压力" Binding="{Binding Pri}" Width="70" />
             <DataGridTextColumn Header="进口温度" Binding="{Binding Tri}" Width="70" />
             <DataGridTextColumn Header="进口焓值" Binding="{Binding Hri}" Width="70" />

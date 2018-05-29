@@ -22,11 +22,18 @@ namespace tryRT
     public partial class MainWindow : System.Windows.Window
     {
         //输出到window1的定义
-        private Object tube;
+        private Object N_row_inter;
+        public Object frmPara00
+        {
+            get { return N_row_inter; }
+            set { N_row_inter = value; }
+        }
+
+        private Object tube_inter;
         public Object frmPara0
         {
-            get { return tube; }
-            set { tube = value; }
+            get { return tube_inter; }
+            set { tube_inter = value; }
         }
   
         private Object Q_inter;
@@ -111,6 +118,13 @@ namespace tryRT
         {
             get { return ma_inter; }
             set { ma_inter = value; }
+        }
+
+        private Object Tro_detail_inter;
+        public Object frmPara13
+        {
+            get { return Tro_detail_inter; }
+            set { Tro_detail_inter = value; }
         }
 
         public MainWindow()
@@ -286,8 +300,7 @@ namespace tryRT
             R_1a.Text = Convert.ToString(Convert.ToSingle(r.R_1a));
             R_1r.Text = Convert.ToString(Convert.ToSingle(r.R_1r));
             Ra_ratio.Text = Convert.ToString(Convert.ToSingle(r.Ra_ratio));
-            //输出到window1
-            tube = r.Q_detail;
+            //输出到excel
             Q_inter = r.Q;
             DP_inter = r.DP;
             ha_inter = r.ha;
@@ -300,7 +313,11 @@ namespace tryRT
             Tao_inter = r.Tao;
             RHout_inter = r.RHout;
             ma_inter = r.ma;
-
+            
+            //输出到window1
+            N_row_inter = r.N_row;
+            tube_inter = r.tube_row;
+            Tro_detail_inter = r.Tro_detail;
             this.TabControl1.SelectedItem = this.TabControl1.Items[6];
         }
 
@@ -361,7 +378,22 @@ namespace tryRT
 
         private void sgr_Click(object sender, RoutedEventArgs e)
         {
-            GUI.Window1 a = new GUI.Window1();
+            GUI.Window1 Q_detail = new GUI.Window1();
+            Q_detail.Tube_row = Convert.ToString(tube_inter);
+            Q_detail.Row = Convert.ToString(N_row_inter);
+
+            double[,] c = (double[,])Tro_detail_inter;
+            Q_detail.getName_Tro = (double[,])Tro_detail_inter;
+            //Q_detail.getName_Tro = (string[,])Tro_detail_inter[0, 0];
+
+            string[] arraymax = new string[5];
+            string[] arraymin = new string[3];
+            string[] arraystr = new string[] { "11", "22", "33", "44" };
+            arraymax = arraystr;//变成和arraystr一样
+            arraymin = arraystr;//变成和arraystr一样
+
+
+            
             //a.getName[0]= Convert.ToString(tube);
             //a.getName[1] = Convert.ToString(element);
             //a.getName_Pri = Convert.ToString(Pri1);
@@ -374,7 +406,7 @@ namespace tryRT
             //a.getName[9] = Convert.ToString(Q1);
             //a.getName[10] = Convert.ToString(mr1);
 
-            a.Show();
+            Q_detail.Show();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

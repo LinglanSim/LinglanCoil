@@ -45,6 +45,7 @@ namespace Model.Basic
         public double AHx = 0;
 
         public int N_row = 0;
+        public int tube_row = 0;
 
         public CalcResult ShallowCopy()
         {

@@ -19,7 +19,7 @@ namespace GUI
     public class people
     {
         public string tube { get; set; }
-        public string element { get; set; }
+        public string row { get; set; }
         public string Pri { get; set; }
         public string Tri { get; set; }
         public string Hri { get; set; }
@@ -36,46 +36,56 @@ namespace GUI
     /// </summary>
     public partial class Window1 : Window
     {
-        //创建people数组
-        List<people> peopleList = new List<people>();
-        //①定义一个可读可写的公用的字符串：getName
-        public string[, ,] getName_tube { get; set; }
-        public string[, ,] getName_element { get; set; }
-        public string[, ,] getName_Pri { get; set; }
-        public string[, ,] getName_Tri { get; set; }
-        public string[, ,] getName_Hri { get; set; }
-        public string[, ,] getName_Pro { get; set; }
-        public string[, ,] getName_Tro { get; set; }
-        public string[, ,] getName_Hro { get; set; }
-        public string[, ,] getName_HTC { get; set; }
-        public string[, ,] getName_Q { get; set; }
-        public string[, ,] getName_mr { get; set; }
-
         public Window1()
         {
             InitializeComponent();
         }
 
+        //创建people数组
+        List<people> peopleList = new List<people>();
+
+        //①定义一个可读可写的公用的字符串：getName
+        public string Tube_row { get; set; }
+        public string Row { get; set; }
+
+
+        public double[,] getName_tube { get; set; }
+        public double[,] getName_row { get; set; }
+        public double[,] getName_Pri { get; set; }
+        public double[,] getName_Tri { get; set; }
+        public double[,] getName_Hri { get; set; }
+        public double[,] getName_Pro { get; set; }
+        public double[,] getName_Tro { get; set; }
+        public double[,] getName_Hro { get; set; }
+        public double[,] getName_HTC { get; set; }
+        public double[,] getName_Q { get; set; }
+        public double[,] getName_mr { get; set; }
+
+        
+
         //创建dataGrid数据
         private void LoadData(object sender, RoutedEventArgs e)
         {
-            for (int i = 0; i < 4; i++)
-                for (int j = 0; j < 5; j++)
-                    for (int k = 0; k < 5; k++)
+
+            Int16 Row_int = Convert.ToInt16(Row);
+            Int16 Tube_row_int = Convert.ToInt16(Tube_row);
+
+            for (int i = 0; i < Tube_row_int; i++)
+                for (int j = 0; j < Row_int; j++)
             {
                 peopleList.Add(new people()
                 {
-                    tube = getName_tube[i, j, k],
-                    element = getName_element[i, j, k],
-                    Pri = getName_Pri[i, j, k],
-                    Tri = getName_Tri[i, j, k],
-                    Hri = getName_Hri[i, j, k],
-                    Pro = getName_Pro[i, j, k],
-                    Tro = getName_Tro[i, j, k],
-                    Hro = getName_Hro[i, j, k],
-                    HTC = getName_HTC[i, j, k],
-                    Q = getName_Q[i, j, k],
-                    mr = getName_mr[i, j, k],
+                    tube = Convert.ToString(getName_tube),
+                    row = Convert.ToString(getName_row[i, j]),
+                    Pri = Convert.ToString(getName_Pri[i, j]),
+                    Tri = Convert.ToString(getName_Tri[i, j]),
+                    Hri = Convert.ToString(getName_Hri[i, j]),
+                    Pro = Convert.ToString(getName_Pro[i, j]),
+                    Tro = Convert.ToString(getName_Tro[i, j]),
+                    Hro = Convert.ToString(getName_Hro[i, j]),
+                    HTC = Convert.ToString(getName_HTC[i, j]),
+                    Q = Convert.ToString(getName_Q[i, j]),
+                    mr = Convert.ToString(getName_mr[i, j]),
                 });
             }
 
