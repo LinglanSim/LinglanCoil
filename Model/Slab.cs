@@ -128,7 +128,7 @@ namespace Model
                 r = new CalcResult[Ncir];
                 r1 = new CalcResult[Ncir];
                 res_cir2 = new CalcResult[Nciro + 1];
-                res_type = new CalcResult[Nciri + 1];
+                //res_type = new CalcResult[Nciri + 1];
 
                 flag_ciro = (index_outbig ? 1 : 0);
                 //tri = tri;
@@ -159,6 +159,7 @@ namespace Model
                     #region //DPConverge
                     do
                     {
+                        res_type = new CalcResult[Nciri + 1];
                         k = 0;
                         if(!index_outbig)
                         { 

@@ -727,6 +727,547 @@ namespace Model
             return res;
         }
 
+        public static CalcResult main_condenser_YH200()
+        {
+            //制冷剂制热模块计算
+            //string fluid = new string[] { "Water" };
+            string fluid = "R32";
+            //string fluid = new string[] { "ISOBUTAN" };
+            CalcResult res = new CalcResult();
+            int Nrow = 2;
+            //double[] FPI = new double[Nrow + 1];
+            //FPI = new double[] { 1.27, 1.27, 1.27, 1.27, 1.27, 1.27, 1.27, 2.6, 2.6, 2.6, 2.6, 2.6, 2.6, 2.6, 2.6, 5.2, 5.2, 5.2, 5.2, 5.2, 5.2 };
+            double[] FPI = new double[] { 19.538, 19.538 };
+            double Pt = 21 * 0.001;
+            double Pr = 22 * 0.001;
+            double Di = 6.8944 * 0.001;//8 6.8944
+            double Do = 7.35 * 0.001;//8.4 7.35
+            double Fthickness = 0.095 * 0.001;
+            double thickness = 0.5 * (Do - Di);
+            //double n_tubes = 10;
+            //double n_rows = 2;
+            //int[] Ntube = { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
+            //int[] Ntube = { 2, 2, 2, 2 };
+            int[] Ntube = { 24, 24 };
+            int N_tube = Ntube[0];
+            double L = (825 + 860) / 2 * 0.001;
+            int Nelement = 5;
+            int[,] CirArrange;
+            //CirArrange = new int[,] { { 8, 6, 4, 2, 1, 3, 5, 7 } };//actual, counter-paralle,  Q=83.1
+            //CirArrange = new int[,] { { 20, 18, 16, 14, 12, 10, 8, 6, 4, 2, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19 } };//actual, counter-paralle,  Q=83.1
+            //CirArrange = new int[,] { { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19 } }; //paralle-paralle, better Q=85.3
+            //CirArrange = new int[,] { { 20, 18, 16, 14, 12, 10, 8, 6, 4, 2, 19, 17, 15, 13, 11, 9, 7, 5, 3, 1 } };//counter-counter,  Q=82.4
+            //CirArrange = new int[,] { { 14, 12, 10, 8, 6, 4, 2, 1, 3, 5, 7, 9, 11, 13 } };//actual, counter-paralle,  Q=76
+            //CirArrange = new int[,] { {16, 14, 12, 10, 8, 6, 4, 2, 1, 3, 5, 7, 9, 11, 13, 15 } };//actual, counter-paralle,  Q=79
+            //CirArrange = new int[,] { {42, 40, 38, 36, 34, 32, 30, 28, 26, 24, 22, 20, 18, 16, 14, 12, 10, 8, 6, 4, 2, 
+            //                              1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41 } };//actual, counter-paralle,  Q=79
+            //CirArrange = new int[,] { {32, 30, 28, 26, 24, 22, 20, 18, 16, 14, 12, 10, 8, 6, 4, 2, 
+            //                              1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31 } };//actual, counter-paralle,  Q=79
+
+            //CirArrange = new int[,] { { 7, 8, 2, 1, 5, 3 }, {5, 8, 9, 10, 11}, {5, 88, 5, 4, 3 } };
+            //CirArrange = new int[,] { { 7, 8, 2, 1, 0, 0, 0, 0 }, { 9, 10, 11, 12, 6, 5, 4, 3 } };
+            //CirArrange = new int[,] { { 7, 1, 0, 0, 0, 0 }, { 8, 9, 3, 2, 0, 0 }, { 10, 11, 12, 6, 5, 4 } };
+            //CirArrange = new int[,] { { 7, 8, 2, 1, 9, 10, 11, 12, 6, 5, 4, 3 } };
+            //List<string> productType = new List<string>();
+            CirArrange = new int[,] { { 25, 26, 27, 28, 29, 30, 7, 8, 9, 10, 11, 12 }, { 1, 2, 3, 4, 5, 6, 31, 32, 33, 34, 35, 36 }, { 37, 38, 39, 40, 41, 42, 19, 20, 21, 22, 0, 0 }, { 13, 14, 15, 16, 17, 18, 43, 44, 45, 46, 0, 0 }, { 23, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, { 47, 48, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
+            //CirArrange = new int[,] { { 28, 27, 26, 25, 1, 2, 3, 4 }, { 29, 30, 31, 32, 5, 6, 7, 8 }, { 36, 35, 34, 33, 9, 10, 11, 12 }, { 37, 38, 39, 40, 13, 14, 15, 16 }, { 44, 43, 42, 41, 17, 18, 19, 20 }, { 45, 46, 47, 48, 24, 23, 22, 21 } };
+            //CirArrange = new int[,] { { 32, 31, 30, 29, 28, 27, 26, 25, 1, 2, 3, 4, 5, 6, 7, 8 }, { 40, 39, 38, 37, 36, 35, 34, 33, 9, 10, 11, 12, 13, 14, 15, 16 }, { 48, 47, 46, 45, 44, 43, 42, 41, 24, 23, 22, 21, 20, 19, 18, 17 } };
+            //CirArrange = new int[,] { { 25, 26, 27, 28, 29, 30, 7, 8, 9, 10, 11, 12 }, { 1, 2, 3, 4, 5, 6, 31, 32, 33, 34, 35, 36 }, { 37, 38, 39, 40, 41, 42, 19, 20, 21, 22, 0, 0 }, { 13, 14, 15, 16, 17, 18, 43, 44, 45, 46, 0, 0 }, { 47, 48, 24, 23, 0, 0, 0, 0, 0, 0, 0, 0 } };
+            CircuitNumber CircuitInfo = new CircuitNumber();
+            CircuitInfo.number = new int[] { 4, 2 };//{ 4, 1 };//{ 3, 3 }; //{ 4, 2 }//{4,2}
+            CircuitInfo.TubeofCir = new int[] { 12, 12, 10, 10, 2,2 };//{ 12, 12, 10, 10, 4 };//{ 16,16,16 };  //{ 8,8,8,8,8,8 };//{12,12,10,10,2,2}
+            CircuitInfo.UnequalCir = new int[] { 5, 5, 6, 6, 0,0 };//{ 5, 5, 5, 5, 0 };//{ 5, 5, 6, 6, 0, 0 };//{5,5,6,6,0,0}
+            // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
+            // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
+            //  Ncir=1, 20in, 20->19 1out
+
+            GeometryInput geoInput_air = new GeometryInput();
+            geoInput_air.Pt = Pt;
+            geoInput_air.Pr = Pr;
+            geoInput_air.Do = Do;
+            geoInput_air.Fthickness = Fthickness;
+            geoInput_air.FPI = FPI[0];
+            geoInput_air.Nrow = Nrow;
+
+            int hexType = 1;
+
+            double mr = 0.0244;//0.01826;
+            //double Vel_a = 1.8; //m/s
+            double H = Pt * N_tube;
+            double Hx = L * H;
+            double rho_a_st = 1.2; //kg/m3
+            double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+            double Va = 2000;// m3/h
+            double Vel_ave = Va / 3600 / Hx;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+            AirDistribution VaDistri = new AirDistribution();
+            VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+            double[,] ma = new double[N_tube, Nelement];
+            double[,] ha = new double[N_tube, Nelement];
+
+
+            //空气侧几何结构选择
+            //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+            //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
+            int curve = 1; //
+
+            double za = 1; //Adjust factor
+            for (int i = 0; i < N_tube; i++)
+            {
+                for (int j = 0; j < Nelement; j++)
+                {
+                    ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
+                    //ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve);// *1.5;
+                    //ha[i, j] = 79;
+                    ha[i, j] = AirHTC.alpha1(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve, geoInput_air, hexType).ha;
+                    //ha[i, j] = 54.71;
+                }
+            }
+            double[,] haw = ha;
+
+            res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
+
+            double eta_surface = 0.819;
+            double zh = 1.1;
+            double zdp = 1.1;
+
+            double tai = 35;
+            double RHi = CoolProp.HAPropsSI("R", "T", tai + 273.15, "P", 101325, "B", 24 + 273.15);//0.469
+            double tc = 50.775;
+            //double pri = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
+
+            double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
+            //double P_exv = 1842.28;//kpa
+            double tri = 78;//C
+            double conductivity = 386; //w/mK for Cu
+            double Pwater = 100.0;
+            //int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
+            double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000;
+            //double hri = 354.6;
+            //double xin = 0.57;
+
+            double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+            double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
+
+            //string AirDirection="DowntoUp";
+            string AirDirection = "Counter";
+            ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
+            RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
+
+            AreaResult geo = new AreaResult();
+            geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tri, pri, hri,
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+           
+            return res;
+        }
+        public static CalcResult main_condenser_YH200_1()
+        {
+            //制冷剂制热模块计算
+            //string fluid = new string[] { "Water" };
+            string fluid = "R32";
+            //string fluid = new string[] { "ISOBUTAN" };
+            CalcResult res = new CalcResult();
+            int Nrow = 2;
+            //double[] FPI = new double[Nrow + 1];
+            //FPI = new double[] { 1.27, 1.27, 1.27, 1.27, 1.27, 1.27, 1.27, 2.6, 2.6, 2.6, 2.6, 2.6, 2.6, 2.6, 2.6, 5.2, 5.2, 5.2, 5.2, 5.2, 5.2 };
+            double[] FPI = new double[] { 19.538, 19.538 };
+            double Pt = 21 * 0.001;
+            double Pr = 22 * 0.001;
+            double Di = 6.8944 * 0.001;//8 6.8944
+            double Do = 7.35 * 0.001;//8.4 7.35
+            double Fthickness = 0.095 * 0.001;
+            double thickness = 0.5 * (Do - Di);
+            //double n_tubes = 10;
+            //double n_rows = 2;
+            //int[] Ntube = { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
+            //int[] Ntube = { 2, 2, 2, 2 };
+            int[] Ntube = { 20, 20 };
+            int N_tube = Ntube[0];
+            double L = (825 + 860) / 2 * 0.001;
+            int Nelement = 10;
+            int[,] CirArrange;
+            //CirArrange = new int[,] { { 8, 6, 4, 2, 1, 3, 5, 7 } };//actual, counter-paralle,  Q=83.1
+            //CirArrange = new int[,] { { 20, 18, 16, 14, 12, 10, 8, 6, 4, 2, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19 } };//actual, counter-paralle,  Q=83.1
+            //CirArrange = new int[,] { { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19 } }; //paralle-paralle, better Q=85.3
+            //CirArrange = new int[,] { { 20, 18, 16, 14, 12, 10, 8, 6, 4, 2, 19, 17, 15, 13, 11, 9, 7, 5, 3, 1 } };//counter-counter,  Q=82.4
+            //CirArrange = new int[,] { { 14, 12, 10, 8, 6, 4, 2, 1, 3, 5, 7, 9, 11, 13 } };//actual, counter-paralle,  Q=76
+            //CirArrange = new int[,] { {16, 14, 12, 10, 8, 6, 4, 2, 1, 3, 5, 7, 9, 11, 13, 15 } };//actual, counter-paralle,  Q=79
+            //CirArrange = new int[,] { {42, 40, 38, 36, 34, 32, 30, 28, 26, 24, 22, 20, 18, 16, 14, 12, 10, 8, 6, 4, 2, 
+            //                              1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41 } };//actual, counter-paralle,  Q=79
+            //CirArrange = new int[,] { {32, 30, 28, 26, 24, 22, 20, 18, 16, 14, 12, 10, 8, 6, 4, 2, 
+            //                              1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31 } };//actual, counter-paralle,  Q=79
+
+            //CirArrange = new int[,] { { 7, 8, 2, 1, 5, 3 }, {5, 8, 9, 10, 11}, {5, 88, 5, 4, 3 } };
+            //CirArrange = new int[,] { { 7, 8, 2, 1, 0, 0, 0, 0 }, { 9, 10, 11, 12, 6, 5, 4, 3 } };
+            //CirArrange = new int[,] { { 7, 1, 0, 0, 0, 0 }, { 8, 9, 3, 2, 0, 0 }, { 10, 11, 12, 6, 5, 4 } };
+            //CirArrange = new int[,] { { 7, 8, 2, 1, 9, 10, 11, 12, 6, 5, 4, 3 } };
+            //List<string> productType = new List<string>();
+            //CirArrange = new int[,] { { 28, 27, 26, 25, 1, 2, 3, 4 }, { 29, 30, 31, 32, 5, 6, 7, 8 }, { 36, 35, 34, 33, 9, 10, 11, 12 }, { 37, 38, 39, 40, 13, 14, 15, 16 }, { 44, 43, 42, 41, 17, 18, 19, 20 }, { 45, 46, 47, 48, 24, 23, 22, 21 } };
+            //CirArrange = new int[,] { { 32, 31, 30, 29, 28, 27, 26, 25, 1, 2, 3, 4, 5, 6, 7, 8 }, { 40, 39, 38, 37, 36, 35, 34, 33, 9, 10, 11, 12, 13, 14, 15, 16 }, { 48, 47, 46, 45, 44, 43, 42, 41, 24, 23, 22, 21, 20, 19, 18, 17 } };
+            //CirArrange = new int[,] { { 25, 26, 27, 28, 29, 30, 7, 8, 9, 10, 11, 12 }, { 1, 2, 3, 4, 5, 6, 31, 32, 33, 34, 35, 36 }, { 37, 38, 39, 40, 41, 42, 19, 20, 21, 22, 0, 0 }, { 13, 14, 15, 16, 17, 18, 43, 44, 45, 46, 0, 0 }, { 47, 48, 24, 23, 0, 0, 0, 0, 0, 0, 0, 0 } };
+            CirArrange = new int[,] { { 26, 25, 24, 23, 22, 21, 1, 2, 3, 4 }, { 30, 29, 28, 27, 5, 6, 7, 8, 9, 10 }, { 36, 35, 34, 33, 32, 31, 11, 12, 13, 14 }, { 40, 39, 38, 37, 15, 16, 17, 18, 19, 20 } };
+            //CirArrange = new int[,] { { 7, 8, 9, 4, 5, 6 }, { 12, 11, 10, 3, 2, 1 } };
+            //CirArrange = new int[,] { { 7, 8, 5, 6 }, { 10, 9, 2, 1 }, { 12, 11, 4, 3 } };
+            //CirArrange = new int[,] { { 7, 8, 2, 1 }, { 10, 9, 3, 4 }, { 11, 12, 6, 5 } };
+            CircuitNumber CircuitInfo = new CircuitNumber();
+            CircuitInfo.number = new int[] { 4, 4 };//{ 3, 3 }; //{ 4, 2 }
+            CircuitInfo.TubeofCir = new int[] { 10, 10, 10, 10 };//{ 16,16,16 };  //{ 4, 8 };
+            //CircuitInfo.UnequalCir = new int[] { 5, 5, 5, 5, 0 };//{ 5, 5, 6, 6, 0, 0 };
+            // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
+            // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
+            //  Ncir=1, 20in, 20->19 1out
+
+            GeometryInput geoInput_air = new GeometryInput();
+            geoInput_air.Pt = Pt;
+            geoInput_air.Pr = Pr;
+            geoInput_air.Do = Do;
+            geoInput_air.Fthickness = Fthickness;
+            geoInput_air.FPI = FPI[0];
+            geoInput_air.Nrow = Nrow;
+
+            int hexType = 1;
+
+            double mr = 0.023;
+            //double Vel_a = 1.8; //m/s
+            double H = Pt * N_tube;
+            double Hx = L * H;
+            double rho_a_st = 1.2; //kg/m3
+            double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+            double Va = 2000*20/24;// m3/h
+            double Vel_ave = Va / 3600 / Hx;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+            AirDistribution VaDistri = new AirDistribution();
+            VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+            double[,] ma = new double[N_tube, Nelement];
+            double[,] ha = new double[N_tube, Nelement];
+
+
+            //空气侧几何结构选择
+            //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+            //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
+            int curve = 1; //
+
+            double za = 1; //Adjust factor
+            for (int i = 0; i < N_tube; i++)
+            {
+                for (int j = 0; j < Nelement; j++)
+                {
+                    ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
+                    //ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve);// *1.5;
+                    //ha[i, j] = 79;
+                    ha[i, j] = AirHTC.alpha1(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve, geoInput_air, hexType).ha;
+                    //ha[i, j] = 36.5;
+                }
+            }
+            double[,] haw = ha;
+
+            res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
+
+            double eta_surface = 0.8;
+            double zh = 1.1;
+            double zdp = 1.1;
+
+            double tai = 35;
+            double RHi = CoolProp.HAPropsSI("R", "T", tai + 273.15, "P", 101325, "B", 24 + 273.15);//0.469
+            double tc = 50.775;
+            //double pri = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
+
+            double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
+            //double P_exv = 1842.28;//kpa
+            double tri = 78;//C
+            double conductivity = 386; //w/mK for Cu
+            double Pwater = 100.0;
+            //int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
+            double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000;
+            //double hri = 354.6;
+            //double xin = 0.57;
+
+            double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+            double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
+
+            //string AirDirection="DowntoUp";
+            string AirDirection = "Counter";
+            ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
+            RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
+
+            AreaResult geo = new AreaResult();
+            geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tri, pri, hri,
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+
+            return res;
+        }
+        public static CalcResult main_condenser_YH200_2()
+        {
+            //制冷剂制热模块计算
+            //string fluid = new string[] { "Water" };
+            string fluid = "R32";
+            //string fluid = new string[] { "ISOBUTAN" };
+            CalcResult r0 = new CalcResult();
+            r0 = main_condenser_YH200_1();
+            CalcResult res = new CalcResult();
+            int Nrow = 2;
+            //double[] FPI = new double[Nrow + 1];
+            //FPI = new double[] { 1.27, 1.27, 1.27, 1.27, 1.27, 1.27, 1.27, 2.6, 2.6, 2.6, 2.6, 2.6, 2.6, 2.6, 2.6, 5.2, 5.2, 5.2, 5.2, 5.2, 5.2 };
+            double[] FPI = new double[] { 19.538, 19.538 };
+            double Pt = 21 * 0.001;
+            double Pr = 22 * 0.001;
+            double Di = 6.8944 * 0.001;//8 6.8944
+            double Do = 7.35 * 0.001;//8.4 7.35
+            double Fthickness = 0.095 * 0.001;
+            double thickness = 0.5 * (Do - Di);
+            //double n_tubes = 10;
+            //double n_rows = 2;
+            //int[] Ntube = { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
+            //int[] Ntube = { 2, 2, 2, 2 };
+            int[] Ntube = { 4, 4 };
+            int N_tube = Ntube[0];
+            double L = (825 + 860) / 2 * 0.001;
+            int Nelement = 10;
+            int[,] CirArrange;
+            //CirArrange = new int[,] { { 8, 6, 4, 2, 1, 3, 5, 7 } };//actual, counter-paralle,  Q=83.1
+            //CirArrange = new int[,] { { 20, 18, 16, 14, 12, 10, 8, 6, 4, 2, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19 } };//actual, counter-paralle,  Q=83.1
+            //CirArrange = new int[,] { { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19 } }; //paralle-paralle, better Q=85.3
+            //CirArrange = new int[,] { { 20, 18, 16, 14, 12, 10, 8, 6, 4, 2, 19, 17, 15, 13, 11, 9, 7, 5, 3, 1 } };//counter-counter,  Q=82.4
+            //CirArrange = new int[,] { { 14, 12, 10, 8, 6, 4, 2, 1, 3, 5, 7, 9, 11, 13 } };//actual, counter-paralle,  Q=76
+            //CirArrange = new int[,] { {16, 14, 12, 10, 8, 6, 4, 2, 1, 3, 5, 7, 9, 11, 13, 15 } };//actual, counter-paralle,  Q=79
+            //CirArrange = new int[,] { {42, 40, 38, 36, 34, 32, 30, 28, 26, 24, 22, 20, 18, 16, 14, 12, 10, 8, 6, 4, 2, 
+            //                              1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41 } };//actual, counter-paralle,  Q=79
+            //CirArrange = new int[,] { {32, 30, 28, 26, 24, 22, 20, 18, 16, 14, 12, 10, 8, 6, 4, 2, 
+            //                              1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31 } };//actual, counter-paralle,  Q=79
+
+            //CirArrange = new int[,] { { 7, 8, 2, 1, 5, 3 }, {5, 8, 9, 10, 11}, {5, 88, 5, 4, 3 } };
+            //CirArrange = new int[,] { { 7, 8, 2, 1, 0, 0, 0, 0 }, { 9, 10, 11, 12, 6, 5, 4, 3 } };
+            //CirArrange = new int[,] { { 7, 1, 0, 0, 0, 0 }, { 8, 9, 3, 2, 0, 0 }, { 10, 11, 12, 6, 5, 4 } };
+            //CirArrange = new int[,] { { 7, 8, 2, 1, 9, 10, 11, 12, 6, 5, 4, 3 } };
+            //List<string> productType = new List<string>();
+            //CirArrange = new int[,] { { 28, 27, 26, 25, 1, 2, 3, 4 }, { 29, 30, 31, 32, 5, 6, 7, 8 }, { 36, 35, 34, 33, 9, 10, 11, 12 }, { 37, 38, 39, 40, 13, 14, 15, 16 }, { 44, 43, 42, 41, 17, 18, 19, 20 }, { 45, 46, 47, 48, 24, 23, 22, 21 } };
+            //CirArrange = new int[,] { { 32, 31, 30, 29, 28, 27, 26, 25, 1, 2, 3, 4, 5, 6, 7, 8 }, { 40, 39, 38, 37, 36, 35, 34, 33, 9, 10, 11, 12, 13, 14, 15, 16 }, { 48, 47, 46, 45, 44, 43, 42, 41, 24, 23, 22, 21, 20, 19, 18, 17 } };
+            //CirArrange = new int[,] { { 25, 26, 27, 28, 29, 30, 7, 8, 9, 10, 11, 12 }, { 1, 2, 3, 4, 5, 6, 31, 32, 33, 34, 35, 36 }, { 37, 38, 39, 40, 41, 42, 19, 20, 21, 22, 0, 0 }, { 13, 14, 15, 16, 17, 18, 43, 44, 45, 46, 0, 0 }, { 47, 48, 24, 23, 0, 0, 0, 0, 0, 0, 0, 0 } };
+            CirArrange = new int[,] { { 6, 5, 2, 1 }, { 7, 6, 4, 3 } };
+            //CirArrange = new int[,] { { 7, 8, 9, 4, 5, 6 }, { 12, 11, 10, 3, 2, 1 } };
+            //CirArrange = new int[,] { { 7, 8, 5, 6 }, { 10, 9, 2, 1 }, { 12, 11, 4, 3 } };
+            //CirArrange = new int[,] { { 7, 8, 2, 1 }, { 10, 9, 3, 4 }, { 11, 12, 6, 5 } };
+            CircuitNumber CircuitInfo = new CircuitNumber();
+            CircuitInfo.number = new int[] { 2, 2 };//{ 3, 3 }; //{ 4, 2 }
+            CircuitInfo.TubeofCir = new int[] { 4, 4 };//{ 16,16,16 };  //{ 4, 8 };
+            //CircuitInfo.UnequalCir = new int[] { 5, 5, 5, 5, 0 };//{ 5, 5, 6, 6, 0, 0 };
+            // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
+            // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
+            //  Ncir=1, 20in, 20->19 1out
+
+            GeometryInput geoInput_air = new GeometryInput();
+            geoInput_air.Pt = Pt;
+            geoInput_air.Pr = Pr;
+            geoInput_air.Do = Do;
+            geoInput_air.Fthickness = Fthickness;
+            geoInput_air.FPI = FPI[0];
+            geoInput_air.Nrow = Nrow;
+
+            int hexType = 1;
+
+            double mr = 0.023;
+            //double Vel_a = 1.8; //m/s
+            double H = Pt * N_tube;
+            double Hx = L * H;
+            double rho_a_st = 1.2; //kg/m3
+            double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+            double Va = 2000*4/24;// m3/h
+            double Vel_ave = Va / 3600 / Hx;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+            AirDistribution VaDistri = new AirDistribution();
+            VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+            double[,] ma = new double[N_tube, Nelement];
+            double[,] ha = new double[N_tube, Nelement];
+
+
+            //空气侧几何结构选择
+            //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+            //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
+            int curve = 1; //
+
+            double za = 1; //Adjust factor
+            for (int i = 0; i < N_tube; i++)
+            {
+                for (int j = 0; j < Nelement; j++)
+                {
+                    ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
+                    //ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve);// *1.5;
+                    //ha[i, j] = 79;
+                    ha[i, j] = AirHTC.alpha1(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve, geoInput_air, hexType).ha;
+                    //ha[i, j] = 36.5;
+                }
+            }
+            double[,] haw = ha;
+
+            res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
+
+            double eta_surface = 0.8;
+            double zh = 1.1;
+            double zdp = 1.1;
+
+            double tai = 35;
+            double RHi = CoolProp.HAPropsSI("R", "T", tai + 273.15, "P", 101325, "B", 24 + 273.15);//0.469
+            double tc = 50.775;
+            //double pri = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
+
+            //double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
+            double pri = r0.Pro;
+            //double P_exv = 1842.28;//kpa
+            //double tri = 78;//C
+            double tri = r0.Tro;
+            double conductivity = 386; //w/mK for Cu
+            double Pwater = 100.0;
+            //int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
+            //double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000;
+            double hri = r0.hro;
+            //double hri = 354.6;
+            //double xin = 0.57;
+
+            double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+            double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
+
+            //string AirDirection="DowntoUp";
+            string AirDirection = "Counter";
+            ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
+            RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
+
+            AreaResult geo = new AreaResult();
+            geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tri, pri, hri,
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+
+            res.Q = res.Q + r0.Q;
+            res.DP = res.DP + r0.DP;
+            return res;
+        }
+        public static CalcResult main_evaporator_YH200()
+        {
+            string fluid = "R32";
+            //string fluid = new string { "R410A.mix" };
+            //string fluid = new string[] { "ISOBUTAN" };
+            CalcResult res = new CalcResult();
+            int Nrow = 2;
+            double[] FPI = new double[Nrow + 1];
+            //FPI = new double[] { 1.27, 1.27, 1.27, 1.27, 1.27, 1.27, 1.27, 2.6, 2.6, 2.6, 2.6, 2.6, 2.6, 2.6, 2.6, 5.2, 5.2, 5.2, 5.2, 5.2, 5.2 };
+            FPI = new double[] { 19.538, 19.538 };
+            double Pt = 21 * 0.001;
+            double Pr = 22 * 0.001;
+            double Di = 6.8944 * 0.001;//8 6.8944
+            double Do = 7.35 * 0.001;//8.4 7.35
+            double Fthickness = 0.095 * 0.001;
+            double thickness = 0.5 * (Do - Di);
+            //double n_tubes = 10;
+            //double n_rows = 2;
+            //int[] Ntube = { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
+            //int[] Ntube = { 2, 2, 2, 2 };
+            int[] Ntube = { 24, 24 };
+            int N_tube = Ntube[0];
+            double L = (825 + 860) / 2 * 0.001;
+            int Nelement = 10;
+            int[,] CirArrange;
+            CirArrange = new int[,] { { 48, 47, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, { 24, 23, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, { 46, 45, 44, 43, 18, 17, 16, 15, 14, 13, 0, 0 }, { 22, 21, 20, 19, 42, 41, 40, 39, 38, 37, 0, 0 }, { 36, 35, 34, 33, 32, 31, 6, 5, 4, 3, 2, 1, }, { 12, 11, 10, 9, 8, 7, 30, 29, 28, 27, 26, 25 } };
+            //CirArrange = new int[,] { { 28, 27, 26, 25, 1, 2, 3, 4 }, { 29, 30, 31, 32, 5, 6, 7, 8 }, { 36, 35, 34, 33, 9, 10, 11, 12 }, { 37, 38, 39, 40, 13, 14, 15, 16 }, { 44, 43, 42, 41, 17, 18, 19, 20 }, { 45, 46, 47, 48, 24, 23, 22, 21 } };
+            //CirArrange = new int[,] { { 32, 31, 30, 29, 28, 27, 26, 25, 1, 2, 3, 4, 5, 6, 7, 8 }, { 40, 39, 38, 37, 36, 35, 34, 33, 9, 10, 11, 12, 13, 14, 15, 16 }, { 48, 47, 46, 45, 44, 43, 42, 41, 24, 23, 22, 21, 20, 19, 18, 17 } };
+            //CirArrange = new int[,] { { 25, 26, 27, 28, 29, 30, 7, 8, 9, 10, 11, 12 }, { 1, 2, 3, 4, 5, 6, 31, 32, 33, 34, 35, 36 }, { 37, 38, 39, 40, 41, 42, 19, 20, 21, 22, 0, 0 }, { 13, 14, 15, 16, 17, 18, 43, 44, 45, 46, 0, 0 }, { 47, 48, 24, 23, 0, 0, 0, 0, 0, 0, 0, 0 } };           
+            //CirArrange=new int[,]{{},{}}
+            CircuitNumber CircuitInfo = new CircuitNumber();
+            CircuitInfo.number = new int[] { 4, 2 };//{ 4, 1 };//{ 3, 3 }; //{ 4, 2 }//{4,2}
+            CircuitInfo.TubeofCir = new int[] { 2, 2, 10, 10, 12, 12 };//{ 12, 12, 10, 10, 4 };//{ 16,16,16 };  //{ 8,8,8,8,8,8 };//{12,12,10,10,2,2}
+            CircuitInfo.UnequalCir = new int[] { -5, -6, 5, 5, 6, 6 };//{ 5, 5, 5, 5, 0 };//{ 5, 5, 6, 6, 0, 0 };//{5,5,6,6,0,0}
+            // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
+            // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
+            //  Ncir=1, 20in, 20->19 1out
+
+            //bool reverse = true; //*********************************false:origin, true:reverse******************************************
+            //CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
+
+
+            double mr = 0.032;
+            //double Vel_a = 1.8; //m/s
+            double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+            double H = Pt * N_tube;
+            double Hx = L * H;
+            double rho_a_st = 1.2; //kg/m3
+            double Va = 2000;
+            double Vel_ave = Va/3600/Hx;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+            AirDistribution VaDistri = new AirDistribution();
+            VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+            double[,] ma = new double[N_tube, Nelement];
+            double[,] ha = new double[N_tube, Nelement];
+
+
+            int hexType = 0;
+
+            GeometryInput geoInput_air = new GeometryInput();
+            geoInput_air.Pt = Pt;
+            geoInput_air.Pr = Pr;
+            geoInput_air.Do = Do;
+            geoInput_air.Fthickness = Fthickness;
+            geoInput_air.FPI = FPI[0];
+            geoInput_air.Nrow = Nrow;
+
+            //空气侧几何结构选择
+            //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
+            //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
+            //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
+            int curve = 1; //
+            AirCoef_res res1 = new AirCoef_res();
+            double za = 1; //Adjust factor
+            for (int i = 0; i < N_tube; i++)
+            {
+                for (int j = 0; j < Nelement; j++)
+                {
+                    ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
+                    //ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve) * 1.5;
+                    //ha[i, j] = 79;
+                    ha[i, j] = AirHTC.alpha1(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve, geoInput_air, hexType).ha;
+                    //ha[i, j] = 36.5;
+                }
+            }
+            double[,] haw = ha;
+
+            res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
+
+            double eta_surface = 0.8;
+            double zh = 1.1;
+            double zdp = 1.1;
+
+            double tai = 7;
+            double RHi = CoolProp.HAPropsSI("R","T",tai+273.15,"P",101325,"B",6+273.15);
+            double tri = 0.125;
+            double te = tri;
+            double pe = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid) / 1000;
+
+            double P_exv = 1842.28;//kpa
+            double T_exv = 20;//C
+            double conductivity = 386; //w/mK for Cu
+            double Pwater = 0;
+            //int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
+            double Tc = 50.77;
+            double Sc = 12.51;
+            double Pc = CoolProp.PropsSI("P", "T", Tc + 273.15, "Q", 0, fluid) / 1000;
+            double hri = CoolProp.PropsSI("H", "T", Tc-Sc + 273.15, "P", Pc * 1000, fluid) / 1000;
+            double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+            double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
+
+            //string AirDirection="DowntoUp";
+            string AirDirection = "Counter";
+            ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, te, AirDirection);
+            RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, te, AirDirection);
+
+            AreaResult geo = new AreaResult();
+            geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, te, pe, hri,
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+            return res;
+        }
+
         public static CalcResult Water_Midea5()
         {
             string fluid = "Water";

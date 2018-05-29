@@ -38,7 +38,6 @@ namespace Model
             res.href = Nusselt * k_r / dh * zh;
             double cp_a = 1.0;
             cp_a = (hexType == 0 ? 1.027 : 1.02);
-
             double C_r = mr * cp_r / 1000;
             double C_a = ma * cp_a;
             res.R_1a = 1 / ((eta_surface * Aa_fin + Aa_tube) * ha);
@@ -308,6 +307,7 @@ namespace Model
 
             res.href = Nusselt * k_r / dh * zh;
             double cp_da = 1.0;
+            cp_da = (hexType == 0 ? 1.027 : 1.02)*1000;
             double Tin_a = tai;
             double Tin_r = tri;
             cp_da = CoolProp.HAPropsSI("C", "T", Tin_a + 273.15, "P", 101325, "R", RHi);
@@ -342,12 +342,12 @@ namespace Model
             double UA_o = eta_a * (Aa_fin + Aa_tube) * ha;
             double Ntu_i = UA_i / (mr * cp_r);
             double Ntu_o = UA_o / (ma * cp_da);
-            double UA = 1 / (1 / (UA_i) + 1 / (UA_o));
+            double UA = 1 / (1 / (UA_i) + 1 / (UA_o)+r_metal);
             double Cmin = Math.Min(cp_r * mr, cp_da * ma);
             double Cmax = Math.Max(cp_r * mr, cp_da * ma);
             double C_star = Cmin / Cmax;
             double Ntu_dry = UA / Cmin;
-            double epsilon_dry = ((1 - Math.Exp(-Ntu_dry * (1 - C_star))) / (1 - C_star * Math.Exp(-Ntu_dry * (1 - C_star))));
+            double epsilon_dry = (1 - Math.Exp(-Ntu_dry * (1 - C_star))) / (1 - C_star * Math.Exp(-Ntu_dry * (1 - C_star)));
             double Q_dry = epsilon_dry * Cmin * (Tin_a - Tin_r) * Math.Pow(-1, hexType);//need to be modified
             double Tout_a_dry = Tin_a - Q_dry / (ma * cp_da) * Math.Pow(-1, hexType);
             double Tout_r = Tin_r + Q_dry / (mr * cp_r) * Math.Pow(-1, hexType);
@@ -362,7 +362,7 @@ namespace Model
                 isFullyWet = true;
             else
                 isFullyWet = false;
-            if (Tout_s < Tdp | isFullyWet == true)
+            if (hexType==0&&(Tout_s < Tdp | isFullyWet == true))
             {
                 double x1 = Tin_r + 0.001;
                 double x2 = Tin_a - 0.001;
@@ -427,9 +427,6 @@ namespace Model
                 }
                 //if (iter > 500)
                 //    Q = Q_dry;
-
-
-
                 double Tout_r_wet = Tout_r;
                 f_dry = 0.0;
                 if ((Tin_s > Tdp) && isFullyWet == false)
@@ -502,6 +499,10 @@ namespace Model
             res.Pro = fluid == "Water" ? pri : pri - res.DP;
             if (res.Pro < 0) { res.Pro = -10000000; return res; }
             res.hro = hri + Math.Pow(-1, hexType) * res.Q / mr;
+            res.R_1a = 1 / ((eta_0 * Aa_fin + Aa_tube) * ha);
+            res.R_1r = 1 / (res.href * Ar);
+            res.R_1 = res.R_1a + res.R_1r + r_metal;
+            if (fluid != "Water") res.Tro = CoolProp.PropsSI("T", "P", res.Pro * 1000, "H", res.hro * 1000, fluid) - 273.15;
             return res; 
 
         }

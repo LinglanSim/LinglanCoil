@@ -29,7 +29,7 @@ namespace Model
             if (flag_ciro == 1) N = 2.2; else N = 1.8; //1.8
             for (int i = 0; i < Ncir; i++)
             {
-                if (res_cir2[Ncir - 1] != null)
+                if (res_cir2[res_cir2.Length - 1] != null)
                 {
                     if (res_cir2[i].Tro - res_cir2[i].Tri > 30 && iterforPri > 0) err = 0.3;
                 }
