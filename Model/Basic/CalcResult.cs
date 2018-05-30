@@ -10,7 +10,6 @@ namespace Model.Basic
     {
         public double Tro = 0;
         public double Pro = 0;
-        public double[, ,] Pro_Detail; 
         public double hro = 0;
         public double Tao = 0; //= new double[1];
         //improve calc speed, ruhao, 20180309
@@ -19,8 +18,14 @@ namespace Model.Basic
         public double Q = 0;
         public double[,] Q_detail;//detail output
         public double[,] DP_detail;
-        public double[,] Tro_detail; 
-        public double[,] href_detail; 
+        public double[,] Tri_detail;
+        public double[,] Pri_detail;
+        public double[,] hri_detail;
+        public double[,] Tro_detail;
+        public double[,] Pro_detail;
+        public double[,] hro_detail; 
+        public double[,] href_detail;
+        public double[,] mr_detail;
         public double M = 0;
         public double x_i = 0;
         public double x_o = 0;

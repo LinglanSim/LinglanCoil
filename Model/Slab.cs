@@ -77,8 +77,14 @@ namespace Model
 
             double[,] Q_detail=new double[N_tube,Nrow];//detail output
             double[,] DP_detail = new double[N_tube, Nrow];
+            double[,] Tri_detail = new double[N_tube, Nrow];
+            double[,] Pri_detail = new double[N_tube, Nrow];
+            double[,] hri_detail = new double[N_tube, Nrow];
             double[,] Tro_detail = new double[N_tube, Nrow];
+            double[,] Pro_detail = new double[N_tube, Nrow];
+            double[,] hro_detail = new double[N_tube, Nrow];
             double[,] href_detail = new double[N_tube, Nrow];
+            double[,] mr_detail = new double[N_tube, Nrow];
 
             int flag_ciro = 0;
             int Ncir_forDP = 0;
@@ -449,8 +455,14 @@ namespace Model
                     {
                         if (r[i].Q_detail[j, k] != 0) Q_detail[j, k] = r[i].Q_detail[j, k];
                         if (r[i].DP_detail[j, k] != 0) DP_detail[j, k] = r[i].DP_detail[j,k];
+                        if (r[i].Tri_detail[j, k] != 0) Tri_detail[j, k] = r[i].Tri_detail[j, k];
+                        if (r[i].Pri_detail[j, k] != 0) Pri_detail[j, k] = r[i].Pri_detail[j, k];
+                        if (r[i].hri_detail[j, k] != 0) hri_detail[j, k] = r[i].hri_detail[j, k];
                         if (r[i].Tro_detail[j, k] != 0) Tro_detail[j, k] = r[i].Tro_detail[j, k];
+                        if (r[i].Pro_detail[j, k] != 0) Pro_detail[j, k] = r[i].Pro_detail[j, k];//
+                        if (r[i].hro_detail[j, k] != 0) hro_detail[j, k] = r[i].hro_detail[j, k];
                         if (r[i].href_detail[j, k] != 0) href_detail[j, k] = r[i].href_detail[j, k];
+                        if (r[i].mr_detail[j, k] != 0) mr_detail[j, k] = r[i].mr_detail[j, k];
                     }
                 }
             }
@@ -523,8 +535,14 @@ namespace Model
             res_slab.Va = res_slab.ma / 1.2 * 3600;
             res_slab.Q_detail = Q_detail;//detail output
             res_slab.DP_detail = DP_detail;
+            res_slab.Tri_detail = Tri_detail;
+            res_slab.Pri_detail = Pri_detail;
+            res_slab.hri_detail = hri_detail;
             res_slab.Tro_detail = Tro_detail;
+            res_slab.Pro_detail = Pro_detail;
+            res_slab.hro_detail = hro_detail;
             res_slab.href_detail = href_detail;
+            res_slab.mr_detail = mr_detail;
             res_slab.Aa = geo.total.A_a;
             res_slab.Ar = geo.total.A_r;
             res_slab.AHx = geo.total.A_hx;

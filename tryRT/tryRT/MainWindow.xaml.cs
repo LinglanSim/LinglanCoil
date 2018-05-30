@@ -127,6 +127,62 @@ namespace tryRT
             set { Tro_detail_inter = value; }
         }
 
+        private Object Pro_detail_inter;
+        public Object frmPara14
+        {
+            get { return Pro_detail_inter; }
+            set { Pro_detail_inter = value; }
+        }
+
+        private Object Q_detail_inter;
+        public Object frmPara15
+        {
+            get { return Q_detail_inter; }
+            set { Q_detail_inter = value; }
+        }
+
+        private Object href_detail_inter;
+        public Object frmPara16
+        {
+            get { return href_detail_inter; }
+            set { href_detail_inter = value; }
+        }
+
+        private Object hro_detail_inter;
+        public Object frmPara17
+        {
+            get { return hro_detail_inter; }
+            set { hro_detail_inter = value; }
+        }
+
+        private Object mr_detail_inter;
+        public Object frmPara18
+        {
+            get { return mr_detail_inter; }
+            set { mr_detail_inter = value; }
+        }
+
+        private Object Pri_detail_inter;
+        public Object frmPara19
+        {
+            get { return Pri_detail_inter; }
+            set { Pri_detail_inter = value; }
+        }
+
+        private Object hri_detail_inter;
+        public Object frmPara20
+        {
+            get { return hri_detail_inter; }
+            set { hri_detail_inter = value; }
+        }
+
+        private Object Tri_detail_inter;
+        public Object frmPara21
+        {
+            get { return Tri_detail_inter; }
+            set { Tri_detail_inter = value; }
+        }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -318,6 +374,15 @@ namespace tryRT
             N_row_inter = r.N_row;
             tube_inter = r.tube_row;
             Tro_detail_inter = r.Tro_detail;
+            Pro_detail_inter = r.Pro_detail;
+            Q_detail_inter = r.Q_detail;
+            href_detail_inter = r.href_detail;
+            hro_detail_inter = r.hro_detail;
+            mr_detail_inter = r.mr_detail;
+            Pri_detail_inter = r.Pri_detail;
+            hri_detail_inter = r.hri_detail;
+            Tri_detail_inter = r.Tri_detail;
+
             this.TabControl1.SelectedItem = this.TabControl1.Items[6];
         }
 
@@ -382,18 +447,16 @@ namespace tryRT
             Q_detail.Tube_row = Convert.ToString(tube_inter);
             Q_detail.Row = Convert.ToString(N_row_inter);
 
-            double[,] c = (double[,])Tro_detail_inter;
             Q_detail.getName_Tro = (double[,])Tro_detail_inter;
-            //Q_detail.getName_Tro = (string[,])Tro_detail_inter[0, 0];
-
-            string[] arraymax = new string[5];
-            string[] arraymin = new string[3];
-            string[] arraystr = new string[] { "11", "22", "33", "44" };
-            arraymax = arraystr;//变成和arraystr一样
-            arraymin = arraystr;//变成和arraystr一样
-
-
-            
+            Q_detail.getName_Pro = (double[,])Pro_detail_inter;
+            Q_detail.getName_Q = (double[,])Q_detail_inter;
+            Q_detail.getName_HTC = (double[,])href_detail_inter;
+            Q_detail.getName_Hro = (double[,])hro_detail_inter;
+            Q_detail.getName_mr = (double[,])mr_detail_inter;
+            Q_detail.getName_Pri = (double[,])Pri_detail_inter;
+            Q_detail.getName_Hri = (double[,])hri_detail_inter;
+            Q_detail.getName_Tri = (double[,])Tri_detail_inter;
+            //Pri_detail_inter
             //a.getName[0]= Convert.ToString(tube);
             //a.getName[1] = Convert.ToString(element);
             //a.getName_Pri = Convert.ToString(Pri1);

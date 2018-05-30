@@ -37,7 +37,6 @@ namespace Model
                 res_tube.R_1 += r[i].R_1;
                 res_tube.R_1a += r[i].R_1a;
                 res_tube.R_1r += r[i].R_1r;
-                //res_tube.Pro_Detail[0, 0, i] = r[i].Pro;//xinzeng
             }
             res_tube.Tao = res_tube.Tao / Nelement; 
             res_tube.RHout = res_tube.RHout / Nelement;

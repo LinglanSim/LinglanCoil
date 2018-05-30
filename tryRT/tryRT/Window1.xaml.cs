@@ -67,16 +67,16 @@ namespace GUI
         private void LoadData(object sender, RoutedEventArgs e)
         {
 
-            Int16 Row_int = Convert.ToInt16(Row);
-            Int16 Tube_row_int = Convert.ToInt16(Tube_row);
-
+            int Row_int = Convert.ToInt16(Row);
+            int Tube_row_int = Convert.ToInt16(Tube_row);
+            
             for (int i = 0; i < Tube_row_int; i++)
                 for (int j = 0; j < Row_int; j++)
             {
                 peopleList.Add(new people()
-                {
-                    tube = Convert.ToString(getName_tube),
-                    row = Convert.ToString(getName_row[i, j]),
+                {              
+                    tube = Convert.ToString(i),
+                    row = Convert.ToString(j),
                     Pri = Convert.ToString(getName_Pri[i, j]),
                     Tri = Convert.ToString(getName_Tri[i, j]),
                     Hri = Convert.ToString(getName_Hri[i, j]),
