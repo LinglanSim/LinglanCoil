@@ -306,8 +306,8 @@ namespace Model
                                             r[i].href_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].href_detail[iTube_o, iRow];
                                             for (int p = 0; p < Nelement; p++)
                                             {
-                                                //ta[p, iTube_n, iRow + 1] = res_type[CircuitInfo.CirType.type[i, 1]].Tao_Detail[p, iTube_o, iRow + 1];
-                                                //RH[p, iTube_n, iRow + 1] = res_type[CircuitInfo.CirType.type[i, 1]].RHo_Detail[p, iTube_o, iRow + 1];
+                                                //ta[p, iTube_n, iRow + 1] = res_type[CircuitInfo.CirType.type[i, 1]].Tao_Detail[p, iTube_o, iRow];
+                                                //RH[p, iTube_n, iRow + 1] = res_type[CircuitInfo.CirType.type[i, 1]].RHo_Detail[p, iTube_o, iRow];
                                                 r[i].Tao_Detail[p,iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].Tao_Detail[p,iTube_o, iRow];
                                                 r[i].RHo_Detail[p, iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].RHo_Detail[p, iTube_o, iRow];
 
@@ -460,7 +460,18 @@ namespace Model
                     }
                 }
                 if (Airdirection == "Parallel")
+                {
                     airConverge.flag = true;
+                    for (int ii = 0; ii < Ncir;ii++ )
+                        for (int i = 0; i < Nrow; i++)
+                            for (int j = 0; j < N_tube; j++)
+                                for (int kk = 0; kk < Nelement; kk++)
+                                {
+                                    if(r[ii].Tao_Detail[kk,j,i]!=0) ta[kk, j, i + 1] = r[ii].Tao_Detail[kk,j,i];
+                                    if (r[ii].RHo_Detail[kk,j,i]!= 0) RH[kk, j, i + 1] = r[ii].RHo_Detail[kk,j,i];
+                                }
+                }
+
                 else//Counter
                 {
                     airConverge = CheckAirConvergeforCircuits.CheckAirConverge(cirArrforAir.TotalDirection, Nrow, N_tube, Nelement, ta, RH, r); //taout_calc, RHout_calc

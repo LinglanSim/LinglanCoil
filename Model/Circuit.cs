@@ -100,8 +100,8 @@ namespace Model
                     {
                         for (int j = 0; j < Nelement; j++)
                         {
-                            ta[j, iTube, iRow+1] = r[i].Tao;
-                            RH[j, iTube, iRow+1] = r[i].RHout;
+                            taout_calc[j, iTube, iRow] = r[i].Tao;
+                            RHout_calc[j, iTube, iRow] = r[i].RHout;
                         }
                     }
                     else//Counter
