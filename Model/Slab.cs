@@ -355,7 +355,7 @@ namespace Model
 
                         index++;
                         //dPconverge = CheckDPforCircuits.CheckDPConverge(mr, mr_ciri, r, Ncir);
-                        dPconverge = CheckDPforCircuits.CheckDPConverge(res_cir2, iterforPri, flag_ciro, mr_forDP, r1, Ncir_forDP);
+                        dPconverge = CheckDPforCircuits.CheckDPConverge(hexType, res_cir2, iterforPri, flag_ciro, mr_forDP, r1, Ncir_forDP);
 
                         if (flag_ciro == 0)
                         {
@@ -450,7 +450,7 @@ namespace Model
                         flag_ciro = 1;
                         Ncir_forDP = Nciro;
                         mr_forDP = (double[])mr_ciro.Clone(); // mr_forDP = mr_ciro
-                        dPconverge = CheckDPforCircuits.CheckDPConverge(res_cir2, iterforPri, flag_ciro, mr_forDP, r2, Ncir_forDP);
+                        dPconverge = CheckDPforCircuits.CheckDPConverge(hexType, res_cir2, iterforPri, flag_ciro, mr_forDP, r2, Ncir_forDP);
                         if (!dPconverge.flag)
                         {
                             restartDP_index = 1;
