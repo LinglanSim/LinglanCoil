@@ -129,8 +129,7 @@ namespace Model
                 double UA_i = res.href * Ar;
                 double NTU_o = UA_o / (cp_a * ma);
                 double T_so_a = (UA_o * tai + UA_i * tri) / (UA_o + UA_i);
-                double T_so_b = (UA_o * tao + UA_i * tri) / (UA_o + UA_i);
-                double Tdp = CoolProp.HAPropsSI("D", "T", tai + 273.15, "P", 101325, "R", RHi) - 273.15;
+                double T_so_b = (UA_o * tao + UA_i * tri) / (UA_o + UA_i);               
                 double Q = Q_dry;
                 double Q_sensible = 0;
                 double omega_in = CoolProp.HAPropsSI("W", "T", tai + 273.15, "P", 101325, "R", RHi);
@@ -140,6 +139,7 @@ namespace Model
 
                 if(hexType==0)
                 {
+                    double Tdp = CoolProp.HAPropsSI("D", "T", tai + 273.15, "P", 101325, "R", RHi) - 273.15;
                     if(T_so_b>Tdp)
                     {
                         f_dry=1.0;
