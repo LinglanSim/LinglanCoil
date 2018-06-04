@@ -101,7 +101,7 @@ namespace Model
             //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
             int curve = 1; //
 
-            double za = 1; //Adjust factor
+            //double za = 1; //Adjust factor
             for (int i = 0; i < N_tube; i++)
             {
                 for (int j = 0; j < Nelement; j++)
@@ -116,7 +116,7 @@ namespace Model
 
             double[,] haw = ha;
 
-            res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a * airInput.zdpa;
+            res.DPa = AirHTC.alpha1(Vel_ave, airInput.za, curve, geoInput_air, hexType).dP_a * airInput.zdpa;
 
             double eta_surface = 1;
             double zh = refInput.zh;
@@ -235,7 +235,7 @@ namespace Model
             //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
             //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
             int curve = 1; //
-            double za = 1; //Adjust factor
+            //double za = 1; //Adjust factor
             for (int i = 0; i < N_tube; i++)
             {
                 for (int j = 0; j < Nelement; j++)
@@ -249,7 +249,7 @@ namespace Model
             ha = AirHTC_CAL.alpha_cal(ha, VaDistri.Va, VaDistri.Va_ave, Vel_ave, airInput.za, curve, geoInput_air, hexType, N_tube, Nelement);
             double[,] haw = ha;
 
-            res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a * airInput.zdpa;
+            res.DPa = AirHTC.alpha1(Vel_ave, airInput.za, curve, geoInput_air, hexType).dP_a * airInput.zdpa;
 
             double eta_surface = 1;
             double zh = refInput.zh;
@@ -367,7 +367,7 @@ namespace Model
             }
             double[,] haw = ha;
 
-            res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
+            res.DPa = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
 
             double eta_surface = 1;
             double zh = 1;
@@ -505,7 +505,7 @@ namespace Model
             }
             double[,] haw = ha;
 
-            res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
+            res.DPa = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
 
             double eta_surface = 1;
             double zh = 1;
@@ -619,7 +619,7 @@ namespace Model
             }
             double[,] haw = ha;
 
-            res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
+            res.DPa = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
 
             double eta_surface = 1;
             double zh = 1;
@@ -716,7 +716,7 @@ namespace Model
             }
             double[,] haw = ha;
 
-            res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
+            res.DPa = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
 
             double eta_surface = 1;
             double zh = 1;
@@ -844,7 +844,7 @@ namespace Model
             }
             double[,] haw = ha;
 
-            res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
+            res.DPa = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
 
             double eta_surface = 0.819;
             double zh = 1.1;
@@ -982,7 +982,7 @@ namespace Model
             }
             double[,] haw = ha;
 
-            res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
+            res.DPa = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
 
             double eta_surface = 0.8;
             double zh = 1.1;
@@ -1122,7 +1122,7 @@ namespace Model
             }
             double[,] haw = ha;
 
-            res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
+            res.DPa = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
 
             double eta_surface = 0.8;
             double zh = 1.1;
@@ -1250,7 +1250,7 @@ namespace Model
             }
             double[,] haw = ha;
 
-            res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
+            res.DPa = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
 
             double eta_surface = 0.8;
             double zh = 1.1;
@@ -1381,7 +1381,7 @@ namespace Model
             }
             double[,] haw = ha;
 
-            res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
+            res.DPa = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
 
             double eta_surface = 0.89;
             double zh = 1;
@@ -1482,7 +1482,7 @@ namespace Model
             ha = AirHTC_CAL.alpha_cal(ha, VaDistri.Va, VaDistri.Va_ave, Vel_ave, za, curve, geoInput_air, hexType, N_tube, Nelement);
             double[,] haw = ha;
      
-            res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
+            res.DPa = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
 
             double eta_surface = 0.8284;
             double zh = 1;
@@ -2391,7 +2391,7 @@ namespace Model
             }
             double[,] haw = ha;
 
-            res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
+            res.DPa = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
 
             double eta_surface = 0.8284;
             double zh = 1;
@@ -3113,7 +3113,7 @@ namespace Model
              }
              double[,] haw = ha;
 
-             res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
+             res.DPa = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
 
             double tai = 19.98;
             double RHi = 0.469;
@@ -3332,7 +3332,7 @@ namespace Model
             }
             double[,] haw = ha;
 
-            res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
+            res.DPa = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
 
             double eta_surface = 1;
             double zh = 1;
@@ -3460,7 +3460,7 @@ namespace Model
             }
             double[,] haw = ha;
 
-            res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
+            res.DPa = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
 
             double eta_surface = 1;
             double zh = 1;
@@ -3567,7 +3567,7 @@ namespace Model
                 }
             }
             double[,] haw = ha;
-            res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
+            res.DPa = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
 
             //double Va = Vel_a * Hx;
             //double ma = Va * rho_a_st;

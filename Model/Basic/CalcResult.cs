@@ -35,6 +35,7 @@ namespace Model.Basic
         public double R_1a = 0;
         public double R_1r = 0;
         public double DP = 0;
+        public double DPa = 0;
         public double Vel_r = 0;
         public double Ra_ratio = 0;
         public double mr = 0;
