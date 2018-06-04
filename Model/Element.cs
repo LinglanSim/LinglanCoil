@@ -43,14 +43,8 @@ namespace Model
                 res_element.x_o = (res_element.hro - h_l) / (h_v - h_l);
                 alpha = 1; //set void fraction to 1 to identify a superheated state
                 //{Equations are for charge calculation}
-                double T_avg = (tri + res_element.Tro) / 2 < tsat - 273.15 + 0.1 ? tsat - 273.15 + 0.1 : (tri + res_element.Tro) / 2; //Average temperature of the element
-                double P_avg = (pri + res_element.Pro) / 2; //Average pressure of the element
-                double H_avg = CoolProp.PropsSI("H", "P", P_avg * 1000, "T", T_avg + 273.15, fluid);
-
-                //double rho = Refrigerant.TPFLSH(fluid, composition, T_avg + 273.15, P_avg).D*r.Wm;//density(ref$, T=T_avg, P=P_avg) 
-                //double rho1 = CoolProp.PropsSI("D", "P", P_avg * 1000, "T", T_avg + 273.15, "R410A.mix");
-                double rho1 = CoolProp.PropsSI("D", "P", P_avg * 1000, "H", H_avg, fluid);
-                res_element.M = Vol_tubes * rho1; //"Mass calculated"
+                double rho = CoolProp.PropsSI("D", "P", pri * 1000, "H", hri * 1000, fluid);
+                res_element.M = Vol_tubes * rho; //"Mass calculated"
             }
          
             // **********Twophase state**********"
@@ -94,10 +88,7 @@ namespace Model
                 //{x=-1 "set quality to -100 to identify a subcooled state"}
                 alpha = -1; //set void fraction to -100 to identify a subcooled state
                 //{Equations are for charge calculation}
-                double T_avg = (tri + res_element.Tro) / 2; //Average temperature of the element
-                double P_avg = (fluid == "Water" ? Pwater : (pri + res_element.Pro) / 2); //Average pressure of the element
-                double H_avg = CoolProp.PropsSI("H", "P", P_avg * 1000, "T", T_avg + 273.15, fluid);
-                double rho = CoolProp.PropsSI("D", "P", P_avg * 1000, "H", H_avg, fluid);
+                double rho = CoolProp.PropsSI("D", "P", pri * 1000, "H", hri * 1000, fluid);
                 res_element.M = Vol_tubes * rho; //Mass calculated
             }
 
