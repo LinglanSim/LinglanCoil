@@ -69,23 +69,24 @@ namespace GUI
 
             int Row_int = Convert.ToInt16(Row);
             int Tube_row_int = Convert.ToInt16(Tube_row);
-            
+
             for (int i = 0; i < Tube_row_int; i++)
                 for (int j = 0; j < Row_int; j++)
             {
                 peopleList.Add(new people()
                 {              
-                    tube = Convert.ToString(i),
-                    row = Convert.ToString(j),
-                    Pri = Convert.ToString(getName_Pri[i, j]),
-                    Tri = Convert.ToString(getName_Tri[i, j]),
-                    Hri = Convert.ToString(getName_Hri[i, j]),
-                    Pro = Convert.ToString(getName_Pro[i, j]),
-                    Tro = Convert.ToString(getName_Tro[i, j]),
-                    Hro = Convert.ToString(getName_Hro[i, j]),
-                    HTC = Convert.ToString(getName_HTC[i, j]),
-                    Q = Convert.ToString(getName_Q[i, j]),
-                    mr = Convert.ToString(getName_mr[i, j]),
+                    tube = Convert.ToString(i + 1),
+                    row = Convert.ToString(j + 1),
+                    Pri = getName_Pri[i, j].ToString("f2"),
+                    Tri = getName_Tri[i, j].ToString("f2"),
+                    Hri = getName_Hri[i, j].ToString("f2"),
+                    Pro = getName_Pro[i, j].ToString("f2"),
+                    Tro = getName_Tro[i, j].ToString("f2"),
+                    Hro = getName_Hro[i, j].ToString("f2"),
+                    HTC = getName_HTC[i, j].ToString("f2"),
+                    Q = (1000 * getName_Q[i, j]).ToString("f2"),
+                    mr = (1000 * getName_mr[i, j]).ToString("f2"),
+
                 });
             }
 

@@ -197,17 +197,21 @@ namespace tryRT
         public void Bind1()
         {
             IList<string> customList = new List<string>();
-            string[] sss = new string[4];
+            string[] sss = new string[6];
             //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
             //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
-            sss[0] = "Do=7mm,Row=2,Pt=22mm,Pr=21mm";
-            sss[1] = "Do=5mm,Row=2,Pt=14.5mm,Pr=12.56mm";
-            sss[2] = "Do=8mm,Row=2,Pt=22mm,Pr=19.05mm";
-            sss[3] = "User Defined";
+            sss[0] = "Do=7mm,Row=2,Pt=21mm,Pr=22mm,Fnum=1.2mm";
+            sss[1] = "Do=5mm,Row=2,Pt=14.5mm,Pr=12.56mm,Fnum=1.2mm";
+            sss[2] = "Do=8mm,Row=2,Pt=22mm,Pr=19.05mm,Fnum=1.6mm";
+            sss[3] = "Do=7mm,Row=2,Pt=21mm,Pr=19.4mm,Fnum=1.5mm";
+            sss[4] = "Do=7mm,Row=2,Pt=21mm,Pr=18.19mm,Fnum=1.2mm";
+            sss[5] = "User Defined";
             customList.Add(sss[0]);
             customList.Add(sss[1]);
             customList.Add(sss[2]);
             customList.Add(sss[3]);
+            customList.Add(sss[4]);
+            customList.Add(sss[5]);
 
             ComboBox1.ItemsSource = customList;
             ComboBox1.SelectedValue = customList[0];
@@ -287,10 +291,8 @@ namespace tryRT
             //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
             sss[0] = "Counter";
             sss[1] = "Parallel";
-            sss[2] = "交叉流";
             customList.Add(sss[0]);
             customList.Add(sss[1]);
-            customList.Add(sss[2]);
 
             ComboBox_flowtype.ItemsSource = customList;
             ComboBox_flowtype.SelectedValue = customList[0];
@@ -331,7 +333,7 @@ namespace tryRT
             airInput.tai = Convert.ToDouble(tai.Text);
             //double RHi = Convert.ToDouble(textBox6.Text);
             airInput.RHi = Convert.ToDouble(RHi.Text);
-            string AirDirection = ComboBox_flowtype.Text;
+            string flowtype = ComboBox_flowtype.Text;
             //string refri = ComboBox3.Text;
             refInput.FluidName = ComboBox3.Text;
             string fin_type = ComboBox_fintype.Text;
@@ -340,23 +342,27 @@ namespace tryRT
 
             //string bb = ComboBox6_SelectionChanged(object sender, SelectionChangedEventArgs e);
             //m_Main.W5(a, b).ha
-            var r = m_Main.main_condenser(refInput, airInput, geoInput, AirDirection, fin_type, tube_type, hex_type);
+            var r = m_Main.main_condenser(refInput, airInput, geoInput, flowtype, fin_type, tube_type, hex_type);
 
             //***换热器性能输出***//
-            Q.Text = Convert.ToString(Convert.ToSingle(r.Q));
-            DP_ref.Text = Convert.ToString(Convert.ToSingle(r.DP));
+            Q.Text = r.Q.ToString("f2");
+            DP_ref.Text = r.DP.ToString("f2");
             //***制冷剂侧输出***//
-            Pro.Text = Convert.ToString(Convert.ToSingle(r.Pro));
-            hro.Text = Convert.ToString(Convert.ToSingle(r.hro));
-            Tro.Text = Convert.ToString(Convert.ToSingle(r.Tro));
+            Pro.Text = r.Pro.ToString("f2");
+            hro.Text = r.hro.ToString("f2");
+            Tro.Text = r.Tro.ToString("f2");
+            mro.Text = (1000 * r.mr).ToString("f2");
             //***风侧输出***//
-            Tao.Text = Convert.ToString(Convert.ToSingle(r.Tao));
-            RHout.Text = Convert.ToString(Convert.ToSingle(r.RHout));
+            Tao.Text = r.Tao.ToString("f2");
+            RHout.Text = r.RHout.ToString("f2");
+            mao.Text = (1000 * r.ma).ToString("f2");
+           
             //***热阻输出***//
-            R_1a.Text = Convert.ToString(Convert.ToSingle(r.R_1a));
-            R_1r.Text = Convert.ToString(Convert.ToSingle(r.R_1r));
-            Ra_ratio.Text = Convert.ToString(Convert.ToSingle(r.Ra_ratio));
+            ha.Text = r.ha.ToString("f2");
+            href.Text = r.href.ToString("f2");
+            Ra_ratio.Text = r.Ra_ratio.ToString("f2");
             //输出到excel
+
             Q_inter = r.Q;
             DP_inter = r.DP;
             ha_inter = r.ha;
@@ -371,6 +377,8 @@ namespace tryRT
             ma_inter = r.ma;
             
             //输出到window1
+
+
             N_row_inter = r.N_row;
             tube_inter = r.tube_row;
             Tro_detail_inter = r.Tro_detail;
@@ -404,6 +412,7 @@ namespace tryRT
                 Pr.IsEnabled = true;
                 Row.IsEnabled = true;
                 Do.IsEnabled = true;
+                Fnum.IsEnabled = true;
             }
             else
             {
@@ -417,6 +426,14 @@ namespace tryRT
                 Pt.Text = sp2.Remove((sp2.Length - 2), 2);
                 string sp3 = sp[3].Split(new string[] { "=" }, StringSplitOptions.None).Last();
                 Pr.Text = sp3.Remove((sp3.Length - 2), 2);
+                string sp4 = sp[4].Split(new string[] { "=" }, StringSplitOptions.None).Last();
+                Fnum.Text = sp4.Remove((sp4.Length - 2), 2);
+
+                Pt.IsEnabled = false;
+                Pr.IsEnabled = false;
+                Row.IsEnabled = false;
+                Do.IsEnabled = false;
+                Fnum.IsEnabled = false;
             }   
         }
 

@@ -382,7 +382,7 @@ namespace Model
                 mr, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
             return res;
         }
-        public CalcResult main_condenser(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, string AirDirection_in, string fin_type, string tube_type, string hex_type)
+        public CalcResult main_condenser(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, string flowtype, string fin_type, string tube_type, string hex_type)
         {
             //制冷剂制热模块计算
             //string fluid = new string[] { "Water" };
@@ -429,7 +429,7 @@ namespace Model
 
             //Circuit-Reverse module
             bool reverse = false; //*********************************false:origin, true:reverse******************************************
-            if (AirDirection_in == "Counter")
+            if (flowtype == "Counter")
                 reverse = false;
             else
                 reverse = true;
@@ -519,7 +519,7 @@ namespace Model
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
-            string AirDirection = AirDirection_in;// "Counter";
+            string AirDirection = flowtype;// "Counter";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
