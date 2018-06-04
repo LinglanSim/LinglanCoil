@@ -41,8 +41,8 @@ namespace Model.Basic
              double V_f = vel * (P_f * Pt * Pr) / ((P_f - Fthickness) * (Pt * Pr - Math.PI * Math.Pow(Do + 2 * Fthickness, 2.0) / 4));
              double Re_a = De_c * V_f * rho_a_st / mu_a;
              double Pr_a = mu_a * cp_a / k_a;
-             double Nusselt_a = 2.1 * Math.Pow(Re_a * Pr_a * De_c / W_hex, 0.38); 
-             double ha = Nusselt_a * k_a / De_c;
+             double Nusselt_a = 2.1 * Math.Pow(Re_a * Pr_a * De_c / W_hex, 0.38);
+             double ha = Nusselt_a * k_a / De_c * za;
 
              //空气侧压降计算
              double f = (0.43 + 35.1 * Math.Pow(Re_a * De_c / W_hex, -1.07)) * De_c / W_hex;

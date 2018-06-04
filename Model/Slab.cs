@@ -12,7 +12,7 @@ namespace Model
     {
         public static CalcResult SlabCalc(int[,] CirArrange, CircuitNumber CircuitInfo, int Nrow, int[] Ntube, int Nelement, string fluid, //double Npass, int[] N_tubes_pass, 
             double dh, double l, AreaResult geo, double[, ,] ta, double[, ,] RH,
-            double te, double pe, double hri, double mr, double[,] ma, double[,] ha,
+            double te, double pe, double hri, double mr, double[,] ma, double[,] ha,double[,] haw,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater,string Airdirection)
    
         {
@@ -50,6 +50,12 @@ namespace Model
              
             int N_tube = Ntube[0];
             int N_tube_total = 0;
+            int iRow = 0;
+            int iTube_o = 0;
+            int iTube_n = 0;
+            int index_o = 0;
+            int index_n = 0;
+            double te_calc_org = 0;
             CirArr[] cirArr = new CirArr[Nrow * N_tube];
             CirArrforAir cirArrforAir = new CirArrforAir();
             cirArrforAir = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube);
@@ -74,6 +80,7 @@ namespace Model
             CalcResult[] r1 = new CalcResult[Ncir];
             CalcResult[] r2 = new CalcResult[Ncir]; //for NinMout only
             CalcResult[] res_cir2 = new CalcResult[Nciro + 1];
+            CalcResult[] res_type = new CalcResult[Nciri + 1];
 
             double[,] Q_detail=new double[N_tube,Nrow];//detail output
             double[,] DP_detail = new double[N_tube, Nrow];
@@ -128,6 +135,7 @@ namespace Model
                 r = new CalcResult[Ncir];
                 r1 = new CalcResult[Ncir];
                 res_cir2 = new CalcResult[Nciro + 1];
+                
 
                 flag_ciro = (index_outbig ? 1 : 0);
                 //tri = tri;
@@ -158,6 +166,7 @@ namespace Model
                     #region //DPConverge
                     do
                     {
+                        res_type = new CalcResult[Nciri + 1];
                         k = 0;
                         if(!index_outbig)
                         { 
@@ -208,7 +217,7 @@ namespace Model
                                     
                                     //for (int i = 0; i < Ncir; i++)
                                     r[i] = Circuit.CircuitCalc(i, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, dh, l, geo.element, ta, RH,
-                                        tri_cir[i], pri_cir[i], hri_cir[i], mr_ciro[k], ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,Airdirection);
+                                        tri_cir[i], pri_cir[i], hri_cir[i], mr_ciro[k], ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,Airdirection);
                                     if (r[i].Pro < 0) { res_slab.Pro = -10000000; return res_slab; }
                                     r1[k] = r[i].ShallowCopy();
                                     r2[k] = r[i].ShallowCopy();
@@ -226,11 +235,11 @@ namespace Model
                                 //均匀流路计算和不均匀流路开始部分（独立管）计算
                                 if (index == 0)
                                 {
-                                    if (Nciri == Nciro)
+                                    if (Nciri == Nciro && iterforPri == 0)
                                     {
                                         mr_ciro.CopyTo(mr_ciri, 0);
                                     }
-                                    else
+                                    else if (Nciri != Nciro)
                                     {
                                         if (restartDP_index == 1 || !priconverge.flag)
                                         {
@@ -248,10 +257,93 @@ namespace Model
                                 //for (int i = 0; i < Ncir; i++)
 
                                 //首次流路计算
+                                if (CircuitInfo.CirType != null)
+                                {
+                                    if ((CircuitInfo.CirType.flag == true) && (CircuitInfo.CirType.type[i, 0] == 0) && (res_type[CircuitInfo.CirType.type[i, 1]] != null))
+                                    {
+                                        //r[i] = res_type[CircuitInfo.CirType.type[i, 1]];
+                                        r[i] = new CalcResult();
+                                        r[i].DP = res_type[CircuitInfo.CirType.type[i, 1]].DP;
+                                        r[i].href = res_type[CircuitInfo.CirType.type[i, 1]].href;
+                                        r[i].hro = res_type[CircuitInfo.CirType.type[i, 1]].hro;
+                                        r[i].M = res_type[CircuitInfo.CirType.type[i, 1]].M;
+                                        r[i].Pro = res_type[CircuitInfo.CirType.type[i, 1]].Pro;
+                                        r[i].Q = res_type[CircuitInfo.CirType.type[i, 1]].Q;
+                                        r[i].R_1 = res_type[CircuitInfo.CirType.type[i, 1]].R_1;
+                                        r[i].R_1a = res_type[CircuitInfo.CirType.type[i, 1]].R_1a;
+                                        r[i].R_1r = res_type[CircuitInfo.CirType.type[i, 1]].R_1r;
+                                        r[i].Ra_ratio = res_type[CircuitInfo.CirType.type[i, 1]].Ra_ratio;
+                                        r[i].RHout = res_type[CircuitInfo.CirType.type[i, 1]].RHout;
+                                        r[i].Tao = res_type[CircuitInfo.CirType.type[i, 1]].Tao;
+                                        r[i].Tri = res_type[CircuitInfo.CirType.type[i, 1]].Tri;
+                                        r[i].Tro = res_type[CircuitInfo.CirType.type[i, 1]].Tro;
+                                        r[i].x_i = res_type[CircuitInfo.CirType.type[i, 1]].x_i;
+                                        r[i].x_o = res_type[CircuitInfo.CirType.type[i, 1]].x_o;
+                                        r[i].Vel_r = res_type[CircuitInfo.CirType.type[i, 1]].Vel_r;
+                                        r[i].mr = res_type[CircuitInfo.CirType.type[i, 1]].mr;
+                                        r[i].Q_detail = new double[N_tube, Nrow];
+                                        r[i].DP_detail = new double[N_tube, Nrow];
+                                        r[i].Tro_detail = new double[N_tube, Nrow];
+                                        r[i].href_detail = new double[N_tube, Nrow];
+                                        r[i].Tao_Detail = new double[Nelement,N_tube, Nrow];
+                                        r[i].RHo_Detail = new double[Nelement, N_tube, Nrow];
+                                        for (int m = 0; m < CircuitInfo.TubeofCir[i]; m++)
+                                        {
+                                            index_o = 0;
+                                            index_n = 0;
+                                            if (i == 0) index_n = 0;
+                                            else
+                                                for (int n = 1; n <= i; n++)
+                                                {
+                                                    index_n += CircuitInfo.TubeofCir[n - 1];
+                                                }
+                                            if (res_type[CircuitInfo.CirType.type[i, 1]].index == 0) index_o = 0;
+                                            else
+                                                for (int n = 1; n <= res_type[CircuitInfo.CirType.type[i, 1]].index; n++)
+                                                {
+                                                    index_o += CircuitInfo.TubeofCir[n - 1];
+                                                }
+                                            iRow = cirArr[m + index_o].iRow;
+                                            iTube_o = cirArr[m + index_o].iTube;
+                                            iTube_n = cirArr[m + index_n].iTube;
+                                            r[i].Q_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].Q_detail[iTube_o, iRow];
+                                            r[i].DP_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].DP_detail[iTube_o, iRow];
+                                            r[i].Tro_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].Tro_detail[iTube_o, iRow];
+                                            r[i].href_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].href_detail[iTube_o, iRow];
+                                            for (int p = 0; p < Nelement; p++)
+                                            {
+                                                //ta[p, iTube_n, iRow + 1] = res_type[CircuitInfo.CirType.type[i, 1]].Tao_Detail[p, iTube_o, iRow];
+                                                //RH[p, iTube_n, iRow + 1] = res_type[CircuitInfo.CirType.type[i, 1]].RHo_Detail[p, iTube_o, iRow];
+                                                r[i].Tao_Detail[p,iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].Tao_Detail[p,iTube_o, iRow];
+                                                r[i].RHo_Detail[p, iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].RHo_Detail[p, iTube_o, iRow];
 
-                                r[i] = Circuit.CircuitCalc(i, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, dh, l, geo.element, ta, RH,
-                                    tri_cir[i], pri_cir[i], hri_cir[i], mr_ciri[k], ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,Airdirection);
-                                if (r[i].Pro < 0) { res_slab.Pro = -10000000; return res_slab; }
+                                            }
+                                        }
+                                        //r[i].Tao_Detail = ta;
+                                        //r[i].RHo_Detail = RH;
+                                    }
+                                    else
+                                    {
+                                        r[i] = Circuit.CircuitCalc(i, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, dh, l, geo.element, ta, RH,
+                                    tri_cir[i], pri_cir[i], hri_cir[i], mr_ciri[k], ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, Airdirection);
+                                        if (r[i].Pro < 0) { res_slab.Pro = -10000000; return res_slab; }
+
+                                        if (CircuitInfo.CirType.type[i, 0] == 0)
+                                        {
+                                            res_type[CircuitInfo.CirType.type[i, 1]] = r[i];
+                                            res_type[CircuitInfo.CirType.type[i, 1]].index = i;
+                                        }
+
+                                    }
+                                }
+
+                                else
+                                {
+                                    r[i] = Circuit.CircuitCalc(i, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, dh, l, geo.element, ta, RH,
+                                    tri_cir[i], pri_cir[i], hri_cir[i], mr_ciri[k], ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, Airdirection);
+                                    if (r[i].Pro < 0) { res_slab.Pro = -10000000; return res_slab; }
+                                }                               
+
                                 r1[k] = r[i].ShallowCopy();
                                 index_cir[k] = i;//不均匀流路的输出才会用到
                                 k++;
@@ -269,7 +361,7 @@ namespace Model
 
                         index++;
                         //dPconverge = CheckDPforCircuits.CheckDPConverge(mr, mr_ciri, r, Ncir);
-                        dPconverge = CheckDPforCircuits.CheckDPConverge(res_cir2, iterforPri, flag_ciro, mr_forDP, r1, Ncir_forDP);
+                        dPconverge = CheckDPforCircuits.CheckDPConverge(hexType, res_cir2, iterforPri, flag_ciro, mr_forDP, r1, Ncir_forDP);
 
                         if (flag_ciro == 0)
                         {
@@ -343,9 +435,9 @@ namespace Model
                                 te_calc = CoolProp.PropsSI("T", "P", res_cir2[j].Pro * 1000, "Q", 0, fluid);
 
                                 if (fluid == "Water")
-                                    res_cir2[j].Tro = res_cir2[j].Tro / (flag_ciro == 1 ? mr : mr_ciro[j]);
+                                    res_cir2[j].Tro = res_cir2[j].Tro / (flag_ciro == 1 ? mr : mr_ciro[j]) - 273.15;
                                 else
-                                    res_cir2[j].Tro = CoolProp.PropsSI("T", "P", res_cir2[j].Pro * 1000, "H", res_cir2[j].hro * 1000, fluid);
+                                    res_cir2[j].Tro = CoolProp.PropsSI("T", "P", res_cir2[j].Pro * 1000, "H", res_cir2[j].hro * 1000, fluid) - 273.15;
                             }
 
                         }
@@ -364,7 +456,7 @@ namespace Model
                         flag_ciro = 1;
                         Ncir_forDP = Nciro;
                         mr_forDP = (double[])mr_ciro.Clone(); // mr_forDP = mr_ciro
-                        dPconverge = CheckDPforCircuits.CheckDPConverge(res_cir2, iterforPri, flag_ciro, mr_forDP, r2, Ncir_forDP);
+                        dPconverge = CheckDPforCircuits.CheckDPConverge(hexType, res_cir2, iterforPri, flag_ciro, mr_forDP, r2, Ncir_forDP);
                         if (!dPconverge.flag)
                         {
                             restartDP_index = 1;
@@ -374,7 +466,18 @@ namespace Model
                     }
                 }
                 if (Airdirection == "Parallel")
+                {
                     airConverge.flag = true;
+                    for (int ii = 0; ii < Ncir;ii++ )
+                        for (int i = 0; i < Nrow; i++)
+                            for (int j = 0; j < N_tube; j++)
+                                for (int kk = 0; kk < Nelement; kk++)
+                                {
+                                    if(r[ii].Tao_Detail[kk,j,i]!=0) ta[kk, j, i + 1] = r[ii].Tao_Detail[kk,j,i];
+                                    if (r[ii].RHo_Detail[kk,j,i]!= 0) RH[kk, j, i + 1] = r[ii].RHo_Detail[kk,j,i];
+                                }
+                }
+
                 else//Counter
                 {
                     airConverge = CheckAirConvergeforCircuits.CheckAirConverge(cirArrforAir.TotalDirection, Nrow, N_tube, Nelement, ta, RH, r); //taout_calc, RHout_calc
@@ -415,9 +518,10 @@ namespace Model
                 priconverge.flag = false;
             else if (hexType == 0 && (fluid != "Water"))
             {
-                priconverge = CheckPin.CheckPriConverge(te, te_calc - 273.15, pri, pe, r[Ncir - 1].Pro); //res_slab.Pro
+                priconverge = CheckPin.CheckPriConverge(te, te_calc - 273.15, te_calc_org - 273.15, pri, pe, r[Ncir - 1].Pro); //res_slab.Pro
                 iterforPri++;
                 pri = priconverge.pri;
+                te_calc_org = te_calc;
                 if (priconverge.flag && iterforPri == 1 && iterforDP == 1)
                     priconverge.flag = false; //to avoid not even iterate but converge by chance 
             }

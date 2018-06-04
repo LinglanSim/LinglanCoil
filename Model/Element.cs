@@ -11,7 +11,7 @@ namespace Model
     {
         public static CalcResult ElementCal(string fluid, double dh, double l, 
             double Aa_fin, double Aa_tube, double A_r_cs, double Ar, double tai, double RHi,
-            double tri, double pri, double hri, double mr, double g, double ma, double ha,
+            double tri, double pri, double hri, double mr, double g, double ma, double ha,double haw,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater)
         {
             double href = 0;
@@ -37,26 +37,20 @@ namespace Model
                 else
                     Tri_mod = tri;
 
-                res_element = SPElement.ElementCalc(fluid, dh, l, Aa_fin, Aa_tube, A_r_cs, Ar, tai, RHi, Tri_mod, pri, hri, mr, g, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+                res_element = SPElement.ElementCalc(fluid, dh, l, Aa_fin, Aa_tube, A_r_cs, Ar, tai, RHi, Tri_mod, pri, hri, mr, g, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
                 if (res_element.Pro < 0) return res_element;
                 res_element.x_i = (hri - h_l) / (h_v - h_l);
                 res_element.x_o = (res_element.hro - h_l) / (h_v - h_l);
                 alpha = 1; //set void fraction to 1 to identify a superheated state
                 //{Equations are for charge calculation}
-                double T_avg = (tri + res_element.Tro) / 2 < tsat - 273.15 + 0.1 ? tsat - 273.15 + 0.1 : (tri + res_element.Tro) / 2; //Average temperature of the element
-                double P_avg = (pri + res_element.Pro) / 2; //Average pressure of the element
-                double H_avg = CoolProp.PropsSI("H", "P", P_avg * 1000, "T", T_avg + 273.15, fluid);
-
-                //double rho = Refrigerant.TPFLSH(fluid, composition, T_avg + 273.15, P_avg).D*r.Wm;//density(ref$, T=T_avg, P=P_avg) 
-                //double rho1 = CoolProp.PropsSI("D", "P", P_avg * 1000, "T", T_avg + 273.15, "R410A.mix");
-                double rho1 = CoolProp.PropsSI("D", "P", P_avg * 1000, "H", H_avg, fluid);
-                res_element.M = Vol_tubes * rho1; //"Mass calculated"
+                double rho = CoolProp.PropsSI("D", "P", pri * 1000, "H", hri * 1000, fluid);
+                res_element.M = Vol_tubes * rho; //"Mass calculated"
             }
          
             // **********Twophase state**********"
             if (hri <= h_v && hri >= h_l && fluid != "Water")
             {
-                res_element = TPElement.ElementCalc(fluid, dh, l, Aa_fin, Aa_tube, A_r_cs, Ar, tai, tri, pri, hri, mr, g, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity);
+                res_element = TPElement.ElementCalc(fluid, dh, l, Aa_fin, Aa_tube, A_r_cs, Ar, tai, RHi,tri, pri, hri, mr, g, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity);
                 if (res_element.Pro < 0) return res_element;
                 //x=x_o  "outlet quality of the element" 
                 double x_avg = (res_element.x_i + res_element.x_o) / 2; //Average quality of the element
@@ -85,7 +79,7 @@ namespace Model
 
                 if (fluid == "Water") Tri_mod = tri - 0.0001;
 
-                res_element = SPElement.ElementCalc(fluid, dh, l, Aa_fin, Aa_tube, A_r_cs, Ar, tai, RHi, Tri_mod, pri, hri, mr, g, ma, ha, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+                res_element = SPElement.ElementCalc(fluid, dh, l, Aa_fin, Aa_tube, A_r_cs, Ar, tai, RHi, Tri_mod, pri, hri, mr, g, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
                 if (res_element.Pro < 0) return res_element;
                 //Call SUBCOOLED(ref$, Dh, L, A_a, A_r, Tai, Tri_mod, Pri, hri, m_r, G_r, m_a, h_air, eta_surface: Tro, Pro, hro, Tao, Q, h_ref, R_1, R_1a, R_1r, DELTAP, Vel_r )
                 res_element.x_i = (hri - h_l) / (h_v - h_l);
@@ -94,13 +88,9 @@ namespace Model
                 //{x=-1 "set quality to -100 to identify a subcooled state"}
                 alpha = -1; //set void fraction to -100 to identify a subcooled state
                 //{Equations are for charge calculation}
-                double T_avg = (tri + res_element.Tro) / 2; //Average temperature of the element
-                double P_avg = (pri + res_element.Pro) / 2; //Average pressure of the element
-                double H_avg = CoolProp.PropsSI("H", "P", P_avg * 1000, "T", T_avg + 273.15, fluid);
-                double rho = CoolProp.PropsSI("D", "P", P_avg * 1000, "H", H_avg, fluid);
+                double rho = CoolProp.PropsSI("D", "P", pri * 1000, "H", hri * 1000, fluid);
                 res_element.M = Vol_tubes * rho; //Mass calculated
             }
-
 
             return res_element;
         }

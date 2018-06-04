@@ -11,7 +11,7 @@ namespace Model
     {
         public static CalcResult CircuitCalc(int index, CirArr[] cirArr, CircuitNumber CircuitInfo, int Nrow, int[] Ntube, int Nelement, string fluid,
             double dh, double l, GeometryResult[,] geo, double[, ,] ta, double[, ,] RH,
-            double tri, double pri, double hri, double mr, double[,] ma, double[,] ha,
+            double tri, double pri, double hri, double mr, double[,] ma, double[,] ha,double[,] haw,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater,string Airdirection)
         {
 
@@ -48,6 +48,7 @@ namespace Model
             double hri_tube = 0;
             double[] ma_tube = new double[Nelement];
             double[] ha_tube = new double[Nelement];
+            double[] haw_tube = new double[Nelement];
             int index2 = 0;
 
             CheckAir airConverge = new CheckAir();
@@ -95,17 +96,18 @@ namespace Model
                         RHi[j] = RH[j, iTube, iRow];
                         ma_tube[j] = ma[iTube, j];
                         ha_tube[j] = ha[iTube, j];
+                        haw_tube[j] = haw[iTube, j];
                     }
 
                     r[i] = Tube.TubeCalc(Nelement, fluid, dh, l, Aa_fin, Aa_tube, Ar_cs, Ar, tai, RHi, tri_tube, pri_tube, hri_tube,
-                        mr, ma_tube, ha_tube, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+                        mr, ma_tube, ha_tube, haw_tube, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
                     if (r[i].Pro < 0) { res_cir.Pro = -10000000; return res_cir; }
                     if (Airdirection=="Parallel")
                     {
                         for (int j = 0; j < Nelement; j++)
                         {
-                            ta[j, iTube, iRow+1] = r[i].Tao;
-                            RH[j, iTube, iRow+1] = r[i].RHout;
+                            taout_calc[j, iTube, iRow] = r[i].Tao;
+                            RHout_calc[j, iTube, iRow] = r[i].RHout;
                         }
                     }
                     else//Counter
