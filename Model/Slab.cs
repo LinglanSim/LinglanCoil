@@ -281,10 +281,16 @@ namespace Model
                                         r[i].x_o = res_type[CircuitInfo.CirType.type[i, 1]].x_o;
                                         r[i].Vel_r = res_type[CircuitInfo.CirType.type[i, 1]].Vel_r;
                                         r[i].mr = res_type[CircuitInfo.CirType.type[i, 1]].mr;
-                                        r[i].Q_detail = new double[N_tube, Nrow];
+                                        r[i].Q_detail = new double[N_tube, Nrow];//
                                         r[i].DP_detail = new double[N_tube, Nrow];
+                                        r[i].Tri_detail = new double[N_tube, Nrow];
+                                        r[i].Pri_detail = new double[N_tube, Nrow];
+                                        r[i].hri_detail = new double[N_tube, Nrow];
                                         r[i].Tro_detail = new double[N_tube, Nrow];
+                                        r[i].Pro_detail = new double[N_tube, Nrow];
+                                        r[i].hro_detail = new double[N_tube, Nrow];
                                         r[i].href_detail = new double[N_tube, Nrow];
+                                        r[i].mr_detail = new double[N_tube, Nrow];
                                         r[i].Tao_Detail = new double[Nelement,N_tube, Nrow];
                                         r[i].RHo_Detail = new double[Nelement, N_tube, Nrow];
                                         for (int m = 0; m < CircuitInfo.TubeofCir[i]; m++)
@@ -306,10 +312,16 @@ namespace Model
                                             iRow = cirArr[m + index_o].iRow;
                                             iTube_o = cirArr[m + index_o].iTube;
                                             iTube_n = cirArr[m + index_n].iTube;
-                                            r[i].Q_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].Q_detail[iTube_o, iRow];
+                                            r[i].Q_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].Q_detail[iTube_o, iRow];//
                                             r[i].DP_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].DP_detail[iTube_o, iRow];
+                                            r[i].Tri_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].Tri_detail[iTube_o, iRow];
+                                            r[i].Pri_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].Pri_detail[iTube_o, iRow];
+                                            r[i].hri_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].hri_detail[iTube_o, iRow];
                                             r[i].Tro_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].Tro_detail[iTube_o, iRow];
+                                            r[i].Pro_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].Pro_detail[iTube_o, iRow];
+                                            r[i].hro_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].hro_detail[iTube_o, iRow];
                                             r[i].href_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].href_detail[iTube_o, iRow];
+                                            r[i].mr_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].mr_detail[iTube_o, iRow];
                                             for (int p = 0; p < Nelement; p++)
                                             {
                                                 //ta[p, iTube_n, iRow + 1] = res_type[CircuitInfo.CirType.type[i, 1]].Tao_Detail[p, iTube_o, iRow];
