@@ -134,10 +134,11 @@ namespace Model
                 double Q_sensible = 0;
                 double omega_in = CoolProp.HAPropsSI("W", "T", tai + 273.15, "P", 101325, "R", RHi);
                 double omega_out = omega_in;
+                res.RHout = CoolProp.HAPropsSI("R", "T", tao + 273.15, "P", 101325, "W", omega_out);
                 double f_dry = 0;
                 double hai = CoolProp.HAPropsSI("H", "T", tai + 273.15, "P", 101325, "R", RHi);
 
-                if(hexType==0)
+                if(hexType==0&&tri<tai)
                 {
                     double Tdp = CoolProp.HAPropsSI("D", "T", tai + 273.15, "P", 101325, "R", RHi) - 273.15;
                     if(T_so_b>Tdp)
@@ -186,7 +187,8 @@ namespace Model
                         tao = T_s_e+(T_ac-T_s_e)*Math.Exp(-(1-f_dry)*NTU_o);
                         Q_sensible=ma*cp_a*(tai-tao);
                         hro = hri + Q/1000 / mr;
-                    }                     
+                    }
+                    res.RHout = CoolProp.HAPropsSI("R", "T", tao + 273.15, "P", 101325, "H", hai -Q / ma);
                 }
                 res.R_1a = 1 / ((eta_surface * Aa_fin + Aa_tube) * ha);
                 res.R_1r = 1 / (res.href * Ar);

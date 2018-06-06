@@ -352,15 +352,18 @@ namespace Model
             double Tin_s = (UA_o * Tin_a + UA_i * Tout_r) / (UA_o + UA_i);
             double Tout_r_dry = Tout_r;
             double f_dry = 1.0;
-            //double omega_out = omega_in;
+            double omega_in = CoolProp.HAPropsSI("W", "T", Tin_a + 273.15, "P", 101325, "R", RHi);
+            double omega_out = omega_in;
 
-            if(hexType==0)
+            if(hexType==0&&tri<tai)
             {
                 bool isFullyWet = true;
-                double omega_in = CoolProp.HAPropsSI("W", "T", Tin_a + 273.15, "P", 101325, "R", RHi);
                 double hin_a = CoolProp.HAPropsSI("H", "T", Tin_a + 273.15, "P", 101325, "R", RHi);
                 double hout_a = hin_a - Q_dry / ma * Math.Pow(-1, hexType);
                 double Tdp = CoolProp.HAPropsSI("D", "T", Tin_a + 273.15, "P", 101325, "R", RHi) - 273.15;
+                res.RHout = CoolProp.HAPropsSI("R", "T", Tout_a_dry + 273.15, "P", 101325, "W", omega_out);
+                Tout_a = Tout_a_dry;
+                Q = Q_dry;
                 if (Tin_s < Tdp)
                     isFullyWet = true;
                 else
@@ -483,16 +486,16 @@ namespace Model
                         hout_a = hin_a - Q / ma;
                         Q_sensible = ma * cp_da * (Tin_a - Tout_a);
                     }
-                    else
-                        Q = Q_wet;    
+                    else Q = Q_wet;
+                    res.RHout = CoolProp.HAPropsSI("R", "T", Tout_a + 273.15, "P", 101325, "H", hin_a + Q / ma);
                 }
-                res.RHout = CoolProp.HAPropsSI("R", "T", Tout_a + 273.15, "P", 101325, "H", hin_a + Math.Pow(-1, hexType + 1) * Q / ma);
             }            
             else
             {
                 Tout_a = Tout_a_dry;
                 Q = Q_dry;
                 Q_sensible = Q_dry;
+                res.RHout = CoolProp.HAPropsSI("R", "T", Tout_a + 273.15, "P", 101325, "W", omega_out);
             }
             res.Tao = Tout_a;
             res.Tro = Tout_r;

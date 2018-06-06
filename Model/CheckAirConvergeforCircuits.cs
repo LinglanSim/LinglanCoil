@@ -30,6 +30,7 @@ namespace Model
                         for (int i = 0; i < Nelement; i++)
                         {
                             taout[i, j, k] = r[m].Tao_Detail[i, j, k] == 0 ? taout[i, j, k] : r[m].Tao_Detail[i, j, k];
+                            RHout[i, j, k] = r[m].RHo_Detail[i, j, k] == 0 ? RHout[i, j, k] : r[m].RHo_Detail[i, j, k];
                         }
 
             for (int j = N_tube - 1; j >= 0; j--) 

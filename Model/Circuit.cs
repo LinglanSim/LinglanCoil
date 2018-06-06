@@ -102,6 +102,8 @@ namespace Model
                         {
                             taout_calc[j, iTube, iRow] = r[i].Tao;
                             RHout_calc[j, iTube, iRow] = r[i].RHout;
+                            ta[j, iTube, iRow+1] = r[i].Tao;
+                            RH[j, iTube, iRow+1] = r[i].RHout;
                         }
                     }
                     else//Counter
@@ -155,7 +157,7 @@ namespace Model
             //}
             res_cir.mr = mr;
             res_cir.Tao_Detail = taout_calc;
-            res_cir.RHo_Detail = RH;
+            res_cir.RHo_Detail = RHout_calc;
             //res_cir.Tao = res_cir.Tao / Nelement;
             res_cir.href = res_cir.href / TubeofCir[index];
             res_cir.R_1 = res_cir.R_1 / TubeofCir[index];
