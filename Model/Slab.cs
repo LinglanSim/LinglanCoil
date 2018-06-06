@@ -441,7 +441,7 @@ namespace Model
 
                     if (Nciri == Nciro) break;
 
-                    if (index_outbig && j == Nciro - 1)
+                    if (index_outbig && (j == Nciro - 1)&&(res_cir2[0]!=null))
                     {
                         for (int i = 0; i < Nciro; i++)
                         {
