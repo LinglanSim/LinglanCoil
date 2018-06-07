@@ -52,8 +52,8 @@ namespace Test
             geoInput.Ntube = 13;
             geoInput.CirNum = 2;
             //var rr = Main.main_condenser_py(refInput, airInput, geoInput);
-            var r = Main.main_evaporator_py(refInput, airInput, geoInput);
-
+            //var r = Main.main_evaporator_py(refInput, airInput, geoInput);
+            var rr = Main.main_condenser_py1(refInput, airInput, geoInput);
         }
     }
 }

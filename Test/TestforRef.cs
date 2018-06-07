@@ -11,7 +11,7 @@ namespace Test
         [TestMethod]
         public void TestMethod1()
         {
-            //var r = Main.main_evaporator();
+            var r = Main.main_evaporator();
             //var r1 = Main.main_condenser();
             //var r = Main.MinNout();
             //var r = Main.NinMout();
