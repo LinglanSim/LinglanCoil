@@ -731,10 +731,10 @@ namespace Model
             string fluid = refInput.FluidName;// refri_in;// "R32";
             //string fluid = new string[] { "ISOBUTAN" };
             CalcResult res = new CalcResult();
-            int Nrow = 2;
+            int Nrow = geoInput.Nrow;
             double[] FPI = new double[Nrow + 1];
             //FPI = new double[] { 1.27, 1.27, 1.27, 1.27, 1.27, 1.27, 1.27, 2.6, 2.6, 2.6, 2.6, 2.6, 2.6, 2.6, 2.6, 5.2, 5.2, 5.2, 5.2, 5.2, 5.2 };
-            FPI = new double[] { geoInput.FPI, geoInput.FPI };
+            FPI = new double[] { 25.4 / geoInput.FPI, 25.4 / geoInput.FPI };//to be updated
             double Pt = geoInput.Pt * 0.001;//1 * 25.4 * 0.001;
             double Pr = geoInput.Pr * 0.001;//0.75 * 25.4 * 0.001;
             //double Di = 8.4074 * 0.001;//8 6.8944
@@ -746,11 +746,10 @@ namespace Model
             //double n_rows = 2;
             //int[] Ntube = { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
             //int[] Ntube = { 2, 2, 2, 2 };
-            int[] Ntube = { 6, 6 };
+            int[] Ntube = { geoInput.Ntube, geoInput.Ntube };
             int N_tube = Ntube[0];
             double L = geoInput.L * 0.001;// 914.4 * 0.001;
-            int Nelement = 1;
-
+            int Nelement = 5;
             int CirNum = geoInput.CirNum;// 2;//流路数目赋值
             int[,] CirArrange;
 
@@ -765,9 +764,19 @@ namespace Model
             CircuitInfo.TubeofCir = new int[CircuitInfo.number[0]];
 
             //Get AutoCircuitry
-            CircuitInfo = AutoCircuiting.GetTubeofCir(Nrow, N_tube, CircuitInfo);
-            CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
-            CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
+            //CircuitInfo = AutoCircuiting.GetTubeofCir(Nrow, N_tube, CircuitInfo);
+            //CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
+            //CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
+
+            CirArrange = new int[,] { { 25, 26, 27, 28, 4, 3, 2, 1 }, { 29, 30, 31, 32, 8, 7, 6, 5 }, { 33, 34, 35, 36, 12, 11, 10, 9 }, { 37, 38, 39, 40, 16, 15, 14, 13 }, { 41, 42, 43, 44, 20, 19, 18, 17 }, { 48, 47, 46, 45, 24, 23, 22, 21 } };
+            CircuitInfo.number = new int[] { 4, 2 };//4in 2out
+            CircuitInfo.TubeofCir = new int[] { 8, 8, 8, 8, 8, 8 };  //{ 4, 8 };
+            CircuitInfo.UnequalCir = new int[] { 5, 5, 6, 6, 0, 0 };
+
+            CirArr[] cirArr = new CirArr[Nrow * N_tube];
+            cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube).CirArr;
+            //CircuitType CirType = new CircuitType();
+            CircuitInfo.CirType = CircuitIdentification.CircuitIdentify(CircuitInfo.number, CircuitInfo.TubeofCir, cirArr);
 
             //Circuit-Reverse module
             bool reverse = false; //*********************************false:origin, true:reverse******************************************
@@ -790,11 +799,10 @@ namespace Model
             if (hex_type == "Evaporator") hexType = 0;
             else hexType = 1;
 
-
             double mr = refInput.Massflowrate; //mr_in;//0.01;
             //double Vel_a = 1.8; //m/s
             double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
-            double Vel_ave =2.032;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+            //double Vel_ave = 1;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
             AirDistribution VaDistri = new AirDistribution();
             VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
             double[,] ma = new double[N_tube, Nelement];
@@ -802,7 +810,8 @@ namespace Model
             double H = Pt * N_tube;
             double Hx = L * H;
             double rho_a_st = 1.2; //kg/m3
-
+            double Va = airInput.Volumetricflowrate;
+            double Vel_ave = Va / Hx;
             //空气侧几何结构选择
             //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
             //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
