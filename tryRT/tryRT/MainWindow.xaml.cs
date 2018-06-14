@@ -314,7 +314,7 @@ namespace tryRT
             geoInput.Pt = Convert.ToDouble(Pt.Text);
             geoInput.Pr = Convert.ToDouble(Pr.Text);
             geoInput.Nrow = Convert.ToInt16(Row.Text);
-            geoInput.Do = Convert.ToInt16(Do.Text);
+            geoInput.Do = Convert.ToDouble(Do.Text);
             geoInput.Ntube = Convert.ToInt16(tube_per.Text);
             geoInput.Tthickness = Convert.ToDouble(thick_tube.Text);
             geoInput.L = Convert.ToDouble(L.Text);
