@@ -37,7 +37,7 @@ namespace Model
                 else
                     Tri_mod = tri;
 
-                res_element = SPElement.ElementCalc(fluid, dh, l, Aa_fin, Aa_tube, A_r_cs, Ar, tai, RHi, Tri_mod, pri, hri, mr, g, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+                res_element = SPElement.ElementCalc3(fluid, dh, l, Aa_fin, Aa_tube, A_r_cs, Ar, tai, RHi, Tri_mod, pri, hri, mr, g, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
                 if (res_element.Pro < 0) return res_element;
                 res_element.x_i = (hri - h_l) / (h_v - h_l);
                 res_element.x_o = (res_element.hro - h_l) / (h_v - h_l);
@@ -56,7 +56,7 @@ namespace Model
             // **********Twophase state**********"
             if (hri <= h_v && hri >= h_l && fluid != "Water")
             {
-                res_element = TPElement.ElementCalc(fluid, dh, l, Aa_fin, Aa_tube, A_r_cs, Ar, tai, RHi,tri, pri, hri, mr, g, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity);
+                res_element = TPElement.ElementCalc1(fluid, dh, l, Aa_fin, Aa_tube, A_r_cs, Ar, tai, RHi,tri, pri, hri, mr, g, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity);
                 if (res_element.Pro < 0) return res_element;
                 //x=x_o  "outlet quality of the element" 
                 double x_avg = (res_element.x_i + res_element.x_o) / 2; //Average quality of the element
@@ -85,7 +85,7 @@ namespace Model
 
                 if (fluid == "Water") Tri_mod = tri - 0.0001;
 
-                res_element = SPElement.ElementCalc(fluid, dh, l, Aa_fin, Aa_tube, A_r_cs, Ar, tai, RHi, Tri_mod, pri, hri, mr, g, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+                res_element = SPElement.ElementCalc3(fluid, dh, l, Aa_fin, Aa_tube, A_r_cs, Ar, tai, RHi, Tri_mod, pri, hri, mr, g, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
                 if (res_element.Pro < 0) return res_element;
                 //Call SUBCOOLED(ref$, Dh, L, A_a, A_r, Tai, Tri_mod, Pri, hri, m_r, G_r, m_a, h_air, eta_surface: Tro, Pro, hro, Tao, Q, h_ref, R_1, R_1a, R_1r, DELTAP, Vel_r )
                 res_element.x_i = (hri - h_l) / (h_v - h_l);
