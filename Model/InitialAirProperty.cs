@@ -16,9 +16,14 @@ namespace Model
             //{
             if (AirDirection=="Parallel")
             {
-                for (int i = 0; i < element; i++)
+                for (int k = 0; k < Nrow + 1; k++)
                     for (int j = 0; j < Ntube[0]; j++)
-                        ta[i, j, 0] = tai;
+                        for (int i = 0; i < element; i++)
+                            ta[i, j, k] = tai - (tai - te) / Nrow * k;
+
+                //for (int i = 0; i < element; i++)
+                    //for (int j = 0; j < Ntube[0]; j++)
+                        //ta[i, j, 0] = tai;
             }
             else // Counter
             {

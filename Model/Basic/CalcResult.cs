@@ -18,8 +18,14 @@ namespace Model.Basic
         public double Q = 0;
         public double[,] Q_detail;//detail output
         public double[,] DP_detail;
-        public double[,] Tro_detail; 
-        public double[,] href_detail; 
+        public double[,] Tri_detail;
+        public double[,] Pri_detail;
+        public double[,] hri_detail;
+        public double[,] Tro_detail;
+        public double[,] Pro_detail;
+        public double[,] hro_detail; 
+        public double[,] href_detail;
+        public double[,] mr_detail;
         public double M = 0;
         public double x_i = 0;
         public double x_o = 0;
@@ -29,6 +35,7 @@ namespace Model.Basic
         public double R_1a = 0;
         public double R_1r = 0;
         public double DP = 0;
+        public double DPa = 0;
         public double Vel_r = 0;
         public double Ra_ratio = 0;
         public double mr = 0;
@@ -43,6 +50,9 @@ namespace Model.Basic
         public double Aa = 0;
         public double Ar = 0;
         public double AHx = 0;
+
+        public int N_row = 0;
+        public int tube_row = 0;
 
         public CalcResult ShallowCopy()
         {

@@ -84,8 +84,14 @@ namespace Model
 
             double[,] Q_detail=new double[N_tube,Nrow];//detail output
             double[,] DP_detail = new double[N_tube, Nrow];
+            double[,] Tri_detail = new double[N_tube, Nrow];
+            double[,] Pri_detail = new double[N_tube, Nrow];
+            double[,] hri_detail = new double[N_tube, Nrow];
             double[,] Tro_detail = new double[N_tube, Nrow];
+            double[,] Pro_detail = new double[N_tube, Nrow];
+            double[,] hro_detail = new double[N_tube, Nrow];
             double[,] href_detail = new double[N_tube, Nrow];
+            double[,] mr_detail = new double[N_tube, Nrow];
 
             int flag_ciro = 0;
             int Ncir_forDP = 0;
@@ -295,10 +301,16 @@ namespace Model
                                         r[i].x_o = res_type[CircuitInfo.CirType.type[i, 1]].x_o;
                                         r[i].Vel_r = res_type[CircuitInfo.CirType.type[i, 1]].Vel_r;
                                         r[i].mr = res_type[CircuitInfo.CirType.type[i, 1]].mr;
-                                        r[i].Q_detail = new double[N_tube, Nrow];
+                                        r[i].Q_detail = new double[N_tube, Nrow];//
                                         r[i].DP_detail = new double[N_tube, Nrow];
+                                        r[i].Tri_detail = new double[N_tube, Nrow];
+                                        r[i].Pri_detail = new double[N_tube, Nrow];
+                                        r[i].hri_detail = new double[N_tube, Nrow];
                                         r[i].Tro_detail = new double[N_tube, Nrow];
+                                        r[i].Pro_detail = new double[N_tube, Nrow];
+                                        r[i].hro_detail = new double[N_tube, Nrow];
                                         r[i].href_detail = new double[N_tube, Nrow];
+                                        r[i].mr_detail = new double[N_tube, Nrow];
                                         r[i].Tao_Detail = new double[Nelement,N_tube, Nrow];
                                         r[i].RHo_Detail = new double[Nelement, N_tube, Nrow];
                                         for (int m = 0; m < CircuitInfo.TubeofCir[i]; m++)
@@ -320,10 +332,16 @@ namespace Model
                                             iRow = cirArr[m + index_o].iRow;
                                             iTube_o = cirArr[m + index_o].iTube;
                                             iTube_n = cirArr[m + index_n].iTube;
-                                            r[i].Q_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].Q_detail[iTube_o, iRow];
+                                            r[i].Q_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].Q_detail[iTube_o, iRow];//
                                             r[i].DP_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].DP_detail[iTube_o, iRow];
+                                            r[i].Tri_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].Tri_detail[iTube_o, iRow];
+                                            r[i].Pri_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].Pri_detail[iTube_o, iRow];
+                                            r[i].hri_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].hri_detail[iTube_o, iRow];
                                             r[i].Tro_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].Tro_detail[iTube_o, iRow];
+                                            r[i].Pro_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].Pro_detail[iTube_o, iRow];
+                                            r[i].hro_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].hro_detail[iTube_o, iRow];
                                             r[i].href_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].href_detail[iTube_o, iRow];
+                                            r[i].mr_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].mr_detail[iTube_o, iRow];
                                             for (int p = 0; p < Nelement; p++)
                                             {
                                                 //ta[p, iTube_n, iRow + 1] = res_type[CircuitInfo.CirType.type[i, 1]].Tao_Detail[p, iTube_o, iRow];
@@ -657,8 +675,14 @@ namespace Model
                     {
                         if (r[i].Q_detail[j, k] != 0) Q_detail[j, k] = r[i].Q_detail[j, k];
                         if (r[i].DP_detail[j, k] != 0) DP_detail[j, k] = r[i].DP_detail[j,k];
+                        if (r[i].Tri_detail[j, k] != 0) Tri_detail[j, k] = r[i].Tri_detail[j, k];
+                        if (r[i].Pri_detail[j, k] != 0) Pri_detail[j, k] = r[i].Pri_detail[j, k];
+                        if (r[i].hri_detail[j, k] != 0) hri_detail[j, k] = r[i].hri_detail[j, k];
                         if (r[i].Tro_detail[j, k] != 0) Tro_detail[j, k] = r[i].Tro_detail[j, k];
+                        if (r[i].Pro_detail[j, k] != 0) Pro_detail[j, k] = r[i].Pro_detail[j, k];//
+                        if (r[i].hro_detail[j, k] != 0) hro_detail[j, k] = r[i].hro_detail[j, k];
                         if (r[i].href_detail[j, k] != 0) href_detail[j, k] = r[i].href_detail[j, k];
+                        if (r[i].mr_detail[j, k] != 0) mr_detail[j, k] = r[i].mr_detail[j, k];
                     }
                 }
             }
@@ -731,11 +755,19 @@ namespace Model
             res_slab.Va = res_slab.ma / 1.2 * 3600;
             res_slab.Q_detail = Q_detail;//detail output
             res_slab.DP_detail = DP_detail;
+            res_slab.Tri_detail = Tri_detail;
+            res_slab.Pri_detail = Pri_detail;
+            res_slab.hri_detail = hri_detail;
             res_slab.Tro_detail = Tro_detail;
+            res_slab.Pro_detail = Pro_detail;
+            res_slab.hro_detail = hro_detail;
             res_slab.href_detail = href_detail;
+            res_slab.mr_detail = mr_detail;
             res_slab.Aa = geo.total.A_a;
             res_slab.Ar = geo.total.A_r;
             res_slab.AHx = geo.total.A_hx;
+            res_slab.N_row = Nrow;
+            res_slab.tube_row = N_tube;
 
             return res_slab;
             #endregion

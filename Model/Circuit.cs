@@ -30,8 +30,14 @@ namespace Model
             double[, ,] RHout_calc = new double[Nelement, N_tube, Nrow];
             double[,] Q_detail = new double[N_tube,Nrow];//detail output
             double[,] DP_detail = new double[N_tube, Nrow];
+            double[,] Tri_detail = new double[N_tube, Nrow];
+            double[,] Pri_detail = new double[N_tube, Nrow];
+            double[,] hri_detail = new double[N_tube, Nrow];
             double[,] Tro_detail = new double[N_tube, Nrow];
+            double[,] Pro_detail = new double[N_tube, Nrow];
+            double[,] hro_detail = new double[N_tube, Nrow];//
             double[,] href_detail = new double[N_tube, Nrow];
+            double[,] mr_detail = new double[N_tube, Nrow];
             double Ar = 0;
             double Aa = 0;
             double Aa_tube = 0;
@@ -115,6 +121,9 @@ namespace Model
                         }
                     }
 
+                    Tri_detail[iTube, iRow] = tri_tube;
+                    Pri_detail[iTube, iRow] = pri_tube;
+                    hri_detail[iTube, iRow] = hri_tube;
                     tri_tube = r[i].Tro;
                     pri_tube = r[i].Pro;
                     hri_tube = r[i].hro;
@@ -123,8 +132,12 @@ namespace Model
                     res_cir.Q += r[i].Q;
                     Q_detail[iTube, iRow] = r[i].Q;//detail output
                     DP_detail[iTube, iRow] = r[i].DP;
+                    
                     Tro_detail[iTube, iRow] = r[i].Tro;
+                    Pro_detail[iTube, iRow] = r[i].Pro;
+                    hro_detail[iTube, iRow] = r[i].hro;
                     href_detail[iTube, iRow] = r[i].href;
+                    mr_detail[iTube, iRow] = mr;
                     res_cir.M += r[i].M;
                     res_cir.Tro = r[i].Tro;
                     res_cir.Pro = r[i].Pro;
@@ -158,6 +171,7 @@ namespace Model
             res_cir.mr = mr;
             res_cir.Tao_Detail = taout_calc;
             res_cir.RHo_Detail = RHout_calc;
+
             //res_cir.Tao = res_cir.Tao / Nelement;
             res_cir.href = res_cir.href / TubeofCir[index];
             res_cir.R_1 = res_cir.R_1 / TubeofCir[index];
@@ -165,8 +179,14 @@ namespace Model
             res_cir.R_1r = res_cir.R_1r / TubeofCir[index];
             res_cir.Q_detail = Q_detail;//detail output
             res_cir.DP_detail = DP_detail;
+            res_cir.Tri_detail = Tri_detail;
+            res_cir.Pri_detail = Pri_detail;
+            res_cir.hri_detail = hri_detail;
             res_cir.Tro_detail = Tro_detail;
+            res_cir.Pro_detail = Pro_detail;
+            res_cir.hro_detail = hro_detail;
             res_cir.href_detail = href_detail;
+            res_cir.mr_detail = mr_detail;
             return res_cir;
         }
 

@@ -12,6 +12,7 @@ namespace Model.Basic
         public double Pr;
         public double Di;
         public double Do;
+        public double Tthickness;
         public double L;
         public double FPI;
         public double Fthickness;

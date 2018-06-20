@@ -48,6 +48,8 @@ namespace Model.Basic
              double f = (0.43 + 35.1 * Math.Pow(Re_a * De_c / W_hex, -1.07)) * De_c / W_hex;
              double dP_a = 2 * f * W_hex * rho_a_st * Math.Pow(V_f, 2) / De_c;
 
+             ha = za * ha;
+
              return res = new AirCoef_res { ha = ha, dP_a = dP_a };
         }
     }

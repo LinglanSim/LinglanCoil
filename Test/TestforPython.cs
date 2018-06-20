@@ -17,6 +17,7 @@ namespace Test
 
             //ref input
             refInput.FluidName = "R32";
+            //*************if input SC or Sh, Massflowrate is the initial input***************
             refInput.Massflowrate = 0.02; //kg/s
             refInput.zh = 3;
             refInput.zdp = 3;
@@ -53,6 +54,10 @@ namespace Test
             geoInput.CirNum = 2;
             //var rr = Main.main_condenser_py(refInput, airInput, geoInput);
             var r = Main.main_evaporator_py(refInput, airInput, geoInput);
+            double Tsc_set = 5;
+            double Tsh_set = 5;
+            //var rr = Main.main_condenser_inputSC_py(Tsc_set, refInput, airInput, geoInput);
+            //var rrr = Main.main_evaporator_inputSH_py(Tsh_set, refInput, airInput, geoInput);
 
         }
     }
