@@ -117,15 +117,28 @@ namespace Model
             int iterforAir = 0;
             int iterforDP = 0;
             int iterforPri = 0;
+            double pri_1=0;
+            double pri_2=0;
+            double pri_3=0;
+            double pri_4=0;
 
             double tri1 = 0;
             double te1 = 0;
+
+            double iterforDP_ciri=0;
+            double iterforDP_ciro=0;
             //Starting properties
+            iterforDP_ciro = 0;
+            double[] mr_forDP_o_4 = new double[Nciri];
+            double[] mr_forDP_o_3 = new double[Nciri];
+            double[] mr_forDP_o_2 = new double[Nciri];
+            double[] mr_forDP_o_1 = new double[Nciri];
             do
             {
             #region //AirConverge
             do
             {
+                //iterforDP = 0;
                 r = new CalcResult[Ncir];
                 r1 = new CalcResult[Ncir];
                 res_cir2 = new CalcResult[Nciro + 1];
@@ -157,6 +170,13 @@ namespace Model
                     }
 
                     index = 0;
+                    iterforDP_ciri = 0;
+                    double[] mr_forDP_4 = new double[Nciri];
+                    double[] mr_forDP_3 = new double[Nciri];
+                    double[] mr_forDP_2 = new double[Nciri];
+                    double[] mr_forDP_1 = new double[Nciri];
+
+                    double [] mr0_forDP=new double[5];
                     #region //DPConverge
                     do
                     {
@@ -359,11 +379,54 @@ namespace Model
 
                         if (flag_ciro == 0)
                         {
+                            iterforDP_ciri++;
+                            if(iterforDP_ciri>=5)
+                            {
+                                mr_forDP_4 = mr_forDP_3;
+                                mr_forDP_3 = mr_forDP_2;
+                                mr_forDP_2 = mr_forDP_1;
+                                mr_forDP_1 = mr_forDP;
+                                try
+                                {
+                                    if (mr_forDP_1[0] < mr_forDP_2[0] && (Math.Abs(mr_forDP_1[0] - mr_forDP_3[0]) / mr_forDP_1[0] < 0.0001) ||
+                                        Math.Abs(mr_forDP_1[0] - mr_forDP_4[0]) / mr_forDP_1[0] < 0.0001)
+                                    {
+                                        dPconverge.flag = true;
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    continue;
+                                }
+                            
+                            }                                                        
                             restartDP_index = 0;
                             if (!dPconverge.flag) dPconverge.mr.CopyTo(mr_ciri, 0);//mr_ciri = dPconverge.mr;   
                         }
                         else //(flag_ciro == 1)
                         {
+                            iterforDP_ciro++;
+                            if (iterforDP_ciro >= 5)
+                            {
+                                mr_forDP_o_4 = mr_forDP_o_3;
+                                mr_forDP_o_3 = mr_forDP_o_2;
+                                mr_forDP_o_2 = mr_forDP_o_1;
+                                mr_forDP_o_1 = mr_forDP;
+                                try
+                                {
+                                    if (mr_forDP_o_1[0] < mr_forDP_o_2[0] && (Math.Abs(mr_forDP_o_1[0] - mr_forDP_o_3[0]) / mr_forDP_o_1[0] < 0.0001) ||
+                                        Math.Abs(mr_forDP_o_1[0] - mr_forDP_o_4[0]) / mr_forDP_o_1[0] < 0.0001)
+                                    {
+                                        dPconverge.flag = true;
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    continue;
+                                }
+
+                            }
+                                                        
                             if (dPconverge.flag)
                             {
                                 restartDP_index = 0;
@@ -437,7 +500,7 @@ namespace Model
                         }
                         #endregion
                     #endregion
-                    } while (!dPconverge.flag && iterforDP < 100);
+                    } while (!dPconverge.flag && iterforDP < 200);
 
                     if (Nciri == Nciro) break;
 
@@ -451,6 +514,27 @@ namespace Model
                         Ncir_forDP = Nciro;
                         mr_forDP = (double[])mr_ciro.Clone(); // mr_forDP = mr_ciro
                         dPconverge = CheckDPforCircuits.CheckDPConverge(hexType, res_cir2, iterforPri, flag_ciro, mr_forDP, r2, Ncir_forDP);
+                        iterforDP_ciro++;
+                        if (iterforDP_ciro >= 5)
+                        {
+                            mr_forDP_o_4 = mr_forDP_o_3;
+                            mr_forDP_o_3 = mr_forDP_o_2;
+                            mr_forDP_o_2 = mr_forDP_o_1;
+                            mr_forDP_o_1 = mr_forDP;
+                            try
+                            {
+                                if (mr_forDP_o_1[0] < mr_forDP_o_2[0] && (Math.Abs(mr_forDP_o_1[0] - mr_forDP_o_3[0]) / mr_forDP_o_1[0] < 0.0001) ||
+                                    Math.Abs(mr_forDP_o_1[0] - mr_forDP_o_4[0]) / mr_forDP_o_1[0] < 0.0001)
+                                {
+                                    dPconverge.flag = true;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                continue;
+                            }
+
+                        }
                         if (!dPconverge.flag)
                         {
                             restartDP_index = 1;
@@ -514,6 +598,26 @@ namespace Model
             {
                 priconverge = CheckPin.CheckPriConverge(te, te_calc - 273.15, te_calc_org - 273.15, pri, pe, r[Ncir - 1].Pro); //res_slab.Pro
                 iterforPri++;
+                if (iterforPri >= 5)
+                {
+                    pri_4 =pri_3;
+                    pri_3 =pri_2;
+                    pri_2 = pri_1;
+                    pri_1 = pri;
+                    try
+                    {
+                        if (pri_1 < pri_2 && (Math.Abs(pri_1 - pri_3) / pri_1 < 0.0001) ||
+                            Math.Abs(pri_1 - pri_4) / pri_1 < 0.0001)
+                        {
+                            priconverge.flag = true;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        continue;
+                    }
+
+                }
                 pri = priconverge.pri;
                 te_calc_org = te_calc;
                 if (priconverge.flag && iterforPri == 1 && iterforDP == 1)
@@ -525,7 +629,7 @@ namespace Model
             } while (!priconverge.flag && iterforPri < 50);
 
 
-            if (iterforDP >= 100)
+            if (iterforDP >= 200)
             {
                 return res_slab;
                 throw new Exception("iter for DPConverge > 100.");
