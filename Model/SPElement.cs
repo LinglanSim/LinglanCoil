@@ -487,7 +487,7 @@ namespace Model
                         Q_sensible = ma * cp_da * (Tin_a - Tout_a);
                     }
                     else Q = Q_wet;
-                    res.RHout = CoolProp.HAPropsSI("R", "T", Tout_a + 273.15, "P", 101325, "H", hin_a + Q / ma);
+                    res.RHout = CoolProp.HAPropsSI("R", "T", Tout_a + 273.15, "P", 101325, "H", hin_a - Q / ma);
                 }
             }            
             else
