@@ -7,12 +7,12 @@ using Model.Basic;
 
 namespace Model
 {
-    public class Areas
+    public class GeometryCal
     {
-        public static GeometryResult Areas_element(double L_element, double FPI, double Do, double Di,
+        public static AreaResult Areas_element(double L_element, double FPI, double Do, double Di,
             double Pt, double Pr, double Fthickness)
         {
-            GeometryResult r = new GeometryResult();
+            AreaResult r = new AreaResult();
             double N_fpm = FPI / 25.4 * 1000;//"Number of fins per meer"
 
             //Air side calculations
@@ -34,33 +34,42 @@ namespace Model
 
         }
 
-        public static AreaResult Area(int Nrow, int N_tube, int Nelement, double L, double[] FPI, double Do, double Di,
+        public static Geometry GeoCal(int Nrow, int N_tube, int Nelement, double L, double[] FPI, double Do, double Di,
             double Pt, double Pr, double Fthickness)
         {
-            AreaResult geo = new AreaResult();
-            geo.total = new GeometryResult();
-            geo.element = new GeometryResult[N_tube, Nrow];
+            Geometry geo = new Geometry();
+            geo.TotalArea = new AreaResult();
+            geo.ElementArea = new AreaResult[N_tube, Nrow];
             //GeometryResult[,] r = new GeometryResult();
             for (int k = 0; k < Nrow; k++)
                 for (int j = 0; j < N_tube; j++)
                 {
-                    geo.element[j, k] = Areas.Areas_element(L / Nelement, FPI[k], Do, Di, Pt, Pr, Fthickness);
+                    geo.ElementArea[j, k] = GeometryCal.Areas_element(L / Nelement, FPI[k], Do, Di, Pt, Pr, Fthickness);
                     //geo_element[i] = Areas.Geometry(L / element, FPI[i], Do, Di, Pt, Pr);
 
-                    geo.total.Aa_tube += geo.element[j, k].Aa_tube;
-                    geo.total.Aa_fin += geo.element[j, k].Aa_fin;
-                    geo.total.A_a += geo.element[j, k].A_a;
-                    geo.total.A_r += geo.element[j, k].A_r;
-                    geo.total.A_r_cs += geo.element[j, k].A_r_cs;
+                    geo.TotalArea.Aa_tube += geo.ElementArea[j, k].Aa_tube;
+                    geo.TotalArea.Aa_fin += geo.ElementArea[j, k].Aa_fin;
+                    geo.TotalArea.A_a += geo.ElementArea[j, k].A_a;
+                    geo.TotalArea.A_r += geo.ElementArea[j, k].A_r;
+                    geo.TotalArea.A_r_cs += geo.ElementArea[j, k].A_r_cs;
                     //geo.A_ratio += geo_element[j,k].A_ratio;
                 }
-            geo.total.Aa_tube *= Nelement;
-            geo.total.Aa_fin *= Nelement;
-            geo.total.A_a *= Nelement;
-            geo.total.A_r *= Nelement;
-            geo.total.A_r_cs *= Nelement;
-            geo.total.A_hx = L * N_tube * Pt;
-            geo.total.A_ratio = geo.total.A_r / geo.total.A_a;
+            geo.TotalArea.Aa_tube *= Nelement;
+            geo.TotalArea.Aa_fin *= Nelement;
+            geo.TotalArea.A_a *= Nelement;
+            geo.TotalArea.A_r *= Nelement;
+            geo.TotalArea.A_r_cs *= Nelement;
+            geo.TotalArea.A_hx = L * N_tube * Pt;
+            geo.TotalArea.A_ratio = geo.TotalArea.A_r / geo.TotalArea.A_a;
+            geo.Di = Di;
+            geo.Do = Do;
+            geo.L = L;
+            geo.Pt = Pt;
+            geo.Pr = Pr;
+            geo.FPI = FPI;
+            geo.Fthickness = Fthickness;
+            geo.Nrow = Nrow;
+            geo.N_tube = N_tube;
             return geo;
 
         }

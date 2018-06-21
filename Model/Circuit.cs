@@ -10,7 +10,7 @@ namespace Model
     public class Circuit
     {
         public static CalcResult CircuitCalc(int index, CirArr[] cirArr, CircuitNumber CircuitInfo, int Nrow, int[] Ntube, int Nelement, string fluid,
-            double dh, double l, GeometryResult[,] geo, double[, ,] ta, double[, ,] RH,
+            double l, Geometry geo, double[, ,] ta, double[, ,] RH,
             double tri, double pri, double hri, double mr, double[,] ma, double[,] ha,double[,] haw,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater,string Airdirection)
         {
@@ -85,11 +85,11 @@ namespace Model
                     iRow = cirArr[i + index2].iRow;
                     iTube = cirArr[i + index2].iTube;
 
-                    Ar = geo[iTube, iRow].A_r;
-                    Aa = geo[iTube, iRow].A_a;
-                    Aa_tube = geo[iTube, iRow].Aa_tube;
-                    Aa_fin = geo[iTube, iRow].Aa_fin;
-                    Ar_cs = geo[iTube, iRow].A_r_cs;
+                    Ar = geo.ElementArea[iTube, iRow].A_r;
+                    Aa = geo.ElementArea[iTube, iRow].A_a;
+                    Aa_tube = geo.ElementArea[iTube, iRow].Aa_tube;
+                    Aa_fin = geo.ElementArea[iTube, iRow].Aa_fin;
+                    Ar_cs = geo.ElementArea[iTube, iRow].A_r_cs;
                     //tai=ta[,iTube,iRow];
                     for (int j = 0; j < Nelement; j++)
                     {
@@ -100,7 +100,7 @@ namespace Model
                         haw_tube[j] = haw[iTube, j];
                     }
 
-                    r[i] = Tube.TubeCalc(Nelement, fluid, dh, l, Aa_fin, Aa_tube, Ar_cs, Ar, tai, RHi, tri_tube, pri_tube, hri_tube,
+                    r[i] = Tube.TubeCalc(Nelement, fluid, l, Aa_fin, Aa_tube, Ar_cs, Ar,geo, tai, RHi, tri_tube, pri_tube, hri_tube,
                         mr, ma_tube, ha_tube, haw_tube, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
                     if (r[i].Pro < 0) { res_cir.Pro = -10000000; return res_cir; }
                     if (Airdirection=="Parallel")

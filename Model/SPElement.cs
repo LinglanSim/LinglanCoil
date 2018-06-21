@@ -9,10 +9,11 @@ namespace Model
 {
     public class SPElement
     {
-        public static CalcResult ElementCalc(string fluid, double dh, double l, double Aa_fin, double Aa_tube, double A_r_cs, double Ar, double tai,
+        public static CalcResult ElementCalc(string fluid, double l, double Aa_fin, double Aa_tube, double A_r_cs, double Ar, Geometry geo, double tai,
             double RHi, double tri, double pri, double hri, double mr, double g, double ma, double ha,double haw,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater)
         {
+            double dh = geo.Di;
             double r_metal = thickness / conductivity / Ar;
             double gg = 9.8;
             CalcResult res=new CalcResult();
@@ -80,11 +81,12 @@ namespace Model
             return res; 
 
         }
-        public static CalcResult ElementCalc2(string fluid, double dh, double l, double Aa_fin, double Aa_tube, double A_r_cs, double Ar, double tai,
+        public static CalcResult ElementCalc2(string fluid, double l, double Aa_fin, double Aa_tube, double A_r_cs, double Ar, Geometry geo, double tai,
          double RHi, double tri, double pri, double hri, double mr, double g, double ma, double ha, double haw,
          double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater)// Python Original
         {
 
+            double dh = geo.Di;
             if (tai < tri)
                 hexType = 1;
             else
@@ -286,10 +288,11 @@ namespace Model
 
         }
 
-        public static CalcResult ElementCalc3(string fluid, double dh, double l, double Aa_fin, double Aa_tube, double A_r_cs, double Ar, double tai,
+        public static CalcResult ElementCalc3(string fluid, double l, double Aa_fin, double Aa_tube, double A_r_cs, double Ar, Geometry geo, double tai,
          double RHi, double tri, double pri, double hri, double mr, double g, double ma, double ha, double haw,
          double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater)
         {
+            double dh = geo.Di;
             double Q = 0;
             double Tout_a = 0;
             double Q_sensible = 0;
@@ -313,10 +316,10 @@ namespace Model
             cp_da = CoolProp.HAPropsSI("C", "T", Tin_a + 273.15, "P", 101325, "R", RHi);            
             double h_r = res.href;
             double k_fin = 237;
-            double Fthickness = 0.095 * 0.001;
-            double Pt = 21 * 0.001;
-            double Pr = 22 * 0.001;
-            double Do = 7.35 * 0.001;
+            double Fthickness = geo.Fthickness;
+            double Pt = geo.Pt;
+            double Pr = geo.Pr;
+            double Do = geo.Do;
 
             //double h_fin = (Pt - Do) / 2;
             //double dc = Do + 2 * Fthickness;
@@ -330,7 +333,7 @@ namespace Model
             double XD = Math.Pow((Pr * Pr + Pt * Pt / 4), 0.5) / 2;
             double XT = Pt / 2;
             double rf_r = 1.27 * XT / r_eta * Math.Pow((XD / XT - 0.3), 0.5);
-            double m = Math.Pow((2 * ha / 237 / Fthickness), 0.5);
+            double m = Math.Pow((2 * ha / k_fin / Fthickness), 0.5);
             double fai = (rf_r - 1) * (1 + (0.3 + Math.Pow((m * r_eta * (rf_r - r_eta) / 2.5), (1.5 - 1 / 12 * rf_r)) * (0.26 * Math.Pow(rf_r, 0.3) - 0.3)) * Math.Log(rf_r));
             double eta_0 = Math.Tanh(m * r_eta * fai) / m / r_eta / fai * Math.Cos(0.1 * m * r_eta * fai);
             double eta_a = (eta_0 * Aa_fin + Aa_tube) / (Aa_fin + Aa_tube);
@@ -393,7 +396,7 @@ namespace Model
                         //eta_a= Math.Tanh(m * h_fin) / (m * h_fin);// may cause error
                         //double m_star=ma/(mr*(cp_r/c_s));
                         //eta_a = eta_a * c_s / cp_da;
-                        m = Math.Pow((2 * haw / 237 / Fthickness), 0.5);
+                        m = Math.Pow((2 * haw / k_fin / Fthickness), 0.5);
                         fai = (rf_r - 1) * (1 + (0.3 + Math.Pow((m * r_eta * (rf_r - r_eta) / 2.5), (1.5 - 1 / 12 * rf_r)) * (0.26 * Math.Pow(rf_r, 0.3) - 0.3)) * Math.Log(rf_r));
                         eta_0 = Math.Tanh(m * r_eta * fai) / m / r_eta / fai * Math.Cos(0.1 * m * r_eta * fai);
                         double eta_wet = (eta_0 * Aa_fin + Aa_tube) / (Aa_fin + Aa_tube);

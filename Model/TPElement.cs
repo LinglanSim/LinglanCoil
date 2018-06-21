@@ -9,10 +9,11 @@ namespace Model
 {
     public class TPElement
     {
-        public static CalcResult ElementCalc(string fluid, double dh, double l, double Aa_fin, double Aa_tube, double A_r_cs, double Ar, double tai, 
+        public static CalcResult ElementCalc(string fluid, double l, double Aa_fin, double Aa_tube, double A_r_cs, double Ar, Geometry geo, double tai, 
             double RHi,double tri, double pri, double hri, double mr, double g, double ma, double ha,double haw,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity)
         {
+            double dh = geo.Di;
             double r_metal = thickness / conductivity / Ar;
             double gg = 9.8;
             double q_initial = 0.01;
@@ -74,10 +75,11 @@ namespace Model
             return res; 
 
         }
-        public static CalcResult ElementCalc1(string fluid, double dh, double l, double Aa_fin, double Aa_tube, double A_r_cs, double Ar, double tai,
+        public static CalcResult ElementCalc1(string fluid, double l, double Aa_fin, double Aa_tube, double A_r_cs, double Ar, Geometry geo, double tai,
             double RHi,double tri, double pri, double hri, double mr, double g, double ma, double ha,double haw,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity)
         {
+            double dh = geo.Di;
             double r_metal = thickness / conductivity / Ar;
             double gg = 9.8;
             double q_initial = 0.01;
@@ -102,15 +104,15 @@ namespace Model
                 res.DP = htc_dp.DPref;
 
                 double k_fin = 237;
-                double Fthickness = 0.095 * 0.001;
-                double Pt = 21 * 0.001;
-                double Pr = 22 * 0.001;
-                double Do = 7.35 * 0.001;
+                double Fthickness = geo.Fthickness;
+                double Pt = geo.Pt;
+                double Pr = geo.Pr;
+                double Do = geo.Do;
                 double r_eta = Do / 2;
                 double XD = Math.Pow((Pr * Pr + Pt * Pt / 4), 0.5) / 2;
                 double XT = Pt / 2;
                 double rf_r = 1.27 * XT / r_eta * Math.Pow((XD / XT - 0.3), 0.5);
-                double m = Math.Pow((2 * ha / 237 / Fthickness), 0.5);
+                double m = Math.Pow((2 * ha / k_fin / Fthickness), 0.5);
                 double fai = (rf_r - 1) * (1 + (0.3 + Math.Pow((m * r_eta * (rf_r - r_eta) / 2.5), (1.5 - 1 / 12 * rf_r)) * (0.26 * Math.Pow(rf_r, 0.3) - 0.3)) * Math.Log(rf_r));
                 double eta_0 = Math.Tanh(m * r_eta * fai) / m / r_eta / fai * Math.Cos(0.1 * m * r_eta * fai);
                 double eta_a = (eta_0 * Aa_fin + Aa_tube) / (Aa_fin + Aa_tube);
@@ -169,7 +171,7 @@ namespace Model
                         }
 
                         double c_s=(CoolProp.HAPropsSI("H","T",tri+273.15+0.01,"P",101325,"R",1.0)-CoolProp.HAPropsSI("H","T",tri+273.15-0.01,"P",101325,"R",1.0))/0.02;
-                        m = Math.Pow((2 * haw / 237 / Fthickness), 0.5);
+                        m = Math.Pow((2 * haw / k_fin / Fthickness), 0.5);
                         fai = (rf_r - 1) * (1 + (0.3 + Math.Pow((m * r_eta * (rf_r - r_eta) / 2.5), (1.5 - 1 / 12 * rf_r)) * (0.26 * Math.Pow(rf_r, 0.3) - 0.3)) * Math.Log(rf_r));
                         double eta_wet = Math.Tanh(m * r_eta * fai) / m / r_eta / fai * Math.Cos(0.1 * m * r_eta * fai);
                         //eta_a = (eta_0 * Aa_fin + Aa_tube) / (Aa_fin + Aa_tube);                                             

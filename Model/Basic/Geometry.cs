@@ -6,12 +6,22 @@ using System.Threading.Tasks;
 
 namespace Model.Basic
 {
-    public class AreaResult
+    public class Geometry
     {
-        public GeometryResult[,] element;
-        public GeometryResult total;
+        public AreaResult[,] ElementArea;
+        public AreaResult TotalArea;
+        public double Pt;
+        public double Pr;
+        public double Di;
+        public double Do;
+        public double Tthickness;
+        public double L;
+        public double[] FPI;
+        public double Fthickness;
+        public int Nrow;
+        public int N_tube;
     }
-    public class GeometryResult
+    public class AreaResult
     {
         public double A_r_cs;
         public double A_r;
