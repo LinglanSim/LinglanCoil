@@ -11,7 +11,7 @@ namespace Model
     public class Slab
     {
         public static CalcResult SlabCalc(int[,] CirArrange, CircuitNumber CircuitInfo, int Nrow, int[] Ntube, int Nelement, string fluid, //double Npass, int[] N_tubes_pass, 
-            double dh, double l, AreaResult geo, double[, ,] ta, double[, ,] RH,
+            double l, Geometry geo, double[, ,] ta, double[, ,] RH,
             double te, double pe, double hri, double mr, double[,] ma, double[,] ha,double[,] haw,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater,string Airdirection)
    
@@ -236,7 +236,7 @@ namespace Model
                                 {
                                     
                                     //for (int i = 0; i < Ncir; i++)
-                                    r[i] = Circuit.CircuitCalc(i, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, dh, l, geo.element, ta, RH,
+                                    r[i] = Circuit.CircuitCalc(i, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, l, geo, ta, RH,
                                         tri_cir[i], pri_cir[i], hri_cir[i], mr_ciro[k], ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,Airdirection);
                                     if (r[i].Pro < 0) { res_slab.Pro = -10000000; return res_slab; }
                                     r1[k] = r[i].ShallowCopy();
@@ -356,7 +356,7 @@ namespace Model
                                     }
                                     else
                                     {
-                                        r[i] = Circuit.CircuitCalc(i, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, dh, l, geo.element, ta, RH,
+                                        r[i] = Circuit.CircuitCalc(i, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, l, geo, ta, RH,
                                     tri_cir[i], pri_cir[i], hri_cir[i], mr_ciri[k], ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, Airdirection);
                                         if (r[i].Pro < 0) { res_slab.Pro = -10000000; return res_slab; }
 
@@ -371,7 +371,7 @@ namespace Model
 
                                 else
                                 {
-                                    r[i] = Circuit.CircuitCalc(i, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, dh, l, geo.element, ta, RH,
+                                    r[i] = Circuit.CircuitCalc(i, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, l, geo, ta, RH,
                                     tri_cir[i], pri_cir[i], hri_cir[i], mr_ciri[k], ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, Airdirection);
                                     if (r[i].Pro < 0) { res_slab.Pro = -10000000; return res_slab; }
                                 }                               
@@ -763,9 +763,9 @@ namespace Model
             res_slab.hro_detail = hro_detail;
             res_slab.href_detail = href_detail;
             res_slab.mr_detail = mr_detail;
-            res_slab.Aa = geo.total.A_a;
-            res_slab.Ar = geo.total.A_r;
-            res_slab.AHx = geo.total.A_hx;
+            res_slab.Aa = geo.TotalArea.A_a;
+            res_slab.Ar = geo.TotalArea.A_r;
+            res_slab.AHx = geo.TotalArea.A_hx;
             res_slab.N_row = Nrow;
             res_slab.tube_row = N_tube;
 
