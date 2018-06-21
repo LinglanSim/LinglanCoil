@@ -92,7 +92,8 @@ namespace Model
             double[,] hro_detail = new double[N_tube, Nrow];
             double[,] href_detail = new double[N_tube, Nrow];
             double[,] mr_detail = new double[N_tube, Nrow];
-
+            double[,] charge_detail = new double[N_tube, Nrow];
+          
             int flag_ciro = 0;
             int Ncir_forDP = 0;
             double[] mr_forDP = new double[Nciri];
@@ -313,6 +314,7 @@ namespace Model
                                         r[i].mr_detail = new double[N_tube, Nrow];
                                         r[i].Tao_Detail = new double[Nelement,N_tube, Nrow];
                                         r[i].RHo_Detail = new double[Nelement, N_tube, Nrow];
+                                        r[i].charge_detail = new double[N_tube, Nrow];
                                         for (int m = 0; m < CircuitInfo.TubeofCir[i]; m++)
                                         {
                                             index_o = 0;
@@ -342,6 +344,8 @@ namespace Model
                                             r[i].hro_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].hro_detail[iTube_o, iRow];
                                             r[i].href_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].href_detail[iTube_o, iRow];
                                             r[i].mr_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].mr_detail[iTube_o, iRow];
+                                            r[i].charge_detail[iTube_n, iRow] = res_type[CircuitInfo.CirType.type[i, 1]].charge_detail[iTube_o, iRow];
+
                                             for (int p = 0; p < Nelement; p++)
                                             {
                                                 //ta[p, iTube_n, iRow + 1] = res_type[CircuitInfo.CirType.type[i, 1]].Tao_Detail[p, iTube_o, iRow];
@@ -683,6 +687,8 @@ namespace Model
                         if (r[i].hro_detail[j, k] != 0) hro_detail[j, k] = r[i].hro_detail[j, k];
                         if (r[i].href_detail[j, k] != 0) href_detail[j, k] = r[i].href_detail[j, k];
                         if (r[i].mr_detail[j, k] != 0) mr_detail[j, k] = r[i].mr_detail[j, k];
+                        if (r[i].charge_detail[j, k] != 0) charge_detail[j, k] = r[i].charge_detail[j, k];
+
                     }
                 }
             }
@@ -768,6 +774,7 @@ namespace Model
             res_slab.AHx = geo.total.A_hx;
             res_slab.N_row = Nrow;
             res_slab.tube_row = N_tube;
+            res_slab.charge_detail = charge_detail;
 
             return res_slab;
             #endregion

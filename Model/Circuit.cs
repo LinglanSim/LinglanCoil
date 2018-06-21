@@ -38,6 +38,7 @@ namespace Model
             double[,] hro_detail = new double[N_tube, Nrow];//
             double[,] href_detail = new double[N_tube, Nrow];
             double[,] mr_detail = new double[N_tube, Nrow];
+            double[,] charge_detail = new double[N_tube, Nrow];
             double Ar = 0;
             double Aa = 0;
             double Aa_tube = 0;
@@ -138,6 +139,7 @@ namespace Model
                     hro_detail[iTube, iRow] = r[i].hro;
                     href_detail[iTube, iRow] = r[i].href;
                     mr_detail[iTube, iRow] = mr;
+                    charge_detail[iTube, iRow] = r[i].M;
                     res_cir.M += r[i].M;
                     res_cir.Tro = r[i].Tro;
                     res_cir.Pro = r[i].Pro;
@@ -187,6 +189,7 @@ namespace Model
             res_cir.hro_detail = hro_detail;
             res_cir.href_detail = href_detail;
             res_cir.mr_detail = mr_detail;
+            res_cir.charge_detail = charge_detail;
             return res_cir;
         }
 
