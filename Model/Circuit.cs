@@ -12,8 +12,35 @@ namespace Model
         public static CalcResult CircuitCalc(int index, CirArr[] cirArr, CircuitNumber CircuitInfo, int Nrow, int[] Ntube, int Nelement, string fluid,
             double dh, double l, GeometryResult[,] geo, double[, ,] ta, double[, ,] RH,
             double tri, double pri, double hri, double mr, double[,] ma, double[,] ha,double[,] haw,
-            double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater,string Airdirection)
+            double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater, string Airdirection, double[] d_cap, double[] lenth_cap)
         {
+            //******蒸发器毛细管******//
+            //调用毛细管守恒方程模型
+            ///
+            
+            int N = 1;
+            Capiliary_res[] res_cap = new Capiliary_res[N];
+            double DP_cap = 0;
+            if (d_cap[index] == 0 && lenth_cap[index] == 0)
+            {
+                pri = pri;
+                hri = hri;
+                tri = tri;
+            }
+            else
+            {
+                for (int i = 0; i < N; i++)
+                {
+                    res_cap[i] = Capiliary.CapiliaryCalc(index, fluid, d_cap[index], lenth_cap[index] / N, tri, pri, hri, mr, Pwater, hexType);
+                    pri = res_cap[i].pro;
+                    hri = res_cap[i].hro;
+                    tri = res_cap[i].tro;
+                    DP_cap += res_cap[i].DP_cap;
+                }
+            }
+            
+            ///
+            //******蒸发器毛细管******//
 
             int N_tube = Ntube[0];
             int Ncir = CircuitInfo.number[0];
@@ -187,6 +214,39 @@ namespace Model
             res_cir.hro_detail = hro_detail;
             res_cir.href_detail = href_detail;
             res_cir.mr_detail = mr_detail;
+
+            //******冷凝器毛细管******//
+            //调用毛细管守恒方程模型  ----需要校核，调整----
+            ///
+            /*
+            int N = 1;
+            Capiliary_res[] res_cap = new Capiliary_res[N];
+            double DP_cap = 0;
+            if (d_cap[index] == 0 && lenth_cap[index] == 0)
+            {
+                pri = pri;
+                hri = hri;
+                tri = tri;
+            }
+            else
+            {
+                for (int i = 0; i < N; i++)
+                {
+                    res_cap[i] = Capiliary.CapiliaryCalc(index, fluid, d_cap[index], lenth_cap[index] / N, res_cir.Tro, res_cir.Pro, res_cir.hro, mr, Pwater, hexType);
+                    res_cir.Pro = res_cap[i].pro;
+                    res_cir.hro = res_cap[i].hro;
+                    res_cir.Tro = res_cap[i].tro;
+                    DP_cap += res_cap[i].DP_cap;
+                }
+            }
+            */
+            ///
+            //******冷凝器毛细管******//
+
+            //增加毛细管模型的单流路总压降
+            res_cir.DP = res_cir.DP + DP_cap;
+            res_cir.DP_cap = DP_cap;
+
             return res_cir;
         }
 

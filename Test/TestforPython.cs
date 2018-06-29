@@ -14,11 +14,12 @@ namespace Test
             var geoInput = new GeometryInput();
             var refInput = new RefStateInput();
             var airInput = new AirStateInput();
+            CapiliaryInput capInput = new CapiliaryInput();
 
             //ref input
             refInput.FluidName = "R32";
             //*************if input SC or Sh, Massflowrate is the initial input***************
-            refInput.Massflowrate = 0.02; //kg/s
+            refInput.Massflowrate = 0.009; //kg/s
             refInput.zh = 3;
             refInput.zdp = 3;
             airInput.za = 1;
@@ -50,12 +51,21 @@ namespace Test
             geoInput.FPI = 20;
             geoInput.Fthickness = 0.095;
             geoInput.Nrow = 2;
-            geoInput.Ntube = 13;
+            geoInput.Ntube = 12;
             geoInput.CirNum = 2;
-            //var rr = Main.main_condenser_py(refInput, airInput, geoInput);
-            var r = Main.main_evaporator_py(refInput, airInput, geoInput);
-            double Tsc_set = 5;
-            double Tsh_set = 5;
+
+            //cap input
+            capInput.d_cap = new double[] { 0.00, 0.00};//0.006
+            capInput.lenth_cap = new double[] { 0.0, 0.0 };//0.5
+            
+            DateTime Time1 = DateTime.Now;
+            var rr = Main.main_condenser_py(refInput, airInput, geoInput, capInput);
+            //var r = Main.main_evaporator_py(refInput, airInput, geoInput, capInput);
+            DateTime Time2 = DateTime.Now;
+            double time = (Time2 - Time1).TotalSeconds;
+
+            //double Tsc_set = 5;
+            //double Tsh_set = 5;
             //var rr = Main.main_condenser_inputSC_py(Tsc_set, refInput, airInput, geoInput);
             //var rrr = Main.main_evaporator_inputSH_py(Tsh_set, refInput, airInput, geoInput);
 

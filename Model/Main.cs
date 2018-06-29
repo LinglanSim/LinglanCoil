@@ -11,7 +11,7 @@ namespace Model
 {
     public class Main
     {
-        public static CalcResult main_condenser_inputSC_py(double Tsc_set, RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput)
+        public static CalcResult main_condenser_inputSC_py(double Tsc_set, RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, CapiliaryInput capInput)
         {
             //***几何结构赋值***//
             CalcResult res = new CalcResult();
@@ -56,6 +56,8 @@ namespace Model
             //CircuitType CirType = new CircuitType();
             CircuitInfo.CirType = CircuitIdentification.CircuitIdentify(CircuitInfo.number, CircuitInfo.TubeofCir, cirArr);
 
+            double[] d_cap = capInput.d_cap;
+            double[] lenth_cap = capInput.lenth_cap;
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -146,7 +148,7 @@ namespace Model
             do
             {
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tri, pri, hri,
-                 mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                 mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
 
                 if (res.x_o >= 0 && res.x_o <= 1)
                 {
@@ -169,7 +171,7 @@ namespace Model
 
             return res;
         }
-        public static CalcResult main_evaporator_inputSH_py(double Tsh_set, RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput)
+        public static CalcResult main_evaporator_inputSH_py(double Tsh_set, RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, CapiliaryInput capInput)
         {
             CalcResult res = new CalcResult();
 
@@ -215,6 +217,9 @@ namespace Model
             //Circuit-Reverse module
             bool reverse = true; //*********************************false:origin, true:reverse******************************************
             CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
+
+            double[] d_cap = capInput.d_cap;
+            double[] lenth_cap = capInput.lenth_cap;
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -314,7 +319,7 @@ namespace Model
             do
             {
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, te, pe, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
                 if (res.x_o >= 0 && res.x_o <= 1)
                 {
                     hsh_cal = CoolProp.PropsSI("H", "P", res.Pro * 1000, "Q", res.x_o, fluid) / 1000;
@@ -335,7 +340,7 @@ namespace Model
  
             return res;
         }
-        public static CalcResult main_evaporator_py(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput)
+        public static CalcResult main_evaporator_py(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, CapiliaryInput capInput)
         {
             CalcResult res = new CalcResult();
 
@@ -381,6 +386,9 @@ namespace Model
             //Circuit-Reverse module
             bool reverse = true; //*********************************false:origin, true:reverse******************************************
             CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
+
+            double[] d_cap = capInput.d_cap;
+            double[] lenth_cap = capInput.lenth_cap;
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -468,11 +476,11 @@ namespace Model
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, te, pe, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
 
             return res;
         }
-        public static CalcResult main_condenser_py(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput)
+        public static CalcResult main_condenser_py(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, CapiliaryInput capInput)
         {
             //***几何结构赋值***//
             CalcResult res = new CalcResult();
@@ -517,6 +525,8 @@ namespace Model
             //CircuitType CirType = new CircuitType();
             CircuitInfo.CirType = CircuitIdentification.CircuitIdentify(CircuitInfo.number, CircuitInfo.TubeofCir, cirArr);
 
+            double[] d_cap = capInput.d_cap;
+            double[] lenth_cap = capInput.lenth_cap;
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -594,7 +604,7 @@ namespace Model
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tri, pri, hri,
-                mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
 
             return res;
         }
@@ -649,6 +659,10 @@ namespace Model
             // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
             //  Ncir=1, 20in, 20->19 1out
+
+            double[] d_cap = new double[] { 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0 };
+
             double mr = 0.02;
             //double Vel_a = 1.8; //m/s
             double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
@@ -720,11 +734,11 @@ namespace Model
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, te, pe, hri,
-            mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+            mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
             return res;
 
         }
-        public CalcResult main_condenser(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, string flowtype, string fin_type, string tube_type, string hex_type)
+        public CalcResult main_condenser(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, string flowtype, string fin_type, string tube_type, string hex_type, CapiliaryInput capInput)
         {
             //制冷剂制热模块计算
             //string fluid = new string[] { "Water" };
@@ -786,6 +800,9 @@ namespace Model
                 reverse = true;
 
             CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
+
+            double[] d_cap = capInput.d_cap;
+            double[] lenth_cap = capInput.lenth_cap;
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -878,7 +895,7 @@ namespace Model
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tri, pri, hri,
-                mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
 
             return res;
         }
@@ -910,6 +927,9 @@ namespace Model
             CircuitInfo.number = new int[] { 8, 8 }; 
             CircuitInfo.TubeofCir = new int[] { 8, 8, 8, 8, 8, 8, 8, 8 };
             CircuitInfo.UnequalCir = null;
+
+            double[] d_cap = new double[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0, 0, 0, 0, 0 };
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -979,7 +999,7 @@ namespace Model
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tri, pri, hri,
-                mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
 
             return res;
         }
@@ -1007,6 +1027,9 @@ namespace Model
             CircuitInfo.number = new int[] { 2, 2 }; //****************modified 3
             CircuitInfo.TubeofCir = new int[] { 2, 2 }; //****************modified 4
             CircuitInfo.UnequalCir = null;
+
+            double[] d_cap = new double[] { 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0 };
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -1075,7 +1098,7 @@ namespace Model
             var r = main_RACR32condenser_1(); //****************modified 9
             //****************modified 9
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, r.Tro, r.Pro, r.hro,
-                r.mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                r.mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
             return res;
         }
 
@@ -1117,6 +1140,9 @@ namespace Model
             // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
             //  Ncir=1, 20in, 20->19 1out
+
+            double[] d_cap = new double[] { 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0 };
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -1195,7 +1221,7 @@ namespace Model
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tri, pri, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
            
             return res;
         }
@@ -1235,6 +1261,9 @@ namespace Model
             // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
             //  Ncir=1, 20in, 20->19 1out
+
+            double[] d_cap = new double[] { 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0 };
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -1313,7 +1342,7 @@ namespace Model
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tri, pri, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
 
             return res;
         }
@@ -1354,6 +1383,9 @@ namespace Model
             // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
             //  Ncir=1, 20in, 20->19 1out
+
+            double[] d_cap = new double[] {0, 0};
+            double[] lenth_cap = new double[] {0, 0};
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -1435,7 +1467,7 @@ namespace Model
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tri, pri, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
 
             res.Q = res.Q + r0.Q;
             res.DP = res.DP + r0.DP;
@@ -1482,6 +1514,8 @@ namespace Model
             //bool reverse = true; //*********************************false:origin, true:reverse******************************************
             //CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
 
+            double[] d_cap = new double[] { 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0 };
 
             double mr = 0.0201;
             //double Vel_a = 1.8; //m/s
@@ -1560,7 +1594,7 @@ namespace Model
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, te, pe, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
             return res;
         }
         public static CalcResult main_evaporator_YH200_1()
@@ -1604,6 +1638,8 @@ namespace Model
             //bool reverse = true; //*********************************false:origin, true:reverse******************************************
             //CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
 
+            double[] d_cap = new double[] { 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0 };
 
             double mr = 0.017;
             //double Vel_a = 1.8; //m/s
@@ -1682,7 +1718,7 @@ namespace Model
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, te, pe, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
             return res;
         }
         public static CalcResult main_evaporator_YH200_2()
@@ -1729,6 +1765,8 @@ namespace Model
             //bool reverse = true; //*********************************false:origin, true:reverse******************************************
             //CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
 
+            double[] d_cap = new double[] { 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0 };
 
             double mr = r0.mr;
             //double Vel_a = 1.8; //m/s
@@ -1807,7 +1845,7 @@ namespace Model
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, te, pe, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
             return res;
         }
         public static CalcResult main_condenser_35()
@@ -1846,6 +1884,9 @@ namespace Model
             // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
             //  Ncir=1, 20in, 20->19 1out
+
+            double[] d_cap = new double[] { 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0 };
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -1924,7 +1965,7 @@ namespace Model
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tri, pri, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
 
             return res;
         }
@@ -1962,6 +2003,9 @@ namespace Model
             // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
             //  Ncir=1, 20in, 20->19 1out
+
+            double[] d_cap = new double[] { 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0 };
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -2040,7 +2084,7 @@ namespace Model
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tri, pri, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
 
             return res;
         }
@@ -2080,6 +2124,9 @@ namespace Model
             // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
             //  Ncir=1, 20in, 20->19 1out
+
+            double[] d_cap = new double[] { 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0 };
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -2158,7 +2205,7 @@ namespace Model
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tri, pri, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
 
             res.Q = res.Q + r0.Q;
             res.DP = res.DP + r0.DP;
@@ -2203,6 +2250,8 @@ namespace Model
             //bool reverse = true; //*********************************false:origin, true:reverse******************************************
             //CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
 
+            double[] d_cap = new double[] { 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0 };
 
             double mr = 0.01168;//0.0125;
             //double Vel_a = 1.8; //m/s
@@ -2281,7 +2330,7 @@ namespace Model
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, te, pe, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
             return res;
         }
         public static CalcResult Water_Midea5()
@@ -2336,6 +2385,9 @@ namespace Model
             // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
             //  Ncir=1, 20in, 20->19 1out
+
+            double[] d_cap = new double[] { 0, 0, 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0, 0, 0 };
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -2407,7 +2459,7 @@ namespace Model
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc, pc, hri,
-                mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
             return res;
         }
 
@@ -2436,6 +2488,11 @@ namespace Model
             CircuitInfo.TubeofCir = new int[] { 4, 4, 4 };  //{ 4, 8 };
             // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
+
+
+            double[] d_cap = new double[] { 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0 };
+
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -2508,7 +2565,7 @@ namespace Model
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc, pc, hri,
-                mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
 
             return res;
         }
@@ -2535,6 +2592,9 @@ namespace Model
             CircuitNumber CircuitInfo = new CircuitNumber();
             CircuitInfo.number = new int[] { 3, 3 };
             CircuitInfo.TubeofCir = new int[] { 4, 4, 4 };  //{ 4, 8 };
+
+            double[] d_cap = new double[] { 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0 };
 
             int N = 28;
             for (int i = 6; i < 7; i++)
@@ -2598,7 +2658,7 @@ namespace Model
                 AreaResult geo = new AreaResult();
                 geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_cool.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -2629,6 +2689,9 @@ namespace Model
             CircuitNumber CircuitInfo = new CircuitNumber();
             CircuitInfo.number = new int[] { 3, 3 };
             CircuitInfo.TubeofCir = new int[] { 4, 4, 4 };  //{ 4, 8 };
+
+            double[] d_cap = new double[] { 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0 };
 
             int N = 28;
             for (int i = 0; i < N; i++)
@@ -2694,7 +2757,7 @@ namespace Model
                 AreaResult geo = new AreaResult();
                 geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -2729,6 +2792,10 @@ namespace Model
             cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube).CirArr;
             //CircuitType CirType = new CircuitType();
             CircuitInfo.CirType = CircuitIdentification.CircuitIdentify(CircuitInfo.number, CircuitInfo.TubeofCir, cirArr);
+
+
+            double[] d_cap = new double[] { 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0 };
 
 
             AreaResult geo = new AreaResult();
@@ -2800,7 +2867,7 @@ namespace Model
 
 
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -2831,6 +2898,11 @@ namespace Model
             CircuitNumber CircuitInfo = new CircuitNumber();
             CircuitInfo.number = new int[] { 4, 4 };
             CircuitInfo.TubeofCir = new int[] { 8, 8, 8, 8 };  //{ 4, 8 };
+
+
+            double[] d_cap = new double[] { 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0 };
+
 
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
@@ -2897,7 +2969,7 @@ namespace Model
 
 
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -2928,6 +3000,11 @@ namespace Model
             CircuitNumber CircuitInfo = new CircuitNumber();
             CircuitInfo.number = new int[] { 6, 6 };
             CircuitInfo.TubeofCir = new int[] { 8, 8, 8, 8, 8, 8 };  //{ 4, 8 };
+
+
+            double[] d_cap = new double[] { 0, 0, 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0, 0, 0 };
+
 
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
@@ -2995,7 +3072,7 @@ namespace Model
 
 
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -3026,6 +3103,9 @@ namespace Model
             CircuitNumber CircuitInfo = new CircuitNumber();
             CircuitInfo.number = new int[] { 6, 6 };
             CircuitInfo.TubeofCir = new int[] { 8, 8, 8, 8, 8, 8 };  //{ 4, 8 };
+
+            double[] d_cap = new double[] { 0, 0, 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0, 0, 0 };
 
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
@@ -3093,7 +3173,7 @@ namespace Model
 
 
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -3141,6 +3221,9 @@ namespace Model
             //Circuit-Reverse module
             bool reverse = true; //*********************************false:origin, true:reverse******************************************
             CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
+
+            double[] d_cap = new double[] { 0, 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0, 0 };
 
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
@@ -3207,7 +3290,7 @@ namespace Model
 
 
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -3242,6 +3325,9 @@ namespace Model
             //Circuit-Reverse module
             bool reverse = true; //*********************************false:origin, true:reverse******************************************
             CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
+
+            double[] d_cap = new double[] { 0, 0, 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0, 0, 0 };
 
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
@@ -3309,7 +3395,7 @@ namespace Model
 
 
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -3347,6 +3433,9 @@ namespace Model
             //Circuit-Reverse module
             bool reverse = true; //*********************************false:origin, true:reverse******************************************
             CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
+
+            double[] d_cap = new double[] { 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0 };
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -3417,7 +3506,7 @@ namespace Model
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc, pc, hri,
-                mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
 
             return res;
         }
@@ -3447,6 +3536,9 @@ namespace Model
             //Circuit-Reverse module
             bool reverse = true; //*********************************false:origin, true:reverse******************************************
             CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
+
+            double[] d_cap = new double[] { 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0 };
 
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
@@ -3512,7 +3604,7 @@ namespace Model
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -3555,6 +3647,9 @@ namespace Model
             CircuitInfo = AutoCircuiting.GetTubeofCir(Nrow, N_tube, CircuitInfo);
             CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
             CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
+
+            double[] d_cap = new double[] { 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0 };
 
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
@@ -3623,7 +3718,7 @@ namespace Model
 
 
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -3668,6 +3763,9 @@ namespace Model
             CircuitInfo = AutoCircuiting.GetTubeofCir(Nrow, N_tube, CircuitInfo);
             CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
             CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
+
+            double[] d_cap = new double[] { 0, 0, 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0, 0, 0 };
 
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
@@ -3735,7 +3833,7 @@ namespace Model
 
 
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -3776,6 +3874,9 @@ namespace Model
             CircuitInfo = AutoCircuiting.GetTubeofCir(Nrow, N_tube, CircuitInfo);          
             CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
             CirArrange = AutoCircuiting.GetCirArrange_3Row(CirArrange, Nrow, N_tube, CircuitInfo);
+
+            double[] d_cap = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
@@ -3840,7 +3941,7 @@ namespace Model
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -3872,6 +3973,9 @@ namespace Model
             CircuitNumber CircuitInfo = new CircuitNumber();
             CircuitInfo.number = new int[] { 3, 3 };
             CircuitInfo.TubeofCir = new int[] { 18, 18, 18 };  //{ 4, 8 };
+
+            double[] d_cap = new double[] { 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0 };
 
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
@@ -3937,7 +4041,7 @@ namespace Model
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -3968,6 +4072,9 @@ namespace Model
             CircuitNumber CircuitInfo = new CircuitNumber();
             CircuitInfo.number = new int[] { 3, 3 };
             CircuitInfo.TubeofCir = new int[] { 18, 18, 18 };  //{ 4, 8 };
+
+            double[] d_cap = new double[] { 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0 };
 
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
@@ -4035,7 +4142,7 @@ namespace Model
 
 
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -4066,6 +4173,9 @@ namespace Model
             CircuitNumber CircuitInfo = new CircuitNumber();
             CircuitInfo.number = new int[] { 3, 3 };
              CircuitInfo.TubeofCir = new int[] { 18, 14, 16 };  //{ 4, 8 };
+
+             double[] d_cap = new double[] { 0, 0, 0 };
+             double[] lenth_cap = new double[] { 0, 0, 0 };
 
              GeometryInput geoInput_air = new GeometryInput();
              geoInput_air.Pt = Pt;
@@ -4135,7 +4245,7 @@ namespace Model
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc, pc, hri,
-                mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
 
             return res;
         }
@@ -4161,6 +4271,9 @@ namespace Model
             CircuitNumber CircuitInfo = new CircuitNumber();
             CircuitInfo.number = new int[] { 3, 3 };
             CircuitInfo.TubeofCir = new int[] { 18, 14, 16 };  //{ 4, 8 };
+
+            double[] d_cap = new double[] { 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0 };
 
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
@@ -4228,7 +4341,7 @@ namespace Model
 
 
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -4288,6 +4401,9 @@ namespace Model
             CircuitInfo.number = new int[] { 4, 2 }; //4in 2out
             CircuitInfo.TubeofCir = new int[] { 8, 6, 8, 10, 6, 10 };  //{ 4, 8 };
             CircuitInfo.UnequalCir = new int[] { 5, 5, 6, 6, 0, 0 };
+
+            double[] d_cap = new double[] { 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0 };
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -4360,7 +4476,7 @@ namespace Model
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, te, pe, hri,
-                mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
 
             return res;
         }
@@ -4415,6 +4531,9 @@ namespace Model
             CircuitInfo.number = new int[] { 4, 2 }; //4in 2out
             CircuitInfo.TubeofCir = new int[] { 6, 10, 8, 6, 8, 10 };  //{ 4, 8 };
             CircuitInfo.UnequalCir = new int[] { -5, -6, 5, 5, 6, 6 }; //{ 3, 4, -3, -3, -4, -4 };
+
+            double[] d_cap = new double[] { 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0 };
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -4487,7 +4606,7 @@ namespace Model
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, te, pe, hri,
-                mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
 
             //res = Slab.SlabCalc(Npass, N_tubes_pass, fluid, composition, Dh, L, geo.A_a, geo.A_r_cs, geo.A_r, tai, tri, pe, hri,
             //    mr, ma, ha, eta_surface, zh, zdp);
@@ -4523,6 +4642,9 @@ namespace Model
             CircuitInfo.number = new int[] { 4, 2 };
             CircuitInfo.TubeofCir = new int[] { 9, 9, 9, 9, 3, 3 };
             CircuitInfo.UnequalCir = new int[] { 5, 5, 6, 6, 0, 0 };
+
+            double[] d_cap = new double[] { 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0 };
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -4593,7 +4715,7 @@ namespace Model
             AreaResult geo = new AreaResult();
             geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc, pc, hri,
-                mr, ma, ha, haw,eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
             return res;
         }
     
