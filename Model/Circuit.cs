@@ -18,26 +18,30 @@ namespace Model
             //调用毛细管守恒方程模型
             ///
             
-            int N = 1;
-            Capiliary_res[] res_cap = new Capiliary_res[N];
             double DP_cap = 0;
-            if (d_cap[index] == 0 && lenth_cap[index] == 0)
+            if (hexType == 0)
             {
-                pri = pri;
-                hri = hri;
-                tri = tri;
-            }
-            else
-            {
-                for (int i = 0; i < N; i++)
+                int N = 1;
+                Capiliary_res[] res_cap = new Capiliary_res[N];
+                if (d_cap[index] == 0 && lenth_cap[index] == 0)
                 {
-                    res_cap[i] = Capiliary.CapiliaryCalc(index, fluid, d_cap[index], lenth_cap[index] / N, tri, pri, hri, mr, Pwater, hexType);
-                    pri = res_cap[i].pro;
-                    hri = res_cap[i].hro;
-                    tri = res_cap[i].tro;
-                    DP_cap += res_cap[i].DP_cap;
+                    pri = pri;
+                    hri = hri;
+                    tri = tri;
+                }
+                else
+                {
+                    for (int i = 0; i < N; i++)
+                    {
+                        res_cap[i] = Capiliary.CapiliaryCalc(index, fluid, d_cap[index], lenth_cap[index] / N, tri, pri, hri, mr, Pwater, hexType);
+                        pri = res_cap[i].pro;
+                        hri = res_cap[i].hro;
+                        tri = res_cap[i].tro;
+                        DP_cap += res_cap[i].DP_cap;
+                    }
                 }
             }
+            
             
             ///
             //******蒸发器毛细管******//
@@ -221,28 +225,30 @@ namespace Model
             //******冷凝器毛细管******//
             //调用毛细管守恒方程模型  ----需要校核，调整----
             ///
-            /*
-            int N = 1;
-            Capiliary_res[] res_cap = new Capiliary_res[N];
-            double DP_cap = 0;
-            if (d_cap[index] == 0 && lenth_cap[index] == 0)
+            if (hexType == 1)
             {
-                pri = pri;
-                hri = hri;
-                tri = tri;
-            }
-            else
-            {
-                for (int i = 0; i < N; i++)
+                int N = 1;
+                Capiliary_res[] res_cap = new Capiliary_res[N];
+                //double DP_cap = 0;
+                if (d_cap[index] == 0 && lenth_cap[index] == 0)
                 {
-                    res_cap[i] = Capiliary.CapiliaryCalc(index, fluid, d_cap[index], lenth_cap[index] / N, res_cir.Tro, res_cir.Pro, res_cir.hro, mr, Pwater, hexType);
-                    res_cir.Pro = res_cap[i].pro;
-                    res_cir.hro = res_cap[i].hro;
-                    res_cir.Tro = res_cap[i].tro;
-                    DP_cap += res_cap[i].DP_cap;
+                    pri = pri;
+                    hri = hri;
+                    tri = tri;
+                }
+                else
+                {
+                    for (int i = 0; i < N; i++)
+                    {
+                        res_cap[i] = Capiliary.CapiliaryCalc(index, fluid, d_cap[index], lenth_cap[index] / N, res_cir.Tro, res_cir.Pro, res_cir.hro, mr, Pwater, hexType);
+                        res_cir.Pro = res_cap[i].pro;
+                        res_cir.hro = res_cap[i].hro;
+                        res_cir.Tro = res_cap[i].tro;
+                        DP_cap += res_cap[i].DP_cap;
+                    }
                 }
             }
-            */
+     
             ///
             //******冷凝器毛细管******//
 
