@@ -342,7 +342,10 @@ namespace tryRT
 
             //string bb = ComboBox6_SelectionChanged(object sender, SelectionChangedEventArgs e);
             //m_Main.W5(a, b).ha
-            var r = m_Main.main_condenser(refInput, airInput, geoInput, flowtype, fin_type, tube_type, hex_type);
+            Model.Basic.CapiliaryInput capInput = new Model.Basic.CapiliaryInput();
+            capInput.d_cap = new double[] { 0.00, 0.00 };//0.006
+            capInput.lenth_cap = new double[] { 0.0, 0.0 };//0.5
+            var r = m_Main.main_condenser(refInput, airInput, geoInput, flowtype, fin_type, tube_type, hex_type, capInput);
 
             //***换热器性能输出***//
             Q.Text = r.Q.ToString("f2");

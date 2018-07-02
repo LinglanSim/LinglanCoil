@@ -26,6 +26,7 @@ namespace Model.Basic
         public double[,] hro_detail; 
         public double[,] href_detail;
         public double[,] mr_detail;
+        public double[,] charge_detail;
         public double M = 0;
         public double x_i = 0;
         public double x_o = 0;

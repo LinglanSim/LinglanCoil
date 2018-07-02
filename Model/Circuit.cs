@@ -10,7 +10,7 @@ namespace Model
     public class Circuit
     {
         public static CalcResult CircuitCalc(int index, CirArr[] cirArr, CircuitNumber CircuitInfo, int Nrow, int[] Ntube, int Nelement, string fluid,
-            double dh, double l, GeometryResult[,] geo, double[, ,] ta, double[, ,] RH,
+            double l, Geometry geo, double[, ,] ta, double[, ,] RH,
             double tri, double pri, double hri, double mr, double[,] ma, double[,] ha,double[,] haw,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater, string Airdirection, double[] d_cap, double[] lenth_cap)
         {
@@ -65,6 +65,7 @@ namespace Model
             double[,] hro_detail = new double[N_tube, Nrow];//
             double[,] href_detail = new double[N_tube, Nrow];
             double[,] mr_detail = new double[N_tube, Nrow];
+            double[,] charge_detail = new double[N_tube, Nrow];
             double Ar = 0;
             double Aa = 0;
             double Aa_tube = 0;
@@ -111,11 +112,11 @@ namespace Model
                     iRow = cirArr[i + index2].iRow;
                     iTube = cirArr[i + index2].iTube;
 
-                    Ar = geo[iTube, iRow].A_r;
-                    Aa = geo[iTube, iRow].A_a;
-                    Aa_tube = geo[iTube, iRow].Aa_tube;
-                    Aa_fin = geo[iTube, iRow].Aa_fin;
-                    Ar_cs = geo[iTube, iRow].A_r_cs;
+                    Ar = geo.ElementArea[iTube, iRow].A_r;
+                    Aa = geo.ElementArea[iTube, iRow].A_a;
+                    Aa_tube = geo.ElementArea[iTube, iRow].Aa_tube;
+                    Aa_fin = geo.ElementArea[iTube, iRow].Aa_fin;
+                    Ar_cs = geo.ElementArea[iTube, iRow].A_r_cs;
                     //tai=ta[,iTube,iRow];
                     for (int j = 0; j < Nelement; j++)
                     {
@@ -126,7 +127,7 @@ namespace Model
                         haw_tube[j] = haw[iTube, j];
                     }
 
-                    r[i] = Tube.TubeCalc(Nelement, fluid, dh, l, Aa_fin, Aa_tube, Ar_cs, Ar, tai, RHi, tri_tube, pri_tube, hri_tube,
+                    r[i] = Tube.TubeCalc(Nelement, fluid, l, Aa_fin, Aa_tube, Ar_cs, Ar,geo, tai, RHi, tri_tube, pri_tube, hri_tube,
                         mr, ma_tube, ha_tube, haw_tube, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
                     if (r[i].Pro < 0) { res_cir.Pro = -10000000; return res_cir; }
                     if (Airdirection=="Parallel")
@@ -165,6 +166,7 @@ namespace Model
                     hro_detail[iTube, iRow] = r[i].hro;
                     href_detail[iTube, iRow] = r[i].href;
                     mr_detail[iTube, iRow] = mr;
+                    charge_detail[iTube, iRow] = r[i].M;
                     res_cir.M += r[i].M;
                     res_cir.Tro = r[i].Tro;
                     res_cir.Pro = r[i].Pro;
@@ -215,6 +217,7 @@ namespace Model
             res_cir.href_detail = href_detail;
             res_cir.mr_detail = mr_detail;
 
+
             //******冷凝器毛细管******//
             //调用毛细管守恒方程模型  ----需要校核，调整----
             ///
@@ -246,6 +249,9 @@ namespace Model
             //增加毛细管模型的单流路总压降
             res_cir.DP = res_cir.DP + DP_cap;
             res_cir.DP_cap = DP_cap;
+
+
+            res_cir.charge_detail = charge_detail;
 
             return res_cir;
         }

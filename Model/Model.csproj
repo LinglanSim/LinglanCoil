@@ -66,7 +66,7 @@
     <Compile Include="AirCoef.cs">
       <DependentUpon>DataBase.tt</DependentUpon>
     </Compile>
-    <Compile Include="Areas.cs" />
+    <Compile Include="GeometryCal.cs" />
     <Compile Include="BaroczyVoidFraction.cs">
       <DependentUpon>DataBase.tt</DependentUpon>
     </Compile>
@@ -90,7 +90,7 @@
     <Compile Include="Basic\CapiliaryInput.cs" />
     <Compile Include="Basic\RefStateInput.cs" />
     <Compile Include="Basic\GeometryInput.cs" />
-    <Compile Include="Basic\GeometryResult.cs" />
+    <Compile Include="Basic\Geometry.cs" />
     <Compile Include="Basic\RefHTCandDPResult.cs" />
     <Compile Include="Basic\RefrigerantHTCandDP.cs" />
     <Compile Include="Basic\RefrigerantSPDP.cs" />

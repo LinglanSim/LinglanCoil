@@ -9,10 +9,11 @@ namespace Model
 {
     public class TPElement
     {
-        public static CalcResult ElementCalc(string fluid, double dh, double l, double Aa_fin, double Aa_tube, double A_r_cs, double Ar, double tai, 
+        public static CalcResult ElementCalc(string fluid, double l, double Aa_fin, double Aa_tube, double A_r_cs, double Ar, Geometry geo, double tai, 
             double RHi,double tri, double pri, double hri, double mr, double g, double ma, double ha,double haw,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity)
         {
+            double dh = geo.Di;
             double r_metal = thickness / conductivity / Ar;
             double gg = 9.8;
             double q_initial = 0.01;
@@ -74,10 +75,11 @@ namespace Model
             return res; 
 
         }
-        public static CalcResult ElementCalc1(string fluid, double dh, double l, double Aa_fin, double Aa_tube, double A_r_cs, double Ar, double tai,
+        public static CalcResult ElementCalc1(string fluid, double l, double Aa_fin, double Aa_tube, double A_r_cs, double Ar, Geometry geo, double tai,
             double RHi,double tri, double pri, double hri, double mr, double g, double ma, double ha,double haw,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity)
         {
+            double dh = geo.Di;
             double r_metal = thickness / conductivity / Ar;
             double gg = 9.8;
             double q_initial = 0.01;
@@ -102,15 +104,15 @@ namespace Model
                 res.DP = htc_dp.DPref;
 
                 double k_fin = 237;
-                double Fthickness = 0.095 * 0.001;
-                double Pt = 21 * 0.001;
-                double Pr = 22 * 0.001;
-                double Do = 7.35 * 0.001;
+                double Fthickness = geo.Fthickness;
+                double Pt = geo.Pt;
+                double Pr = geo.Pr;
+                double Do = geo.Do;
                 double r_eta = Do / 2;
                 double XD = Math.Pow((Pr * Pr + Pt * Pt / 4), 0.5) / 2;
                 double XT = Pt / 2;
                 double rf_r = 1.27 * XT / r_eta * Math.Pow((XD / XT - 0.3), 0.5);
-                double m = Math.Pow((2 * ha / 237 / Fthickness), 0.5);
+                double m = Math.Pow((2 * ha / k_fin / Fthickness), 0.5);
                 double fai = (rf_r - 1) * (1 + (0.3 + Math.Pow((m * r_eta * (rf_r - r_eta) / 2.5), (1.5 - 1 / 12 * rf_r)) * (0.26 * Math.Pow(rf_r, 0.3) - 0.3)) * Math.Log(rf_r));
                 double eta_0 = Math.Tanh(m * r_eta * fai) / m / r_eta / fai * Math.Cos(0.1 * m * r_eta * fai);
                 double eta_a = (eta_0 * Aa_fin + Aa_tube) / (Aa_fin + Aa_tube);
@@ -138,54 +140,54 @@ namespace Model
                 double f_dry = 0;
                 double hai = CoolProp.HAPropsSI("H", "T", tai + 273.15, "P", 101325, "R", RHi);
 
-                if(hexType==0&&tri<tai)
+                if (hexType == 0 && tri < tai)
                 {
                     double Tdp = CoolProp.HAPropsSI("D", "T", tai + 273.15, "P", 101325, "R", RHi) - 273.15;
                     if(T_so_b>Tdp)
                     {
-                        f_dry=1.0;
-                        Q=Q_dry;
-                        Q_sensible=Q;
+                        f_dry = 1.0;
+                        Q = Q_dry;
+                        Q_sensible = Q;
                         omega_out = omega_in; 
                     }
                     else
                     {
-                        double T_ac=0;
-                        double h_ac=0;
+                        double T_ac = 0;
+                        double h_ac = 0;
                         if (T_so_a<Tdp)
                         {
-                            f_dry=0.0;
-                            Q_dry=0.0;
-                            T_ac=tai; 
-                            h_ac=hai; 
+                            f_dry = 0.0;
+                            Q_dry = 0.0;
+                            T_ac = tai;
+                            h_ac = hai; 
                         }
                         else
                         {
                             T_ac = Tdp + UA_i/UA_o*(Tdp - tri);
-                            epsilon_dry=(tai-T_ac)/(tai-tri);
-                            f_dry=-1.0/Ntu_dry*Math.Log(1.0-epsilon_dry);
-                            h_ac=CoolProp.HAPropsSI("H","T",T_ac+273.15,"P",101325,"W",omega_in);
-                            Q_dry=ma*cp_a*(tai-T_ac);
+                            epsilon_dry = (tai - T_ac) / (tai - tri);
+                            f_dry = -1.0 / Ntu_dry * Math.Log(1.0 - epsilon_dry);
+                            h_ac = CoolProp.HAPropsSI("H", "T", T_ac + 273.15, "P", 101325, "W", omega_in);
+                            Q_dry = ma * cp_a * (tai - T_ac);
                         }
 
-                        double c_s=(CoolProp.HAPropsSI("H","T",tri+273.15+0.01,"P",101325,"R",1.0)-CoolProp.HAPropsSI("H","T",tri+273.15-0.01,"P",101325,"R",1.0))/0.02;
-                        m = Math.Pow((2 * haw / 237 / Fthickness), 0.5);
+                        double c_s = (CoolProp.HAPropsSI("H", "T", tri + 273.15 + 0.01, "P", 101325, "R", 1.0) - CoolProp.HAPropsSI("H", "T", tri + 273.15 - 0.01, "P", 101325, "R", 1.0)) / 0.02;
+                        m = Math.Pow((2 * haw / k_fin / Fthickness), 0.5);
                         fai = (rf_r - 1) * (1 + (0.3 + Math.Pow((m * r_eta * (rf_r - r_eta) / 2.5), (1.5 - 1 / 12 * rf_r)) * (0.26 * Math.Pow(rf_r, 0.3) - 0.3)) * Math.Log(rf_r));
                         double eta_wet = Math.Tanh(m * r_eta * fai) / m / r_eta / fai * Math.Cos(0.1 * m * r_eta * fai);
                         //eta_a = (eta_0 * Aa_fin + Aa_tube) / (Aa_fin + Aa_tube);                                             
-                        UA_o=haw*(eta_wet*Aa_fin+Aa_tube);
-                        NTU_o=UA_o/(ma*cp_a);                
-                        double UA_wet=1/(c_s/UA_i+cp_a/UA_o);
-                        double Ntu_wet=UA_wet/ma;
-                        double epsilon_wet=1-Math.Exp(-(1-f_dry)*Ntu_wet);
-                        double h_s_s_o=CoolProp.HAPropsSI("H","T",tri+273.15, "P",101325,"R", 1.0);          
-                        double Q_wet=epsilon_wet*ma*(h_ac-h_s_s_o);
-                        Q=Q_wet+Q_dry;
-                        double hao=h_ac-Q_wet/ma;
-                        double h_s_s_e=h_ac-(h_ac-hao)/(1-Math.Exp(-(1-f_dry)*NTU_o));
+                        UA_o = haw * (eta_wet * Aa_fin + Aa_tube);
+                        NTU_o = UA_o / (ma * cp_a);
+                        double UA_wet = 1 / (c_s / UA_i + cp_a / UA_o);
+                        double Ntu_wet = UA_wet / ma;
+                        double epsilon_wet = 1 - Math.Exp(-(1 - f_dry) * Ntu_wet);
+                        double h_s_s_o = CoolProp.HAPropsSI("H", "T", tri + 273.15, "P", 101325, "R", 1.0);
+                        double Q_wet = epsilon_wet * ma * (h_ac - h_s_s_o);
+                        Q = Q_wet + Q_dry;
+                        double hao = h_ac - Q_wet / ma;
+                        double h_s_s_e = h_ac - (h_ac - hao) / (1 - Math.Exp(-(1 - f_dry) * NTU_o));
                         double T_s_e = CoolProp.HAPropsSI("T","H",h_s_s_e,"P",101325,"R",1.0)-273.15;
                         tao = T_s_e+(T_ac-T_s_e)*Math.Exp(-(1-f_dry)*NTU_o);
-                        Q_sensible=ma*cp_a*(tai-tao);
+                        Q_sensible = ma * cp_a * (tai - tao);
                         hro = hri + Q/1000 / mr;
                     }
                     res.RHout = CoolProp.HAPropsSI("R", "T", tao + 273.15, "P", 101325, "H", hai -Q / ma);
