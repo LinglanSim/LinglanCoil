@@ -66,6 +66,7 @@
     <Compile Include="AirCoef.cs">
       <DependentUpon>DataBase.tt</DependentUpon>
     </Compile>
+    <Compile Include="Basic\Node.cs" />
     <Compile Include="GeometryCal.cs" />
     <Compile Include="BaroczyVoidFraction.cs">
       <DependentUpon>DataBase.tt</DependentUpon>
