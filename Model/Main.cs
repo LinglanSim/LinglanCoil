@@ -346,7 +346,7 @@ namespace Model
 
                 ii++;
 
-            } while (Math.Abs((hsh_cal - hsh_set) / hsh_set) > 0.001);
+            } while (Math.Abs((hsh_cal - hsh_set) / hsh_set) > 0.0027);
  
             return res;
         }

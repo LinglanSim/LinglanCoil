@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model;
 using Model.Basic;
@@ -19,17 +20,17 @@ namespace Test
             //ref input
             refInput.FluidName = "R32";
             //*************if input SC or Sh, Massflowrate is the initial input***************
-            refInput.Massflowrate = 0.009; //kg/s
+            refInput.Massflowrate = 0.02; //kg/s
             refInput.zh = 3;
             refInput.zdp = 3;
             airInput.za = 1;
             airInput.zdpa = 1;
 
             //for condenser
-            refInput.tc = 45; 
-            refInput.tri = 80; 
+            refInput.tc = 45;
+            refInput.tri = 80;
             //for evaporator
-            refInput.te = 285.15 - 273.15; 
+            refInput.te = 285.15 - 273.15;
             refInput.P_exv = CoolProp.PropsSI("P", "T", refInput.tc + 273.15, "Q", 0, refInput.FluidName) / 1000;
             refInput.T_exv = refInput.tc - 8;
             refInput.H_exv = 260;
@@ -51,23 +52,31 @@ namespace Test
             geoInput.FPI = 20;
             geoInput.Fthickness = 0.095;
             geoInput.Nrow = 2;
-            geoInput.Ntube = 12;
+            geoInput.Ntube = 13;
             geoInput.CirNum = 2;
 
             //cap input
-            capInput.d_cap = new double[] { 0.005, 0.005};//0.006
-            capInput.lenth_cap = new double[] { 0.05, 0.06 };//0.5
-            
-            DateTime Time1 = DateTime.Now;
-            var rr = Main.main_condenser_py(refInput, airInput, geoInput, capInput);
-            //var r = Main.main_evaporator_py(refInput, airInput, geoInput, capInput);
-            DateTime Time2 = DateTime.Now;
-            double time = (Time2 - Time1).TotalSeconds;
+            capInput.d_cap = new double[] { 0, 0 };//0.006
+            capInput.lenth_cap = new double[] { 0, 0 };//0.5
 
+            DateTime Time1 = DateTime.Now;
+            //var rr = Main.main_condenser_py(refInput, airInput, geoInput, capInput);
+            var r = Main.main_evaporator_py(refInput, airInput, geoInput, capInput);
+            //for (int i=0;i<5;i++)
+            //r = Main.main_evaporator_py(refInput, airInput, geoInput, capInput);
+
+            //DateTime Time2 = DateTime.Now;
+            //double time01 = (Time2 - Time1).TotalSeconds;
+            //using (StreamWriter wr = File.AppendText(@"D:\time01.txt"))
+            //{
+            //wr.WriteLine("time01, {0}", time01);
+            //}
             //double Tsc_set = 5;
             //double Tsh_set = 5;
-            //var rr = Main.main_condenser_inputSC_py(Tsc_set, refInput, airInput, geoInput);
-            //var rrr = Main.main_evaporator_inputSH_py(Tsh_set, refInput, airInput, geoInput);
+            //var rr = Main.main_condenser_inputSC_py(Tsc_set, refInput, airInput, geoInput, capInput);
+            //var rrr = Main.main_evaporator_inputSH_py(Tsh_set, refInput, airInput, geoInput, capInput);
+            DateTime Time2 = DateTime.Now;
+            double time01 = (Time2 - Time1).TotalSeconds;
 
         }
     }
