@@ -67,6 +67,7 @@
       <DependentUpon>DataBase.tt</DependentUpon>
     </Compile>
     <Compile Include="Basic\Node.cs" />
+    <Compile Include="Basic\SearchNode.cs" />
     <Compile Include="GeometryCal.cs" />
     <Compile Include="BaroczyVoidFraction.cs">
       <DependentUpon>DataBase.tt</DependentUpon>
@@ -140,6 +141,7 @@
     <Compile Include="Coolprop\SWIGTYPE_p_std__vectorT_CoolProp__CriticalState_t.cs" />
     <Compile Include="Coolprop\VectorOfDoubleVector.cs" />
     <Compile Include="Coolprop\VectorOfStringVector.cs" />
+    <Compile Include="Slab2.cs" />
     <Compile Include="Tube.cs" />
     <Compile Include="Element.cs" />
     <Compile Include="DataBase.Context.cs">

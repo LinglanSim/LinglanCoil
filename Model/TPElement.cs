@@ -127,7 +127,7 @@ namespace Model
                 double tao = tai - Q_dry / (ma * cp_a) * Math.Pow(-1, hexType);
                 double hro = hri + Q_dry / 1000 / mr * Math.Pow(-1, hexType);
 
-                double UA_o = ha * (Aa_fin * eta_surface + Aa_tube);
+                double UA_o = ha * (Aa_fin * eta_0 + Aa_tube);
                 double UA_i = res.href * Ar;
                 double NTU_o = UA_o / (cp_a * ma);
                 double T_so_a = (UA_o * tai + UA_i * tri) / (UA_o + UA_i);
@@ -192,7 +192,7 @@ namespace Model
                     }
                     res.RHout = CoolProp.HAPropsSI("R", "T", tao + 273.15, "P", 101325, "H", hai -Q / ma);
                 }
-                res.R_1a = 1 / ((eta_surface * Aa_fin + Aa_tube) * ha);
+                res.R_1a = 1 / ((eta_0 * Aa_fin + Aa_tube) * ha);
                 res.R_1r = 1 / (res.href * Ar);
                 res.R_1 = res.R_1a + res.R_1r + r_metal;
                 res.Q = Q / 1000;

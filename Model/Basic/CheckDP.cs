@@ -11,6 +11,7 @@ namespace Model.Basic
         public CheckDP()
         {
             mr = new double[] { 0 };
+            mr_ratio = new double[] { 0 };
             flag = true;
         }
 
@@ -30,6 +31,19 @@ namespace Model.Basic
             set
             {
                 _mr = value;
+            }
+        }
+        private double[] _mr_ratio;
+        public double[] mr_ratio
+        {
+            get
+            {
+                return _mr_ratio;
+
+            }
+            set
+            {
+                _mr_ratio = value;
             }
         }
         private bool _flag;

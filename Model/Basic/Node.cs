@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 
 namespace Model.Basic
 {
-    class NodeInfo
+    public class NodeInfo
     {
-        public int Name;
-        public int inNumber;
-        public int outNumber;
+        public int N_in;
+        public int N_out;
         public int[] inlet;
+        public int[] inType;
         public int[] outlet;
-        public string type;
+        public int[] outType;
+        public char type;
         public double[] mri;
         public double[] mro;
         public double[] pri;
@@ -23,5 +24,6 @@ namespace Model.Basic
         public double[] tri;
         public double[] tro;
         public double[] mr_ratio;
+        public int couple;
     }
 }

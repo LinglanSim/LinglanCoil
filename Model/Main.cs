@@ -724,7 +724,7 @@ namespace Model
             return res;
 
         }
-        public CalcResult main_condenser(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, string flowtype, string fin_type, string tube_type, string hex_type)
+        public static CalcResult main_condenser(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, string flowtype, string fin_type, string tube_type, string hex_type)
         {
             //制冷剂制热模块计算
             //string fluid = new string[] { "Water" };
@@ -882,6 +882,193 @@ namespace Model
 
             return res;
         }
+        public static CalcResult main_condenser_Slab(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, string flowtype, string fin_type, string tube_type, string hex_type)
+        {
+            //制冷剂制热模块计算
+            string fluid = refInput.FluidName;// refri_in;// "R32";
+            CalcResult res = new CalcResult();
+            int Nrow = geoInput.Nrow;
+            double[] FPI = new double[Nrow + 1];
+            FPI = new double[] { 25.4 / geoInput.FPI, 25.4 / geoInput.FPI };//to be updated
+            double Pt = geoInput.Pt * 0.001;//1 * 25.4 * 0.001;
+            double Pr = geoInput.Pr * 0.001;//0.75 * 25.4 * 0.001;
+            double Do = geoInput.Do * 0.001;// 10.0584 * 0.001;//8.4 7.35
+            double Di = geoInput.Di * 0.001;
+            double Fthickness = geoInput.Fthickness * 0.001;// 0.095 * 0.001;
+            double thickness = 0.5 * (Do - Di); //geoInput.Tthickness * 0.001;// 
+            //double Di = Do - 2 * thickness; //8.4074 * 0.001;//8 6.8944
+            int[] Ntube = { geoInput.Ntube, geoInput.Ntube };
+            int N_tube = Ntube[0];
+            double L = geoInput.L * 0.001;// 914.4 * 0.001;
+            int Nelement = 5;
+            int CirNum = geoInput.CirNum;// 2;//流路数目赋值
+            int[,] CirArrange;
+
+            CircuitNumber CircuitInfo = new CircuitNumber();
+            CircuitInfo.number = new int[] { CirNum, CirNum };
+            //Avoid invalid Ncir input 
+            if (CircuitInfo.number[0] > Ntube[0])
+            {
+                throw new Exception("circuit number is beyond range.");
+            }
+            CircuitInfo.TubeofCir = new int[CircuitInfo.number[0]];
+            //Get AutoCircuitry
+            //CircuitInfo = AutoCircuiting.GetTubeofCir(Nrow, N_tube, CircuitInfo);
+            //CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
+            //CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
+
+            CirArrange = new int[,] { { 13, 14, 15, 16, 4, 3, 2, 1 }, { 17, 18, 19, 20, 8, 7, 6, 5 }, { 21, 22, 23, 24, 12, 11, 10, 9 } };
+            CircuitInfo.number = new int[] { 3, 3 };//4in 2out
+            CircuitInfo.TubeofCir = new int[] { 8, 8, 8};  //{ 4, 8 };
+            //CircuitInfo.UnequalCir = new int[] { 5, 5, 6, 6, 0, 0 };
+
+            int[,] Node_in = { { -1, -100, -100 }, { 0, 1, 2 } };
+            int[,] Node_inType = { { -1, -100, -100 }, { 1, 1, 1 } };//0:Node,1:Circuit,-1:in/out,-100:meaningless
+            int[] Node_Nin = { 1, 3 };
+            int[,] Node_out = { { 0, 1, 2 }, { -1, -100, -100 } };
+            int[,] Node_outType = { { 1, 1, 1 }, { -1, -100, -100 } };
+            int[] Node_Nout = { 3, 1 };
+            char[] Node_type = { 'D', 'C' };// Diverse/Converge
+            int[] Node_couple = { 0, 0 };
+
+            int N_Node=Node_in.GetLength(0);
+            NodeInfo[] Nodes = new NodeInfo[N_Node];
+            for(int i=0;i<N_Node;i++)
+            {
+                Nodes[i] = new NodeInfo();
+                Nodes[i].N_in = Node_Nin[i];
+                Nodes[i].N_out = Node_Nout[i];
+                Nodes[i].inlet = new int[Nodes[i].N_in];
+                Nodes[i].inType = new int[Nodes[i].N_in];
+                Nodes[i].outlet = new int[Nodes[i].N_out];
+                Nodes[i].outType = new int[Nodes[i].N_out];
+                for (int j = 0; j < Nodes[i].N_in;j++ )
+                {
+                    Nodes[i].inlet[j] = Node_in[i, j];
+                    Nodes[i].inType[j] = Node_inType[i, j];
+                }
+                for (int j = 0; j < Nodes[i].N_out; j++)
+                {
+                    Nodes[i].outlet[j] = Node_out[i, j];
+                    Nodes[i].outType[j] = Node_outType[i, j];
+                }
+                Nodes[i].type = Node_type[i];
+                Nodes[i].couple = Node_couple[i];
+                Nodes[i].mri = new double[Nodes[i].N_in];
+                Nodes[i].mro = new double[Nodes[i].N_out];
+                Nodes[i].pri = new double[Nodes[i].N_in];
+                Nodes[i].pro = new double[Nodes[i].N_out];
+                Nodes[i].hri = new double[Nodes[i].N_in];
+                Nodes[i].hro = new double[Nodes[i].N_out];
+                Nodes[i].tri = new double[Nodes[i].N_in];
+                Nodes[i].tro = new double[Nodes[i].N_out];
+                Nodes[i].mr_ratio = new double[Nodes[i].N_out];
+            }
+
+            CirArr[] cirArr = new CirArr[Nrow * N_tube];
+            cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube).CirArr;
+            //CircuitType CirType = new CircuitType();
+            CircuitInfo.CirType = CircuitIdentification.CircuitIdentify(CircuitInfo.number, CircuitInfo.TubeofCir, cirArr);
+
+            //Circuit-Reverse module
+            bool reverse = false; //*********************************false:origin, true:reverse******************************************
+            if (flowtype == "Counter")
+                reverse = false;
+            else
+                reverse = true;
+            CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
+
+            GeometryInput geoInput_air = new GeometryInput();
+            geoInput_air.Pt = Pt;
+            geoInput_air.Pr = Pr;
+            geoInput_air.Do = Do;
+            geoInput_air.Fthickness = Fthickness;
+            geoInput_air.FPI = FPI[0];
+            geoInput_air.Nrow = Nrow;
+
+            int hexType = 1;
+            if (hex_type == "Evaporator") hexType = 0;
+            else hexType = 1;
+
+            double mr = refInput.Massflowrate; //mr_in;//0.01;
+            //double Vel_a = 1.8; //m/s
+            double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+            //double Vel_ave = 1;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+            AirDistribution VaDistri = new AirDistribution();
+            VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+            double[,] ma = new double[N_tube, Nelement];
+            double[,] ha = new double[N_tube, Nelement];
+            double H = Pt * N_tube;
+            double Hx = L * H;
+            double rho_a_st = 1.2; //kg/m3
+            double Va = airInput.Volumetricflowrate;
+            double Vel_ave = Va / Hx;
+            double za = 1; //Adjust factor
+            if (fin_type == "plain")
+                za = 1.0;
+            else if (fin_type == "louver")
+                za = 1.3;
+            else
+                za = 1.1;
+            int curve = 1;
+            for (int i = 0; i < N_tube; i++)
+            {
+                for (int j = 0; j < Nelement; j++)
+                {
+                    ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
+                    //ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve);// *1.5;
+                    //ha[i, j] = 79;
+                    ha[i, j] = AirHTC.alpha1(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve, geoInput_air, hexType).ha;
+                }
+            }
+            double[,] haw = ha;
+
+            res.DPa = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
+
+            double eta_surface = 1;
+            double zh = 1;
+            double zdp = 1;
+
+            if (tube_type == "smooth")
+            { zh = 1.0; zdp = 1.0; }
+            else if (tube_type == "internalthread")
+            { zh = 1.4; zdp = 1.2; }
+            else
+            { zh = 1.2; zdp = 1.1; }
+
+            double tai = airInput.tai;// tai_in;//26.67;
+            double RHi = airInput.RHi;// RHi_in;//0.469;
+            double tc = refInput.tc;// tc_in;//45.0;
+            //double pri = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
+
+            double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
+            //double P_exv = 1842.28;//kpa
+            double tri = refInput.tri;// tri_in;//78;//C
+            double conductivity = 386; //w/mK for Cu
+            double Pwater = 100.0;
+            //int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
+            double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000;
+            //double hri = 354.6;
+            //double xin = 0.57;
+
+            double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+            double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
+
+            //string AirDirection="DowntoUp";
+            string AirDirection = flowtype;// "Counter";
+            ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
+            RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
+
+            Geometry geo = new Geometry();
+            geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, tri, pri, hri,
+                //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+            res = Slab2.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, tri, pri, hri,
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection,Nodes,N_Node);
+
+            return res;
+        }
+        
         public static CalcResult main_RACR32condenser_1()
         {
             //制冷剂制热模块计算
