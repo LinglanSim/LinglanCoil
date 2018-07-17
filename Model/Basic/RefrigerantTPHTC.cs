@@ -13,7 +13,7 @@ namespace Model.Basic
        public static double Shah_Evap_href(string fluid, double d, double g, double p, double x, double q, double l)
         {
             AbstractState coolprop = AbstractState.factory("HEOS", fluid);
-
+           
             double temperature;
             double DensityL, DensityV, EnthalpyL, EnthalpyV, ViscosityL, KL, CpL;
 
@@ -36,13 +36,13 @@ namespace Model.Basic
             ViscosityL = coolprop.viscosity();
             //ViscosityL = CoolProp.PropsSI("V", "T", temperature, "Q", 0, fluid);
             coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
-            CpL = coolprop.cpmass();
+            CpL = coolprop.cpmass() / 1000;
             //CpL = CoolProp.PropsSI("C", "T", temperature, "Q", 0, fluid) / 1000;
             coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
             KL = coolprop.conductivity();
             //KL = CoolProp.PropsSI("L", "T", temperature, "Q", 0, fluid);
             double Pr_l = CpL * ViscosityL / KL * 1000;
- 
+
             double h_fg = EnthalpyV - EnthalpyL; //"KJ"
             double qflux = q / (l * 3.14159 * d);
             double Bo = qflux / (g * h_fg);
@@ -93,7 +93,7 @@ namespace Model.Basic
            ViscosityL = coolprop.viscosity();
            //ViscosityL = CoolProp.PropsSI("V", "T", temperature, "Q", 0, fluid);
            coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
-           CpL = coolprop.cpmass();
+           CpL = coolprop.cpmass() / 1000;
            //CpL = CoolProp.PropsSI("C", "T", temperature, "Q", 0, fluid) / 1000;
            coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
            KL = coolprop.conductivity();
@@ -168,7 +168,7 @@ namespace Model.Basic
            ViscosityV = coolprop.viscosity();
            //ViscosityV = CoolProp.PropsSI("V", "T", temperature, "Q", 1, fluid);
            coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
-           CpL = coolprop.cpmass();
+           CpL = coolprop.cpmass() / 1000;
            //CpL = CoolProp.PropsSI("C", "T", temperature, "Q", 0, fluid) / 1000;
            coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
            KL = coolprop.conductivity();
@@ -266,7 +266,7 @@ namespace Model.Basic
            ViscosityV = coolprop.viscosity();
            //ViscosityV = CoolProp.PropsSI("V", "T", temperature, "Q", 1, fluid);
            coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
-           CpL = coolprop.cpmass();
+           CpL = coolprop.cpmass() / 1000;
            //CpL = CoolProp.PropsSI("C", "T", temperature, "Q", 0, fluid) / 1000;
            coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
            KL = coolprop.conductivity();
@@ -355,7 +355,7 @@ namespace Model.Basic
            ViscosityV = coolprop.viscosity();
            //ViscosityV = CoolProp.PropsSI("V", "T", temperature, "Q", 1, fluid);
            coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
-           CpL = coolprop.cpmass();
+           CpL = coolprop.cpmass() / 1000;
            //CpL = CoolProp.PropsSI("C", "T", temperature, "Q", 0, fluid) / 1000;
            coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
            KL = coolprop.conductivity();

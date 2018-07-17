@@ -59,8 +59,8 @@ namespace Test
             geoInput.CirNum = 2;
 
             //cap input
-            capInput.d_cap = new double[] { 0.3, 0 };//0.006
-            capInput.lenth_cap = new double[] { 0.5, 0 };//0.5
+            capInput.d_cap = new double[] { 0, 0 };//0.006
+            capInput.lenth_cap = new double[] { 0, 0 };//0.5
 
             DateTime Time1 = DateTime.Now;
             //var rr = Main.main_condenser_py(refInput, airInput, geoInput, capInput);
