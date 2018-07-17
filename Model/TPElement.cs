@@ -14,6 +14,8 @@ namespace Model
             double RHi, double tri, double pri, double hri, double mr, double g, double ma, double ha, double haw,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity)
         {
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
+
             double dh = geo.Di;
             double r_metal = thickness / conductivity / Ar;
             double gg = 9.8;
@@ -26,9 +28,15 @@ namespace Model
             //res.Tao[0] = new double();          
             double EnthalpyL, EnthalpyV;
             //recalc tri to make sure it is 2ph, ruhao, 20180225 
-            tri = CoolProp.PropsSI("T", "P", pri * 1000, "Q", 0, fluid) - 273.15;
-            EnthalpyL = CoolProp.PropsSI("H", "T", tri + 273.15, "Q", 0, fluid) / 1000;
-            EnthalpyV = CoolProp.PropsSI("H", "T", tri + 273.15, "Q", 1, fluid) / 1000;
+            coolprop.update(input_pairs.PQ_INPUTS, pri * 1000, 0);
+            tri = coolprop.T() - 273.15;
+            //tri = CoolProp.PropsSI("T", "P", pri * 1000, "Q", 0, fluid) - 273.15;
+            coolprop.update(input_pairs.QT_INPUTS, 0, tri + 273.15);
+            EnthalpyL = coolprop.hmass() / 1000;
+            //EnthalpyL = CoolProp.PropsSI("H", "T", tri + 273.15, "Q", 0, fluid) / 1000;
+            coolprop.update(input_pairs.QT_INPUTS, 1, tri + 273.15);
+            EnthalpyV = coolprop.hmass() / 1000;
+            //EnthalpyV = CoolProp.PropsSI("H", "T", tri + 273.15, "Q", 1, fluid) / 1000;
 
             res.x_i = (hri - EnthalpyL) / (EnthalpyV - EnthalpyL);
             RefHTCandDPResult htc_dp = new RefHTCandDPResult();
@@ -57,8 +65,11 @@ namespace Model
                 //res.DP = 0;
                 res.Pro = pri - res.DP;
                 if (res.Pro < 0) { res.Pro = -10000000; return res; }
-                res.Tro = CoolProp.PropsSI("T", "P", res.Pro * 1000, "H", res.hro * 1000, fluid);
-                double rho_o = CoolProp.PropsSI("D", "P", res.Pro * 1000, "H", res.hro * 1000, fluid);
+                coolprop.update(input_pairs.HmassP_INPUTS, res.hro * 1000, res.Pro * 1000);
+                res.Tro = coolprop.T();
+                //res.Tro = CoolProp.PropsSI("T", "P", res.Pro * 1000, "H", res.hro * 1000, fluid);
+                double rho_o = coolprop.rhomass();
+                //double rho_o = CoolProp.PropsSI("D", "P", res.Pro * 1000, "H", res.hro * 1000, fluid);
                 res.Tro = res.Tro - 273.15;
                 res.Vel_r = g / rho_o;
                 if (Math.Abs(q - res.Q) / res.Q > err)
@@ -80,6 +91,8 @@ namespace Model
             double RHi, double tri, double pri, double hri, double mr, double g, double ma, double ha, double haw,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity)
         {
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
+
             double dh = geo.Di;
             double r_metal = thickness / conductivity / Ar;
             double gg = 9.8;
@@ -91,9 +104,15 @@ namespace Model
             CalcResult res = new CalcResult();
             double EnthalpyL, EnthalpyV;
 
-            tri = CoolProp.PropsSI("T", "P", pri * 1000, "Q", 0, fluid) - 273.15;
-            EnthalpyL = CoolProp.PropsSI("H", "T", tri + 273.15, "Q", 0, fluid) / 1000;
-            EnthalpyV = CoolProp.PropsSI("H", "T", tri + 273.15, "Q", 1, fluid) / 1000;
+            coolprop.update(input_pairs.PQ_INPUTS, pri * 1000, 0);
+            tri = coolprop.T() - 273.15;
+            //tri = CoolProp.PropsSI("T", "P", pri * 1000, "Q", 0, fluid) - 273.15;
+            coolprop.update(input_pairs.QT_INPUTS, 0, tri + 273.15);
+            EnthalpyL = coolprop.hmass() / 1000;
+            //EnthalpyL = CoolProp.PropsSI("H", "T", tri + 273.15, "Q", 0, fluid) / 1000;
+            coolprop.update(input_pairs.QT_INPUTS, 1, tri + 273.15);
+            EnthalpyV = coolprop.hmass() / 1000;
+            //EnthalpyV = CoolProp.PropsSI("H", "T", tri + 273.15, "Q", 1, fluid) / 1000;
 
             res.x_i = (hri - EnthalpyL) / (EnthalpyV - EnthalpyL);
             RefHTCandDPResult htc_dp = new RefHTCandDPResult();
@@ -287,17 +306,11 @@ namespace Model
                 res.hro = hro;
                 res.Pro = pri - res.DP;
                 if (res.Pro < 0) { res.Pro = -10000000; return res; }
-                res.Tro = CoolProp.PropsSI("T", "P", res.Pro * 1000, "H", res.hro * 1000, fluid) - 273.15;
-                DateTime Time15 = DateTime.Now;
-
-                double rho_o = CoolProp.PropsSI("D", "P", res.Pro * 1000, "H", res.hro * 1000, fluid);
-                DateTime Time25 = DateTime.Now;
-                double time05 = (Time25 - Time15).TotalSeconds;
-
-                //using (StreamWriter wr = File.AppendText(@"D:\time07.txt"))
-                //{
-                //    wr.WriteLine("time07, {0}", time07);
-                //}
+                coolprop.update(input_pairs.HmassP_INPUTS, res.hro * 1000, res.Pro * 1000);
+                res.Tro = coolprop.T() - 273.15;
+                //res.Tro = CoolProp.PropsSI("T", "P", res.Pro * 1000, "H", res.hro * 1000, fluid);
+                double rho_o = coolprop.rhomass();
+                //double rho_o = CoolProp.PropsSI("D", "P", res.Pro * 1000, "H", res.hro * 1000, fluid);
 
                 res.Vel_r = g / rho_o;
                 res.x_o = (res.hro - EnthalpyL) / (EnthalpyV - EnthalpyL); //+ 139.17 for reference state, to be changed

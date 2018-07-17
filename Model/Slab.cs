@@ -41,6 +41,8 @@ namespace Model
            // CirArrange = new int[,] { { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 } };
            // Nrow=2
            // Ncir=2
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
+
             double[] Q1 = new double[50];
             double tri = te; //Refrigerant.SATP(fluid, composition, pri, 1).Temperature - 273.15;
             double pri = pe;
@@ -156,11 +158,17 @@ namespace Model
                 //制冷制热模块计算切换
                 if (hexType == 0)
                 {
+                    coolprop.update(input_pairs.PQ_INPUTS, pri * 1000, 0);
+                    tri = coolprop.T() - 273.15;
                     tri = CoolProp.PropsSI("T", "P", pri * 1000, "Q", 0, fluid) - 273.15;
+                    int a = 1;
                 }
                 else
                 {
+                    coolprop.update(input_pairs.PQ_INPUTS, pri * 1000, 0);
+                    te = coolprop.T() - 273.15;
                     te = CoolProp.PropsSI("T", "P", pri * 1000, "Q", 0, fluid) - 273.15;
+                    int a = 1;
                 }
 
                 for (int j = 0; j < (flag_ciro == 1 ? (index_outbig ? Nciri + 1 : 1) : Nciro + 1); j++)
@@ -485,9 +493,14 @@ namespace Model
                         #region //Result print out
                         if (dPconverge.flag)
                         {
-                            if (Nciri == Nciro) 
+                            if (Nciri == Nciro)
+                            {
                                 //te_calc = Refrigerant.SATP(fluid, composition, r[j].Pro, 1).Temperature;
+                                coolprop.update(input_pairs.PQ_INPUTS, r[j].Pro * 1000, 0);
+                                te_calc = coolprop.T();
                                 te_calc = CoolProp.PropsSI("T", "P", r[j].Pro * 1000, "Q", 0, fluid);
+                                int a = 1;
+                            }
                             else
                             {                            
                                 if (mr_ciri_base.Count == Nciro && flag_ciro == 0)
@@ -529,6 +542,8 @@ namespace Model
                                 res_cir2[j].Tri = tri;
 
                                 //te_calc = Refrigerant.SATP(fluid, composition, res_cir2[j].Pro, 1).Temperature;
+                                coolprop.update(input_pairs.PQ_INPUTS, res_cir2[j].Pro * 1000, 0);
+                                te_calc = coolprop.T();
                                 te_calc = CoolProp.PropsSI("T", "P", res_cir2[j].Pro * 1000, "Q", 0, fluid);
 
                                 if (fluid == "Water")
@@ -749,19 +764,34 @@ namespace Model
             res_slab.R_1a = res_slab.R_1a / N_tube_total;
             res_slab.R_1r = res_slab.R_1r / N_tube_total;
 
-
+            coolprop.update(input_pairs.PQ_INPUTS, res_slab.Pro * 1000, 0);
+            te_calc = coolprop.T() - 273.15;
             te_calc = CoolProp.PropsSI("T", "P", res_slab.Pro * 1000, "Q", 0, fluid) - 273.15;
-            double densityLo = CoolProp.PropsSI("D", "T", te_calc + 273.15, "Q", 0, fluid);
-            double densityVo = CoolProp.PropsSI("D", "T", te_calc + 273.15, "Q", 1, fluid);
-            double hlo = CoolProp.PropsSI("H", "T", te_calc + 273.15, "D", densityLo, fluid) / 1000 ;
-            double hvo = CoolProp.PropsSI("H", "T", te_calc + 273.15, "D", densityVo, fluid) / 1000 ;
+            coolprop.update(input_pairs.QT_INPUTS, 0, te_calc + 273.15);
+            double densityLo = coolprop.rhomass();
+            //double densityLo = CoolProp.PropsSI("D", "T", te_calc + 273.15, "Q", 0, fluid);
+            coolprop.update(input_pairs.QT_INPUTS, 1, te_calc + 273.15);
+            double densityVo = coolprop.rhomass();
+            //double densityVo = CoolProp.PropsSI("D", "T", te_calc + 273.15, "Q", 1, fluid);
+            coolprop.update(input_pairs.DmassT_INPUTS, densityLo, te_calc + 273.15);
+            double hlo = coolprop.hmass() / 1000;
+            //double hlo = CoolProp.PropsSI("H", "T", te_calc + 273.15, "D", densityLo, fluid) / 1000 ;
+            coolprop.update(input_pairs.DmassT_INPUTS, densityVo, te_calc + 273.15);
+            double hvo = coolprop.hmass() / 1000;
+            //double hvo = CoolProp.PropsSI("H", "T", te_calc + 273.15, "D", densityVo, fluid) / 1000 ;
             res_slab.x_o = (res_slab.hro - hlo) / (hvo - hlo);
 
-            double hli = CoolProp.PropsSI("H", "P", pri * 1000, "Q", 0, fluid) / 1000 ;
-            double hvi = CoolProp.PropsSI("H", "P", pri * 1000, "Q", 1, fluid) / 1000 ;
+            coolprop.update(input_pairs.PQ_INPUTS, pri * 1000, 0);
+            double hli = coolprop.hmass() / 1000;
+            //double hli = CoolProp.PropsSI("H", "P", pri * 1000, "Q", 0, fluid) / 1000 ;
+            coolprop.update(input_pairs.PQ_INPUTS, pri * 1000, 1);
+            double hvi = coolprop.hmass() / 1000;
+            //double hvi = CoolProp.PropsSI("H", "P", pri * 1000, "Q", 1, fluid) / 1000 ;
 
             res_slab.x_i = (res_slab.hri - hli) / (hvi - hli);
-            res_slab.Tro = CoolProp.PropsSI("T", "P", res_slab.Pro * 1000, "H", res_slab.hro  * 1000, fluid) - 273.15;
+            coolprop.update(input_pairs.HmassP_INPUTS, res_slab.hro * 1000, res_slab.Pro * 1000);
+            res_slab.Tro = coolprop.T() - 273.15;
+            //res_slab.Tro = CoolProp.PropsSI("T", "P", res_slab.Pro * 1000, "H", res_slab.hro * 1000, fluid) - 273.15;
 
             double h = res_slab.hro;
             for (int j = 0; j < N_tube; j++)

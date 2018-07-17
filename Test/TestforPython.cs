@@ -19,8 +19,9 @@ namespace Test
 
             //ref input
             refInput.FluidName = "R32";
+            AbstractState coolprop = AbstractState.factory("HEOS", refInput.FluidName);
             //*************if input SC or Sh, Massflowrate is the initial input***************
-            refInput.Massflowrate = 0.02; //kg/s
+            refInput.Massflowrate = 0.02;//0.02 //kg/s
             refInput.zh = 3;
             refInput.zdp = 3;
             airInput.za = 1;
@@ -31,7 +32,9 @@ namespace Test
             refInput.tri = 80;
             //for evaporator
             refInput.te = 285.15 - 273.15;
-            refInput.P_exv = CoolProp.PropsSI("P", "T", refInput.tc + 273.15, "Q", 0, refInput.FluidName) / 1000;
+            //refInput.P_exv = CoolProp.PropsSI("P", "T", refInput.tc + 273.15, "Q", 0, refInput.FluidName) / 1000;
+            coolprop.update(input_pairs.QT_INPUTS, 0, refInput.tc + 273.15);
+            double P_exv = coolprop.p() / 1000;
             refInput.T_exv = refInput.tc - 8;
             refInput.H_exv = 260;
 
@@ -56,8 +59,8 @@ namespace Test
             geoInput.CirNum = 2;
 
             //cap input
-            capInput.d_cap = new double[] { 0, 0 };//0.006
-            capInput.lenth_cap = new double[] { 0, 0 };//0.5
+            capInput.d_cap = new double[] { 0.3, 0 };//0.006
+            capInput.lenth_cap = new double[] { 0.5, 0 };//0.5
 
             DateTime Time1 = DateTime.Now;
             //var rr = Main.main_condenser_py(refInput, airInput, geoInput, capInput);

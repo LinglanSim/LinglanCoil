@@ -14,17 +14,28 @@ namespace Model
             double tri, double pri, double hri, double mr, double g, double ma, double ha,double haw,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater)
         {
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
+
             double href = 0;
             double gg = 9.8;
             double tsat;
             int phase1 = 1;
             int phase2 = 2;
 
-            tsat = CoolProp.PropsSI("T", "P", pri * 1000, "Q", 0, fluid);
+            
+
+            coolprop.update(input_pairs.PQ_INPUTS, pri * 1000, 0);
+            tsat = coolprop.T();
+            //tsat = CoolProp.PropsSI("T", "P", pri * 1000, "Q", 0, fluid);
             
             double Vol_tubes = A_r_cs * l;   //Tube volume, for charge calculation
-            double h_l = CoolProp.PropsSI("H", "T", tsat, "Q", 0, fluid) / 1000 ;
-            double h_v = CoolProp.PropsSI("H", "T", tsat, "Q", 1, fluid) / 1000 ;
+            
+            coolprop.update(input_pairs.QT_INPUTS, 0, tsat);
+            double h_l = coolprop.hmass() / 1000;
+            //double h_l = CoolProp.PropsSI("H", "T", tsat, "Q", 0, fluid) / 1000 ;
+            coolprop.update(input_pairs.QT_INPUTS, 1, tsat);
+            double h_v = coolprop.hmass() / 1000;
+            //double h_v1 = CoolProp.PropsSI("H", "T", tsat, "Q", 1, fluid) / 1000 ;
             double Tri_mod;
             double alpha;
             double M;
@@ -43,7 +54,9 @@ namespace Model
                 res_element.x_o = (res_element.hro - h_l) / (h_v - h_l);
                 alpha = 1; //set void fraction to 1 to identify a superheated state
                 //{Equations are for charge calculation}
-                double rho = CoolProp.PropsSI("D", "P", pri * 1000, "H", hri * 1000, fluid);
+                coolprop.update(input_pairs.HmassP_INPUTS, hri * 1000, pri * 1000);
+                double rho = coolprop.rhomass();
+                //double rho = CoolProp.PropsSI("D", "P", pri * 1000, "H", hri * 1000, fluid);
                 res_element.M = Vol_tubes * rho; //"Mass calculated"
             }
          
@@ -62,8 +75,12 @@ namespace Model
                 alpha = 1;
                 //{Equations are for charge calculation}
                 double P_avg = (pri + res_element.Pro) / 2; //Average pressure of the element
-                double rho_l = CoolProp.PropsSI("D", "P", P_avg * 1000, "Q", 0, fluid);
-                double rho_v = CoolProp.PropsSI("D", "P", P_avg * 1000, "Q", 1, fluid);
+                coolprop.update(input_pairs.PQ_INPUTS, P_avg * 1000, 0);
+                double rho_l = coolprop.rhomass();
+                //double rho_l = CoolProp.PropsSI("D", "P", P_avg * 1000, "Q", 0, fluid);
+                coolprop.update(input_pairs.PQ_INPUTS, P_avg * 1000, 1);
+                double rho_v = coolprop.rhomass();
+                //double rho_v = CoolProp.PropsSI("D", "P", P_avg * 1000, "Q", 1, fluid);
                 //{Call VOIDFRACTION_pressure(ref$, x_avg, P_avg : alpha_p)  "Baroczy void fraction model"     } 
                 double alpha_homog = 1 / (1 + (1 - x_avg) / x_avg * (rho_v / rho_l)); // Homogeneous model, Intermittent flow void fraction
                 res_element.M = Vol_tubes * (alpha_homog * rho_v + (1 - alpha_homog) * rho_l);  //Mass calculated   
@@ -88,7 +105,9 @@ namespace Model
                 //{x=-1 "set quality to -100 to identify a subcooled state"}
                 alpha = -1; //set void fraction to -100 to identify a subcooled state
                 //{Equations are for charge calculation}
-                double rho = CoolProp.PropsSI("D", "P", pri * 1000, "H", hri * 1000, fluid);
+                coolprop.update(input_pairs.HmassP_INPUTS, hri * 1000, pri * 1000);
+                double rho = coolprop.rhomass();
+                //double rho = CoolProp.PropsSI("D", "P", pri * 1000, "H", hri * 1000, fluid);
                 res_element.M = Vol_tubes * rho; //Mass calculated
             }
 

@@ -11,6 +11,8 @@ namespace Model.Basic
         //For smooth tube for now;
         public static double deltap_smooth(string fluid, double d, double g, double p, double x, double l)
         {
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
+
             double Co = 0.01;
             double f_oil = 0;
             if (x == 1) f_oil = 1.0; else f_oil = 1.15;
@@ -20,11 +22,21 @@ namespace Model.Basic
             int phase2 = 2;
             double DensityL, DensityV, ViscosityL, ViscosityV;
 
-            double tsat = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, fluid);
-            DensityL = CoolProp.PropsSI("D", "T", tsat, "Q", 0, fluid);
-            DensityV = CoolProp.PropsSI("D", "T", tsat, "Q", 1, fluid);
-            ViscosityL = CoolProp.PropsSI("V", "T", tsat, "Q", 0, fluid);
-            ViscosityV = CoolProp.PropsSI("V", "T", tsat, "Q", 1, fluid);
+            coolprop.update(input_pairs.PQ_INPUTS, p * 1000, 0);
+            double tsat = coolprop.T();
+            //double tsat = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, fluid);
+            coolprop.update(input_pairs.QT_INPUTS, 0, tsat);
+            DensityL = coolprop.rhomass();
+            //DensityL = CoolProp.PropsSI("D", "T", tsat, "Q", 0, fluid);
+            coolprop.update(input_pairs.QT_INPUTS, 1, tsat);
+            DensityV = coolprop.rhomass();
+            //DensityV = CoolProp.PropsSI("D", "T", tsat, "Q", 1, fluid);
+            coolprop.update(input_pairs.QT_INPUTS, 0, tsat);
+            ViscosityL = coolprop.viscosity();
+            //ViscosityL = CoolProp.PropsSI("V", "T", tsat, "Q", 0, fluid);
+            coolprop.update(input_pairs.QT_INPUTS, 1, tsat);
+            ViscosityV = coolprop.viscosity();
+            //ViscosityV = CoolProp.PropsSI("V", "T", tsat, "Q", 1, fluid);
 
             double Re_l = g * d / ViscosityL;// r.ViscosityL;
             double Re_v = g * d / ViscosityV;
@@ -56,13 +68,25 @@ namespace Model.Basic
         }
         public static double deltap_JR(string fluid, double d, double g, double p, double x, double l)
         {
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
+
             double DensityL, DensityV, ViscosityL, ViscosityV;
 
-            double tsat = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, fluid);
-            DensityL = CoolProp.PropsSI("D", "T", tsat, "Q", 0, fluid);
-            DensityV = CoolProp.PropsSI("D", "T", tsat, "Q", 1, fluid);
-            ViscosityL = CoolProp.PropsSI("V", "T", tsat, "Q", 0, fluid);
-            ViscosityV = CoolProp.PropsSI("V", "T", tsat, "Q", 1, fluid);
+            coolprop.update(input_pairs.PQ_INPUTS, p * 1000, 0);
+            double tsat = coolprop.T();
+            //double tsat = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, fluid);
+            coolprop.update(input_pairs.QT_INPUTS, 0, tsat);
+            DensityL = coolprop.rhomass();
+            //DensityL = CoolProp.PropsSI("D", "T", tsat, "Q", 0, fluid);
+            coolprop.update(input_pairs.QT_INPUTS, 1, tsat);
+            DensityV = coolprop.rhomass();
+            //DensityV = CoolProp.PropsSI("D", "T", tsat, "Q", 1, fluid);
+            coolprop.update(input_pairs.QT_INPUTS, 0, tsat);
+            ViscosityL = coolprop.viscosity();
+            //ViscosityL = CoolProp.PropsSI("V", "T", tsat, "Q", 0, fluid);
+            coolprop.update(input_pairs.QT_INPUTS, 1, tsat);
+            ViscosityV = coolprop.viscosity();
+            //ViscosityV = CoolProp.PropsSI("V", "T", tsat, "Q", 1, fluid);
 
             double Re_l = g * d / ViscosityL;
             double f_sp = RefrigerantSPDP.ff_Friction(Re_l);
@@ -100,6 +124,8 @@ namespace Model.Basic
         }
         public static double deltap_MS(string fluid, double d, double g, double p, double x, double l)
         {
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
+
             //double Co=0.01;
             //double f_oil = 0;
             //if (x == 1) f_oil = 1.0; else f_oil = 1.15;
@@ -107,11 +133,21 @@ namespace Model.Basic
             //double dp = 0.0;
             double DensityL, DensityV, ViscosityL, ViscosityV;
 
-            double tsat = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, fluid);
-            DensityL = CoolProp.PropsSI("D", "T", tsat, "Q", 0, fluid);
-            DensityV = CoolProp.PropsSI("D", "T", tsat, "Q", 1, fluid);
-            ViscosityL = CoolProp.PropsSI("V", "T", tsat, "Q", 0, fluid);
-            ViscosityV = CoolProp.PropsSI("V", "T", tsat, "Q", 1, fluid);
+            coolprop.update(input_pairs.PQ_INPUTS, p * 1000, 0);
+            double tsat = coolprop.T();
+            //double tsat = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, fluid);
+            coolprop.update(input_pairs.QT_INPUTS, 0, tsat);
+            DensityL = coolprop.rhomass();
+            //DensityL = CoolProp.PropsSI("D", "T", tsat, "Q", 0, fluid);
+            coolprop.update(input_pairs.QT_INPUTS, 1, tsat);
+            DensityV = coolprop.rhomass();
+            //DensityV = CoolProp.PropsSI("D", "T", tsat, "Q", 1, fluid);
+            coolprop.update(input_pairs.QT_INPUTS, 0, tsat);
+            ViscosityL = coolprop.viscosity();
+            //ViscosityL = CoolProp.PropsSI("V", "T", tsat, "Q", 0, fluid);
+            coolprop.update(input_pairs.QT_INPUTS, 1, tsat);
+            ViscosityV = coolprop.viscosity();
+            //ViscosityV = CoolProp.PropsSI("V", "T", tsat, "Q", 1, fluid);
 
             double Re_l = g * (1 - x) * d / ViscosityL;
             double Re_v = g * x * d / ViscosityV;

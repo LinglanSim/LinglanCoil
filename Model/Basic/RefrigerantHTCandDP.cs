@@ -116,11 +116,19 @@ namespace Model.Basic
 
         public static RefHTCandDPResult HTCandDP_1p_sat(string fluid, double d, double g, double p, double x, double l)
         {
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
+
             double mu, k, rho, cp, Pr, Vel, Re, fh, f, Nusselt, href, PressD;
-            mu = CoolProp.PropsSI("V", "P", p * 1000, "Q", x, fluid);
-            k = CoolProp.PropsSI("L", "P", p * 1000, "Q", x, fluid);
-            rho = CoolProp.PropsSI("D", "P", p * 1000, "Q", x, fluid);
-            cp = CoolProp.PropsSI("C", "P", p * 1000, "Q", x, fluid);
+            coolprop.update(input_pairs.PQ_INPUTS, p * 1000, x);
+            mu = coolprop.viscosity();
+            //mu = CoolProp.PropsSI("V", "P", p * 1000, "Q", x, fluid);
+            k = coolprop.conductivity();
+            //k = CoolProp.PropsSI("L", "P", p * 1000, "Q", x, fluid);
+            rho = coolprop.rhomass();
+            //rho = CoolProp.PropsSI("D", "P", p * 1000, "Q", x, fluid);
+            cp = coolprop.cpmass();
+            //cp = CoolProp.PropsSI("C", "P", p * 1000, "Q", x, fluid);
+
             Pr = cp * mu / k;
             Vel = g / rho;
             Re = rho * Vel * d / mu;
