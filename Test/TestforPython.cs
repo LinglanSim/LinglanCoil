@@ -34,7 +34,8 @@ namespace Test
             refInput.te = 285.15 - 273.15;
             //refInput.P_exv = CoolProp.PropsSI("P", "T", refInput.tc + 273.15, "Q", 0, refInput.FluidName) / 1000;
             coolprop.update(input_pairs.QT_INPUTS, 0, refInput.tc + 273.15);
-            double P_exv = coolprop.p() / 1000;
+            refInput.P_exv = coolprop.p() / 1000;
+
             refInput.T_exv = refInput.tc - 8;
             refInput.H_exv = 260;
 
