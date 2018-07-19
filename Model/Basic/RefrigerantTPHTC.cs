@@ -10,37 +10,25 @@ namespace Model.Basic
 {
     public class RefrigerantTPHTC
     {
-       public static double Shah_Evap_href(string fluid, double d, double g, double p, double x, double q, double l)
+        public static double Shah_Evap_href(string fluid, double d, double g, double p, double x, double q, double l, AbstractState coolprop)
         {
-            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
+            //AbstractState coolprop = AbstractState.factory("HEOS", fluid);
            
             double temperature;
             double DensityL, DensityV, EnthalpyL, EnthalpyV, ViscosityL, KL, CpL;
 
             coolprop.update(input_pairs.PQ_INPUTS, p * 1000, 0);
             temperature = coolprop.T();
-            //temperature = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, fluid);
             coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
             DensityL = coolprop.rhomass();
-            //DensityL = CoolProp.PropsSI("D", "T", temperature, "Q", 0, fluid);
+            EnthalpyL = coolprop.hmass() / 1000;
+            ViscosityL = coolprop.viscosity();
+            CpL = coolprop.cpmass() / 1000;
+            KL = coolprop.conductivity();
             coolprop.update(input_pairs.QT_INPUTS, 1, temperature);
             DensityV = coolprop.rhomass();
-            //DensityV = CoolProp.PropsSI("D", "T", temperature, "Q", 1, fluid);
-            coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
-            EnthalpyL = coolprop.hmass() / 1000;
-            //EnthalpyL = CoolProp.PropsSI("H", "T", temperature, "Q", 0, fluid) / 1000;
-            coolprop.update(input_pairs.QT_INPUTS, 1, temperature);
             EnthalpyV = coolprop.hmass() / 1000;
-            //EnthalpyV = CoolProp.PropsSI("H", "T", temperature, "Q", 1, fluid) / 1000;
-            coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
-            ViscosityL = coolprop.viscosity();
-            //ViscosityL = CoolProp.PropsSI("V", "T", temperature, "Q", 0, fluid);
-            coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
-            CpL = coolprop.cpmass() / 1000;
-            //CpL = CoolProp.PropsSI("C", "T", temperature, "Q", 0, fluid) / 1000;
-            coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
-            KL = coolprop.conductivity();
-            //KL = CoolProp.PropsSI("L", "T", temperature, "Q", 0, fluid);
+      
             double Pr_l = CpL * ViscosityL / KL * 1000;
 
             double h_fg = EnthalpyV - EnthalpyL; //"KJ"
@@ -66,9 +54,9 @@ namespace Model.Basic
        
             return href;
         }
-       public static double Kandlikar_Evap_href(string fluid, double d, double g, double p, double x, double q, double l)
+        public static double Kandlikar_Evap_href(string fluid, double d, double g, double p, double x, double q, double l, AbstractState coolprop)
        {
-           AbstractState coolprop = AbstractState.factory("HEOS", fluid);
+           //AbstractState coolprop = AbstractState.factory("HEOS", fluid);
 
            double temperature;
            double a_g = 9.8;
@@ -76,27 +64,16 @@ namespace Model.Basic
 
            coolprop.update(input_pairs.PQ_INPUTS, p * 1000, 0);
            temperature = coolprop.T();
-           //temperature = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, fluid);
            coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
            DensityL = coolprop.rhomass();
-           //DensityL = CoolProp.PropsSI("D", "T", temperature, "Q", 0, fluid);
+           EnthalpyL = coolprop.hmass() / 1000;
+           ViscosityL = coolprop.viscosity();
+           CpL = coolprop.cpmass() / 1000;
+           KL = coolprop.conductivity();
            coolprop.update(input_pairs.QT_INPUTS, 1, temperature);
            DensityV = coolprop.rhomass();
-           //DensityV = CoolProp.PropsSI("D", "T", temperature, "Q", 1, fluid);
-           coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
-           EnthalpyL = coolprop.hmass() / 1000;
-           //EnthalpyL = CoolProp.PropsSI("H", "T", temperature, "Q", 0, fluid) / 1000;
-           coolprop.update(input_pairs.QT_INPUTS, 1, temperature);
            EnthalpyV = coolprop.hmass() / 1000;
-           //EnthalpyV = CoolProp.PropsSI("H", "T", temperature, "Q", 1, fluid) / 1000;
-           coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
-           ViscosityL = coolprop.viscosity();
-           //ViscosityL = CoolProp.PropsSI("V", "T", temperature, "Q", 0, fluid);
-           coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
-           CpL = coolprop.cpmass() / 1000;
-           //CpL = CoolProp.PropsSI("C", "T", temperature, "Q", 0, fluid) / 1000;
-           coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
-           KL = coolprop.conductivity();
+        
            //KL = CoolProp.PropsSI("L", "T", temperature, "Q", 0, fluid);
 
            double Pr_l = CpL * ViscosityL / KL * 1000;
@@ -136,9 +113,9 @@ namespace Model.Basic
 
            return href;
        }
-       public static double JR_Evap_href(string fluid, double d, double g, double p, double x, double q, double l)
+        public static double JR_Evap_href(string fluid, double d, double g, double p, double x, double q, double l, AbstractState coolprop)
        {
-           AbstractState coolprop = AbstractState.factory("HEOS", fluid);
+           //AbstractState coolprop = AbstractState.factory("HEOS", fluid);
            
            double temperature;
            double a_g = 9.8;
@@ -148,32 +125,17 @@ namespace Model.Basic
 
            coolprop.update(input_pairs.PQ_INPUTS, p * 1000, 0);
            temperature = coolprop.T();
-           //temperature = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, fluid);
            coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
            DensityL = coolprop.rhomass();
-           //DensityL = CoolProp.PropsSI("D", "T", temperature, "Q", 0, fluid);
+           EnthalpyL = coolprop.hmass() / 1000;
+           ViscosityL = coolprop.viscosity();
+           CpL = coolprop.cpmass() / 1000;
+           KL = coolprop.conductivity();
            coolprop.update(input_pairs.QT_INPUTS, 1, temperature);
            DensityV = coolprop.rhomass();
-           //DensityV = CoolProp.PropsSI("D", "T", temperature, "Q", 1, fluid);
-           coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
-           EnthalpyL = coolprop.hmass() / 1000;
-           //EnthalpyL = CoolProp.PropsSI("H", "T", temperature, "Q", 0, fluid) / 1000;
-           coolprop.update(input_pairs.QT_INPUTS, 1, temperature);
            EnthalpyV = coolprop.hmass() / 1000;
-           //EnthalpyV = CoolProp.PropsSI("H", "T", temperature, "Q", 1, fluid) / 1000;
-           coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
-           ViscosityL = coolprop.viscosity();
-           //ViscosityL = CoolProp.PropsSI("V", "T", temperature, "Q", 0, fluid);
-           coolprop.update(input_pairs.QT_INPUTS, 1, temperature);
            ViscosityV = coolprop.viscosity();
-           //ViscosityV = CoolProp.PropsSI("V", "T", temperature, "Q", 1, fluid);
-           coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
-           CpL = coolprop.cpmass() / 1000;
-           //CpL = CoolProp.PropsSI("C", "T", temperature, "Q", 0, fluid) / 1000;
-           coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
-           KL = coolprop.conductivity();
-           //KL = CoolProp.PropsSI("L", "T", temperature, "Q", 0, fluid);
-
+           
            double Pr_l = CpL * ViscosityL / KL * 1000;
            double Re_l = g * d * (1 - x) / ViscosityL;
            double h_fg = (EnthalpyV - EnthalpyL);
@@ -235,9 +197,9 @@ namespace Model.Basic
            //return h_tp;
 
        }
-       public static double Shah_Cond_href(string fluid, double d, double g, double p, double x, double q, double l)
+        public static double Shah_Cond_href(string fluid, double d, double g, double p, double x, double q, double l, AbstractState coolprop)
        {
-           AbstractState coolprop = AbstractState.factory("HEOS", fluid);
+           //AbstractState coolprop = AbstractState.factory("HEOS", fluid);
 
            double temperature;
            double pc;
@@ -246,34 +208,18 @@ namespace Model.Basic
 
            coolprop.update(input_pairs.PQ_INPUTS, p * 1000, 0);
            temperature = coolprop.T();
-           //temperature = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, fluid);
            coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
            DensityL = coolprop.rhomass();
-           //DensityL = CoolProp.PropsSI("D", "T", temperature, "Q", 0, fluid);
+           EnthalpyL = coolprop.hmass() / 1000;
+           ViscosityL = coolprop.viscosity();
+           CpL = coolprop.cpmass() / 1000;
+           KL = coolprop.conductivity();
            coolprop.update(input_pairs.QT_INPUTS, 1, temperature);
            DensityV = coolprop.rhomass();
-           //DensityV = CoolProp.PropsSI("D", "T", temperature, "Q", 1, fluid);
-           coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
-           EnthalpyL = coolprop.hmass() / 1000;
-           //EnthalpyL = CoolProp.PropsSI("H", "T", temperature, "Q", 0, fluid) / 1000;
-           coolprop.update(input_pairs.QT_INPUTS, 1, temperature);
            EnthalpyV = coolprop.hmass() / 1000;
-           //EnthalpyV = CoolProp.PropsSI("H", "T", temperature, "Q", 1, fluid) / 1000;
-           coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
-           ViscosityL = coolprop.viscosity();
-           //ViscosityL = CoolProp.PropsSI("V", "T", temperature, "Q", 0, fluid);
-           coolprop.update(input_pairs.QT_INPUTS, 1, temperature);
            ViscosityV = coolprop.viscosity();
-           //ViscosityV = CoolProp.PropsSI("V", "T", temperature, "Q", 1, fluid);
-           coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
-           CpL = coolprop.cpmass() / 1000;
-           //CpL = CoolProp.PropsSI("C", "T", temperature, "Q", 0, fluid) / 1000;
-           coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
-           KL = coolprop.conductivity();
-           //KL = CoolProp.PropsSI("L", "T", temperature, "Q", 0, fluid);
 
-
-           pc = CoolProp.Props1SI(fluid, "Pcrit") / 1000;
+           pc = coolprop.p_critical() / 1000;
            double pr = p / pc;
 
            double Pr_l = CpL *ViscosityL / KL * 1000.0;
@@ -325,9 +271,9 @@ namespace Model.Basic
 
            return h_tp;
        }
-       public static double Dobson_Cond_href(string fluid, double d, double g, double p, double x, double Ts, double l)
+        public static double Dobson_Cond_href(string fluid, double d, double g, double p, double x, double Ts, double l, AbstractState coolprop)
        {
-           AbstractState coolprop = AbstractState.factory("HEOS", fluid);
+           //AbstractState coolprop = AbstractState.factory("HEOS", fluid);
            
            double temperature;
            double a_g = 9.80665;
@@ -335,31 +281,16 @@ namespace Model.Basic
 
            coolprop.update(input_pairs.PQ_INPUTS, p * 1000, 0);
            temperature = coolprop.T();
-           //temperature = CoolProp.PropsSI("T", "P", p * 1000, "Q", 0, fluid);
            coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
            DensityL = coolprop.rhomass();
-           //DensityL = CoolProp.PropsSI("D", "T", temperature, "Q", 0, fluid);
+           EnthalpyL = coolprop.hmass() / 1000;
+           ViscosityL = coolprop.viscosity();
+           CpL = coolprop.cpmass() / 1000;
+           KL = coolprop.conductivity();
            coolprop.update(input_pairs.QT_INPUTS, 1, temperature);
            DensityV = coolprop.rhomass();
-           //DensityV = CoolProp.PropsSI("D", "T", temperature, "Q", 1, fluid);
-           coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
-           EnthalpyL = coolprop.hmass() / 1000;
-           //EnthalpyL = CoolProp.PropsSI("H", "T", temperature, "Q", 0, fluid) / 1000;
-           coolprop.update(input_pairs.QT_INPUTS, 1, temperature);
            EnthalpyV = coolprop.hmass() / 1000;
-           //EnthalpyV = CoolProp.PropsSI("H", "T", temperature, "Q", 1, fluid) / 1000;
-           coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
-           ViscosityL = coolprop.viscosity();
-           //ViscosityL = CoolProp.PropsSI("V", "T", temperature, "Q", 0, fluid);
-           coolprop.update(input_pairs.QT_INPUTS, 1, temperature);
            ViscosityV = coolprop.viscosity();
-           //ViscosityV = CoolProp.PropsSI("V", "T", temperature, "Q", 1, fluid);
-           coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
-           CpL = coolprop.cpmass() / 1000;
-           //CpL = CoolProp.PropsSI("C", "T", temperature, "Q", 0, fluid) / 1000;
-           coolprop.update(input_pairs.QT_INPUTS, 0, temperature);
-           KL = coolprop.conductivity();
-           //KL = CoolProp.PropsSI("L", "T", temperature, "Q", 0, fluid);
 
            double Pr_l = CpL * ViscosityL / KL * 1000;
            double Re_l = g * (1.0 - x) * d / ViscosityL;

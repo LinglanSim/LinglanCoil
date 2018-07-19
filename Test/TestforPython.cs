@@ -64,8 +64,8 @@ namespace Test
             capInput.lenth_cap = new double[] { 0, 0 };//0.5
 
             DateTime Time1 = DateTime.Now;
-            //var rr = Main.main_condenser_py(refInput, airInput, geoInput, capInput);
-            var r = Main.main_evaporator_py(refInput, airInput, geoInput, capInput);
+            //var rr = Main.main_condenser_py(refInput, airInput, geoInput, capInput, coolprop);
+            var r = Main.main_evaporator_py(refInput, airInput, geoInput, capInput, coolprop);
             //for (int i=0;i<5;i++)
             //r = Main.main_evaporator_py(refInput, airInput, geoInput, capInput);
 
@@ -77,8 +77,8 @@ namespace Test
             //}
             //double Tsc_set = 5;
             //double Tsh_set = 5;
-            //var rr = Main.main_condenser_inputSC_py(Tsc_set, refInput, airInput, geoInput, capInput);
-            //var rrr = Main.main_evaporator_inputSH_py(Tsh_set, refInput, airInput, geoInput, capInput);
+            //var rr = Main.main_condenser_inputSC_py(Tsc_set, refInput, airInput, geoInput, capInput, coolprop);
+            //var rrr = Main.main_evaporator_inputSH_py(Tsh_set, refInput, airInput, geoInput, capInput, coolprop);
             DateTime Time2 = DateTime.Now;
             double time01 = (Time2 - Time1).TotalSeconds;
 

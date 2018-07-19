@@ -12,7 +12,7 @@ namespace Model
         public static CalcResult CircuitCalc(int index, CirArr[] cirArr, CircuitNumber CircuitInfo, int Nrow, int[] Ntube, int Nelement, string fluid,
             double l, Geometry geo, double[, ,] ta, double[, ,] RH,
             double tri, double pri, double hri, double mr, double[,] ma, double[,] ha,double[,] haw,
-            double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater, string Airdirection, double[] d_cap, double[] lenth_cap)
+            double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater, string Airdirection, double[] d_cap, double[] lenth_cap, AbstractState coolprop)
         {
             //******蒸发器毛细管******//
             //调用毛细管守恒方程模型
@@ -33,7 +33,7 @@ namespace Model
                 {
                     for (int i = 0; i < N; i++)
                     {
-                        res_cap[i] = Capiliary.CapiliaryCalc(index, fluid, d_cap[index], lenth_cap[index] / N, tri, pri, hri, mr, Pwater, hexType);
+                        res_cap[i] = Capiliary.CapiliaryCalc(index, fluid, d_cap[index], lenth_cap[index] / N, tri, pri, hri, mr, Pwater, hexType, coolprop);
                         pri = res_cap[i].pro;
                         hri = res_cap[i].hro;
                         tri = res_cap[i].tro;
@@ -132,7 +132,7 @@ namespace Model
                     }
 
                     r[i] = Tube.TubeCalc(Nelement, fluid, l, Aa_fin, Aa_tube, Ar_cs, Ar,geo, tai, RHi, tri_tube, pri_tube, hri_tube,
-                        mr, ma_tube, ha_tube, haw_tube, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater);
+                        mr, ma_tube, ha_tube, haw_tube, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, coolprop);
                     if (r[i].Pro < 0) { res_cir.Pro = -10000000; return res_cir; }
                     if (Airdirection=="Parallel")
                     {
@@ -240,7 +240,7 @@ namespace Model
                 {
                     for (int i = 0; i < N; i++)
                     {
-                        res_cap[i] = Capiliary.CapiliaryCalc(index, fluid, d_cap[index], lenth_cap[index] / N, res_cir.Tro, res_cir.Pro, res_cir.hro, mr, Pwater, hexType);
+                        res_cap[i] = Capiliary.CapiliaryCalc(index, fluid, d_cap[index], lenth_cap[index] / N, res_cir.Tro, res_cir.Pro, res_cir.hro, mr, Pwater, hexType, coolprop);
                         res_cir.Pro = res_cap[i].pro;
                         res_cir.hro = res_cap[i].hro;
                         res_cir.Tro = res_cap[i].tro;

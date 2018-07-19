@@ -9,10 +9,10 @@ namespace Model
 {
     public class Capiliary
     {
-        public static Capiliary_res CapiliaryCalc(int index, string fluid, double d_cap, double lenth_cap, double tri, double pri, double hri, double mr, double Pwater, int hexType)
+        public static Capiliary_res CapiliaryCalc(int index, string fluid, double d_cap, double lenth_cap, double tri, double pri, double hri, double mr, double Pwater, int hexType, AbstractState coolprop)
         {
             //毛细管守恒方程模型
-            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
+            //AbstractState coolprop = AbstractState.factory("HEOS", fluid);
 
             Capiliary_res res_cap = new Capiliary_res();
             

@@ -12,9 +12,9 @@ namespace Model
     {
         public static CalcResult ElementCalc(string fluid, double l, double Aa_fin, double Aa_tube, double A_r_cs, double Ar, Geometry geo, double tai,
             double RHi, double tri, double pri, double hri, double mr, double g, double ma, double ha, double haw,
-            double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity)
+            double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, AbstractState coolprop)
         {
-            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
+            //AbstractState coolprop = AbstractState.factory("HEOS", fluid);
 
             double dh = geo.Di;
             double r_metal = thickness / conductivity / Ar;
@@ -44,7 +44,7 @@ namespace Model
             do
             {
                 flag = false;
-                htc_dp = RefrigerantHTCandDP.HTCandDP_2p(fluid, dh, g, pri, res.x_i, l, q, zh, zdp, hexType);
+                htc_dp = RefrigerantHTCandDP.HTCandDP_2p(fluid, dh, g, pri, res.x_i, l, q, zh, zdp, hexType, coolprop);
 
                 res.href = htc_dp.Href;
                 res.DP = htc_dp.DPref;
@@ -89,9 +89,9 @@ namespace Model
         }
         public static CalcResult ElementCalc1(string fluid, double l, double Aa_fin, double Aa_tube, double A_r_cs, double Ar, Geometry geo, double tai,
             double RHi, double tri, double pri, double hri, double mr, double g, double ma, double ha, double haw,
-            double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity)
+            double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, AbstractState coolprop)
         {
-            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
+            //AbstractState coolprop = AbstractState.factory("HEOS", fluid);
 
             double dh = geo.Di;
             double r_metal = thickness / conductivity / Ar;
@@ -120,7 +120,7 @@ namespace Model
             do
             {
                 flag = false;
-                htc_dp = RefrigerantHTCandDP.HTCandDP_2p(fluid, dh, g, pri, res.x_i, l, q, zh, zdp, hexType);
+                htc_dp = RefrigerantHTCandDP.HTCandDP_2p(fluid, dh, g, pri, res.x_i, l, q, zh, zdp, hexType, coolprop);
 
                 res.href = htc_dp.Href;
                 res.DP = htc_dp.DPref;
