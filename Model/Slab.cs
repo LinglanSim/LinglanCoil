@@ -277,7 +277,7 @@ namespace Model
                                     //for (int i = 0; i < Ncir; i++)
 
                                     //首次流路计算
-                                    if (CircuitInfo.CirType != null)
+                                    if (CircuitInfo.CirType != null && CircuitInfo.CirType.flag == true)
                                     {
                                         if ((CircuitInfo.CirType.flag == true) && (CircuitInfo.CirType.type[i, 0] == 0) && (res_type[CircuitInfo.CirType.type[i, 1]] != null))
                                         {

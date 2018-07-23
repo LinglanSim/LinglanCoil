@@ -72,7 +72,7 @@ namespace Model
 
         }
 
-        public static CheckDP CheckDPConverge2(int hexType, double iterforPri, double[] mr_cir, double[] DP, int Ncir)
+        public static CheckDP CheckDPConverge2(int hexType, double iterforPri, double[] mr_cir, double[] pro, double pri, int Ncir)
         {
             CheckDP res = new CheckDP();
             bool flag = true;//means converge
@@ -84,6 +84,11 @@ namespace Model
             double mr_sum=0;
             double[] mr_ratio = new double[Ncir];
             double N = 0;
+            double[] DP = new double[Ncir];
+            for (int i = 0; i < Ncir; i++)
+            {
+                DP[i] = pri-pro[i];
+            }
 
             N = 1.8; //1.8
 

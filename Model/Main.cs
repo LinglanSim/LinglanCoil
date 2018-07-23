@@ -917,19 +917,34 @@ namespace Model
             //CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
             //CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
 
-            CirArrange = new int[,] { { 13, 14, 15, 16, 4, 3, 2, 1 }, { 17, 18, 19, 20, 8, 7, 6, 5 }, { 21, 22, 23, 24, 12, 11, 10, 9 } };
-            CircuitInfo.number = new int[] { 3, 3 };//4in 2out
-            CircuitInfo.TubeofCir = new int[] { 8, 8, 8};  //{ 4, 8 };
-            //CircuitInfo.UnequalCir = new int[] { 5, 5, 6, 6, 0, 0 };
+            //CirArrange = new int[,] { { 13, 14, 15, 16, 4, 3, 2, 1 }, { 17, 18, 19, 20, 8, 7, 6, 5 }, { 21, 22, 23, 24, 12, 11, 10, 9 } };
+            //CirArrange = new int[,] { { 15, 16, 17, 3, 2, 1 }, { 18, 19, 20, 6, 5, 4 }, { 21, 22, 23, 9, 8, 7 }, { 24, 25, 26, 12, 11, 10 }, { 27, 13, 0, 0, 0, 0 }, { 28, 14, 0, 0, 0, 0 } };
+            //CirArrange = new int[,] { { 15, 16, 2, 1, 0, 0, 0, 0 }, { 17, 18, 19, 20, 6, 5, 4, 3 }, { 21, 22, 8, 7, 0, 0, 0, 0 }, { 23, 24, 25, 26, 12, 11, 10, 9 }, { 27, 13, 0, 0, 0, 0, 0, 0 }, { 28, 14, 0, 0, 0, 0, 0, 0 } };
+            //CirArrange = new int[,] { { 15, 16, 2, 1, 0, 0, 0, 0 }, { 17, 18, 19, 20, 6, 5, 4, 3 }, { 21, 22, 8, 7, 0, 0, 0, 0 }, { 23, 24, 25, 11, 10, 9, 0, 0 }, { 26, 27, 13, 12, 0, 0, 0, 0 }, { 28, 14, 0, 0, 0, 0, 0, 0 } };
+            //CirArrange = new int[,] { { 15, 1, 0, 0, 0, 0, 0, 0 }, { 16, 2, 0, 0, 0, 0, 0, 0 }, { 17, 18, 4, 3, 0, 0, 0, 0 }, { 19, 20, 21, 22, 8, 7, 6, 5 }, { 23, 24, 10, 9, 0, 0, 0, 0 }, { 25, 26, 27, 28, 14, 13, 12, 11 } };
+            CirArrange = new int[,] { { 15, 1, 0, 0, 0, 0, 0, 0 }, { 16, 17, 3, 2, 0, 0, 0, 0 }, { 18, 19, 5, 4, 0, 0, 0, 0 }, { 20, 21, 22, 8, 7, 6, 0, 0 }, { 23, 24, 10, 9, 0, 0, 0, 0 }, { 25, 26, 27, 28, 14, 13, 12, 11 } };
+            CircuitInfo.number = new int[] { 4, 2 };//4in 2out
+            CircuitInfo.TubeofCir = new int[] { 2, 4, 4, 6, 4, 8 };//{ 6, 6, 6, 6, 2, 2 };  //{ 4, 8 };
+            CircuitInfo.UnequalCir = new int[] { -5, -6, 5, 5, 6, 6 };
 
-            int[,] Node_in = { { -1, -100, -100 }, { 0, 1, 2 } };
-            int[,] Node_inType = { { -1, -100, -100 }, { 1, 1, 1 } };//0:Node,1:Circuit,-1:in/out,-100:meaningless
-            int[] Node_Nin = { 1, 3 };
-            int[,] Node_out = { { 0, 1, 2 }, { -1, -100, -100 } };
-            int[,] Node_outType = { { 1, 1, 1 }, { -1, -100, -100 } };
-            int[] Node_Nout = { 3, 1 };
-            char[] Node_type = { 'D', 'C' };// Diverse/Converge
-            int[] Node_couple = { 0, 0 };
+            /*int[,] Node_in = { { -1, -100 }, { 0, -100 }, { 0, -100 }, { 0, 1 }, { 2, 3 }, { 4, 5 } };
+            int[,] Node_inType = { { -1, -100 }, { 0, -100 }, { 0, -100 }, { 1, 1 }, { 1, 1 }, { 1, 1 } };//0:Node,1:Circuit,-1:in/out,-100:meaningless
+            int[] Node_Nin = { 1, 1, 1, 2, 2, 2 };
+            int[,] Node_out = { { 1, 2 }, { 0, 1 }, { 2, 3 }, { 4, -100 }, { 5, -100 },{-1,-100} };
+            int[,] Node_outType = { { 0, 0 }, { 1, 1 }, { 1, 1 }, { 1, -100 }, { 1, -100 }, { -1, -100 } };
+            int[] Node_Nout = { 2, 2, 2, 1, 1, 1 };
+            char[] Node_type = { 'D', 'D' ,'D','C','C','C'};// Diverse/Converge
+            int[] Node_couple = { 0, 1, 2, 1, 2, 0 };*/
+
+            int[,] Node_in = { { -1, -100 }, { 0, -100 }, { 1, -100 }, { 2, 3 }, { 4, 5 }, { 3, 4 } };
+            int[,] Node_inType = { { -1, -100 }, { 1, -100 }, { 1, -100 }, { 1, 1 }, { 1, 1 }, { 0, 0 } };//0:Node,1:Circuit,-1:in/out,-100:meaningless
+            int[] Node_Nin = { 1, 1, 1, 2, 2, 2 };
+            int[,] Node_out = { { 0, 1 }, { 2, 3 }, { 4, 5 }, { 5, -100 }, { 5, -100 }, { -1, -100 } };
+            int[,] Node_outType = { { 1, 1 }, { 1, 1 }, { 1, 1 }, { 0, -100 }, { 0, -100 }, { -1, -100 } };
+            int[] Node_Nout = { 2, 2, 2, 1, 1, 1 };
+            char[] Node_type = { 'D', 'D', 'D', 'C', 'C', 'C' };// Diverse/Converge
+            int[] Node_couple = { 0, 1, 2, 1, 2, 0 };
+
 
             int N_Node=Node_in.GetLength(0);
             NodeInfo[] Nodes = new NodeInfo[N_Node];
@@ -1002,7 +1017,7 @@ namespace Model
             double Hx = L * H;
             double rho_a_st = 1.2; //kg/m3
             double Va = airInput.Volumetricflowrate;
-            double Vel_ave = Va / Hx;
+            double Vel_ave = Va / Hx / 3600;
             double za = 1; //Adjust factor
             if (fin_type == "plain")
                 za = 1.0;
@@ -1061,10 +1076,10 @@ namespace Model
 
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
-            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, tri, pri, hri,
-                //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
-            res = Slab2.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, tri, pri, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection,Nodes,N_Node);
+            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, tri, pri, hri,
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+            //res = Slab2.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, tri, pri, hri,
+            //    mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection,Nodes,N_Node);
 
             return res;
         }

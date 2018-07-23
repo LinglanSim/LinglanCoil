@@ -27,13 +27,13 @@ namespace Model.Basic
                     {
                         for(int j=0;j<Nodes[i].N_in;j++)
                         {
-                            if((Nodes[i].inType[j]==0)&&(Nodes[i].inlet[j]==Nodes[in_Node].outlet[index_status]))//avoid find circuit
+                            if((Nodes[i].inType[j]==0)&&(i==Nodes[in_Node].outlet[index_status]))//avoid find circuit
                             {
                                 r=i;
-                            }
-                            break;
+                                break;
+                            }                           
                         }
-                        break;
+                        //break;
                     }
                 }
                 else if(Nodes[in_Node].outType[index_status]==1)//out is circuit
