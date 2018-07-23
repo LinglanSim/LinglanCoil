@@ -72,6 +72,7 @@
     <Compile Include="BaroczyVoidFraction.cs">
       <DependentUpon>DataBase.tt</DependentUpon>
     </Compile>
+    <Compile Include="Basic\Capiliary_res.cs" />
     <Compile Include="Basic\AirHTC_CAL.cs" />
     <Compile Include="Basic\AirHTC.cs" />
     <Compile Include="Basic\Brine.cs" />
@@ -88,6 +89,7 @@
     <Compile Include="Basic\Fluid.cs" />
     <Compile Include="Basic\FluidCategory.cs" />
     <Compile Include="Basic\AirStateInput.cs" />
+    <Compile Include="Basic\CapiliaryInput.cs" />
     <Compile Include="Basic\RefStateInput.cs" />
     <Compile Include="Basic\GeometryInput.cs" />
     <Compile Include="Basic\Geometry.cs" />
@@ -105,6 +107,7 @@
     <Compile Include="Basic\AirDistribution.cs" />
     <Compile Include="Basic\DistributionConvert.cs" />
     <Compile Include="Basic\CircuitIdentification.cs" />
+    <Compile Include="capiliary.cs" />
     <Compile Include="Coolprop\AbstractState.cs" />
     <Compile Include="Coolprop\AbstractStateGenerator.cs" />
     <Compile Include="Coolprop\backends.cs" />

@@ -11,7 +11,7 @@ namespace Model
 {
     public class Main
     {
-        public static CalcResult main_condenser_inputSC_py(double Tsc_set, RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput)
+        public static CalcResult main_condenser_inputSC_py(double Tsc_set, RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, CapiliaryInput capInput, AbstractState coolprop)
         {
             //***几何结构赋值***//
             CalcResult res = new CalcResult();
@@ -56,6 +56,8 @@ namespace Model
             //CircuitType CirType = new CircuitType();
             CircuitInfo.CirType = CircuitIdentification.CircuitIdentify(CircuitInfo.number, CircuitInfo.TubeofCir, cirArr);
 
+            double[] d_cap = capInput.d_cap;
+            double[] lenth_cap = capInput.lenth_cap;
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -68,6 +70,7 @@ namespace Model
             int hexType = 1;
             //******制冷剂、风进口参数输入******//
             string fluid = refInput.FluidName;
+            //AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             double mr = refInput.Massflowrate;//initial input 
             //double te = refInput.te;
             //double P_exv = refInput.P_exv;
@@ -117,10 +120,14 @@ namespace Model
             double eta_surface = 1;
             double zh = refInput.zh;
             double zdp = refInput.zdp;
-            double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
+            coolprop.update(input_pairs.QT_INPUTS, 0, tc + 273.15);
+            double pri = coolprop.p() / 1000;
+            //double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
             double conductivity = 386;
             double Pwater = 100.0;
-            double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000;
+            coolprop.update(input_pairs.PT_INPUTS, pri * 1000, tri + 273.15);
+            double hri = coolprop.hmass() / 1000;
+            //double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -145,21 +152,34 @@ namespace Model
             //supercooling temp calculaiton loop
             do
             {
+
+                //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tri, pri, hri,
+                // mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tri, pri, hri,
-                 mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                 mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
+
 
                 if (res.x_o >= 0 && res.x_o <= 1)
                 {
-                    hsc_cal = CoolProp.PropsSI("H", "P", res.Pro * 1000, "Q", res.x_o, fluid) / 1000;
+                    coolprop.update(input_pairs.PQ_INPUTS, res.Pro * 1000, res.x_o);
+                    hsc_cal = coolprop.hmass() / 1000;
+                    //hsc_cal = CoolProp.PropsSI("H", "P", res.Pro * 1000, "Q", res.x_o, fluid) / 1000;
                 }
                 else
                 {
-                    hsc_cal = CoolProp.PropsSI("H", "P", res.Pro * 1000, "T", res.Tro + 273.15, fluid) / 1000;
+                    coolprop.update(input_pairs.PT_INPUTS, res.Pro * 1000, res.Tro + 273.15);
+                    hsc_cal = coolprop.hmass() / 1000;
+                    //hsc_cal = CoolProp.PropsSI("H", "P", res.Pro * 1000, "T", res.Tro + 273.15, fluid) / 1000;
                 }
-                    
-                Tro_set = CoolProp.PropsSI("T", "P", res.Pro * 1000, "Q", 0, fluid) - 273.15 - Tsc_set;
 
-                hsc_set = CoolProp.PropsSI("H", "P", res.Pro * 1000, "T", Tro_set + 273.15, fluid) / 1000;
+                coolprop.update(input_pairs.PQ_INPUTS, res.Pro * 1000, 0);
+                Tro_set = coolprop.T() - 273.15 - Tsc_set;
+                //Tro_set = CoolProp.PropsSI("T", "P", res.Pro * 1000, "Q", 0, fluid) - 273.15 - Tsc_set;
+
+                coolprop.update(input_pairs.PT_INPUTS, res.Pro * 1000, Tro_set + 273.15);
+                hsc_set = coolprop.hmass() / 1000;
+                //hsc_set = CoolProp.PropsSI("H", "P", res.Pro * 1000, "T", Tro_set + 273.15, fluid) / 1000;
 
                 mr = mr * Math.Pow((hsc_set / hsc_cal), 1.8); 
 
@@ -169,8 +189,9 @@ namespace Model
 
             return res;
         }
-        public static CalcResult main_evaporator_inputSH_py(double Tsh_set, RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput)
+        public static CalcResult main_evaporator_inputSH_py(double Tsh_set, RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, CapiliaryInput capInput, AbstractState coolprop)
         {
+
             CalcResult res = new CalcResult();
 
             int Nrow = geoInput.Nrow;//2
@@ -216,6 +237,9 @@ namespace Model
             bool reverse = true; //*********************************false:origin, true:reverse******************************************
             CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
 
+            double[] d_cap = capInput.d_cap;
+            double[] lenth_cap = capInput.lenth_cap;
+
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
             geoInput_air.Pr = Pr;
@@ -227,6 +251,7 @@ namespace Model
             int hexType = 0; //***0 is evap, 1 is cond***//
             //******制冷剂、风进口参数输入******//
             string fluid = refInput.FluidName;
+            //AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             double te = refInput.te;//45.0;
             double P_exv = refInput.P_exv;
             double T_exv = refInput.T_exv;
@@ -278,7 +303,9 @@ namespace Model
             double eta_surface = 1;
             double zh = refInput.zh;
             double zdp = refInput.zdp;
-            double pe = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid) / 1000;
+            coolprop.update(input_pairs.QT_INPUTS, 0, te + 273.15);
+            double pe = coolprop.p() / 1000;
+            //double pe = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid) / 1000;
             //double P_exv = 1842.28;//kpa
             //double T_exv = 20;//C
             double conductivity = 386; //w/mK for Cu
@@ -287,7 +314,11 @@ namespace Model
             if (refInput.H_exv != 0)
                 hri = refInput.H_exv;
             else if (P_exv != 0)
-                hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000;
+            {
+                coolprop.update(input_pairs.PT_INPUTS, P_exv * 1000, T_exv + 273.15);
+                hri = coolprop.hmass() / 1000;
+                //hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000;
+            }
             else hri = 0;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
@@ -313,29 +344,43 @@ namespace Model
             //superheating temp calculaiton loop
             do
             {
+
+                //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, te, pe, hri,
+                //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, te, pe, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
+
                 if (res.x_o >= 0 && res.x_o <= 1)
                 {
-                    hsh_cal = CoolProp.PropsSI("H", "P", res.Pro * 1000, "Q", res.x_o, fluid) / 1000;
+                    coolprop.update(input_pairs.PQ_INPUTS, res.Pro * 1000, res.x_o);
+                    hsh_cal = coolprop.hmass() / 1000;
+                    //hsh_cal = CoolProp.PropsSI("H", "P", res.Pro * 1000, "Q", res.x_o, fluid) / 1000;
                 }
                 else
                 {
-                    hsh_cal = CoolProp.PropsSI("H", "P", res.Pro * 1000, "T", res.Tro + 273.15, fluid) / 1000;
+                    coolprop.update(input_pairs.PT_INPUTS, res.Pro * 1000, res.Tro + 273.15);
+                    hsh_cal = coolprop.hmass() / 1000;
+                    //hsh_cal = CoolProp.PropsSI("H", "P", res.Pro * 1000, "T", res.Tro + 273.15, fluid) / 1000;
                 }
 
-                Tro_set = CoolProp.PropsSI("T", "P", res.Pro * 1000, "Q", 1, fluid) - 273.15 + Tsh_set;
-                hsh_set = CoolProp.PropsSI("H", "T", Tro_set + 273.15, "P", res.Pro * 1000, fluid) / 1000;
+                coolprop.update(input_pairs.PQ_INPUTS, res.Pro * 1000, 1);
+                Tro_set = coolprop.T() - 273.15 + Tsh_set;
+                //Tro_set = CoolProp.PropsSI("T", "P", res.Pro * 1000, "Q", 1, fluid) - 273.15 + Tsh_set;
+
+                coolprop.update(input_pairs.PT_INPUTS, res.Pro * 1000, Tro_set + 273.15);
+                hsh_set = coolprop.hmass() / 1000;
+                //hsh_set = CoolProp.PropsSI("H", "T", Tro_set + 273.15, "P", res.Pro * 1000, fluid) / 1000;
 
                 mr = mr * Math.Pow((hsh_cal / hsh_set), 3.8);
 
                 ii++;
 
-            } while (Math.Abs((hsh_cal - hsh_set) / hsh_set) > 0.001);
+            } while (Math.Abs((hsh_cal - hsh_set) / hsh_set) > 0.0027);
  
             return res;
         }
-        public static CalcResult main_evaporator_py(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput)
+        public static CalcResult main_evaporator_py(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, CapiliaryInput capInput, AbstractState coolprop)
         {
             CalcResult res = new CalcResult();
 
@@ -382,6 +427,9 @@ namespace Model
             bool reverse = true; //*********************************false:origin, true:reverse******************************************
             CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
 
+            double[] d_cap = capInput.d_cap;
+            double[] lenth_cap = capInput.lenth_cap;
+
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
             geoInput_air.Pr = Pr;
@@ -393,6 +441,7 @@ namespace Model
             int hexType = 0; //***0 is evap, 1 is cond***//
             //******制冷剂、风进口参数输入******//
             string fluid = refInput.FluidName;
+            //AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             double mr = refInput.Massflowrate;//0.01;
             double te = refInput.te;//45.0;
             double P_exv = refInput.P_exv;
@@ -445,7 +494,9 @@ namespace Model
             double eta_surface = 1;
             double zh = refInput.zh;
             double zdp = refInput.zdp;
-            double pe = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid) / 1000;
+            coolprop.update(input_pairs.QT_INPUTS, 0, te + 273.15);
+            double pe = coolprop.p() / 1000;
+            //double pe = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid) / 1000;
             //double P_exv = 1842.28;//kpa
             //double T_exv = 20;//C
             double conductivity = 386; //w/mK for Cu
@@ -454,7 +505,11 @@ namespace Model
             if (refInput.H_exv != 0)
                 hri = refInput.H_exv;
             else if (P_exv != 0)
-                hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000;
+            {
+                coolprop.update(input_pairs.PT_INPUTS, P_exv * 1000, T_exv + 273.15);
+                hri = coolprop.hmass() / 1000;
+                //hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000;
+            }
             else hri = 0;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
@@ -465,14 +520,21 @@ namespace Model
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, te, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, te, AirDirection);
 
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, te, pe, hri,
+                //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, te, pe, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
+
 
             return res;
         }
-        public static CalcResult main_condenser_py(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput)
+        public static CalcResult main_condenser_py(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, CapiliaryInput capInput, AbstractState coolprop)
         {
             //***几何结构赋值***//
             CalcResult res = new CalcResult();
@@ -517,6 +579,8 @@ namespace Model
             //CircuitType CirType = new CircuitType();
             CircuitInfo.CirType = CircuitIdentification.CircuitIdentify(CircuitInfo.number, CircuitInfo.TubeofCir, cirArr);
 
+            double[] d_cap = capInput.d_cap;
+            double[] lenth_cap = capInput.lenth_cap;
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -529,6 +593,7 @@ namespace Model
             int hexType = 1;
             //******制冷剂、风进口参数输入******//
             string fluid = refInput.FluidName;
+            //AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             double mr = refInput.Massflowrate;
             //double te = refInput.te;
             //double P_exv = refInput.P_exv;
@@ -578,10 +643,14 @@ namespace Model
             double eta_surface = 1;
             double zh = refInput.zh;
             double zdp = refInput.zdp;
-            double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
+            coolprop.update(input_pairs.QT_INPUTS, 0, tc + 273.15);
+            double pri = coolprop.p() / 1000;
+            //double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
             double conductivity = 386; 
             double Pwater = 100.0;
-            double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000 ;
+            coolprop.update(input_pairs.PT_INPUTS, pri * 1000, tri + 273.15);
+            double hri = coolprop.hmass() / 1000;
+            //double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000 ;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -591,16 +660,24 @@ namespace Model
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tri, pri, hri,
+                //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, tri, pri, hri,
-                mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection, d_cap, lenth_cap, coolprop);
+
 
             return res;
         }
         public static CalcResult main_evaporator()
         {
             string fluid = "R410A";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             //string fluid = new string { "R410A.mix" };
             //string fluid = new string[] { "ISOBUTAN" };
             CalcResult res = new CalcResult();
@@ -649,6 +726,10 @@ namespace Model
             // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
             //  Ncir=1, 20in, 20->19 1out
+
+            double[] d_cap = new double[] { 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0 };
+
             double mr = 0.02;
             //double Vel_a = 1.8; //m/s
             double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
@@ -701,14 +782,18 @@ namespace Model
             double RHi = 0.469;
             double tri = 7.2;
             double te = tri;
-            double pe = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid) / 1000;
+            coolprop.update(input_pairs.QT_INPUTS, 0, te + 273.15);
+            double pe = coolprop.p() / 1000;
+            //double pe = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid) / 1000;
 
             double P_exv = 1842.28;//kpa
             double T_exv = 20;//C
             double conductivity = 386; //w/mK for Cu
             double Pwater = 0;
             //int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
-            double hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000 ;
+            coolprop.update(input_pairs.PT_INPUTS, P_exv * 1000, T_exv + 273.15);
+            double hri = coolprop.hmass() / 1000;
+            //double hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000 ;
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
@@ -717,18 +802,26 @@ namespace Model
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, te, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, te, AirDirection);
 
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, te, pe, hri,
+            //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, te, pe, hri,
-            mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+            mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
+
             return res;
 
         }
-        public static CalcResult main_condenser(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, string flowtype, string fin_type, string tube_type, string hex_type)
+        public CalcResult main_condenser(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, string flowtype, string fin_type, string tube_type, string hex_type, CapiliaryInput capInput)
         {
             //制冷剂制热模块计算
             //string fluid = new string[] { "Water" };
             string fluid = refInput.FluidName;// refri_in;// "R32";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             //string fluid = new string[] { "ISOBUTAN" };
             CalcResult res = new CalcResult();
             int Nrow = geoInput.Nrow;
@@ -786,6 +879,9 @@ namespace Model
                 reverse = true;
 
             CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
+
+            double[] d_cap = capInput.d_cap;
+            double[] lenth_cap = capInput.lenth_cap;
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -856,14 +952,17 @@ namespace Model
             double RHi = airInput.RHi;// RHi_in;//0.469;
             double tc = refInput.tc;// tc_in;//45.0;
             //double pri = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
-
-            double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
+            coolprop.update(input_pairs.QT_INPUTS, 0, tc + 273.15);
+            double pri = coolprop.p() / 1000;
+            //double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
             //double P_exv = 1842.28;//kpa
             double tri = refInput.tri;// tri_in;//78;//C
             double conductivity = 386; //w/mK for Cu
             double Pwater = 100.0;
             //int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-            double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000 ;
+            coolprop.update(input_pairs.PT_INPUTS, pri * 1000, tri + 273.15);
+            double hri = coolprop.hmass() / 1000;
+            //double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000 ;
             //double hri = 354.6;
             //double xin = 0.57;
 
@@ -875,10 +974,17 @@ namespace Model
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tri, pri, hri,
+                //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tri, pri, hri,
-                mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
+
 
             return res;
         }
@@ -1088,6 +1194,7 @@ namespace Model
         {
             //制冷剂制热模块计算
             string fluid = "R32";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             CalcResult res = new CalcResult();
             int Nrow = 2;
             double[] FPI = new double[Nrow + 1];
@@ -1112,6 +1219,9 @@ namespace Model
             CircuitInfo.number = new int[] { 8, 8 }; 
             CircuitInfo.TubeofCir = new int[] { 8, 8, 8, 8, 8, 8, 8, 8 };
             CircuitInfo.UnequalCir = null;
+
+            double[] d_cap = new double[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0, 0, 0, 0, 0 };
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -1163,12 +1273,16 @@ namespace Model
             double RHi = 0.469;
             double tc = 46.23;
             //double pri = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
-            double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
+            coolprop.update(input_pairs.QT_INPUTS, 0, tc + 273.15);
+            double pri = coolprop.p() / 1000;
+            //double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
             double tri = 95;//C
             double conductivity = 386; //w/mK for Cu
             double Pwater = 100.0;
             //int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-            double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000 ;
+            coolprop.update(input_pairs.PT_INPUTS, pri * 1000, tri + 273.15);
+            double hri = coolprop.hmass() / 1000;
+            //double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000 ;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -1178,10 +1292,17 @@ namespace Model
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tri, pri, hri,
+                //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tri, pri, hri,
-                mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
+
 
             return res;
         }
@@ -1189,6 +1310,7 @@ namespace Model
         {
             //制冷剂制热模块计算
             string fluid = "R32";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             CalcResult res = new CalcResult();
             int Nrow = 2;
             double[] FPI = new double[Nrow + 1];
@@ -1209,6 +1331,9 @@ namespace Model
             CircuitInfo.number = new int[] { 2, 2 }; //****************modified 3
             CircuitInfo.TubeofCir = new int[] { 2, 2 }; //****************modified 4
             CircuitInfo.UnequalCir = null;
+
+            double[] d_cap = new double[] { 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0 };
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -1276,8 +1401,13 @@ namespace Model
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             var r = main_RACR32condenser_1(); //****************modified 9
             //****************modified 9
+
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, r.Tro, r.Pro, r.hro,
+                //r.mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, r.Tro, r.Pro, r.hro,
-                r.mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                r.mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
+
             return res;
         }
 
@@ -1286,6 +1416,7 @@ namespace Model
             //制冷剂制热模块计算
             //string fluid = new string[] { "Water" };
             string fluid = "R32";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             //string fluid = new string[] { "ISOBUTAN" };
             CalcResult res = new CalcResult();
             int Nrow = 2;
@@ -1319,6 +1450,9 @@ namespace Model
             // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
             //  Ncir=1, 20in, 20->19 1out
+
+            double[] d_cap = new double[] { 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0 };
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -1375,14 +1509,17 @@ namespace Model
             double RHi = CoolProp.HAPropsSI("R", "T", tai + 273.15, "P", 101325, "B", 24 + 273.15);//0.469
             double tc = 50.775;
             //double pri = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
-
-            double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
+            coolprop.update(input_pairs.QT_INPUTS, 0, tc + 273.15);
+            double pri = coolprop.p() / 1000;
+            //double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
             //double P_exv = 1842.28;//kpa
             double tri = 78;//C
             double conductivity = 386; //w/mK for Cu
             double Pwater = 100.0;
             //int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-            double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000;
+            coolprop.update(input_pairs.PT_INPUTS, pri * 1000, tri + 273.15);
+            double hri = coolprop.hmass() / 1000;
+            //double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000;
             //double hri = 354.6;
             //double xin = 0.57;
 
@@ -1394,10 +1531,17 @@ namespace Model
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tri, pri, hri,
+                //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tri, pri, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
+
            
             return res;
         }
@@ -1406,6 +1550,7 @@ namespace Model
             //制冷剂制热模块计算
             //string fluid = new string[] { "Water" };
             string fluid = "R32";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             //string fluid = new string[] { "ISOBUTAN" };
             CalcResult res = new CalcResult();
             int Nrow = 2;
@@ -1437,6 +1582,9 @@ namespace Model
             // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
             //  Ncir=1, 20in, 20->19 1out
+
+            double[] d_cap = new double[] { 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0 };
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -1492,15 +1640,18 @@ namespace Model
             double tai = 35;
             double RHi = CoolProp.HAPropsSI("R", "T", tai + 273.15, "P", 101325, "B", 24 + 273.15);//0.469
             double tc = 50.775;
-            //double pri = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
-
-            double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
+       
+            coolprop.update(input_pairs.QT_INPUTS, 0, tc + 273.15);
+            double pri = coolprop.p() / 1000;
+            //double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
             //double P_exv = 1842.28;//kpa
             double tri = 78;//C
             double conductivity = 386; //w/mK for Cu
             double Pwater = 100.0;
             //int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-            double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000;
+            coolprop.update(input_pairs.PT_INPUTS, pri * 1000, tri + 273.15);
+            double hri = coolprop.hmass() / 1000;
+            //double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000;
             //double hri = 354.6;
             //double xin = 0.57;
 
@@ -1512,10 +1663,17 @@ namespace Model
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tri, pri, hri,
+                //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tri, pri, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
+
 
             return res;
         }
@@ -1524,6 +1682,7 @@ namespace Model
             //制冷剂制热模块计算
             //string fluid = new string[] { "Water" };
             string fluid = "R32";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             //string fluid = new string[] { "ISOBUTAN" };
             CalcResult r0 = new CalcResult();
             r0 = main_condenser_YH200_1();
@@ -1556,6 +1715,9 @@ namespace Model
             // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
             //  Ncir=1, 20in, 20->19 1out
+
+            double[] d_cap = new double[] {0, 0};
+            double[] lenth_cap = new double[] {0, 0};
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -1634,10 +1796,17 @@ namespace Model
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tri, pri, hri,
+                //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tri, pri, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
+            
 
             res.Q = res.Q + r0.Q;
             res.DP = res.DP + r0.DP;
@@ -1646,6 +1815,7 @@ namespace Model
         public static CalcResult main_evaporator_YH200()
         {
             string fluid = "R32";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             //string fluid = new string { "R410A.mix" };
             //string fluid = new string[] { "ISOBUTAN" };
             CalcResult res = new CalcResult();
@@ -1684,6 +1854,8 @@ namespace Model
             //bool reverse = true; //*********************************false:origin, true:reverse******************************************
             //CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
 
+            double[] d_cap = new double[] { 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0 };
 
             double mr = 0.0201;
             //double Vel_a = 1.8; //m/s
@@ -1740,7 +1912,10 @@ namespace Model
             double RHi = CoolProp.HAPropsSI("R","T",tai+273.15,"P",101325,"B",6+273.15);
             double tri =-0.3;
             double te = tri;
-            double pe = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid) / 1000;
+
+            coolprop.update(input_pairs.QT_INPUTS, 0, te + 273.15);
+            double pe = coolprop.p() / 1000;
+            //double pe = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid) / 1000;
 
             double P_exv = 3142.28;//kpa
             double T_exv = 36;//C
@@ -1749,8 +1924,13 @@ namespace Model
             //int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
             double Tc = 50;
             double Sc = 14;
-            double Pc = CoolProp.PropsSI("P", "T", Tc + 273.15, "Q", 0, fluid) / 1000;
-            double hri = CoolProp.PropsSI("H", "T", Tc-Sc + 273.15, "P", Pc * 1000, fluid) / 1000;
+            coolprop.update(input_pairs.QT_INPUTS, 0, Tc + 273.15);
+            double Pc = coolprop.p() / 1000;
+            //double Pc = CoolProp.PropsSI("P", "T", Tc + 273.15, "Q", 0, fluid) / 1000;
+            coolprop.update(input_pairs.PT_INPUTS, Pc * 1000, Tc - Sc + 273.15);
+            double hri = coolprop.hmass() / 1000;
+            //double hri = CoolProp.PropsSI("H", "T", Tc-Sc + 273.15, "P", Pc * 1000, fluid) / 1000;
+
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
@@ -1759,15 +1939,23 @@ namespace Model
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, te, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, te, AirDirection);
 
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, te, pe, hri,
+                //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, te, pe, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
+
             return res;
         }
         public static CalcResult main_evaporator_YH200_1()
         {
             string fluid = "R32";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             //string fluid = new string { "R410A.mix" };
             //string fluid = new string[] { "ISOBUTAN" };
             CalcResult res = new CalcResult();
@@ -1806,6 +1994,8 @@ namespace Model
             //bool reverse = true; //*********************************false:origin, true:reverse******************************************
             //CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
 
+            double[] d_cap = new double[] { 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0 };
 
             double mr = 0.017;
             //double Vel_a = 1.8; //m/s
@@ -1862,7 +2052,10 @@ namespace Model
             double RHi = CoolProp.HAPropsSI("R", "T", tai + 273.15, "P", 101325, "B", 6 + 273.15);
             double tri = -0.3;
             double te = tri;
-            double pe = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid) / 1000;
+
+            coolprop.update(input_pairs.QT_INPUTS, 0, te + 273.15);
+            double pe = coolprop.p() / 1000;
+            //double pe = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid) / 1000;
 
             double P_exv = 3142.28;//kpa
             double T_exv = 36;//C
@@ -1871,7 +2064,9 @@ namespace Model
             //int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
             double Tc = 50;
             double Sc = 14;
-            double Pc = CoolProp.PropsSI("P", "T", Tc + 273.15, "Q", 0, fluid) / 1000;
+            coolprop.update(input_pairs.QT_INPUTS, 0, Tc + 273.15);
+            double Pc = coolprop.p() / 1000;
+            //double Pc = CoolProp.PropsSI("P", "T", Tc + 273.15, "Q", 0, fluid) / 1000;
             double hri = CoolProp.PropsSI("H", "T", Tc - Sc + 273.15, "P", Pc * 1000, fluid) / 1000;
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -1881,10 +2076,17 @@ namespace Model
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, te, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, te, AirDirection);
 
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, te, pe, hri,
+                //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, te, pe, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
+
             return res;
         }
         public static CalcResult main_evaporator_YH200_2()
@@ -1892,6 +2094,7 @@ namespace Model
             CalcResult r0 = new CalcResult();
             r0 = main_evaporator_YH200_1();
             string fluid = "R32";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             //string fluid = new string { "R410A.mix" };
             //string fluid = new string[] { "ISOBUTAN" };
             CalcResult res = new CalcResult();
@@ -1931,6 +2134,8 @@ namespace Model
             //bool reverse = true; //*********************************false:origin, true:reverse******************************************
             //CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
 
+            double[] d_cap = new double[] { 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0 };
 
             double mr = r0.mr;
             //double Vel_a = 1.8; //m/s
@@ -1987,7 +2192,9 @@ namespace Model
             double RHi = CoolProp.HAPropsSI("R", "T", tai + 273.15, "P", 101325, "B", 6 + 273.15);
             double tri = r0.Tro;
             double te = -0.3;
-            double pe = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid) / 1000;
+            coolprop.update(input_pairs.QT_INPUTS, 0, te + 273.15);
+            double pe = coolprop.p() / 1000;
+            //double pe = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid) / 1000;
 
             double P_exv = 3142.28;//kpa
             double T_exv = 36;//C
@@ -1996,8 +2203,12 @@ namespace Model
             //int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
             double Tc = 50;
             double Sc = 14;
-            double Pc = CoolProp.PropsSI("P", "T", Tc + 273.15, "Q", 0, fluid) / 1000;
-            double hri = CoolProp.PropsSI("H", "T", Tc - Sc + 273.15, "P", Pc * 1000, fluid) / 1000;
+            coolprop.update(input_pairs.QT_INPUTS, 0, Tc + 273.15);
+            double Pc = coolprop.p() / 1000;
+            //double Pc = CoolProp.PropsSI("P", "T", Tc + 273.15, "Q", 0, fluid) / 1000;
+            coolprop.update(input_pairs.PT_INPUTS, Pc * 1000, Tc - Sc + 273.15);
+            double hri = coolprop.hmass() / 1000;
+            //double hri = CoolProp.PropsSI("H", "T", Tc - Sc + 273.15, "P", Pc * 1000, fluid) / 1000;
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
@@ -2006,10 +2217,17 @@ namespace Model
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, te, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, te, AirDirection);
 
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, te, pe, hri,
+                //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, te, pe, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
+
             return res;
         }
         public static CalcResult main_condenser_35()
@@ -2017,6 +2235,7 @@ namespace Model
             //制冷剂制热模块计算
             //string fluid = new string[] { "Water" };
             string fluid = "R32";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             //string fluid = new string[] { "ISOBUTAN" };
             CalcResult res = new CalcResult();
             int Nrow = 1;
@@ -2048,6 +2267,9 @@ namespace Model
             // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
             //  Ncir=1, 20in, 20->19 1out
+
+            double[] d_cap = new double[] { 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0 };
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -2104,14 +2326,17 @@ namespace Model
             double RHi = CoolProp.HAPropsSI("R", "T", tai + 273.15, "P", 101325, "B", 24 + 273.15);//0.469
             double tc = 50;
             //double pri = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
-
-            double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
+            coolprop.update(input_pairs.QT_INPUTS, 0, tc + 273.15);
+            double pri = coolprop.p() / 1000;
+            //double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
             //double P_exv = 1842.28;//kpa
             double tri = 75;//C
             double conductivity = 386; //w/mK for Cu
             double Pwater = 100.0;
             //int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-            double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000;
+            coolprop.update(input_pairs.PT_INPUTS, pri * 1000, tri + 273.15);
+            double hri = coolprop.hmass() / 1000;
+            //double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000;
             //double hri = 354.6;
             //double xin = 0.57;
 
@@ -2123,10 +2348,17 @@ namespace Model
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tri, pri, hri,
+                //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tri, pri, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
+
 
             return res;
         }
@@ -2135,6 +2367,7 @@ namespace Model
             //制冷剂制热模块计算
             //string fluid = new string[] { "Water" };
             string fluid = "R32";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             //string fluid = new string[] { "ISOBUTAN" };
             CalcResult res = new CalcResult();
             int Nrow = 1;
@@ -2164,6 +2397,9 @@ namespace Model
             // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
             //  Ncir=1, 20in, 20->19 1out
+
+            double[] d_cap = new double[] { 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0 };
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -2220,14 +2456,17 @@ namespace Model
             double RHi = CoolProp.HAPropsSI("R", "T", tai + 273.15, "P", 101325, "B", 24 + 273.15);//0.469
             double tc = 50;
             //double pri = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
-
-            double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
+            coolprop.update(input_pairs.QT_INPUTS, 0, tc + 273.15);
+            double pri = coolprop.p() / 1000;
+            //double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
             //double P_exv = 1842.28;//kpa
             double tri = 75;//C
             double conductivity = 386; //w/mK for Cu
             double Pwater = 100.0;
             //int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-            double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000;
+            coolprop.update(input_pairs.PT_INPUTS, pri * 1000, tri + 273.15);
+            double hri = coolprop.hmass() / 1000;
+            //double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000;
             //double hri = 354.6;
             //double xin = 0.57;
 
@@ -2239,10 +2478,17 @@ namespace Model
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tri, pri, hri,
+                //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tri, pri, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
+
 
             return res;
         }
@@ -2253,6 +2499,7 @@ namespace Model
             //制冷剂制热模块计算
             //string fluid = new string[] { "Water" };
             string fluid = "R32";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             //string fluid = new string[] { "ISOBUTAN" };
             CalcResult res = new CalcResult();
             int Nrow = 1;
@@ -2282,6 +2529,9 @@ namespace Model
             // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
             //  Ncir=1, 20in, 20->19 1out
+
+            double[] d_cap = new double[] { 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0 };
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -2357,10 +2607,17 @@ namespace Model
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tri, pri, hri,
+                //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tri, pri, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
+
 
             res.Q = res.Q + r0.Q;
             res.DP = res.DP + r0.DP;
@@ -2369,6 +2626,7 @@ namespace Model
         public static CalcResult main_evaporator_35()
         {
             string fluid = "R32";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             //string fluid = new string { "R410A.mix" };
             //string fluid = new string[] { "ISOBUTAN" };
             CalcResult res = new CalcResult();
@@ -2405,6 +2663,8 @@ namespace Model
             //bool reverse = true; //*********************************false:origin, true:reverse******************************************
             //CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
 
+            double[] d_cap = new double[] { 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0 };
 
             double mr = 0.01168;//0.0125;
             //double Vel_a = 1.8; //m/s
@@ -2461,7 +2721,9 @@ namespace Model
             double RHi = CoolProp.HAPropsSI("R", "T", tai + 273.15, "P", 101325, "B", 6 + 273.15);
             double tri = -1;
             double te = tri;
-            double pe = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid) / 1000;
+            coolprop.update(input_pairs.QT_INPUTS, 0, te + 273.15);
+            double pe = coolprop.p() / 1000;
+            //double pe = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid) / 1000;
 
             double P_exv = 3142.28;//kpa
             double T_exv = 36;//C
@@ -2470,8 +2732,12 @@ namespace Model
             //int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
             double Tc = 40;
             double Sc = 9;
-            double Pc = CoolProp.PropsSI("P", "T", Tc + 273.15, "Q", 0, fluid) / 1000;
-            double hri = CoolProp.PropsSI("H", "T", Tc - Sc + 273.15, "P", Pc * 1000, fluid) / 1000;
+            coolprop.update(input_pairs.QT_INPUTS, 0, Tc + 273.1);
+            double Pc = coolprop.p() / 1000;
+            //double Pc = CoolProp.PropsSI("P", "T", Tc + 273.15, "Q", 0, fluid) / 1000;
+            coolprop.update(input_pairs.PT_INPUTS, Pc * 1000, Tc - Sc + 273.15);
+            double hri = coolprop.hmass() / 1000;
+            //double hri = CoolProp.PropsSI("H", "T", Tc - Sc + 273.15, "P", Pc * 1000, fluid) / 1000;
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
@@ -2480,15 +2746,23 @@ namespace Model
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, te, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, te, AirDirection);
 
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, te, pe, hri,
+                //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, te, pe, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
+
             return res;
         }
         public static CalcResult Water_Midea5()
         {
             string fluid = "Water";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             //string fluid = new string[] { "R410A.MIX" };
             //string fluid = new string[] { "ISOBUTAN" };
             CalcResult res = new CalcResult();
@@ -2538,6 +2812,9 @@ namespace Model
             // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
             //  Ncir=1, 20in, 20->19 1out
+
+            double[] d_cap = new double[] { 0, 0, 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0, 0, 0 };
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -2592,11 +2869,15 @@ namespace Model
             double tri = 45;
             double tc = tri;
             //double pc1 = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
-            double pc = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
+            coolprop.update(input_pairs.QT_INPUTS, 0, tc + 273.15);
+            double pc = coolprop.p() / 1000;
+            //double pc = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
             double Pwater = 305;//kpa
             double conductivity = 386; //w/mK for Cu
             //int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-            double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
+            coolprop.update(input_pairs.PT_INPUTS, Pwater * 1000, tc + 273.15);
+            double hri = coolprop.hmass() / 1000;
+            //double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -2606,16 +2887,24 @@ namespace Model
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc, pc, hri,
+                //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tc, pc, hri,
-                mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection, d_cap, lenth_cap, coolprop);
+
             return res;
         }
 
         public static CalcResult Water_Midea9()
         {
             string fluid = "Water";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             CalcResult res = new CalcResult();
             int Nrow = 1;
             double[] FPI = new double[Nrow + 1];
@@ -2638,6 +2927,11 @@ namespace Model
             CircuitInfo.TubeofCir = new int[] { 4, 4, 4 };  //{ 4, 8 };
             // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
+
+
+            double[] d_cap = new double[] { 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0 };
+
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -2693,11 +2987,15 @@ namespace Model
             double tri = 44.98;
             double tc = tri;
             //double pc = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
-            double pc = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
+            coolprop.update(input_pairs.QT_INPUTS, 0, tc + 273.15);
+            double pc = coolprop.p() / 1000;
+            //double pc = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
             double Pwater = 395;//kpa
             double conductivity = 386; //w/mK for Cu
             //int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-            double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
+            coolprop.update(input_pairs.PT_INPUTS, Pwater * 1000, tc + 273.15);
+            double hri = coolprop.hmass() / 1000;
+            //double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -2707,10 +3005,17 @@ namespace Model
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc, pc, hri,
+                //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tc, pc, hri,
-                mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection, d_cap, lenth_cap, coolprop);
+
 
             return res;
         }
@@ -2718,6 +3023,7 @@ namespace Model
         public static CalcResult Water_Cool_Midea9()
         {
             string fluid = "Water";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             CalcResult res = new CalcResult();
             int Nrow = 1;
             double[] FPI = new double[Nrow + 1];
@@ -2737,6 +3043,9 @@ namespace Model
             CircuitNumber CircuitInfo = new CircuitNumber();
             CircuitInfo.number = new int[] { 3, 3 };
             CircuitInfo.TubeofCir = new int[] { 4, 4, 4 };  //{ 4, 8 };
+
+            double[] d_cap = new double[] { 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0 };
 
             int N = 28;
             for (int i = 6; i < 7; i++)
@@ -2784,12 +3093,16 @@ namespace Model
                 double[] tc = tri;
                 double[] pc = new double[N];
                 //pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
-                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 0, fluid) / 1000;
+                coolprop.update(input_pairs.QT_INPUTS, 0, tc[i] + 273.15);
+                pc[i] = coolprop.p() / 1000;
+                //pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 0, fluid) / 1000;
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
+                coolprop.update(input_pairs.PT_INPUTS, Pwater * 1000, tc[i] + 273.15);
+                hri[i] = coolprop.hmass() / 1000;
+                //hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -2797,10 +3110,17 @@ namespace Model
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
+
+                //AreaResult geo = new AreaResult();
+                //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+                //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
+                    //mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
                 Geometry geo = new Geometry();
                 geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection, d_cap, lenth_cap, coolprop);
+
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_cool.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -2812,6 +3132,7 @@ namespace Model
         public static CalcResult Water_Heat_Midea9()
         {
             string fluid = "Water";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             CalcResult res = new CalcResult();
             int Nrow = 1;
             double[] FPI = new double[Nrow + 1];
@@ -2831,6 +3152,9 @@ namespace Model
             CircuitNumber CircuitInfo = new CircuitNumber();
             CircuitInfo.number = new int[] { 3, 3 };
             CircuitInfo.TubeofCir = new int[] { 4, 4, 4 };  //{ 4, 8 };
+
+            double[] d_cap = new double[] { 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0 };
 
             int N = 28;
             for (int i = 0; i < N; i++)
@@ -2879,12 +3203,16 @@ namespace Model
                 double[] tc = tri;
                 double[] pc = new double[N];
                 //pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
-                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 0, fluid) / 1000;
+                coolprop.update(input_pairs.QT_INPUTS, 0, tc[i] + 273.15);
+                pc[i] = coolprop.p() / 1000;
+                //pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 0, fluid) / 1000;
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
+                coolprop.update(input_pairs.PT_INPUTS, Pwater * 1000, tc[i] + 273.15);
+                hri[i] = coolprop.hmass() / 1000;
+                //hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -2893,10 +3221,17 @@ namespace Model
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
+
+                //AreaResult geo = new AreaResult();
+                //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+                //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
+                    //mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
                 Geometry geo = new Geometry();
                 geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection, d_cap, lenth_cap, coolprop);
+
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -2907,6 +3242,7 @@ namespace Model
         public static CalcResult Water_Heat_Jiayong6()
         {
             string fluid = "Water";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             CalcResult res = new CalcResult();
             int Nrow = 2;
             double[] FPI = new double[Nrow + 1];
@@ -2933,8 +3269,17 @@ namespace Model
             CircuitInfo.CirType = CircuitIdentification.CircuitIdentify(CircuitInfo.number, CircuitInfo.TubeofCir, cirArr);
 
 
+
+            double[] d_cap = new double[] { 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0 };
+
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+
             double[] Q = new double[16];
             int N = 16;
             for (int i = 0; i < N; i++)
@@ -2985,13 +3330,17 @@ namespace Model
                 double[] tc = tri;
                 double[] pc = new double[N];
                 //pc[i] = Refrigerant.SATT(fluid, composition, tc[i] + 273.15, 1).Pressure;
-                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 0, fluid) / 1000;
+                coolprop.update(input_pairs.QT_INPUTS, 0, tc[i] + 273.15);
+                pc[i] = coolprop.p() / 1000;
+                //pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 0, fluid) / 1000;
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
                 //hri[i] = Refrigerant.TPFLSH(fluid, composition, tc[i] + 273.15, Pwater).h / wm - 0.5 ;
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
+                coolprop.update(input_pairs.PT_INPUTS, Pwater * 1000, tc[i] + 273.15);
+                hri[i] = coolprop.hmass() / 1000;
+                //hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -3001,8 +3350,13 @@ namespace Model
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
 
+
+                //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
+                    //mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection, d_cap, lenth_cap, coolprop);
+
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -3014,6 +3368,7 @@ namespace Model
         public static CalcResult Water_Cool_Jiayong6()
         {
             string fluid = "Water";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             CalcResult res = new CalcResult();
             int Nrow = 2;
             double[] FPI = new double[Nrow + 1];
@@ -3034,8 +3389,18 @@ namespace Model
             CircuitInfo.number = new int[] { 4, 4 };
             CircuitInfo.TubeofCir = new int[] { 8, 8, 8, 8 };  //{ 4, 8 };
 
+
+
+            double[] d_cap = new double[] { 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0 };
+
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+
             double[] Q = new double[16];
             int N = 16;
             for (int i = 0; i < 1; i++)
@@ -3083,12 +3448,16 @@ namespace Model
                 double[] tri = new double[] { 9.98, 10.01, 10.02, 10.01, 9.99, 10.03, 9.99, 10.03, 9.99, 9.99, 10.01, 10.00, 10.00, 10.01, 9.98, 10.02 };
                 double[] tc = tri;
                 double[] pc = new double[N];
-                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
+                coolprop.update(input_pairs.QT_INPUTS, 0, tc[i] + 273.15);
+                pc[i] = coolprop.p() / 1000;
+                //pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
+                coolprop.update(input_pairs.PT_INPUTS, Pwater * 1000, tc[i] + 273.15);
+                hri[i] = coolprop.hmass() / 1000;
+                //hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -3098,8 +3467,13 @@ namespace Model
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
 
+
+                //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
+                    //mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection, d_cap, lenth_cap, coolprop);
+
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -3111,6 +3485,7 @@ namespace Model
         public static CalcResult Water_Heat_Jiayong2()
         {
             string fluid = "Water";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             CalcResult res = new CalcResult();
             int Nrow = 2;
             double[] FPI = new double[Nrow + 1];
@@ -3131,8 +3506,18 @@ namespace Model
             CircuitInfo.number = new int[] { 6, 6 };
             CircuitInfo.TubeofCir = new int[] { 8, 8, 8, 8, 8, 8 };  //{ 4, 8 };
 
+
+
+            double[] d_cap = new double[] { 0, 0, 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0, 0, 0 };
+
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+
             double[] Q = new double[16];
             int N = 16;
             for (int i = 0; i < N; i++)
@@ -3180,13 +3565,17 @@ namespace Model
                 double[] tri = new double[] { 44.99, 44.99, 45.01, 44.99, 45.02, 45.02, 44.99, 45.01, 45.01, 45.03, 44.98, 44.99, 45.02, 44.98, 45.03, 44.99 };
                 double[] tc = tri;
                 double[] pc = new double[N];
-                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
+                coolprop.update(input_pairs.QT_INPUTS, 0, tc[i] + 273.15);
+                pc[i] = coolprop.p() / 1000;
+                //pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
 
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
+                coolprop.update(input_pairs.PT_INPUTS, Pwater * 1000, tc[i] + 273.15);
+                hri[i] = coolprop.hmass() / 1000;
+                //hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -3196,8 +3585,13 @@ namespace Model
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
 
+
+                //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
+                    //mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection, d_cap, lenth_cap, coolprop);
+
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -3209,6 +3603,7 @@ namespace Model
         public static CalcResult Water_Cool_Jiayong2()
         {
             string fluid = "Water";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             CalcResult res = new CalcResult();
             int Nrow = 2;
             double[] FPI = new double[Nrow + 1];
@@ -3229,8 +3624,16 @@ namespace Model
             CircuitInfo.number = new int[] { 6, 6 };
             CircuitInfo.TubeofCir = new int[] { 8, 8, 8, 8, 8, 8 };  //{ 4, 8 };
 
+
+            double[] d_cap = new double[] { 0, 0, 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0, 0, 0 };
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+
             double[] Q = new double[16];
             int N = 16;
             for (int i = 0; i < N; i++)
@@ -3278,13 +3681,17 @@ namespace Model
                 double[] tri = new double[] { 10.02, 10.00, 9.98, 10.00, 10.01, 10.00, 10.00, 10.01, 9.98, 9.99, 10.02, 10.00, 10.00, 10.02, 10.01, 10.01 };
                 double[] tc = tri;
                 double[] pc = new double[N];
-                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
+                coolprop.update(input_pairs.QT_INPUTS, 0, tc[i] + 273.15);
+                pc[i] = coolprop.p() / 1000;
+                //pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
 
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
+                coolprop.update(input_pairs.PT_INPUTS, Pwater * 1000, tc[i] + 273.15);
+                hri[i] = coolprop.hmass() / 1000;
+                //hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -3294,8 +3701,13 @@ namespace Model
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
 
+
+                //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
+                    //mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection, d_cap, lenth_cap, coolprop);
+
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -3308,6 +3720,7 @@ namespace Model
         public static CalcResult Water_Heat_Jiayong6_reverse()
         {
             string fluid = "Water";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             CalcResult res = new CalcResult();
             int Nrow = 2;
             double[] FPI = new double[Nrow + 1];
@@ -3344,8 +3757,16 @@ namespace Model
             bool reverse = true; //*********************************false:origin, true:reverse******************************************
             CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
 
+
+            double[] d_cap = new double[] { 0, 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0, 0 };
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+
             double[] Q = new double[16];
             int N = 16;
             for (int i = 0; i < N; i++)
@@ -3392,13 +3813,17 @@ namespace Model
                 double[] tri = new double[] { 45.01, 45.00, 44.98, 44.99, 45.01, 44.99, 45.00, 44.99, 45.01, 44.99, 44.99, 44.99, 45.00, 44.99, 44.98, 45.01 };
                 double[] tc = tri;
                 double[] pc = new double[N];
-                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
+                coolprop.update(input_pairs.QT_INPUTS, 0, tc[i] + 273.15);
+                pc[i] = coolprop.p() / 1000;
+                //pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
 
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
+                coolprop.update(input_pairs.PT_INPUTS, Pwater * 1000, tc[i] + 273.15);
+                hri[i] = coolprop.hmass() / 1000;
+                //hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -3408,8 +3833,13 @@ namespace Model
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
 
+
+                //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
+                    //mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection, d_cap, lenth_cap, coolprop);
+
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -3421,6 +3851,7 @@ namespace Model
         public static CalcResult Water_Heat_Jiayong2_reverse()
         {
             string fluid = "Water";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             CalcResult res = new CalcResult();
             int Nrow = 2;
             double[] FPI = new double[Nrow + 1];
@@ -3445,8 +3876,16 @@ namespace Model
             bool reverse = true; //*********************************false:origin, true:reverse******************************************
             CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
 
+
+            double[] d_cap = new double[] { 0, 0, 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0, 0, 0 };
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+
             double[] Q = new double[16];
             int N = 16;
             for (int i = 0; i < N; i++)
@@ -3494,13 +3933,17 @@ namespace Model
                 double[] tri = new double[] { 44.99, 44.99, 45.01, 44.99, 45.02, 45.02, 44.99, 45.01, 45.01, 45.03, 44.98, 44.99, 45.02, 44.98, 45.03, 44.99 };
                 double[] tc = tri;
                 double[] pc = new double[N];
-                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
+                coolprop.update(input_pairs.QT_INPUTS, 0, tc[i] + 273.15);
+                pc[i] = coolprop.p() / 1000;
+                //pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
 
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
+                coolprop.update(input_pairs.PT_INPUTS, Pwater * 1000, tc[i] + 273.15);
+                hri[i] = coolprop.hmass() / 1000;
+                //hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -3510,8 +3953,13 @@ namespace Model
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
 
+
+                //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
+                    //mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection, d_cap, lenth_cap, coolprop);
+
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -3523,6 +3971,7 @@ namespace Model
         public static CalcResult Water_Midea9_reverse()
         {
             string fluid = "Water";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             CalcResult res = new CalcResult();
             int Nrow = 1;
             double[] FPI = new double[Nrow + 1];
@@ -3549,6 +3998,9 @@ namespace Model
             //Circuit-Reverse module
             bool reverse = true; //*********************************false:origin, true:reverse******************************************
             CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
+
+            double[] d_cap = new double[] { 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0 };
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -3601,11 +4053,15 @@ namespace Model
             double RHi = 0.469;
             double tri = 44.98;
             double tc = tri;
-            double pc = CoolProp.PropsSI("P", "T", tc+ 273.15, "Q", 1, fluid) / 1000;
+            coolprop.update(input_pairs.QT_INPUTS, 1, tc + 273.15);
+            double pc = coolprop.p() / 1000;
+            //double pc = CoolProp.PropsSI("P", "T", tc+ 273.15, "Q", 1, fluid) / 1000;
             double Pwater = 395;//kpa
             double conductivity = 386; //w/mK for Cu
             //int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-            double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
+            coolprop.update(input_pairs.PT_INPUTS, Pwater * 1000, tc + 273.15);
+            double hri = coolprop.hmass() / 1000;
+            //double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
@@ -3616,16 +4072,24 @@ namespace Model
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc, pc, hri,
+                //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tc, pc, hri,
-                mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection, d_cap, lenth_cap,coolprop);
+
 
             return res;
         }
         public static CalcResult Water_Heat_Zhongyang1_reverse()
         {
             string fluid = "Water";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             CalcResult res = new CalcResult();
             int Nrow = 3;
             double[] FPI = new double[Nrow + 1];
@@ -3650,8 +4114,16 @@ namespace Model
             bool reverse = true; //*********************************false:origin, true:reverse******************************************
             CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
 
+
+            double[] d_cap = new double[] { 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0 };
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+
             double[] Q = new double[16];
             int N = 16;
             for (int i = 0; i < N; i++)
@@ -3698,13 +4170,17 @@ namespace Model
                 double[] tri = new double[] { 45.00, 45.00, 44.99, 45.00, 45.03, 45.02, 45.01, 44.99, 45.01, 45.01, 45.00, 44.99, 45.03, 45.01, 45.01, 45.02 };
                 double[] tc = tri;
                 double[] pc = new double[N];
-                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
+                coolprop.update(input_pairs.QT_INPUTS, 1, tc[i] + 273.15);
+                pc[i] = coolprop.p() / 1000;
+                //pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
 
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
+                coolprop.update(input_pairs.PT_INPUTS, Pwater * 1000, tc[i] + 273.15);
+                hri[i] = coolprop.hmass() / 1000;
+                //hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
@@ -3713,8 +4189,13 @@ namespace Model
                 string AirDirection = "Counter";
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
+
+                //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
+                    //mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection, d_cap, lenth_cap,coolprop);
+
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -3726,6 +4207,7 @@ namespace Model
         public static CalcResult Water_Heat_Jiayong6_autosplitCir_New()
         {
             string fluid = "Water";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             CalcResult res = new CalcResult();
             int Nrow = 2;
             double[] FPI = new double[Nrow + 1];
@@ -3758,8 +4240,16 @@ namespace Model
             CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
             CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
 
+
+            double[] d_cap = new double[] { 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0 };
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+
             double[] Q = new double[16];
             double[] href = new double[16];
 
@@ -3808,13 +4298,17 @@ namespace Model
                 double[] tri = new double[] { 45.01, 45.00, 44.98, 44.99, 45.01, 44.99, 45.00, 44.99, 45.01, 44.99, 44.99, 44.99, 45.00, 44.99, 44.98, 45.01 };
                 double[] tc = tri;
                 double[] pc = new double[N];
-                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
+                coolprop.update(input_pairs.QT_INPUTS, 1, tc[i] + 273.15);
+                pc[i] = coolprop.p() / 1000;
+                //pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
 
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
+                coolprop.update(input_pairs.PT_INPUTS, Pwater * 1000, tc[i] + 273.15);
+                hri[i] = coolprop.hmass() / 1000;
+                //hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -3824,8 +4318,13 @@ namespace Model
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
 
+
+                //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
+                    //mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection, d_cap, lenth_cap,coolprop);
+
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -3838,6 +4337,7 @@ namespace Model
         public static CalcResult Water_Heat_Jiayong2_autosplitCir()
         {
             string fluid = "Water";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             CalcResult res = new CalcResult();
             int Nrow = 2;
             double[] FPI = new double[Nrow + 1];
@@ -3871,8 +4371,16 @@ namespace Model
             CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
             CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
 
+
+            double[] d_cap = new double[] { 0, 0, 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0, 0, 0 };
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+
             double[] Q = new double[16];
             int N = 16;
             for (int i = 0; i < N; i++)
@@ -3920,13 +4428,17 @@ namespace Model
                 double[] tri = new double[] { 44.99, 44.99, 45.01, 44.99, 45.02, 45.02, 44.99, 45.01, 45.01, 45.03, 44.98, 44.99, 45.02, 44.98, 45.03, 44.99 };
                 double[] tc = tri;
                 double[] pc = new double[N];
-                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
+                coolprop.update(input_pairs.QT_INPUTS, 1, tc[i] + 273.15);
+                pc[i] = coolprop.p() / 1000;
+                //pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
 
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
+                coolprop.update(input_pairs.PT_INPUTS, Pwater * 1000, tc[i] + 273.15);
+                hri[i] = coolprop.hmass() / 1000;
+                //hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -3936,8 +4448,13 @@ namespace Model
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
 
+
+                //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
+                    //mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection, d_cap, lenth_cap, coolprop);
+
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -3949,6 +4466,7 @@ namespace Model
         public static CalcResult Water_Heat_Zhongyang1_autosplitCir()
         {
             string fluid = "Water";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             CalcResult res = new CalcResult();
             int Nrow = 3;
             double[] FPI = new double[Nrow + 1];
@@ -3979,8 +4497,16 @@ namespace Model
             CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
             CirArrange = AutoCircuiting.GetCirArrange_3Row(CirArrange, Nrow, N_tube, CircuitInfo);
 
+
+            double[] d_cap = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+
             double[] Q = new double[16];
             int N = 16;
             for (int i = 0; i < N; i++)
@@ -4027,13 +4553,17 @@ namespace Model
                 double[] tri = new double[] { 45.00, 45.00, 44.99, 45.00, 45.03, 45.02, 45.01, 44.99, 45.01, 45.01, 45.00, 44.99, 45.03, 45.01, 45.01, 45.02 };
                 double[] tc = tri;
                 double[] pc = new double[N];
-                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
+                coolprop.update(input_pairs.QT_INPUTS, 1, tc[i] + 273.15);
+                pc[i] = coolprop.p() / 1000;
+                //pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
 
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
+                coolprop.update(input_pairs.PT_INPUTS, Pwater * 1000, tc[i] + 273.15);
+                hri[i] = coolprop.hmass() / 1000;
+                //hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -4041,8 +4571,13 @@ namespace Model
                 string AirDirection = "Counter";
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
+
+                //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
+                    //mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection, d_cap, lenth_cap, coolprop);
+
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -4055,6 +4590,7 @@ namespace Model
         public static CalcResult Water_Heat_Zhongyang1()
         {
             string fluid = "Water";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             CalcResult res = new CalcResult();
             int Nrow = 3;
             double[] FPI = new double[Nrow + 1];
@@ -4075,8 +4611,16 @@ namespace Model
             CircuitInfo.number = new int[] { 3, 3 };
             CircuitInfo.TubeofCir = new int[] { 18, 18, 18 };  //{ 4, 8 };
 
+
+            double[] d_cap = new double[] { 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0 };
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+
             double[] Q = new double[16];
             int N = 16;
             for (int i = 0; i < N; i++)
@@ -4124,13 +4668,17 @@ namespace Model
                 double[] tri = new double[] { 45.00, 45.00, 44.99, 45.00, 45.03, 45.02, 45.01, 44.99, 45.01, 45.01, 45.00, 44.99, 45.03, 45.01, 45.01, 45.02 };
                 double[] tc = tri;
                 double[] pc = new double[N];
-                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
+                coolprop.update(input_pairs.QT_INPUTS, 1, tc[i] + 273.15);
+                pc[i] = coolprop.p() / 1000;
+                //pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
 
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
+                coolprop.update(input_pairs.PT_INPUTS, Pwater * 1000, tc[i] + 273.15);
+                hri[i] = coolprop.hmass() / 1000;
+                //hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -4138,8 +4686,13 @@ namespace Model
                 string AirDirection = "Counter";
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
+
+                //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
+                    //mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection, d_cap, lenth_cap,coolprop);
+
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -4151,6 +4704,7 @@ namespace Model
         public static CalcResult Water_Cool_Zhongyang1()
         {
             string fluid = "Water";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             CalcResult res = new CalcResult();
             int Nrow = 3;
             double[] FPI = new double[Nrow + 1];
@@ -4171,8 +4725,16 @@ namespace Model
             CircuitInfo.number = new int[] { 3, 3 };
             CircuitInfo.TubeofCir = new int[] { 18, 18, 18 };  //{ 4, 8 };
 
+
+            double[] d_cap = new double[] { 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0 };
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+
             double[] Q = new double[16];
             int N = 16;
             for (int i = 0; i < N; i++)
@@ -4220,13 +4782,17 @@ namespace Model
                 double[] tri = new double[] { 10.01, 10.01, 10.00, 10.00, 10.01, 10.00, 10.00, 10.02, 9.99, 10.00, 10.00, 10.01, 10.00, 10.02, 10.00, 9.99 };
                 double[] tc = tri;
                 double[] pc = new double[N];
-                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
+                coolprop.update(input_pairs.QT_INPUTS, 1, tc[i] + 273.15);
+                pc[i] = coolprop.p() / 1000;
+                //pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
 
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
+                coolprop.update(input_pairs.PT_INPUTS, Pwater * 1000, tc[i] + 273.15);
+                hri[i] = coolprop.hmass() / 1000;
+                //hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -4236,8 +4802,13 @@ namespace Model
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
 
+
+                //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
+                    //mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection, d_cap, lenth_cap, coolprop);
+
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -4249,6 +4820,7 @@ namespace Model
         public static CalcResult Water_Heat_Zhongyang2()
         {
             string fluid = "Water";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             CalcResult res = new CalcResult();
             int Nrow = 3;
             double[] FPI = new double[Nrow + 1];
@@ -4268,6 +4840,9 @@ namespace Model
             CircuitNumber CircuitInfo = new CircuitNumber();
             CircuitInfo.number = new int[] { 3, 3 };
              CircuitInfo.TubeofCir = new int[] { 18, 14, 16 };  //{ 4, 8 };
+
+             double[] d_cap = new double[] { 0, 0, 0 };
+             double[] lenth_cap = new double[] { 0, 0, 0 };
 
              GeometryInput geoInput_air = new GeometryInput();
              geoInput_air.Pt = Pt;
@@ -4319,12 +4894,16 @@ namespace Model
             double RHi = 0.469;
             double tri = 44.98;
             double tc = tri;
-            double pc = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 1, fluid) / 1000;
+            coolprop.update(input_pairs.QT_INPUTS, 1, tc + 273.15);
+            double pc = coolprop.p() / 1000;
+            //double pc = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 1, fluid) / 1000;
 
             double Pwater = 395;//kpa
             double conductivity = 386; //w/mK for Cu
             //int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
-            double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
+            coolprop.update(input_pairs.PT_INPUTS, Pwater * 1000, tc + 273.15);
+            double hri = coolprop.hmass() / 1000;
+            //double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -4334,16 +4913,24 @@ namespace Model
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc, pc, hri,
+                //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tc, pc, hri,
-                mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection, d_cap, lenth_cap,coolprop);
+
 
             return res;
         }
         public static CalcResult Water_Cool_Zhongyang2()
         {
             string fluid = "Water";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             CalcResult res = new CalcResult();
             int Nrow = 3;
             double[] FPI = new double[Nrow + 1];
@@ -4364,8 +4951,16 @@ namespace Model
             CircuitInfo.number = new int[] { 3, 3 };
             CircuitInfo.TubeofCir = new int[] { 18, 14, 16 };  //{ 4, 8 };
 
+
+            double[] d_cap = new double[] { 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0 };
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+
             double[] Q = new double[20];
             int N = 20;
             for (int i = 0; i < N; i++)
@@ -4413,13 +5008,17 @@ namespace Model
 
                 double[] tc = tri;
                 double[] pc = new double[N];
-                pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
+                coolprop.update(input_pairs.QT_INPUTS, 1, tc[i] + 273.15);
+                pc[i] = coolprop.p() / 1000;
+                //pc[i] = CoolProp.PropsSI("P", "T", tc[i] + 273.15, "Q", 1, fluid) / 1000;
 
                 double Pwater = 395;//kpa
                 double conductivity = 386; //w/mK for Cu
                 int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
                 double[] hri = new double[N];
-                hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
+                coolprop.update(input_pairs.PT_INPUTS, Pwater * 1000, tc[i] + 273.15);
+                hri[i] = coolprop.hmass() / 1000;
+                //hri[i] = CoolProp.PropsSI("H", "T", tc[i] + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -4429,8 +5028,13 @@ namespace Model
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
 
+
+                //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc[i], pc[i], hri[i],
+                    //mr[i], ma, ha, haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
                 res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tc[i], pc[i], hri[i],
-                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                    mr[i], ma, ha,haw, eta_surface[i], zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection, d_cap, lenth_cap,coolprop);
+
                 //using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\Midea9_heat.txt"))
                 //{
                 //    wr.WriteLine("Q, {0}, DP, {1}, href, {2}, Ra_ratio, {3}, Tao, {4}, Tro, {5}", res.Q, res.DP, res.href, res.Ra_ratio, res.Tao, res.Tro);
@@ -4444,6 +5048,7 @@ namespace Model
         {
             //string fluid = new string[] { "Water" };
             string fluid = "R410A";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             //string fluid = new string[] { "ISOBUTAN" };
             double[] composition = new double[] { 1 };
             CalcResult res = new CalcResult();
@@ -4490,6 +5095,9 @@ namespace Model
             CircuitInfo.number = new int[] { 4, 2 }; //4in 2out
             CircuitInfo.TubeofCir = new int[] { 8, 6, 8, 10, 6, 10 };  //{ 4, 8 };
             CircuitInfo.UnequalCir = new int[] { 5, 5, 6, 6, 0, 0 };
+
+            double[] d_cap = new double[] { 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0 };
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -4542,14 +5150,18 @@ namespace Model
             double RHi = 0.469;
             double tri = 7.2;
             double te = tri;
-            double pe = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid) / 1000;
+            coolprop.update(input_pairs.QT_INPUTS, 0, te + 273.15);
+            double pe = coolprop.p() / 1000;
+            //double pe = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid) / 1000;
 
             double P_exv = 1842.28;//kpa
             double T_exv = 24;//C
             double conductivity = 386; //w/mK for Cu
             double Pwater = 0;
             //int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
-            double hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000 ;
+            coolprop.update(input_pairs.PT_INPUTS, P_exv * 1000, T_exv + 273.15);
+            double hri = coolprop.hmass() / 1000;
+            //double hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000 ;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -4559,10 +5171,17 @@ namespace Model
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, te, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, te, AirDirection);
 
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, te, pe, hri,
+                //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, te, pe, hri,
-                mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection, d_cap, lenth_cap, coolprop);
+
 
             return res;
         }
@@ -4571,6 +5190,7 @@ namespace Model
         {
             //string fluid = new string[] { "Water" };
             string fluid = "R410A";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             //string fluid = new string[] { "ISOBUTAN" };
             CalcResult res = new CalcResult();
             int Nrow = 2;
@@ -4617,6 +5237,9 @@ namespace Model
             CircuitInfo.number = new int[] { 4, 2 }; //4in 2out
             CircuitInfo.TubeofCir = new int[] { 6, 10, 8, 6, 8, 10 };  //{ 4, 8 };
             CircuitInfo.UnequalCir = new int[] { -5, -6, 5, 5, 6, 6 }; //{ 3, 4, -3, -3, -4, -4 };
+
+            double[] d_cap = new double[] { 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0 };
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -4669,14 +5292,18 @@ namespace Model
             double RHi = 0.469;
             double tri = 7.2;
             double te = tri;
-            double pe = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid) / 1000;
+            coolprop.update(input_pairs.QT_INPUTS, 0, te + 273.15);
+            double pe = coolprop.p() / 1000;
+            //double pe = CoolProp.PropsSI("P", "T", te + 273.15, "Q", 0, fluid) / 1000;
 
             double P_exv = 1842.28;//kpa
             double T_exv = 24;//C
             double conductivity = 386; //w/mK for Cu
             double Pwater = 0;
             //int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
-            double hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000 ;
+            coolprop.update(input_pairs.PT_INPUTS, P_exv * 1000, T_exv + 273.15);
+            double hri = coolprop.hmass() / 1000;
+            //double hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000 ;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -4686,10 +5313,17 @@ namespace Model
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, te, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, te, AirDirection);
 
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, te, pe, hri,
+                //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, te, pe, hri,
-                mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                mr, ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection, d_cap, lenth_cap, coolprop);
+
 
             //res = Slab.SlabCalc(Npass, N_tubes_pass, fluid, composition, Dh, L, geo.A_a, geo.A_r_cs, geo.A_r, tai, tri, pe, hri,
             //    mr, ma, ha, eta_surface, zh, zdp);
@@ -4706,6 +5340,7 @@ namespace Model
         {
             CalcResult res = new CalcResult();
             string fluid = "Water";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             int Nrow = 3;
             int[] Ntube = { 14, 14, 14 };
             int N_tube = Ntube[0];
@@ -4725,6 +5360,9 @@ namespace Model
             CircuitInfo.number = new int[] { 4, 2 };
             CircuitInfo.TubeofCir = new int[] { 9, 9, 9, 9, 3, 3 };
             CircuitInfo.UnequalCir = new int[] { 5, 5, 6, 6, 0, 0 };
+
+            double[] d_cap = new double[] { 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0 };
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -4779,12 +5417,16 @@ namespace Model
             double RHi = 0.469;
             double tri = 45;
             double tc = tri;
-            double pc = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 1, fluid) / 1000;
+            coolprop.update(input_pairs.QT_INPUTS, 1, tc + 273.15);
+            double pc = coolprop.p() / 1000;
+            //double pc = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 1, fluid) / 1000;
 
             double Pwater = 305;//kPa
             double conductivity = 386;
             //int hexType = 1;//0-eva,1-con
-            double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
+            coolprop.update(input_pairs.PT_INPUTS, Pwater * 1000, tc + 273.15);
+            double hri = coolprop.hmass() / 1000;
+            //double hri = CoolProp.PropsSI("H", "T", tc + 273.15, "P", Pwater * 1000, fluid) / 1000 ;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -4792,10 +5434,17 @@ namespace Model
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
+
+            //AreaResult geo = new AreaResult();
+            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tc, pc, hri,
+                //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
+
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
             res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tc, pc, hri,
-                mr, ma, ha, haw,eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection);
+                mr, ma, ha, haw,eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,AirDirection, d_cap, lenth_cap, coolprop);
+
             return res;
         }
     

@@ -15,9 +15,11 @@ namespace Test
             var geoInput = new GeometryInput();
             var refInput = new RefStateInput();
             var airInput = new AirStateInput();
+            CapiliaryInput capInput = new CapiliaryInput();
 
             //ref input
             refInput.FluidName = "R32";
+            AbstractState coolprop = AbstractState.factory("HEOS", refInput.FluidName);
             refInput.Massflowrate = 0.01870031119662376; //kg/s
 
             for (int i = 0; i < 20; i++)
@@ -48,8 +50,12 @@ namespace Test
                 geoInput.Nrow = 2;
                 geoInput.Ntube = 24;
                 geoInput.CirNum = 2;
+                //cap input
+                capInput.d_cap = new double[] { 0.006, 0.006};
+                capInput.lenth_cap = new double[] { 0.5, 0.5 };
+
                 DateTime Time1 = DateTime.Now;
-                var rr = Main.main_condenser_py(refInput, airInput, geoInput);
+                var rr = Main.main_condenser_py(refInput, airInput, geoInput, capInput, coolprop);
                 DateTime Time2 = DateTime.Now;
                 double time = (Time2 - Time1).TotalSeconds;
                 using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\smoothness.txt"))

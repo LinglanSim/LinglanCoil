@@ -47,6 +47,7 @@ namespace Model.Basic
         public double Va = 0;
         public double RHout = 0;
         public int index = 0;
+        public double DP_cap = 0;
 
         public double Aa = 0;
         public double Ar = 0;
