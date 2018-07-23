@@ -263,7 +263,7 @@ namespace Model
                         double h_s_s_o = 58.732687 * Math.Pow(tri + 273.15, 2) - 30921.970577 * (tri + 273.15 - 0.01) + 4075493.951473;
                         double Q_wet = epsilon_wet * ma * (h_ac - h_s_s_o);
                         Q = Q_wet + Q_dry;
-                        double hao = h_ac - Q_wet / ma;
+                        hao = h_ac - Q_wet / ma;
                         double h_s_s_e = h_ac - (h_ac - hao) / (1 - Math.Exp(-(1 - f_dry) * NTU_o));
                         //double T_s_e = CoolProp.HAPropsSI("T","H",h_s_s_e,"P",101325,"R",1.0)-273.15;
                         double T_s_e = -273.15 - 1.96 * Math.Pow(10, -3) * Math.Pow(h_s_s_e / 1000, 2) + 0.5357597 * h_s_s_e / 1000 + 268.871551;
@@ -298,7 +298,8 @@ namespace Model
 					if (res.RHout > 1)
                     {
                         res.RHout = 1;
-                        tao = CoolProp.HAPropsSI("T", "H", hao, "P", 101325, "R", 1)-273.15;
+                        //tao = CoolProp.HAPropsSI("T", "H", hao, "P", 101325, "R", 1)-273.15;
+                        tao = -273.15 - 1.96 * Math.Pow(10, -3) * Math.Pow(hao / 1000, 2) + 0.5357597 * hao / 1000 + 268.871551;
                         Q_sensible = ma * cp_a * (tai - tao);
                     }
                 }

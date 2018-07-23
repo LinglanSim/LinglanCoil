@@ -464,8 +464,6 @@ namespace Model
                         }
                     }
                 }
-
-
                 Tout_a = Tout_a_dry;
                 Q = Q_dry;
                 if (Tin_s < Tdp)
@@ -628,7 +626,8 @@ namespace Model
 					if(res.RHout>1)
                     {
                         res.RHout = 1;
-                        Tout_a = CoolProp.HAPropsSI("T", "H", hout_a, "P", 101325, "R", 1)-273.15;
+                        //Tout_a = CoolProp.HAPropsSI("T", "H", hout_a, "P", 101325, "R", 1)-273.15;
+                        Tout_a = -273.15 - 1.96 * Math.Pow(10, -3) * Math.Pow(hout_a / 1000, 2) + 0.5357597 * hout_a / 1000 + 268.871551;
                         Q_sensible = ma * cp_da * (Tin_a - Tout_a);
                     }
                 }

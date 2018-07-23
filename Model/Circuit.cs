@@ -10,8 +10,7 @@ namespace Model
     public class Circuit
     {
         public static CalcResult CircuitCalc(int index, CirArr[] cirArr, CircuitNumber CircuitInfo, int Nrow, int[] Ntube, int Nelement, string fluid,
-            double l, Geometry geo, double[, ,] ta, double[, ,] RH,
-            double tri, double pri, double hri, double mr, double[,] ma, double[,] ha,double[,] haw,
+            double l, Geometry geo, double[, ,] ta, double[, ,] RH, double tri, double pri, double hri, double mr, double[,] ma, double[,] ha,double[,] haw,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater, string Airdirection, double[] d_cap, double[] lenth_cap, AbstractState coolprop)
         {
             //******蒸发器毛细管******//

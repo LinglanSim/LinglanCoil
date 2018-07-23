@@ -291,7 +291,7 @@ namespace Model
                                 //for (int i = 0; i < Ncir; i++)
 
                                 //首次流路计算
-                                if (CircuitInfo.CirType != null)
+                                if (CircuitInfo.CirType != null && CircuitInfo.CirType.flag == true)
                                 {
                                     bool circuit_cap = false;
                                     //if (d_cap[index] == 0 && lenth_cap[index] == 0) circuit_cap = true;
