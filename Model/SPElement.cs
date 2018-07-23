@@ -292,6 +292,7 @@ namespace Model
          double RHi, double tri, double pri, double hri, double mr, double g, double ma, double ha, double haw,
          double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater)
         {
+            RHi = RHi > 1 ? 1 : RHi;
             double dh = geo.Di;
             double Q = 0;
             double Tout_a = 0;
@@ -482,17 +483,23 @@ namespace Model
                         }
                         //if (iter1 > 500)
                         //    Q = Q_dry;
+                        Q = mr * cp_r * (Tout_r - Tin_r);
+                        hout_a = hin_a - Q / ma;
                         h_s_s_e = h_a_x + (hout_a - h_a_x) / (1 - Math.Exp(-(1 - f_dry) * Ntu_owet));//zzc
                         T_s_e = CoolProp.HAPropsSI("T", "H", h_s_s_e, "P", 101325, "R", 1.0) - 273.15;
                         Tout_a = T_s_e + (T_a_x - T_s_e) * Math.Exp(-(1 - f_dry) * Ntu_owet);//zzc
-                        Q = mr * cp_r * (Tout_r - Tin_r);
-                        hout_a = hin_a - Q / ma;
                         Q_sensible = ma * cp_da * (Tin_a - Tout_a);
                     }
                     else Q = Q_wet;
                     res.RHout = CoolProp.HAPropsSI("R", "T", Tout_a + 273.15, "P", 101325, "H", hin_a - Q / ma);
+                    if(res.RHout>1)
+                    {
+                        res.RHout = 1;
+                        Tout_a = CoolProp.HAPropsSI("T", "H", hout_a, "P", 101325, "R", 1)-273.15;
+                        Q_sensible = ma * cp_da * (Tin_a - Tout_a);
+                    }
                 }
-            }            
+            }
             else
             {
                 Tout_a = Tout_a_dry;

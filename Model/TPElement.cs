@@ -79,6 +79,7 @@ namespace Model
             double RHi,double tri, double pri, double hri, double mr, double g, double ma, double ha,double haw,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity)
         {
+            RHi = RHi > 1 ? 1 : RHi;
             double dh = geo.Di;
             double r_metal = thickness / conductivity / Ar;
             double gg = 9.8;
@@ -142,6 +143,7 @@ namespace Model
 
                 if(hexType==0&&tri<tai)
                 {
+                    double hao=0;
                     double Tdp = CoolProp.HAPropsSI("D", "T", tai + 273.15, "P", 101325, "R", RHi) - 273.15;
                     if(T_so_b>Tdp)
                     {
@@ -183,7 +185,7 @@ namespace Model
                         double h_s_s_o=CoolProp.HAPropsSI("H","T",tri+273.15, "P",101325,"R", 1.0);          
                         double Q_wet=epsilon_wet*ma*(h_ac-h_s_s_o);
                         Q=Q_wet+Q_dry;
-                        double hao=h_ac-Q_wet/ma;
+                        hao=h_ac-Q_wet/ma;
                         double h_s_s_e=h_ac-(h_ac-hao)/(1-Math.Exp(-(1-f_dry)*NTU_o));
                         double T_s_e = CoolProp.HAPropsSI("T","H",h_s_s_e,"P",101325,"R",1.0)-273.15;
                         tao = T_s_e+(T_ac-T_s_e)*Math.Exp(-(1-f_dry)*NTU_o);
@@ -191,6 +193,12 @@ namespace Model
                         hro = hri + Q/1000 / mr;
                     }
                     res.RHout = CoolProp.HAPropsSI("R", "T", tao + 273.15, "P", 101325, "H", hai -Q / ma);
+                    if (res.RHout > 1)
+                    {
+                        res.RHout = 1;
+                        tao = CoolProp.HAPropsSI("T", "H", hao, "P", 101325, "R", 1)-273.15;
+                        Q_sensible = ma * cp_a * (tai - tao);
+                    }
                 }
                 res.R_1a = 1 / ((eta_0 * Aa_fin + Aa_tube) * ha);
                 res.R_1r = 1 / (res.href * Ar);
