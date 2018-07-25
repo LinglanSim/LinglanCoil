@@ -15,8 +15,11 @@ namespace Model.Basic
             {
                 for(int i=0;i<N_Node;i++)
                 {
-                    if(Nodes[i].inlet[0]==-1) r=i;
-                    break;
+                    if (Nodes[i].inlet[0] == -1)
+                    {
+                        r = i;
+                        break;
+                    }
                 }
             }
             else

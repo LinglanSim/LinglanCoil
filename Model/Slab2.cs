@@ -245,7 +245,7 @@ namespace Model
                                             {
                                                 for (int ii = 0; ii < N_Node; ii++)
                                                 {
-                                                    if (Nodes[ii].couple == Nodes[index_Node].couple && ii != index_couple)
+                                                    if (Nodes[ii].couple == Nodes[index_Node].couple && ii != index_Node)
                                                     {
                                                         index_couple = ii;
                                                         break;

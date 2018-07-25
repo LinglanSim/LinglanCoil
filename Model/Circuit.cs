@@ -46,7 +46,8 @@ namespace Model
             //******蒸发器毛细管******//
 
             int N_tube = Ntube[0];
-            int Ncir = CircuitInfo.number[0];
+            //int Ncir = CircuitInfo.number[0];
+            int Ncir = CircuitInfo.TubeofCir.Length;
             int[] TubeofCir=CircuitInfo.TubeofCir;
             CalcResult res_cir = new CalcResult();
             CalcResult[] r = new CalcResult[TubeofCir[index]];

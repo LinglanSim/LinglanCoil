@@ -12,9 +12,16 @@ namespace Model
         public static CirArrforAir ReadCirArr(int[,] CirArrange, CircuitNumber CircuitInfo, int Nrow, int[] Ntube) //CirArr[]
         {
             int N_tube = Ntube[0];
-            int Nciri = CircuitInfo.number[0];
-            int Nciro = CircuitInfo.number[1];
-            int Ncir = (Nciri == Nciro ? Nciri : Nciri + Nciro);
+            int Ncir = 0;
+            //if (CircuitInfo.number != null)
+            //{
+            //    int Nciri = CircuitInfo.number[0];
+            //    int Nciro = CircuitInfo.number[1];
+            //    Ncir = (Nciri == Nciro ? Nciri : Nciri + Nciro);
+            //}
+            //else
+            Ncir = CirArrange.GetLength(0);
+
             //CirArr cirArr2 = new CirArr() { iRow = 0, iTube = 0 };
             CirArrforAir cirArrforAir = new CirArrforAir();
             CirArr[] cirArr = new CirArr[Nrow * N_tube];

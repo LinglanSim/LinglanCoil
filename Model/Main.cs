@@ -1426,8 +1426,6 @@ namespace Model
             //string fluid = new string[] { "ISOBUTAN" };
             CalcResult res = new CalcResult();
             int Nrow = 2;
-            //double[] FPI = new double[Nrow + 1];
-            //FPI = new double[] { 1.27, 1.27, 1.27, 1.27, 1.27, 1.27, 1.27, 2.6, 2.6, 2.6, 2.6, 2.6, 2.6, 2.6, 2.6, 5.2, 5.2, 5.2, 5.2, 5.2, 5.2 };
             double[] FPI = new double[] { 19.538, 19.538 };
             double Pt = 21 * 0.001;
             double Pr = 22 * 0.001;
@@ -1435,10 +1433,6 @@ namespace Model
             double Do = 7.35 * 0.001;//8.4 7.35
             double Fthickness = 0.095 * 0.001;
             double thickness = 0.5 * (Do - Di);
-            //double n_tubes = 10;
-            //double n_rows = 2;
-            //int[] Ntube = { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
-            //int[] Ntube = { 2, 2, 2, 2 };
             int[] Ntube = { 24, 24 };
             int N_tube = Ntube[0];
             double L = (825 + 860) / 2 * 0.001;
@@ -1446,19 +1440,106 @@ namespace Model
             int[,] CirArrange;
             //CirArrange = new int[,] { { 25, 26, 27, 28, 29, 30, 7, 8, 9, 10, 11, 12 }, { 1, 2, 3, 4, 5, 6, 31, 32, 33, 34, 35, 36 }, { 37, 38, 39, 40, 41, 42, 19, 20, 21, 22, 0, 0 }, { 13, 14, 15, 16, 17, 18, 43, 44, 45, 46, 0, 0 }, { 23, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, { 47, 48, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
             //CirArrange = new int[,] { { 28, 27, 26, 25, 1, 2, 3, 4 }, { 29, 30, 31, 32, 5, 6, 7, 8 }, { 36, 35, 34, 33, 9, 10, 11, 12 }, { 37, 38, 39, 40, 13, 14, 15, 16 }, { 44, 43, 42, 41, 17, 18, 19, 20 }, { 45, 46, 47, 48, 24, 23, 22, 21 } };
+            //CirArrange = new int[,] { { 30, 29, 28, 27, 26, 25, 1, 2, 3, 4 }, { 34, 33, 32, 31, 5, 6, 7, 8, 9, 10 }, { 40, 39, 38, 37, 36, 35, 11, 12, 13, 14 }, { 44, 43, 42, 41, 15, 16, 17, 18, 19, 20 }, { 46, 45, 21, 22, 0, 0, 0, 0, 0, 0 }, { 47, 48, 24, 23, 0, 0, 0, 0, 0, 0 } };            
             //CirArrange = new int[,] { { 32, 31, 30, 29, 28, 27, 26, 25, 1, 2, 3, 4, 5, 6, 7, 8 }, { 40, 39, 38, 37, 36, 35, 34, 33, 9, 10, 11, 12, 13, 14, 15, 16 }, { 48, 47, 46, 45, 44, 43, 42, 41, 24, 23, 22, 21, 20, 19, 18, 17 } };
             //CirArrange = new int[,] { { 25, 26, 27, 28, 29, 30, 7, 8, 9, 10, 11, 12 }, { 1, 2, 3, 4, 5, 6, 31, 32, 33, 34, 35, 36 }, { 37, 38, 39, 40, 41, 42, 19, 20, 21, 22, 0, 0 }, { 13, 14, 15, 16, 17, 18, 43, 44, 45, 46, 0, 0 }, { 47, 48, 24, 23, 0, 0, 0, 0, 0, 0, 0, 0 } };
-            CirArrange = new int[,] { { 25, 26, 27, 28, 29, 30, 6, 5, 4, 3, 2, 1 }, { 36, 35, 34, 33, 32, 31, 7, 8, 9, 10, 11, 12 }, { 37, 38, 39, 40, 41, 42, 18, 17, 16, 15, 14, 13 }, { 48, 47, 46, 45, 44, 43, 19, 20, 21, 22, 23, 24 } };
+            //CirArrange = new int[,] { { 25, 26, 27, 28, 29, 30, 6, 5, 4, 3, 2, 1 }, { 36, 35, 34, 33, 32, 31, 7, 8, 9, 10, 11, 12 }, { 37, 38, 39, 40, 41, 42, 18, 17, 16, 15, 14, 13 }, { 48, 47, 46, 45, 44, 43, 19, 20, 21, 22, 23, 24 } };
+            CirArrange = new int[,] { { 25, 26, 27, 28, 4, 3, 2, 1 }, { 32, 31, 30, 29, 5, 6, 7, 8 }, { 33, 34, 35, 36, 12, 11, 10, 9 }, { 40, 39, 38, 37, 13, 14, 15, 16 }, { 44, 43, 42, 41, 17, 18, 19, 20 }, { 45, 46, 47, 48, 24, 23, 22, 21 } };            
             CircuitNumber CircuitInfo = new CircuitNumber();
-            CircuitInfo.number = new int[] { 4, 4 };//{ 4, 1 };//{ 3, 3 }; //{ 4, 2 }//{4,2}//{4,4}
-            CircuitInfo.TubeofCir = new int[] { 12, 12, 12, 12 };//{ 12, 12, 10, 10, 4 };//{ 16,16,16 };  //{ 8,8,8,8,8,8 };//{12,12,10,10,2,2}//{ 12, 12, 12, 12 }
+            //CircuitInfo.number = new int[] { 4, 4 };//{ 4, 1 };//{ 3, 3 }; //{ 4, 2 }//{4,2}//{4,4}
+            CircuitInfo.TubeofCir = new int[] { 8, 8, 8, 8, 8, 8 };//{ 12, 12, 10, 10, 4 };//{ 16,16,16 };  //{ 8,8,8,8,8,8 };//{12,12,10,10,2,2}//{ 12, 12, 12, 12 }//{10,10,10,10,4,4}
             //CircuitInfo.UnequalCir = new int[] { 5, 5, 5, 5, 0 };//{ 5, 5, 5, 5, 0 };//{ 5, 5, 6, 6, 0, 0 };//{5,5,6,6,0,0}
             // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
             //  Ncir=1, 20in, 20->19 1out
 
-            double[] d_cap = new double[] { 0, 0, 0, 0 };
-            double[] lenth_cap = new double[] { 0, 0, 0, 0 };
+            //4--2 
+            /*int[,] Node_in = { { -1, -100 }, { 0, -100 }, { 0, -100 }, { 0, 1 }, { 2, 3 }, { 4, 5 } };
+            int[,] Node_inType = { { -1, -100 }, { 0, -100 }, { 0, -100 }, { 1, 1 }, { 1, 1 }, { 1, 1 } };//0:Node,1:Circuit,-1:in/out,-100:meaningless
+            int[] Node_Nin = { 1, 1, 1, 2, 2, 2 };
+            int[,] Node_out = { { 1, 2 }, { 0, 1 }, { 2, 3 }, { 4, -100 }, { 5, -100 }, { -1, -100 } };
+            int[,] Node_outType = { { 0, 0 }, { 1, 1 }, { 1, 1 }, { 1, -100 }, { 1, -100 }, { -1, -100 } };
+            int[] Node_Nout = { 2, 2, 2, 1, 1, 1 };
+            char[] Node_type = { 'D', 'D', 'D', 'C', 'C', 'C' };// Diverse/Converge
+            int[] Node_couple = { 0, 1, 2, 1, 2, 0 };*/
+
+            //4--1--2
+            int[,] Node_in = { { -1, -100, -100, -100 }, { 0, 1, 2, 3 }, { 1, -100, -100, -100 }, { 4, 5, -100, -100 } };
+            int[,] Node_inType = { { -1, -100, -100, -100 }, { 1, 1, 1, 1 }, { 0, -100, -100, -100 }, { 1, 1, -100, -100 } };//0:Node,1:Circuit,-1:in/out,-100:meaningless
+            int[] Node_Nin = { 1, 4, 1, 2 };
+            int[,] Node_out = { { 0, 1, 2, 3 }, { 2, -100, -100, -100 }, { 4, 5, -100, -100 }, { -1, -100, -100, -100 } };
+            int[,] Node_outType = { { 1, 1, 1, 1 }, { 0, -100, -100, -100 }, { 1, 1, -100, -100 }, { -1, -100, -100, -100 } };
+            int[] Node_Nout = { 4, 1, 2, 1 };
+            char[] Node_type = { 'D', 'C', 'D', 'C' };// Diverse/Converge
+            int[] Node_couple = { 0, 0, 1, 1 };
+
+            //3--2
+            /*int[,] Node_in = { { -1, -100, -100 }, { 0, 1, 2 } };
+            int[,] Node_inType = { { -1, -100, -100 }, { 1, 1, 1 } };//0:Node,1:Circuit,-1:in/out,-100:meaningless
+            int[] Node_Nin = { 1, 3 };
+            int[,] Node_out = { { 0, 1, 2 }, { -1, -100, -100 } };
+            int[,] Node_outType = { { 1, 1, 1 }, { -1, -100, -100 } };
+            int[] Node_Nout = { 3, 1};
+            char[] Node_type = { 'D', 'C'};// Diverse/Converge
+            int[] Node_couple = { 0, 0 };*/
+
+            //4--1
+            /*int[,] Node_in = { { -1, -100, -100, -100 }, { 0, -100, -100, -100 }, { 0, 1, 2, 3 }, { 4, -100, -100, -100 } };
+            int[,] Node_inType = { { -1, -100, -100, -100 }, { 0, -100, -100, -100 }, { 1, 1, 1, 1 }, { 1, -100, -100, -100 } };//0:Node,1:Circuit,-1:in/out,-100:meaningless
+            int[] Node_Nin = { 1, 1, 4, 1 };
+            int[,] Node_out = { { 1, -100, -100, -100 }, { 0, 1, 2, 3 }, { 4, -100, -100, -100 }, { -1, -100, -100, -100 } };
+            int[,] Node_outType = { { 0, -100, -100, -100 }, { 1, 1, 1, 1 }, { 1, -100, -100, -100 }, { -1, -100, -100, -100 } };
+            int[] Node_Nout = { 1, 4, 1, 1 };
+            char[] Node_type = { 'D', 'D', 'C', 'C' };// Diverse/Converge
+            int[] Node_couple = { 0, 1, 1, 0 };*/
+
+            //4--4
+            /*int[,] Node_in = { { -1, -100, -100, -100 }, { 0, 1, 2, 3 } };
+            int[,] Node_inType = { { -1, -100, -100, -100 }, { 1, 1, 1, 1 } };//0:Node,1:Circuit,-1:in/out,-100:meaningless
+            int[] Node_Nin = { 1, 4 };
+            int[,] Node_out = { { 0, 1, 2, 3 }, { -1, -100, -100, -100 } };
+            int[,] Node_outType = { { 1, 1, 1, 1 }, { -1, -100, -100, -100 } };
+            int[] Node_Nout = { 4, 1 };
+            char[] Node_type = { 'D', 'C' };// Diverse/Converge
+            int[] Node_couple = { 0, 0 };*/
+
+
+            int N_Node = Node_in.GetLength(0);
+            NodeInfo[] Nodes = new NodeInfo[N_Node];
+            for (int i = 0; i < N_Node; i++)
+            {
+                Nodes[i] = new NodeInfo();
+                Nodes[i].N_in = Node_Nin[i];
+                Nodes[i].N_out = Node_Nout[i];
+                Nodes[i].inlet = new int[Nodes[i].N_in];
+                Nodes[i].inType = new int[Nodes[i].N_in];
+                Nodes[i].outlet = new int[Nodes[i].N_out];
+                Nodes[i].outType = new int[Nodes[i].N_out];
+                for (int j = 0; j < Nodes[i].N_in; j++)
+                {
+                    Nodes[i].inlet[j] = Node_in[i, j];
+                    Nodes[i].inType[j] = Node_inType[i, j];
+                }
+                for (int j = 0; j < Nodes[i].N_out; j++)
+                {
+                    Nodes[i].outlet[j] = Node_out[i, j];
+                    Nodes[i].outType[j] = Node_outType[i, j];
+                }
+                Nodes[i].type = Node_type[i];
+                Nodes[i].couple = Node_couple[i];
+                Nodes[i].mri = new double[Nodes[i].N_in];
+                Nodes[i].mro = new double[Nodes[i].N_out];
+                Nodes[i].pri = new double[Nodes[i].N_in];
+                Nodes[i].pro = new double[Nodes[i].N_out];
+                Nodes[i].hri = new double[Nodes[i].N_in];
+                Nodes[i].hro = new double[Nodes[i].N_out];
+                Nodes[i].tri = new double[Nodes[i].N_in];
+                Nodes[i].tro = new double[Nodes[i].N_out];
+                Nodes[i].mr_ratio = new double[Nodes[i].N_out];
+            }
+
+            double[] d_cap = new double[] { 0, 0, 0, 0, 0, 0 };
+            double[] lenth_cap = new double[] { 0, 0, 0, 0, 0, 0 };
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -1470,7 +1551,7 @@ namespace Model
 
             int hexType = 1;
 
-            double mr = 0.02657;//0.01826;
+            double mr = 0.0277;//0.01826;
             //double Vel_a = 1.8; //m/s
             double H = Pt * N_tube;
             double Hx = L * H;
@@ -1482,7 +1563,6 @@ namespace Model
             VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
             double[,] ma = new double[N_tube, Nelement];
             double[,] ha = new double[N_tube, Nelement];
-
 
             //空气侧几何结构选择
             //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
@@ -1508,8 +1588,8 @@ namespace Model
             res.DPa = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
 
             double eta_surface = 0.819;
-            double zh = 1.3;
-            double zdp = 2;
+            double zh = 3;
+            double zdp = 3;
 
             double tai = 35;
             double RHi = CoolProp.HAPropsSI("R", "T", tai + 273.15, "P", 101325, "B", 24 + 273.15);//0.469
@@ -1519,15 +1599,13 @@ namespace Model
             double pri = coolprop.p() / 1000;
             //double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
             //double P_exv = 1842.28;//kpa
-            double tri = 78;//C
+            double tri = 67;//C
             double conductivity = 386; //w/mK for Cu
             double Pwater = 100.0;
             //int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
             coolprop.update(input_pairs.PT_INPUTS, pri * 1000, tri + 273.15);
             double hri = coolprop.hmass() / 1000;
             //double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000;
-            //double hri = 354.6;
-            //double xin = 0.57;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -1537,18 +1615,11 @@ namespace Model
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
-
-            //AreaResult geo = new AreaResult();
-            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
-            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tri, pri, hri,
-                //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
-
-            Geometry geo = new Geometry();
-            geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
-            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tri, pri, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
-
-           
+            Geometry geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tri, pri, hri,
+            //    mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
+            res = Slab2.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, tri, pri, hri,
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection,Nodes,N_Node,d_cap, lenth_cap, coolprop);           
             return res;
         }
         public static CalcResult main_condenser_YH200_1()
@@ -1848,28 +1919,98 @@ namespace Model
             //CirArrange = new int[,] { { 21, 22, 23, 24, 48, 47, 46, 45 }, { 20, 19, 18, 17, 41, 42, 43, 44 }, { 16, 15, 14, 13, 40, 39, 38, 37 }, { 12, 11, 10, 9, 33, 34, 35, 36 }, { 8, 7, 6, 5, 32, 31, 30, 29 }, { 4, 3, 2, 1, 25, 26, 27, 28 } };
             //CirArrange = new int[,] { { 8, 7, 6, 5, 4, 3, 2, 1, 25, 26, 27, 28, 29, 30, 31, 32 }, { 16, 15, 14, 13, 12, 11, 10, 9, 33, 34, 35, 36, 37, 38, 39, 40 }, { 17, 18, 19, 20, 21, 22, 23, 24, 41, 42, 43, 44, 45, 46, 47, 48 } };
             //CirArrange = new int[,] { { 23, 24, 48, 47, 0, 0, 0, 0, 0, 0, 0, 0 }, { 46, 45, 44, 43, 18, 17, 16, 15, 14, 13, 0, 0 }, { 22, 21, 20, 19, 42, 41, 40, 39, 38, 37, 0, 0 }, { 36, 35, 34, 33, 32, 31, 6, 5, 4, 3, 2, 1, }, { 12, 11, 10, 9, 8, 7, 30, 39, 28, 27, 26, 25 } };
-            CirArrange = new int[,] { { 1, 2, 3, 4, 5, 6, 30, 29, 28, 27, 26, 25 }, { 12, 11, 10, 9, 8, 7, 31, 32, 33, 34, 35, 36 }, { 13, 14, 15, 16, 17, 18, 42, 41, 40, 39, 38, 37 }, { 24, 23, 22, 21, 20, 19, 43, 44, 45, 46, 47, 48 } };          
+            //CirArrange = new int[,] { { 1, 2, 3, 4, 5, 6, 30, 29, 28, 27, 26, 25 }, { 12, 11, 10, 9, 8, 7, 31, 32, 33, 34, 35, 36 }, { 13, 14, 15, 16, 17, 18, 42, 41, 40, 39, 38, 37 }, { 24, 23, 22, 21, 20, 19, 43, 44, 45, 46, 47, 48 } };          
+
+            //CirArrange = new int[,] { { 25, 26, 27, 28, 29, 30, 7, 8, 9, 10, 11, 12 }, { 1, 2, 3, 4, 5, 6, 31, 32, 33, 34, 35, 36 }, { 37, 38, 39, 40, 41, 42, 19, 20, 21, 22, 0, 0 }, { 13, 14, 15, 16, 17, 18, 43, 44, 45, 46, 0, 0 }, { 23, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, { 47, 48, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
+            //CirArrange = new int[,] { { 28, 27, 26, 25, 1, 2, 3, 4 }, { 29, 30, 31, 32, 5, 6, 7, 8 }, { 36, 35, 34, 33, 9, 10, 11, 12 }, { 37, 38, 39, 40, 13, 14, 15, 16 }, { 44, 43, 42, 41, 17, 18, 19, 20 }, { 45, 46, 47, 48, 24, 23, 22, 21 } };
+            //CirArrange = new int[,] { { 30, 29, 28, 27, 26, 25, 1, 2, 3, 4 }, { 34, 33, 32, 31, 5, 6, 7, 8, 9, 10 }, { 40, 39, 38, 37, 36, 35, 11, 12, 13, 14 }, { 44, 43, 42, 41, 15, 16, 17, 18, 19, 20 }, { 46, 45, 21, 22, 0, 0, 0, 0, 0, 0 }, { 47, 48, 24, 23, 0, 0, 0, 0, 0, 0 } };            
+            //CirArrange = new int[,] { { 32, 31, 30, 29, 28, 27, 26, 25, 1, 2, 3, 4, 5, 6, 7, 8 }, { 40, 39, 38, 37, 36, 35, 34, 33, 9, 10, 11, 12, 13, 14, 15, 16 }, { 48, 47, 46, 45, 44, 43, 42, 41, 24, 23, 22, 21, 20, 19, 18, 17 } };
+            //CirArrange = new int[,] { { 25, 26, 27, 28, 29, 30, 7, 8, 9, 10, 11, 12 }, { 1, 2, 3, 4, 5, 6, 31, 32, 33, 34, 35, 36 }, { 37, 38, 39, 40, 41, 42, 19, 20, 21, 22, 0, 0 }, { 13, 14, 15, 16, 17, 18, 43, 44, 45, 46, 0, 0 }, { 47, 48, 24, 23, 0, 0, 0, 0, 0, 0, 0, 0 } };
+            //CirArrange = new int[,] { { 25, 26, 27, 28, 29, 30, 6, 5, 4, 3, 2, 1 }, { 36, 35, 34, 33, 32, 31, 7, 8, 9, 10, 11, 12 }, { 37, 38, 39, 40, 41, 42, 18, 17, 16, 15, 14, 13 }, { 48, 47, 46, 45, 44, 43, 19, 20, 21, 22, 23, 24 } };
+            //CirArrange = new int[,] { { 25, 26, 27, 28, 4, 3, 2, 1 }, { 32, 31, 30, 29, 5, 6, 7, 8 }, { 33, 34, 35, 36, 12, 11, 10, 9 }, { 40, 39, 38, 37, 13, 14, 15, 16 }, { 44, 43, 42, 41, 17, 18, 19, 20 }, { 45, 46, 47, 48, 24, 23, 22, 21 } };            
+
+            CirArrange = new int[,] { { 12, 11, 10, 9, 8, 7, 30, 29, 28, 27, 26, 25 }, { 36, 35, 34, 33, 32, 31, 6, 5, 4, 3, 2, 1 }, { 22, 21, 20, 19, 42, 41, 40, 39, 38, 37, 0, 0 }, { 46, 45, 44, 43, 18, 17, 16, 15, 14, 13, 0, 0 }, { 24, 23, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, { 48, 47, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
+            //CirArrange = new int[,] { { 4, 3, 2, 1, 25, 26, 27, 28 }, { 8, 7, 6, 5, 32, 31, 30, 29 }, { 12, 11, 10, 9, 33, 34, 35, 36 }, { 16, 15, 14, 13, 40, 39, 38, 37 }, { 20, 19, 18, 17, 41, 42, 43, 44 }, { 21, 22, 23, 24, 48, 47, 46, 45 } };
+            //CirArrange = new int[,] { { 4, 3, 2, 1, 25, 26, 27, 28, 29, 30 }, { 10, 9, 8, 7, 6, 5, 31, 32, 33, 34 }, { 14, 13, 12, 11, 35, 36, 37, 38, 39, 40 }, { 20, 19, 18, 17, 16, 15, 41, 42, 43, 44 }, { 22, 21, 45, 49, 0, 0, 0, 0, 0, 0 }, { 23, 24, 48, 47, 0, 0, 0, 0, 0, 0 } };            
+            //CirArrange = new int[,] { { 8, 7, 6, 5, 4, 3, 2, 1, 25, 26, 27, 28, 29, 30, 31, 32 }, { 16, 15, 14, 13, 12, 11, 10, 9, 33, 34, 35, 36, 37, 38, 39, 40 }, { 17, 18, 19, 20, 21, 22, 23, 24, 41, 42, 43, 44, 45, 46, 47, 48 } };
+            //CirArrange = new int[,] { { 12, 11, 10, 9, 8, 7, 30, 29, 28, 27, 26, 25 }, { 36, 35, 34, 33, 32, 31, 6, 5, 4, 3, 2, 1 }, { 22, 21, 20, 19, 42, 41, 40, 39, 38, 37, 0, 0 }, { 46, 45, 44, 43, 18, 17, 16, 15, 14, 13, 0, 0 }, { 23, 24, 48, 47, 0, 0, 0, 0, 0, 0, 0, 0 } };
+            //CirArrange = new int[,] { { 1, 2, 3, 4, 5, 6, 30, 29, 28, 27, 26, 25 }, { 12, 11, 10, 9, 8, 7, 31, 32, 33, 34, 35, 36 }, { 13, 14, 15, 16, 17, 18, 42, 41, 40, 39, 38, 37 }, { 24, 23, 22, 21, 20, 19, 43, 44, 45, 46, 47, 48 } };
+            //CirArrange = new int[,] { { 1, 2, 3, 4, 28, 27, 26, 25 }, { 8, 7, 6, 5, 29, 30, 31, 32 }, { 9, 10, 11, 12, 36, 35, 34, 33 }, { 16, 15, 14, 13, 37, 38, 39, 40 }, { 20, 19, 18, 17, 41, 42, 43, 44 }, { 21, 22, 23, 24, 48, 47, 46, 45 } };          
+                        
             CircuitNumber CircuitInfo = new CircuitNumber();
-            CircuitInfo.number = new int[] { 4, 4 };//{ 4, 1 };//{ 3, 3 }; //{ 4, 2 }//{4,2}//{4,4}
-            CircuitInfo.TubeofCir = new int[] { 12, 12, 12, 12 };//{ 12, 12, 10, 10, 4 };//{ 16,16,16 };  //{ 8,8,8,8,8,8 };//{12,12,10,10,2,2}//{ 12, 12, 12, 12 }
-            //CircuitInfo.UnequalCir = new int[] { -5, -6, 5, 5, 6, 6 };//{ 5, 5, 5, 5, 0 };//{ 5, 5, 6, 6, 0, 0 };//{5,5,6,6,0,0}
+            //CircuitInfo.number = new int[] { 4, 2 };//{ 4, 1 };//{ 3, 3 }; //{ 4, 2 }//{4,2}//{4,4}
+            CircuitInfo.TubeofCir = new int[] { 12, 12, 10, 10, 2, 2 };//{ 12, 12, 10, 10, 4 };//{ 16,16,16 };  //{ 8,8,8,8,8,8 };//{12,12,10,10,2,2}//{ 12, 12, 12, 12 }
+            CircuitInfo.UnequalCir = new int[] { -5, -6, 5, 5, 6, 6 };//{ 5, 5, 5, 5, 0 };//{ 5, 5, 6, 6, 0, 0 };//{5,5,6,6,0,0}
             // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
             //  Ncir=1, 20in, 20->19 1out
 
             //bool reverse = true; //*********************************false:origin, true:reverse******************************************
             //CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
+            //4--2 
+            /*int[,] Node_in = { { -1, -100 }, { 0, -100 }, { 0, -100 }, { 0, 1 }, { 2, 3 }, { 4, 5 } };
+            int[,] Node_inType = { { -1, -100 }, { 0, -100 }, { 0, -100 }, { 1, 1 }, { 1, 1 }, { 1, 1 } };//0:Node,1:Circuit,-1:in/out,-100:meaningless
+            int[] Node_Nin = { 1, 1, 1, 2, 2, 2 };
+            int[,] Node_out = { { 1, 2 }, { 0, 1 }, { 2, 3 }, { 4, -100 }, { 5, -100 }, { -1, -100 } };
+            int[,] Node_outType = { { 0, 0 }, { 1, 1 }, { 1, 1 }, { 1, -100 }, { 1, -100 }, { -1, -100 } };
+            int[] Node_Nout = { 2, 2, 2, 1, 1, 1 };
+            char[] Node_type = { 'D', 'D', 'D', 'C', 'C', 'C' };// Diverse/Converge
+            int[] Node_couple = { 0, 1, 2, 1, 2, 0 };*/
 
-            double[] d_cap = new double[] { 0, 0, 0, 0 };
-            double[] lenth_cap = new double[] { 0, 0, 0, 0 };
+            //2--4 
+            int[,] Node_out = { { -1, -100 }, { 0, -100 }, { 0, -100 }, { 0, 1 }, { 2, 3 }, { 4, 5 } };
+            int[,] Node_outType = { { -1, -100 }, { 0, -100 }, { 0, -100 }, { 1, 1 }, { 1, 1 }, { 1, 1 } };//0:Node,1:Circuit,-1:in/out,-100:meaningless
+            int[] Node_Nout = { 1, 1, 1, 2, 2, 2 };
+            int[,] Node_in = { { 1, 2 }, { 0, 1 }, { 2, 3 }, { 4, -100 }, { 5, -100 }, { -1, -100 } };
+            int[,] Node_inType = { { 0, 0 }, { 1, 1 }, { 1, 1 }, { 1, -100 }, { 1, -100 }, { -1, -100 } };
+            int[] Node_Nin = { 2, 2, 2, 1, 1, 1 };
+            char[] Node_type = { 'C', 'C', 'C', 'D', 'D', 'D' };// Diverse/Converge
+            int[] Node_couple = { 0, 1, 2, 1, 2, 0 };
 
-            double mr = 0.0201;
+            int N_Node = Node_in.GetLength(0);
+            NodeInfo[] Nodes = new NodeInfo[N_Node];
+            for (int i = 0; i < N_Node; i++)
+            {
+                Nodes[i] = new NodeInfo();
+                Nodes[i].N_in = Node_Nin[i];
+                Nodes[i].N_out = Node_Nout[i];
+                Nodes[i].inlet = new int[Nodes[i].N_in];
+                Nodes[i].inType = new int[Nodes[i].N_in];
+                Nodes[i].outlet = new int[Nodes[i].N_out];
+                Nodes[i].outType = new int[Nodes[i].N_out];
+                for (int j = 0; j < Nodes[i].N_in; j++)
+                {
+                    Nodes[i].inlet[j] = Node_in[i, j];
+                    Nodes[i].inType[j] = Node_inType[i, j];
+                }
+                for (int j = 0; j < Nodes[i].N_out; j++)
+                {
+                    Nodes[i].outlet[j] = Node_out[i, j];
+                    Nodes[i].outType[j] = Node_outType[i, j];
+                }
+                Nodes[i].type = Node_type[i];
+                Nodes[i].couple = Node_couple[i];
+                Nodes[i].mri = new double[Nodes[i].N_in];
+                Nodes[i].mro = new double[Nodes[i].N_out];
+                Nodes[i].pri = new double[Nodes[i].N_in];
+                Nodes[i].pro = new double[Nodes[i].N_out];
+                Nodes[i].hri = new double[Nodes[i].N_in];
+                Nodes[i].hro = new double[Nodes[i].N_out];
+                Nodes[i].tri = new double[Nodes[i].N_in];
+                Nodes[i].tro = new double[Nodes[i].N_out];
+                Nodes[i].mr_ratio = new double[Nodes[i].N_out];
+            }
+            
+            double[] d_cap = new double[6];
+            double[] lenth_cap = new double[6];
+
+            double mr = 0.026;
             //double Vel_a = 1.8; //m/s
             double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
             double H = Pt * N_tube;
             double Hx = L * H;
             double rho_a_st = 1.2; //kg/m3
-            double Va = 2160;
+            double Va = 2000;
             double Vel_ave = Va/3600/Hx;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
             AirDistribution VaDistri = new AirDistribution();
             VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
@@ -1911,7 +2052,7 @@ namespace Model
             res.DPa = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
 
             double eta_surface = 0.8;
-            double zh = 1.5;
+            double zh = 3;
             double zdp = 1.8;
 
             double tai = 7;
@@ -1953,9 +2094,11 @@ namespace Model
 
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
-            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, te, pe, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
-
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, te, pe, hri,
+            //    mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
+            res = Slab2.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, tri, pe, hri,
+                    mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, Nodes, N_Node, d_cap, lenth_cap, coolprop);           
+            
             return res;
         }
         public static CalcResult main_evaporator_YH200_1()
@@ -2655,12 +2798,12 @@ namespace Model
             double L = 870 * 0.001;
             int Nelement = 10;
             int[,] CirArrange;
-            //CirArrange = new int[,] { { 24, 23, 22, 21, 20, 19, 18, 17 }, { 1, 2, 3, 4, 5, 6, 7, 8 }, { 16, 15, 0, 0, 0, 0, 0, 0 }, { 14, 13, 0, 0, 0, 0, 0, 0 }, { 11, 12, 0, 0, 0, 0, 0, 0 }, { 10, 9, 0, 0, 0, 0, 0, 0 } };
-            CirArrange = new int[,] { { 24, 23, 22, 21 }, { 1, 2, 3, 4 }, { 17, 18, 19, 20 }, { 16, 15, 14, 13 }, { 9, 10, 11, 12 }, { 8, 7, 6, 5 } };
+            CirArrange = new int[,] { { 24, 23, 22, 21, 20, 19, 18, 17 }, { 1, 2, 3, 4, 5, 6, 7, 8 }, { 16, 15, 0, 0, 0, 0, 0, 0 }, { 14, 13, 0, 0, 0, 0, 0, 0 }, { 11, 12, 0, 0, 0, 0, 0, 0 }, { 10, 9, 0, 0, 0, 0, 0, 0 } };
+            //CirArrange = new int[,] { { 24, 23, 22, 21 }, { 1, 2, 3, 4 }, { 17, 18, 19, 20 }, { 16, 15, 14, 13 }, { 9, 10, 11, 12 }, { 8, 7, 6, 5 } };
             //CirArrange = new int[,] { { 24, 23, 22, 21, 20, 19 }, { 18, 17, 16, 15, 14, 13 }, { 12, 11, 10, 9, 8, 7 }, { 6, 5, 4, 3, 2, 1 } };
             CircuitNumber CircuitInfo = new CircuitNumber();
             CircuitInfo.number = new int[] { 4, 2 };//{ 3, 1 };//{ 4, 2 };
-            CircuitInfo.TubeofCir = new int[] { 4, 4, 4, 4, 4, 4 };//{ 6, 6, 6, 6 };//{ 4, 4, 4, 4, 4, 4 };//{ 8, 8, 2, 2, 2, 2 };
+            CircuitInfo.TubeofCir = new int[] { 8, 8, 2, 2, 2, 2 };//{ 6, 6, 6, 6 };//{ 4, 4, 4, 4, 4, 4 };//{ 8, 8, 2, 2, 2, 2 };
             CircuitInfo.UnequalCir = new int[] { -5, -6, 5, 5, 6, 6 };//{ -4, 4, 4, 4 };//{ -5, -6, 5, 5, 6, 6 };
             // [19 - 17 - 15 - 13   11   9   7   5   3   1] <====Air
             // [20 - 18 - 16 - 14   12   10  8   6   4   2] <====Air
@@ -2669,10 +2812,10 @@ namespace Model
             //bool reverse = true; //*********************************false:origin, true:reverse******************************************
             //CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
 
-            double[] d_cap = new double[] { 0, 0, 0, 0 };
-            double[] lenth_cap = new double[] { 0, 0, 0, 0 };
+            double[] d_cap = new double[6]; //{ 0, 0, 0, 0 };
+            double[] lenth_cap = new double[6];// { 0, 0, 0, 0 };
 
-            double mr = 0.01168;//0.0125;
+            double mr = 0.012;//0.0125;
             //double Vel_a = 1.8; //m/s
             double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
             double H = Pt * N_tube;
@@ -2720,8 +2863,8 @@ namespace Model
             res.DP = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
 
             double eta_surface = 0.8;
-            double zh = 1.5;//1.6;
-            double zdp = 1.5;//4.85;
+            double zh = 1.6;//1.6;
+            double zdp = 4.85;//4.85;
 
             double tai = 7;
             double RHi = CoolProp.HAPropsSI("R", "T", tai + 273.15, "P", 101325, "B", 6 + 273.15);
