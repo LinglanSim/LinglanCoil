@@ -14,7 +14,7 @@ namespace Model
 
             //if (AirDirection == "DowntoUp") //For refrigerator
             //{
-            if (AirDirection=="Parallel")
+            if (AirDirection == "顺流")
             {
                 for (int k = 0; k < Nrow + 1; k++)
                     for (int j = 0; j < Ntube[0]; j++)
@@ -43,7 +43,7 @@ namespace Model
 
             //if (AirDirection == "DowntoUp") //For refrigerator
             //{
-            if(AirDirection=="Parallel")
+            if (AirDirection == "顺流")
             {
                 for (int i = 0; i < element; i++)
                     for (int j = 0; j < Ntube[0]; j++)

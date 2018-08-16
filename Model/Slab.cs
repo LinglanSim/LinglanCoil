@@ -598,7 +598,7 @@ namespace Model
                         break;
                     }
                 }
-                if (Airdirection == "Parallel")
+                if (Airdirection == "顺流")
                 {
                     airConverge.flag = true;
                     for (int ii = 0; ii < Ncir;ii++ )
@@ -619,7 +619,7 @@ namespace Model
                     iterforAir++;
                 }
                 //Add Q converge criterion to avoid results oscillation, ruhao 20180426
-                if (Airdirection != "Parallel") //No airConverge iter for Parallel
+                if (Airdirection != "顺流") //No airConverge iter for Parallel
                 {
                     for (int i = 0; i < Ncir; i++) Q1[iterforAir-1] += r[i].Q;
 

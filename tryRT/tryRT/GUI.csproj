@@ -53,9 +53,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Window1.xaml.cs">
-      <DependentUpon>Window1.xaml</DependentUpon>
-    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -68,12 +65,15 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Window1.xaml">
+    <Page Include="Midea Heat Exchanger Simulation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Midea Heat Exchanger Simulation.xaml.cs">
+      <DependentUpon>Midea Heat Exchanger Simulation.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -134,6 +134,24 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="外形_直排1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="叉排%28迎面风高%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="叉排%28迎面风低%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="管子.PNG" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="翅片.PNG" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="MideaLogo.JPEG" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

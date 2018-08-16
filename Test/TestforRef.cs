@@ -17,7 +17,7 @@ namespace Test
             CapiliaryInput capInput = new CapiliaryInput();
             refInput.FluidName = "R32";
             AbstractState coolprop = AbstractState.factory("HEOS", refInput.FluidName);
-            refInput.Massflowrate = 0.02;
+            refInput.Massflowrate = 0.005;
             refInput.tc = 45;
             refInput.tri = 75;
             AirStateInput airInput=new AirStateInput();
@@ -39,10 +39,10 @@ namespace Test
             capInput.d_cap = new double[6];// { 0, 0 };//0.006
             capInput.lenth_cap = new double[6];// { 0, 0 };//0.5
 
-            string flowtype="Counter";
-            string fin_type="Plain";
-            string tube_type="smooth";
-            string hex_type="Condenser";
+            string flowtype = "逆流";
+            string fin_type="平片";
+            string tube_type="光管";
+            string hex_type="冷凝器";
             var r1 = Main.main_condenser_Slab(refInput,airInput,geoInput,flowtype,fin_type,tube_type,hex_type,capInput);
             //var r = Main.MinNout();
             //var r = Main.NinMout();

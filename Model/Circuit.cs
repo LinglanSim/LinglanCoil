@@ -134,7 +134,7 @@ namespace Model
                     r[i] = Tube.TubeCalc(Nelement, fluid, l, Aa_fin, Aa_tube, Ar_cs, Ar,geo, tai, RHi, tri_tube, pri_tube, hri_tube,
                         mr, ma_tube, ha_tube, haw_tube, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, coolprop);
                     if (r[i].Pro < 0) { res_cir.Pro = -10000000; return res_cir; }
-                    if (Airdirection=="Parallel")
+                    if (Airdirection == "顺流")
                     {
                         for (int j = 0; j < Nelement; j++)
                         {
@@ -184,20 +184,20 @@ namespace Model
                     res_cir.Tri = r[i].Tri;
                     res_cir.x_i = r[i].x_i;
                 }
-            /*
-                if (Airdirection == "Parallel")
-                    airConverge.flag = true;
-                else//Counter
-                {
-                    airConverge = CheckAirConvergeforCircuits.CheckAirConverge(Nrow, N_tube, Nelement, ta, RH, taout_calc, RHout_calc);
-                    ta = airConverge.ta;
-                    RH = airConverge.RH;
-                    iter++;
-                }
-            } while (!airConverge.flag && iter < 100);
-            */
+                /*
+                    if (Airdirection == "顺流")
+                        airConverge.flag = true;
+                    else//Counter
+                    {
+                        airConverge = CheckAirConvergeforCircuits.CheckAirConverge(Nrow, N_tube, Nelement, ta, RH, taout_calc, RHout_calc);
+                        ta = airConverge.ta;
+                        RH = airConverge.RH;
+                        iter++;
+                    }
+                } while (!airConverge.flag && iter < 100);
+                */
 
-            //if (iter >= 100)
+                //if (iter >= 100)
             //{
             //    throw new Exception("iter for AirConverge > 100.");
             //}

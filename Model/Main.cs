@@ -133,7 +133,7 @@ namespace Model
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
-            string AirDirection = "Counter";
+            string AirDirection = "逆流";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
@@ -325,7 +325,7 @@ namespace Model
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
-            string AirDirection = "Parallel";
+            string AirDirection = "顺流";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, te, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, te, AirDirection);
 
@@ -516,7 +516,7 @@ namespace Model
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
-            string AirDirection = "Parallel";
+            string AirDirection = "顺流";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, te, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, te, AirDirection);
 
@@ -656,7 +656,7 @@ namespace Model
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
-            string AirDirection = "Counter";
+            string AirDirection = "逆流";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
@@ -798,7 +798,7 @@ namespace Model
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
-            string AirDirection = "Counter";
+            string AirDirection = "逆流";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, te, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, te, AirDirection);
 
@@ -857,14 +857,14 @@ namespace Model
             CircuitInfo.TubeofCir = new int[CircuitInfo.number[0]];
 
             //Get AutoCircuitry
-            //CircuitInfo = AutoCircuiting.GetTubeofCir(Nrow, N_tube, CircuitInfo);
-            //CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
-            //CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
+            CircuitInfo = AutoCircuiting.GetTubeofCir(Nrow, N_tube, CircuitInfo);
+            CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
+            CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
 
-            CirArrange = new int[,] { { 25, 26, 27, 28, 4, 3, 2, 1 }, { 29, 30, 31, 32, 8, 7, 6, 5 }, { 33, 34, 35, 36, 12, 11, 10, 9 }, { 37, 38, 39, 40, 16, 15, 14, 13 }, { 41, 42, 43, 44, 20, 19, 18, 17 }, { 48, 47, 46, 45, 24, 23, 22, 21 } };
-            CircuitInfo.number = new int[] { 4, 2 };//4in 2out
-            CircuitInfo.TubeofCir = new int[] { 8, 8, 8, 8, 8, 8 };  //{ 4, 8 };
-            CircuitInfo.UnequalCir = new int[] { 5, 5, 6, 6, 0, 0 };
+            //CirArrange = new int[,] { { 25, 26, 27, 28, 4, 3, 2, 1 }, { 29, 30, 31, 32, 8, 7, 6, 5 }, { 33, 34, 35, 36, 12, 11, 10, 9 }, { 37, 38, 39, 40, 16, 15, 14, 13 }, { 41, 42, 43, 44, 20, 19, 18, 17 }, { 48, 47, 46, 45, 24, 23, 22, 21 } };
+            //CircuitInfo.number = new int[] { 4, 2 };//4in 2out
+            //CircuitInfo.TubeofCir = new int[] { 8, 8, 8, 8, 8, 8 };  //{ 4, 8 };
+            //CircuitInfo.UnequalCir = new int[] { 5, 5, 6, 6, 0, 0 };
 
             CirArr[] cirArr = new CirArr[Nrow * N_tube];
             cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube).CirArr;
@@ -873,7 +873,7 @@ namespace Model
 
             //Circuit-Reverse module
             bool reverse = false; //*********************************false:origin, true:reverse******************************************
-            if (flowtype == "Counter")
+            if (flowtype == "逆流")
                 reverse = false;
             else
                 reverse = true;
@@ -892,7 +892,7 @@ namespace Model
             geoInput_air.Nrow = Nrow;
 
             int hexType = 1;
-            if (hex_type == "Evaporator") hexType = 0;
+            if (hex_type == "蒸发器") hexType = 0;
             else hexType = 1;
 
             double mr = refInput.Massflowrate; //mr_in;//0.01;
@@ -916,7 +916,7 @@ namespace Model
             int curve = 1; //
 
             double za = 1; //Adjust factor
-            if (fin_type == "plain")
+            if (fin_type == "平片")
                 za = 1.0;
             else if (fin_type == "louver")
                 za = 1.3;
@@ -941,9 +941,9 @@ namespace Model
             double zh = 1;
             double zdp = 1;
 
-            if (tube_type == "smooth")
+            if (tube_type == "光管")
             { zh = 1.0; zdp = 1.0; }
-            else if (tube_type == "internalthread")
+            else if (tube_type == "内螺纹管")
             { zh = 1.4; zdp = 1.2; }
             else
             { zh = 1.2; zdp = 1.1; }
@@ -1032,7 +1032,7 @@ namespace Model
             CirArrange = new int[,] { { 15, 1, 0, 0, 0, 0, 0, 0 }, { 16, 17, 3, 2, 0, 0, 0, 0 }, { 18, 19, 5, 4, 0, 0, 0, 0 }, { 20, 21, 22, 8, 7, 6, 0, 0 }, { 23, 24, 10, 9, 0, 0, 0, 0 }, { 25, 26, 27, 28, 14, 13, 12, 11 } };
             CircuitInfo.number = new int[] { 4, 2 };//4in 2out
             CircuitInfo.TubeofCir = new int[] { 2, 4, 4, 6, 4, 8 };//{ 6, 6, 6, 6, 2, 2 };  //{ 4, 8 };
-            CircuitInfo.UnequalCir = new int[] { -5, -6, 5, 5, 6, 6 };
+            CircuitInfo.UnequalCir = new int[] { 5, 5, 6, 6, 0, 0 };
 
             /*int[,] Node_in = { { -1, -100 }, { 0, -100 }, { 0, -100 }, { 0, 1 }, { 2, 3 }, { 4, 5 } };
             int[,] Node_inType = { { -1, -100 }, { 0, -100 }, { 0, -100 }, { 1, 1 }, { 1, 1 }, { 1, 1 } };//0:Node,1:Circuit,-1:in/out,-100:meaningless
@@ -1042,7 +1042,7 @@ namespace Model
             int[] Node_Nout = { 2, 2, 2, 1, 1, 1 };
             char[] Node_type = { 'D', 'D' ,'D','C','C','C'};// Diverse/Converge
             int[] Node_couple = { 0, 1, 2, 1, 2, 0 };*/
-
+            /*
             int[,] Node_in = { { -1, -100 }, { 0, -100 }, { 1, -100 }, { 2, 3 }, { 4, 5 }, { 3, 4 } };
             int[,] Node_inType = { { -1, -100 }, { 1, -100 }, { 1, -100 }, { 1, 1 }, { 1, 1 }, { 0, 0 } };//0:Node,1:Circuit,-1:in/out,-100:meaningless
             int[] Node_Nin = { 1, 1, 1, 2, 2, 2 };
@@ -1051,7 +1051,15 @@ namespace Model
             int[] Node_Nout = { 2, 2, 2, 1, 1, 1 };
             char[] Node_type = { 'D', 'D', 'D', 'C', 'C', 'C' };// Diverse/Converge
             int[] Node_couple = { 0, 1, 2, 1, 2, 0 };
-
+            */
+            int[,] Node_in = { { -1, -100 }, { 0, -100 }, { 0, -100 }, { 0, 1 }, { 2, 3 }, { 4, 5 } };
+            int[,] Node_inType = { { -1, -100 }, { 0, -100 }, { 0, -100 }, { 1, 1 }, { 1, 1 }, { 1, 1 } };//0:Node,1:Circuit,-1:in/out,-100:meaningless
+            int[] Node_Nin = { 1, 1, 1, 2, 2, 2 };
+            int[,] Node_out = { { 1, 2 }, { 0, 1 }, { 2, 3 }, { 4, -100 }, { 5, -100 }, { -1, -100 } };
+            int[,] Node_outType = { { 0, 0 }, { 1, 1 }, { 1, 1 }, { 1, -100 }, { 1, -100 }, { -1, -100 } };
+            int[] Node_Nout = { 2, 2, 2, 1, 1, 1 };
+            char[] Node_type = { 'D', 'D', 'D', 'C', 'C', 'C' };// Diverse/Converge
+            int[] Node_couple = { 0, 1, 2, 1, 2, 0 };
 
             int N_Node=Node_in.GetLength(0);
             NodeInfo[] Nodes = new NodeInfo[N_Node];
@@ -1094,7 +1102,7 @@ namespace Model
 
             //Circuit-Reverse module
             bool reverse = false; //*********************************false:origin, true:reverse******************************************
-            if (flowtype == "Counter")
+            if (flowtype == "逆流")
                 reverse = false;
             else
                 reverse = true;
@@ -1112,7 +1120,7 @@ namespace Model
             geoInput_air.Nrow = Nrow;
 
             int hexType = 1;
-            if (hex_type == "Evaporator") hexType = 0;
+            if (hex_type == "蒸发器") hexType = 0;
             else hexType = 1;
 
             double mr = refInput.Massflowrate; //mr_in;//0.01;
@@ -1129,9 +1137,9 @@ namespace Model
             double Va = airInput.Volumetricflowrate;
             double Vel_ave = Va / Hx / 3600;
             double za = 1; //Adjust factor
-            if (fin_type == "plain")
+            if (fin_type == "平片")
                 za = 1.0;
-            else if (fin_type == "louver")
+            else if (fin_type == "百叶窗片")
                 za = 1.3;
             else
                 za = 1.1;
@@ -1154,9 +1162,9 @@ namespace Model
             double zh = 1;
             double zdp = 1;
 
-            if (tube_type == "smooth")
+            if (tube_type == "光管")
             { zh = 1.0; zdp = 1.0; }
-            else if (tube_type == "internalthread")
+            else if (tube_type == "内螺纹管")
             { zh = 1.4; zdp = 1.2; }
             else
             { zh = 1.2; zdp = 1.1; }
@@ -1189,10 +1197,10 @@ namespace Model
 
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
-            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, tri, pri, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
-            //res = Slab2.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, tri, pri, hri,
-            //    mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection,Nodes,N_Node,d_cap, lenth_cap, coolprop);
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, tri, pri, hri,
+            //    mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
+            res = Slab2.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, tri, pri, hri,
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection,Nodes,N_Node,d_cap, lenth_cap, coolprop);
             return res;
         }
         
@@ -1294,7 +1302,7 @@ namespace Model
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
-            string AirDirection = "Counter";
+            string AirDirection = "逆流";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
@@ -1399,7 +1407,7 @@ namespace Model
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
-            string AirDirection = "Counter";
+            string AirDirection = "逆流";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
@@ -1611,7 +1619,7 @@ namespace Model
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
-            string AirDirection = "Counter";
+            string AirDirection = "逆流";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
@@ -1736,7 +1744,7 @@ namespace Model
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
-            string AirDirection = "Counter";
+            string AirDirection = "逆流";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
@@ -1869,7 +1877,7 @@ namespace Model
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
-            string AirDirection = "Counter";
+            string AirDirection = "逆流";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
@@ -2082,7 +2090,7 @@ namespace Model
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
-            string AirDirection = "Counter";
+            string AirDirection = "逆流";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, te, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, te, AirDirection);
 
@@ -2221,7 +2229,7 @@ namespace Model
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
-            string AirDirection = "Counter";
+            string AirDirection = "逆流";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, te, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, te, AirDirection);
 
@@ -2362,7 +2370,7 @@ namespace Model
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
-            string AirDirection = "Counter";
+            string AirDirection = "逆流";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, te, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, te, AirDirection);
 
@@ -2493,7 +2501,7 @@ namespace Model
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
-            string AirDirection = "Counter";
+            string AirDirection = "逆流";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
@@ -2623,7 +2631,7 @@ namespace Model
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
-            string AirDirection = "Counter";
+            string AirDirection = "逆流";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
@@ -2752,7 +2760,7 @@ namespace Model
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
-            string AirDirection = "Counter";
+            string AirDirection = "逆流";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
@@ -2891,7 +2899,7 @@ namespace Model
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
-            string AirDirection = "Counter";
+            string AirDirection = "逆流";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, te, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, te, AirDirection);
 
@@ -3032,7 +3040,7 @@ namespace Model
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
-            string AirDirection = "Counter";
+            string AirDirection = "逆流";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
@@ -3150,7 +3158,7 @@ namespace Model
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
-            string AirDirection = "Counter";
+            string AirDirection = "逆流";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
@@ -3255,7 +3263,7 @@ namespace Model
 
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
-                string AirDirection = "Counter";
+                string AirDirection = "逆流";
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
@@ -3366,7 +3374,7 @@ namespace Model
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
-                string AirDirection = "Counter";
+                string AirDirection = "逆流";
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
@@ -3494,7 +3502,7 @@ namespace Model
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
-                string AirDirection = "Counter";
+                string AirDirection = "逆流";
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
@@ -3611,7 +3619,7 @@ namespace Model
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
-                string AirDirection = "Counter";
+                string AirDirection = "逆流";
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
@@ -3729,7 +3737,7 @@ namespace Model
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
-                string AirDirection = "Counter";
+                string AirDirection = "逆流";
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
@@ -3845,7 +3853,7 @@ namespace Model
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
-                string AirDirection = "Counter";
+                string AirDirection = "逆流";
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
@@ -3977,7 +3985,7 @@ namespace Model
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
-                string AirDirection = "Counter";
+                string AirDirection = "逆流";
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
@@ -4097,7 +4105,7 @@ namespace Model
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
-                string AirDirection = "Counter";
+                string AirDirection = "逆流";
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
@@ -4217,7 +4225,7 @@ namespace Model
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
-            string AirDirection = "Counter";
+            string AirDirection = "逆流";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
@@ -4335,7 +4343,7 @@ namespace Model
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
-                string AirDirection = "Counter";
+                string AirDirection = "逆流";
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
@@ -4462,7 +4470,7 @@ namespace Model
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
-                string AirDirection = "Counter";
+                string AirDirection = "逆流";
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
@@ -4592,7 +4600,7 @@ namespace Model
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
-                string AirDirection = "Counter";
+                string AirDirection = "逆流";
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
@@ -4717,7 +4725,7 @@ namespace Model
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
-                string AirDirection = "Counter";
+                string AirDirection = "逆流";
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
@@ -4832,7 +4840,7 @@ namespace Model
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
-                string AirDirection = "Counter";
+                string AirDirection = "逆流";
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
@@ -4946,7 +4954,7 @@ namespace Model
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
-                string AirDirection = "Counter";
+                string AirDirection = "逆流";
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
@@ -5058,7 +5066,7 @@ namespace Model
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
-            string AirDirection = "Counter";
+            string AirDirection = "逆流";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
@@ -5172,7 +5180,7 @@ namespace Model
                 double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
                 double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
-                string AirDirection = "Counter";
+                string AirDirection = "逆流";
                 ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai[i], tc[i], AirDirection);
                 RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi[i], tc[i], AirDirection);
 
@@ -5316,7 +5324,7 @@ namespace Model
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
-            string AirDirection = "Counter";
+            string AirDirection = "逆流";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, te, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, te, AirDirection);
 
@@ -5458,7 +5466,7 @@ namespace Model
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
-            string AirDirection = "Counter";
+            string AirDirection = "逆流";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, te, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, te, AirDirection);
 
@@ -5579,7 +5587,7 @@ namespace Model
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
-            string AirDirection = "Counter";
+            string AirDirection = "逆流";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 
