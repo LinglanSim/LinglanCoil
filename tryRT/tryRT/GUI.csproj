@@ -7,7 +7,7 @@
     <ProjectGuid>{FC67B414-77D6-40C5-8EEB-4911346C3D57}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GUI</RootNamespace>
+    <RootNamespace>tryRT</RootNamespace>
     <AssemblyName>GUI</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -53,6 +53,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Rect.cs" />
+    <Compile Include="ViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -61,6 +63,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Capacity.cs" />
+    <Compile Include="Connector.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -74,6 +78,7 @@
     <Compile Include="Midea Heat Exchanger Simulation.xaml.cs">
       <DependentUpon>Midea Heat Exchanger Simulation.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Node.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -90,7 +95,9 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="ClassDiagram1.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -136,22 +143,23 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="外形_直排1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="叉排%28迎面风高%29.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="叉排%28迎面风低%29.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="管子.PNG" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="翅片.PNG" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="MideaLogo.JPEG" />
+    <Resource Include="管翅式_蒸发器.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="美的Logo.jpeg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="管翅式_冷凝器.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="制冷剂侧.PNG" />
+    <Resource Include="空气侧.PNG" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

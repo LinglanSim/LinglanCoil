@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace GUI
+namespace tryRT
 {
     /// <summary>
     /// Interaction logic for Midea_Heat_Exchanger_Simulation.xaml

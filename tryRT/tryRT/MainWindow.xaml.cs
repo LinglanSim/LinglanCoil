@@ -192,12 +192,14 @@ namespace tryRT
         //是否已经计算
         public bool flag_Calculated;
 
+        ViewModel vm = new ViewModel();
         public MainWindow()
         {
             InitializeComponent();
+            
+            DataContext = vm;
 
-            GUI.Midea_Heat_Exchanger_Simulation Window_Midea_Heat_Exchanger_Simulation = new GUI.Midea_Heat_Exchanger_Simulation();
-            Window_Midea_Heat_Exchanger_Simulation.Show();
+
 
             Bind1();
             Bind_hextype();
@@ -475,6 +477,7 @@ namespace tryRT
                 Pr.IsEnabled = false;
                 Row.IsEnabled = false;
                 Do.IsEnabled = false;
+
             }   
         }
 
@@ -509,31 +512,129 @@ namespace tryRT
         private void TreeView_HExType_GotFocus(object sender, RoutedEventArgs e)
         {
             this.TabItem_HExType.IsSelected = true;
-            this.TabItem_Null_Picture.IsSelected = true;
+            if (RadioButton_HExType_Condenser.IsChecked == true)
+            {
+                this.TabItem_HExTypr_Picture1.IsSelected = true;
+            }
+            if (RadioButton_HExType_Evaporator.IsChecked == true)
+            {
+                this.TabItem_HExTypr_Picture2.IsSelected = true;
+            }
+
+            //调显示宽度
+            TabControl1.Width = 450;//450
+            Canvas_Picture_HEx.Width = 450;//450
+            StackPanel_OutPut.Width = 450;
+
+            //调显示高度
+            this.Canvas_Picture_HEx.Height = 250;
+            this.TabControl_Picuture.Height = 250;
+            ListBox_RealTimeInputShow_Condenser.Height = 450;
+            ListBox_RealTimeInputShow_Evaporator.Height = 450;
         }
 
         private void TreeView_Fin_GotFocus(object sender, RoutedEventArgs e)
         {
             this.TabItem_Fin.IsSelected = true;
             this.TabItem_FinType_Picture.IsSelected = true;
+
+            //调显示宽度
+            TabControl1.Width = 450;//450
+            Canvas_Picture_HEx.Width = 450;//450
+            StackPanel_OutPut.Width = 450;
+
+            //调显示高度
+            this.Canvas_Picture_HEx.Height = 250;
+            this.TabControl_Picuture.Height = 250;
+            ListBox_RealTimeInputShow_Condenser.Height = 450;
+            ListBox_RealTimeInputShow_Evaporator.Height = 450;
         }
 
         private void TreeView_Pass_GotFocus(object sender, RoutedEventArgs e)
         {
             this.TabItem_Pass.IsSelected = true;
-            this.TabItem_Null_Picture.IsSelected = true;
+
+            if (RadioButton_ManualArrange.IsChecked == true)
+            {
+                TabItem_Pass_Picture.IsSelected = true;
+
+                //调显示高度
+                this.Canvas_Picture_HEx.Height = 450;
+                this.TabControl_Picuture.Height = 450;
+                ListBox_RealTimeInputShow_Condenser.Height = 350;
+                ListBox_RealTimeInputShow_Evaporator.Height = 350;
+            }
+            else 
+            {
+                TabItem_Null_Picture.IsSelected = true;
+
+                //调显示高度
+                this.Canvas_Picture_HEx.Height = 250;
+                this.TabControl_Picuture.Height = 250;
+                ListBox_RealTimeInputShow_Condenser.Height = 450;
+                ListBox_RealTimeInputShow_Evaporator.Height = 450;
+            }
+
+
+            //调显示宽度
+            TabControl1.Width = 450;//450
+            Canvas_Picture_HEx.Width = 450;//450
+            StackPanel_OutPut.Width = 450;
+
+
+            //生成手动连流路图
+            int _row = Convert.ToInt32(Row.Text);
+            int _tube = Convert.ToInt32(tube_per.Text);
+            vm.Connectors.Clear();
+            vm.Capacities.Clear();
+            node1 = null;
+            rect = null;
+            vm.GenerateNode(_row, _tube);
+            vm.Rects[0].X = vm.Nodes[0].X - vm.RowPitch + 5;
+            vm.Rects[0].Y = vm.Nodes[0].Y;
+            vm.Rects[0].RectHeight = (_tube - 1) * vm.TubePitch + 20;
+            vm.Rects[1].X = vm.Nodes[0].X + _row * vm.RowPitch + 5;
+            vm.Rects[1].Y = vm.Rects[0].Y - (_row + 1) % 2 * vm.TubePitch / 2;
+            vm.Rects[1].RectHeight = vm.Rects[0].RectHeight;
+            while (vm.Rects.Count > 2)
+            {
+                vm.Rects.RemoveAt(2);
+            };
         }
 
         private void TreeView_Ref_GotFocus(object sender, RoutedEventArgs e)
         {
             this.TabItem_Ref.IsSelected = true;
-            this.TabItem_Null_Picture.IsSelected = true;
+            this.TabItem_Ref_Picture.IsSelected = true;
+
+            //调显示宽度
+            TabControl1.Width = 450;//450
+            Canvas_Picture_HEx.Width = 450;//450
+            StackPanel_OutPut.Width = 450;
+
+            //调显示高度
+            this.Canvas_Picture_HEx.Height = 250;
+            this.TabControl_Picuture.Height = 250;
+            ListBox_RealTimeInputShow_Condenser.Height = 450;
+            ListBox_RealTimeInputShow_Evaporator.Height = 450;
         }
 
         private void TreeView_Wind_GotFocus(object sender, RoutedEventArgs e)
         {
             this.TabItem_Wind.IsSelected = true;
-            this.TabItem_Null_Picture.IsSelected = true;
+            this.TabItem_Wind_Picture.IsSelected = true;
+
+            //调显示宽度
+            TabControl1.Width = 450;//450
+            Canvas_Picture_HEx.Width = 450;//450
+            StackPanel_OutPut.Width = 450;
+
+            //调显示高度
+            this.Canvas_Picture_HEx.Height = 250;
+            this.TabControl_Picuture.Height = 250;
+            ListBox_RealTimeInputShow_Condenser.Height = 450;
+            ListBox_RealTimeInputShow_Evaporator.Height = 450;
+
 
             if (RadioButton_HExType_Condenser.IsChecked==true)
             {
@@ -551,13 +652,17 @@ namespace tryRT
         {
             this.TabItem_Result.IsSelected = true;
             this.TabItem_Null_Picture.IsSelected = true;
-            /*
-            if(this.Q.Text=="")
-            {
-                System.Windows.MessageBox.Show("还没计算");
-            }
-             */
-            
+
+            //调显示宽度
+            TabControl1.Width = 450;//450
+            Canvas_Picture_HEx.Width = 450;//450
+            StackPanel_OutPut.Width = 450;
+
+            //调显示高度
+            this.Canvas_Picture_HEx.Height = 250;
+            this.TabControl_Picuture.Height = 250;
+            ListBox_RealTimeInputShow_Condenser.Height = 450;
+            ListBox_RealTimeInputShow_Evaporator.Height = 450;
         }
 
         private void TreeView_DetailResult_GotFocus(object sender, RoutedEventArgs e)
@@ -565,6 +670,16 @@ namespace tryRT
             this.TabItem_DetailResult.IsSelected = true;
             this.TabItem_Null_Picture.IsSelected = true;
 
+            //调显示宽度
+            //TabControl1.Width = 600;//450
+            StackPanel_OutPut.Width=550;
+            this.TabControl1.Width = 550;
+
+            //调显示高度
+            this.Canvas_Picture_HEx.Height = 250;
+            this.TabControl_Picuture.Height = 250;
+            ListBox_RealTimeInputShow_Condenser.Height = 450;
+            ListBox_RealTimeInputShow_Evaporator.Height = 450;
 
             if (flag_Calculated == true)
             {
@@ -616,18 +731,51 @@ namespace tryRT
         {
             this.TabItem_AdjustParameter.IsSelected = true;
             this.TabItem_Null_Picture.IsSelected = true;
+
+            //调显示宽度
+            TabControl1.Width = 450;//450
+            Canvas_Picture_HEx.Width = 450;//450
+            StackPanel_OutPut.Width = 450;
+
+            //调显示高度
+            this.Canvas_Picture_HEx.Height = 250;
+            this.TabControl_Picuture.Height = 250;
+            ListBox_RealTimeInputShow_Condenser.Height = 450;
+            ListBox_RealTimeInputShow_Evaporator.Height = 450;
         }
 
         private void TreeView_Distributer_GotFocus(object sender, RoutedEventArgs e)
         {
             this.TabItem_Distributer.IsSelected = true;
             this.TabItem_Null_Picture.IsSelected = true;
+
+            //调显示宽度
+            TabControl1.Width = 450;//450
+            Canvas_Picture_HEx.Width = 450;//450
+            StackPanel_OutPut.Width = 450;
+
+            //调显示高度
+            this.Canvas_Picture_HEx.Height = 250;
+            this.TabControl_Picuture.Height = 250;
+            ListBox_RealTimeInputShow_Condenser.Height = 450;
+            ListBox_RealTimeInputShow_Evaporator.Height = 450;
         }
 
         private void TreeView_HExTube_GotFocus(object sender, RoutedEventArgs e)
         {
             this.TabItem_HExTube.IsSelected = true;
             this.TabItem_HExTube_Picture.IsSelected = true;
+
+            //调显示宽度
+            TabControl1.Width = 450;//450
+            Canvas_Picture_HEx.Width = 450;//450
+            StackPanel_OutPut.Width = 450;
+
+            //调显示高度
+            this.Canvas_Picture_HEx.Height = 250;
+            this.TabControl_Picuture.Height = 250;
+            ListBox_RealTimeInputShow_Condenser.Height = 450;
+            ListBox_RealTimeInputShow_Evaporator.Height = 450;
         }
 
         //TreeView****************************************************************************************************************End
@@ -858,11 +1006,27 @@ namespace tryRT
         private void RadioButton_ManualArrange_Checked(object sender, RoutedEventArgs e)
         {
             this.GroupBox_AutoArrangeCirnum.Visibility = Visibility.Hidden;
+            this.GroupBox_ManualArrangeCirnum.Visibility = Visibility.Visible;
+            this.TabItem_Pass_Picture.IsSelected = true;
+
+            //调显示高度
+            this.Canvas_Picture_HEx.Height = 450;
+            this.TabControl_Picuture.Height = 450;
+            
+
         }
 
         private void RadioButton_AutoArrange_Checked(object sender, RoutedEventArgs e)
         {
             this.GroupBox_AutoArrangeCirnum.Visibility = Visibility.Visible;
+            this.GroupBox_ManualArrangeCirnum.Visibility = Visibility.Hidden;
+            this.TabItem_Null_Picture.IsSelected = true;
+
+            //调显示高度
+            this.Canvas_Picture_HEx.Height = 250;
+            this.TabControl_Picuture.Height = 250;
+            ListBox_RealTimeInputShow_Condenser.Height = 450;
+            ListBox_RealTimeInputShow_Evaporator.Height = 450;
         }
 
         //CheckBox*********************************************************************************************************End
@@ -877,6 +1041,8 @@ namespace tryRT
             this.GroupBox_RealTimeInputShow_Condenser.Visibility = Visibility.Visible;
             this.GroupBox_RealTimeInputShow_Evaporator.Visibility = Visibility.Hidden;
             this.TabItem_HExType.IsSelected = true;
+
+            this.TabItem_HExTypr_Picture1.IsSelected = true;
         }
 
         private void HExType_Evaporator(object sender, RoutedEventArgs e)
@@ -889,6 +1055,8 @@ namespace tryRT
             this.GroupBox_RealTimeInputShow_Condenser.Visibility = Visibility.Hidden;
             this.GroupBox_RealTimeInputShow_Evaporator.Visibility = Visibility.Visible;
             this.TabItem_HExType.IsSelected = true;
+
+            this.TabItem_HExTypr_Picture2.IsSelected = true;
         }
 
 
@@ -983,6 +1151,8 @@ namespace tryRT
 
         private void Button_Create_Click(object sender, RoutedEventArgs e)
         {
+            this.dtgShow.Visibility = Visibility.Visible;
+
             while (dtgShow.Columns.Count != 0)
             {
                 list.Clear();
@@ -999,7 +1169,7 @@ namespace tryRT
             {
                 dtgShow.Columns.Add(new DataGridTextColumn
                 {
-                    Width = (Width - 750) / num_col,
+                    Width = (Width - 800) / num_col,
                     Header = i + 1,
                     Binding = new Binding("[{i.ToString()}]")
                 });
@@ -1168,29 +1338,255 @@ namespace tryRT
                 excelApp.Quit();  //KillAllExcel(excelApp); 释放可能还没释放的进程
             }
 
+            //DetailResult******************************************************************************************************End
 
-            private void TabItem_DetailResult_MouseEnter(object sender, MouseEventArgs e)
+
+            private void Button_Click_1(object sender, RoutedEventArgs e)
             {
-                TabControl1.Width = 600;//450
-                Canvas_Picture_HEx.Width = 300;//450
-                GroupBox_RealTimeInputShow_Condenser.Width = 305;//455
-                GroupBox_RealTimeInputShow_Evaporator.Width = 305;//455
+                //TabControl_Picuture.Height = 300;
+                this.Canvas_Picture_HEx.Height=450;
+                this.TabControl_Picuture.Height = 450;
+
+                //TabControl_Picuture.Height = 500;
+                
+                //GroupBox_RealTimeInputShow_Condenser.Style.Add("position", "absolute");
+                //button1.Style.Add("left", "0");
+                //button1.Style.Add("top", "0");
+                //tryRT.Midea_Heat_Exchanger_Simulation Window_Midea_Heat_Exchanger_Simulation = new tryRT.Midea_Heat_Exchanger_Simulation();
+                //Window_Midea_Heat_Exchanger_Simulation.Show();
+
+                
             }
 
-            private void TabItem_DetailResult_MouseLeave(object sender, MouseEventArgs e)
+            private void Button_Click_Sure(object sender, RoutedEventArgs e)
             {
-                TabControl1.Width = 450;//450
-                Canvas_Picture_HEx.Width = 450;//450
-                GroupBox_RealTimeInputShow_Condenser.Width = 455;//455
-                GroupBox_RealTimeInputShow_Evaporator.Width = 455;//455
+                int _row = Convert.ToInt32(Row.Text);
+                int _tube = Convert.ToInt32(tube_per.Text);
+                vm.Connectors.Clear();
+                vm.Capacities.Clear();
+                node1 = null;
+                rect = null;
+                vm.GenerateNode(_row, _tube);
+                vm.Rects[0].X = vm.Nodes[0].X - vm.RowPitch + 5;
+                vm.Rects[0].Y = vm.Nodes[0].Y;
+                vm.Rects[0].RectHeight = (_tube - 1) * vm.TubePitch + 20;
+                vm.Rects[1].X = vm.Nodes[0].X + _row * vm.RowPitch + 5;
+                vm.Rects[1].Y = vm.Rects[0].Y - (_row + 1) % 2 * vm.TubePitch / 2;
+                vm.Rects[1].RectHeight = vm.Rects[0].RectHeight;
+                while (vm.Rects.Count > 2)
+                {
+                    vm.Rects.RemoveAt(2);
+                };
             }
 
-        //DetailResult******************************************************************************************************End
+            private Node node1;
+            private Node node2;
+            private Rect rect;
+            private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+            {
+                //string msg="Successful";
+                //MessageBox.Show(msg);
+                if (vm.CreatNewConnector && ListBox_this.SelectedItem != null)
+                {
+                    //int nodeindex = ListBox.SelectedIndex;
+                    var item = ListBox_this.SelectedItem;
+                    if (item.GetType().Name == "Node")
+                    {
+                        node2 = item as Node;
+                        if (node1 != null && node1 != node2)
+                        {
+                            Connector newLine = new Connector();
+                            newLine.Start = node1;
+                            newLine.End = node2;
+                            vm.Connectors.Add(newLine);
+                            node1 = node2;
+                        }
+                        else if (rect != null)
+                        {
+                            Capacity newcapatity = new Capacity();
+                            newcapatity.Start = node2;
+                            newcapatity.End = rect;
+                            vm.Capacities.Where(x => x.Start == newcapatity.Start && x.End == newcapatity.End).ToList().ForEach(x => vm.Capacities.Remove(x));
+                            vm.Capacities.Add(newcapatity);
+                            node1 = node2;
+                            if (node1.Y < rect.Y)
+                            {
+                                rect.RectHeight = rect.RectHeight + (rect.Y - node1.Y);
+                                rect.Y = node1.Y;
+                            }
+                            else if (node1.Y > rect.Y)
+                            {
+                                if (node1.Y + 20 > rect.Y + rect.RectHeight)
+                                {
+                                    rect.RectHeight = node1.Y + 20 - rect.Y;
+                                }
+                            }
+                        }
+                        node1 = node2;
+                    }
+                    else if (item.GetType().Name == "Rect")
+                    {
+                        rect = item as Rect;
+                        if (node1 != null)
+                        {
+                            Capacity newcapatity = new Capacity();
+                            newcapatity.Start = node1;
+                            newcapatity.End = rect;
+                            vm.Capacities.Where(x => x.Start == newcapatity.Start && x.End == newcapatity.End).ToList().ForEach(x => vm.Capacities.Remove(x));
+                            vm.Capacities.Add(newcapatity);
+                            if (node1.Y < rect.Y)
+                            {
+                                rect.RectHeight = rect.RectHeight + (rect.Y - node1.Y);
+                                rect.Y = node1.Y;
+                            }
+                            else if (node1.Y > rect.Y)
+                            {
+                                if (node1.Y + 20 > rect.Y + rect.RectHeight)
+                                {
+                                    rect.RectHeight = node1.Y + 20 - rect.Y;
+                                }
+                            }
+                            node1 = null;
+                        }
+                    }
+                }
+                else if (ListBox_this.SelectedItem != null && vm.CreatNewConnector == false)//set capatity
+                {
+                    var item = ListBox_this.SelectedItem;
+                    if (item.GetType().Name == "Capacity")
+                    {
+                        TextBox_Length.IsEnabled = true;
+                        TextBox_Diameter.IsEnabled = true;
+                        Button_Capacity.IsEnabled = true;
+                        var selectitem = item as Capacity;
+                        TextBox_Length.Text = selectitem.Length.ToString();
+                        TextBox_Diameter.Text = selectitem.Diameter.ToString();
+                    }
+                    else
+                    {
+                        TextBox_Length.IsEnabled = false;
+                        TextBox_Diameter.IsEnabled = false;
+                        Button_Capacity.IsEnabled = false;
+                        TextBox_Length.Text = "";
+                        TextBox_Diameter.Text = "";
+                    }
+                }
+                else if (ListBox_this.SelectedItem == null)
+                {
+                    TextBox_Length.IsEnabled = false;
+                    TextBox_Diameter.IsEnabled = false;
+                    Button_Capacity.IsEnabled = false;
+                    TextBox_Length.Text = "";
+                    TextBox_Diameter.Text = "";
+                }
+            }
+
+            private void ListBox_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+            {
+                //string msg = "Right";
+                //MessageBox.Show(msg);  
+                ListBox_this.SelectedValue = null;
+                node1 = null;
+                node2 = null;
+                rect = null;
+            }
+            private void Button_Click_Reconnect(object sender, RoutedEventArgs e)
+            {
+                Button_Click_Sure(sender, e);
+            }
+            private void Button_Click_zoomout(object sender, RoutedEventArgs e)
+            {
+                vm.ScaleFactor = 1.2;
+                vm.Zoom();
+            }
+            private void Button_Click_zoomin(object sender, RoutedEventArgs e)
+            {
+                vm.ScaleFactor = 1.0 / 1.2;
+                vm.Zoom();
+            }
+            private void ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+            {
+                if (ElementUnderMouse() && vm.CreatNewConnector)
+                {
+                    Rect newrect = new Rect();
+                    newrect.X = e.GetPosition(ListBox_this).X + 5;
+                    newrect.Y = e.GetPosition(ListBox_this).Y;
+                    newrect.RectHeight = 20;
+                    vm.Rects.Add(newrect);
+                }
+            }
+
+            private bool ElementUnderMouse()
+            {
+                bool flag = false;
+                string name = Mouse.DirectlyOver.GetType().Name;
+                if (name == "Canvas") flag = true;
+                return flag;
+            }
+
+            private void Button_Click_delete(object sender, RoutedEventArgs e)
+            {
+                var item = ListBox_this.SelectedItem;
+                vm.CreatNewConnector = false;
+                rect = null;
+                node1 = null;
+                if (item != null)
+                {
+                    if (item.GetType().Name == "Connector")
+                    {
+                        var selectelement = item as Connector;
+                        vm.Connectors.Remove(selectelement);
+                    }
+                    else if (item.GetType().Name == "Rect")
+                    {
+                        var selectelement = item as Rect;
+                        if (selectelement != vm.Rects[0] && selectelement != vm.Rects[1])
+                        {
+                            vm.Capacities.Where(x => x.End == selectelement).ToList().ForEach(x => vm.Capacities.Remove(x));
+                            vm.Rects.Remove(selectelement);
+                        }
+                    }
+                    else if (item.GetType().Name == "Capacity")
+                    {
+                        var selectelement = item as Capacity;
+                        vm.Capacities.Remove(selectelement);
+                    }
+                }
+            }
+
+            private void Button_Click_Capacity(object sender, RoutedEventArgs e)
+            {
+                vm.CreatNewConnector = false;
+                if (ListBox_this.SelectedItem != null)
+                {
+                    var item = ListBox_this.SelectedItem;
+                    if (item.GetType().Name == "Capacity")
+                    {
+                        var selectitem = item as Capacity;
+                        selectitem.Length = Convert.ToDouble(TextBox_Length.Text);
+                        selectitem.Diameter = Convert.ToDouble(TextBox_Diameter.Text);
+                    }
+                }
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
-
-
-
-
 }
+
 
