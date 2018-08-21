@@ -23,9 +23,9 @@
                                     <Image Source="菜单_文件.PNG"/>
                                 </MenuItem.Icon>
                                 <MenuItem Header="退出" Click="MenuItem_Click_4">
-                                <MenuItem.Icon>
-                                    <Image Height="25" Width="28" Source="菜单_Close.png"/>
-                                </MenuItem.Icon>
+                                    <MenuItem.Icon>
+                                        <Image Height="25" Width="28" Source="菜单_Close.png"/>
+                                    </MenuItem.Icon>
                                 </MenuItem>
                             </MenuItem>
                             <MenuItem Header="仿真">
@@ -72,7 +72,7 @@
                     </Canvas>
                     <!--Tree View_End!-->
 
-                    <!-->输入/结果界面_Start<!-->                 
+                    <!-->输入/结果界面_Start<!-->
                     <Canvas HorizontalAlignment="Left" Height="750" VerticalAlignment="Top" Width="445" Margin="200,25,0,0">
                         <TabControl x:Name="TabControl1" HorizontalAlignment="Left" Height="750" VerticalAlignment="Top" Width="450"  Margin="0,0,0,0">
 
@@ -174,7 +174,7 @@
                                     <GroupBox Header="翅片类型"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="140" Width="410" Margin="8,0,0,10">
                                         <Canvas HorizontalAlignment="Left" Height="480" Width="425" Margin="10,8,0,0" VerticalAlignment="Top">
                                             <TextBlock Text="翅片间距" TextAlignment="Left" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Height="22" Width="80"/>
-                                            <TextBox x:Name="Fnum" Text="10" HorizontalAlignment="Left" Margin="100,0,0,0" VerticalAlignment="Top" Height="25" Width="125"/>
+                                            <TextBox x:Name="Fnum" Text="1.2" HorizontalAlignment="Left" Margin="100,0,0,0" VerticalAlignment="Top" Height="25" Width="125"/>
                                             <Label Content="mm" HorizontalAlignment="Left" Margin="230,0,0,0" VerticalAlignment="Top"/>
 
                                             <TextBlock Text="翅片厚度" TextAlignment="Left" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Height="22" Width="80"/>
@@ -437,89 +437,89 @@
                             <TabItem x:Name="TabItem_Result" Header="计算结果" Visibility="Collapsed">
                                 <Grid Background="White">
 
-                            <!--综合计算结果!-->
+                                    <!--综合计算结果!-->
 
-                                <Canvas HorizontalAlignment="Center" Height="Auto" Margin="0,-15,0,0" VerticalAlignment="Top" Width="450">
+                                    <Canvas HorizontalAlignment="Center" Height="600" Margin="0,-15,0,0" VerticalAlignment="Top" Width="449">
 
-                                        <ListBox x:Name="ListBox_ComprehensiveCalculationResults" Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Width="450" Height="750" ScrollViewer.VerticalScrollBarVisibility="Visible"  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                        <ListBox x:Name="ListBox_ComprehensiveCalculationResults" Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Width="448" Height="400" BorderBrush="White"  ScrollViewer.VerticalScrollBarVisibility="Visible"  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
-                                    <ListBox.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <UniformGrid Columns="3"/>
-                                        </ItemsPanelTemplate>
-                                    </ListBox.ItemsPanel>
+                                            <ListBox.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <UniformGrid Columns="3"/>
+                                                </ItemsPanelTemplate>
+                                            </ListBox.ItemsPanel>
 
-                                    <ListBoxItem Content="------综合计算结果------" FontWeight="Bold"/>
-                                    <ListBoxItem Content=""/>
-                                    <ListBoxItem Content=""/>
-                                        
-                                    <ListBoxItem Content="换热量:"/>
-                                    <ListBoxItem Content="{Binding ElementName=Q,Path=Text}"/>
-                                    <ListBoxItem Content="kW"/>
+                                            <ListBoxItem Content="------综合计算结果------" FontWeight="Bold"/>
+                                            <ListBoxItem Content=""/>
+                                            <ListBoxItem Content=""/>
 
-                                    <ListBoxItem Content="制冷剂压降"/>
-                                    <ListBoxItem Content="{Binding ElementName=DP_ref,Path=Text}"/>
-                                    <ListBoxItem Content="kPa"/>
+                                            <ListBoxItem Content="换热量:"/>
+                                            <ListBoxItem Content="{Binding ElementName=Q,Path=Text}"/>
+                                            <ListBoxItem Content="kW"/>
 
-                                    <!-->
+                                            <ListBoxItem Content="制冷剂压降"/>
+                                            <ListBoxItem Content="{Binding ElementName=DP_ref,Path=Text}"/>
+                                            <ListBoxItem Content="kPa"/>
+
+                                            <!-->
                                     <ListBoxItem Content="风侧压降"/>
                                     <ListBoxItem Content="{Binding ElementName=DP_air,Path=Text}"/>
                                     <ListBoxItem Content="Pa"/>
                                     <!-->
-                                        
-                                    <ListBoxItem Content="空气换热系数"/>
-                                    <ListBoxItem Content="{Binding ElementName=ha,Path=Text}"/>
-                                    <ListBoxItem Content="W/(m2*K)"/> 
-                                        
-                                    <ListBoxItem Content="冷媒换热系数"/>
-                                    <ListBoxItem Content="{Binding ElementName=href,Path=Text}"/>
-                                    <ListBoxItem Content="W/(m2*K)"/> 
-                                        
-                                    <ListBoxItem Content="风侧热阻占比"/>
-                                    <ListBoxItem Content="{Binding ElementName=Ra_ratio,Path=Text}"/>
-                                    <ListBoxItem Content=""/> 
-                                        
-                                    <ListBoxItem Content="------制冷剂侧------" FontWeight="Bold"/>
-                                    <ListBoxItem Content=""/>
-                                    <ListBoxItem Content=""/> 
-                                        
-                                    <ListBoxItem Content="出口压力"/>
-                                    <ListBoxItem Content="{Binding ElementName=Pro,Path=Text}"/>
-                                    <ListBoxItem Content="kPa"/> 
-                                        
-                                    <ListBoxItem Content="出口焓"/>
-                                    <ListBoxItem Content="{Binding ElementName=hro,Path=Text}"/>
-                                    <ListBoxItem Content="kJ/kg"/> 
-                                        
-                                    <ListBoxItem Content="出口温度"/>
-                                    <ListBoxItem Content="{Binding ElementName=Tro,Path=Text}"/>
-                                    <ListBoxItem Content="C"/> 
-                                        
-                                    <ListBoxItem Content="流量"/>
-                                    <ListBoxItem Content="{Binding ElementName=mro,Path=Text}"/>
-                                    <ListBoxItem Content="g/s"/> 
-                                        
-                                    <ListBoxItem Content="------空气侧------" FontWeight="Bold"/>
-                                    <ListBoxItem Content=""/>
-                                    <ListBoxItem Content=""/>
 
-                                    <ListBoxItem Content="出口温度"/>
-                                    <ListBoxItem Content="{Binding ElementName=Tao,Path=Text}"/>
-                                    <ListBoxItem Content="C"/> 
-                                        
-                                    <ListBoxItem Content="出口湿度"/>
-                                    <ListBoxItem Content="{Binding ElementName=RHout,Path=Text}"/>
-                                    <ListBoxItem Content=""/> 
-                                        
-                                    <ListBoxItem Content="风量"/>
-                                    <ListBoxItem Content="{Binding ElementName=mao,Path=Text}"/>
-                                    <ListBoxItem Content="g/s"/>    
-                                        
-                                    </ListBox>
+                                            <ListBoxItem Content="空气换热系数"/>
+                                            <ListBoxItem Content="{Binding ElementName=ha,Path=Text}"/>
+                                            <ListBoxItem Content="W/(m2*K)"/>
 
-                                </Canvas>
+                                            <ListBoxItem Content="冷媒换热系数"/>
+                                            <ListBoxItem Content="{Binding ElementName=href,Path=Text}"/>
+                                            <ListBoxItem Content="W/(m2*K)"/>
 
-                                    
+                                            <ListBoxItem Content="风侧热阻占比"/>
+                                            <ListBoxItem Content="{Binding ElementName=Ra_ratio,Path=Text}"/>
+                                            <ListBoxItem Content=""/>
+
+                                            <ListBoxItem Content="------制冷剂侧------" FontWeight="Bold"/>
+                                            <ListBoxItem Content=""/>
+                                            <ListBoxItem Content=""/>
+
+                                            <ListBoxItem Content="出口压力"/>
+                                            <ListBoxItem Content="{Binding ElementName=Pro,Path=Text}"/>
+                                            <ListBoxItem Content="kPa"/>
+
+                                            <ListBoxItem Content="出口焓"/>
+                                            <ListBoxItem Content="{Binding ElementName=hro,Path=Text}"/>
+                                            <ListBoxItem Content="kJ/kg"/>
+
+                                            <ListBoxItem Content="出口温度"/>
+                                            <ListBoxItem Content="{Binding ElementName=Tro,Path=Text}"/>
+                                            <ListBoxItem Content="C"/>
+
+                                            <ListBoxItem Content="流量"/>
+                                            <ListBoxItem Content="{Binding ElementName=mro,Path=Text}"/>
+                                            <ListBoxItem Content="g/s"/>
+
+                                            <ListBoxItem Content="------空气侧------" FontWeight="Bold"/>
+                                            <ListBoxItem Content=""/>
+                                            <ListBoxItem Content=""/>
+
+                                            <ListBoxItem Content="出口温度"/>
+                                            <ListBoxItem Content="{Binding ElementName=Tao,Path=Text}"/>
+                                            <ListBoxItem Content="C"/>
+
+                                            <ListBoxItem Content="出口湿度"/>
+                                            <ListBoxItem Content="{Binding ElementName=RHout,Path=Text}"/>
+                                            <ListBoxItem Content=""/>
+
+                                            <ListBoxItem Content="风量"/>
+                                            <ListBoxItem Content="{Binding ElementName=mao,Path=Text}"/>
+                                            <ListBoxItem Content="g/s"/>
+
+                                        </ListBox>
+
+                                    </Canvas>
+
+
                                     <!--综合仿真结果-->
 
                                     <TextBlock Text="换热量" HorizontalAlignment="Left" Margin="10,30,0,0"  VerticalAlignment="Top" Height="16" Width="36" Visibility="Collapsed"/>
@@ -576,8 +576,8 @@
                                     <TextBlock x:Name="mao" Text=""  Background="AliceBlue" HorizontalAlignment="Left" Margin="305,260,0,0" VerticalAlignment="Top" Height="22" Width="40" Visibility="Collapsed"/>
                                     <Label Content="g/s" HorizontalAlignment="Left" Margin="360,260,0,0" VerticalAlignment="Top" Width="41" Height="26" Visibility="Collapsed"/>
 
-                                    
-                                    
+
+
                                 </Grid>
                             </TabItem>
 
@@ -619,435 +619,435 @@
 
                     <!--显示图片和实时输入_Start!-->
                     <StackPanel x:Name="StackPanel_OutPut" Orientation="Vertical" Margin="650,25,0,0" Width="450">
-                        
-                    <!-->Picture_Start<!-->
-                    <Canvas x:Name="Canvas_Picture_HEx" HorizontalAlignment="Right" Height="250" Margin="0,0,0,0" VerticalAlignment="Top" Width="450">
-                        <TabControl x:Name="TabControl_Picuture"  HorizontalAlignment="Center" Height="250" VerticalAlignment="Top" Width="450" Background="White" >
-                            <TabItem Header="换热管" x:Name="TabItem_HExTube_Picture" Visibility="Collapsed">
-                                <Image HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="管子.PNG"/>
-                             </TabItem>
-                        <TabItem Header="翅片" x:Name="TabItem_FinType_Picture" Visibility="Collapsed">
-                                <Image HorizontalAlignment="Center" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="翅片.PNG"/>
-                            </TabItem>
-                        <TabItem Header="Null" x:Name="TabItem_Null_Picture" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="61" Visibility="Collapsed">
-                                <Grid Background="#FFE5E5E5"/>
-                            </TabItem>
-                        <TabItem Header="换热器类型" x:Name="TabItem_HExTypr_Picture" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="61" Visibility="Collapsed">
-                                <Image HorizontalAlignment="Center" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="空调.png"/>
-                            </TabItem>
 
-                        <TabItem Header="制冷剂侧" x:Name="TabItem_Ref_Picture" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="61" Visibility="Collapsed">
-                                <Image HorizontalAlignment="Center" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="制冷剂侧.PNG" />
-                            </TabItem>
-                        <TabItem Header="空气侧" x:Name="TabItem_Wind_Picture" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="61" Visibility="Collapsed">
-                                <Image HorizontalAlignment="Center" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="空气侧.PNG"/>
-                            </TabItem>
-                        <TabItem Header="流路" x:Name="TabItem_Pass_Picture" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="61" Visibility="Collapsed">
+                        <!-->Picture_Start<!-->
+                        <Canvas x:Name="Canvas_Picture_HEx" HorizontalAlignment="Right" Height="250" Margin="0,0,0,0" VerticalAlignment="Top" Width="450">
+                            <TabControl x:Name="TabControl_Picuture"  HorizontalAlignment="Center" Height="250" VerticalAlignment="Top" Width="450" Background="White" >
+                                <TabItem Header="换热管" x:Name="TabItem_HExTube_Picture" Visibility="Collapsed">
+                                    <Image HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="管子.PNG"/>
+                                </TabItem>
+                                <TabItem Header="翅片" x:Name="TabItem_FinType_Picture" Visibility="Collapsed">
+                                    <Image HorizontalAlignment="Center" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="翅片.PNG"/>
+                                </TabItem>
+                                <TabItem Header="Null" x:Name="TabItem_Null_Picture" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="61" Visibility="Collapsed">
+                                    <Grid Background="#FFE5E5E5"/>
+                                </TabItem>
+                                <TabItem Header="换热器类型" x:Name="TabItem_HExTypr_Picture" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="61" Visibility="Collapsed">
+                                    <Image HorizontalAlignment="Center" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="空调.png"/>
+                                </TabItem>
 
-                            <GroupBox Header="手动分配流路" x:Name="GroupBox_ManualArrangeCirnum" HorizontalAlignment="Left" VerticalAlignment="Top" Height="Auto" Width="425" Margin="8,0,0,10">
-                                <DockPanel Height="Auto" Margin="0,0,0,0">
-                                    <StackPanel x:Name="StackPanel_ManualArrangeCirnum" Width="110" HorizontalAlignment="Left" DockPanel.Dock="Left" Margin="5,5,5,5">
-                                        <ToggleButton x:Name="ToggleButton1" Content="流路连接" HorizontalAlignment="Stretch"  Margin="5,5,5,5" IsChecked="{Binding CreatNewConnector}"></ToggleButton>
-                                        <Button Content="重连" HorizontalAlignment="Stretch" Margin="5,5,5,5" Click="Button_Click_Reconnect"/>
-                                        <Button Content="放大" HorizontalAlignment="Stretch" Margin="5,20,5,5" Click="Button_Click_zoomout"/>
-                                        <Button Content="缩小" HorizontalAlignment="Stretch" Margin="5,0,5,5" Click="Button_Click_zoomin"/>
-                                        <Button Content="删除" HorizontalAlignment="Stretch" Margin="5,0,5,5" Click="Button_Click_delete"/>
-                                        <Label Content="毛细管长度/m" HorizontalAlignment="Left" Width="Auto" Margin="5,10,0,0"/>
-                                        <TextBox  x:Name="TextBox_Length" HorizontalAlignment="Stretch" Width="Auto" Margin="5,0,5,5" IsEnabled="False"/>
-                                        <Label Content="毛细管直径/mm" HorizontalAlignment="Left" Width="Auto" Margin="5,0,0,0"/>
-                                        <TextBox  x:Name="TextBox_Diameter" HorizontalAlignment="Stretch" Width="Auto" Margin="5,0,5,5" IsEnabled="False"/>
-                                        <Button x:Name="Button_Capacity" Content="确定" HorizontalAlignment="Stretch" Margin="5,0,5,5" Click="Button_Click_Capacity" IsEnabled="False"/>
-                                    </StackPanel>
-                                    <Grid Margin="10">
-                                        <Grid.Resources>
-                                            <CompositeCollection x:Key="Col">
-                                                <CollectionContainer Collection="{Binding DataContext.Connectors, Source={x:Reference view}}"/>
-                                                <CollectionContainer Collection="{Binding DataContext.Capacities, Source={x:Reference view}}"/>
-                                                <CollectionContainer Collection="{Binding DataContext.Rects, Source={x:Reference view}}"/>
-                                                <CollectionContainer Collection="{Binding DataContext.Nodes, Source={x:Reference view}}"/>
-                                            </CompositeCollection>
-                                            <DataTemplate DataType="{x:Type local:Node}">
-                                                <Canvas Margin="-10,-10,10,10">
-                                                    <Ellipse x:Name="Ellipse" Width="20" Height="20" Stroke="Black" StrokeThickness="1" Fill="Yellow"/>
-                                                    <Label Width="20" Height="Auto" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" FontSize="9" FontWeight="Bold" Content="{Binding Name}"/>
-                                                </Canvas>
-                                                <DataTemplate.Triggers>
-                                                    <DataTrigger Binding="{Binding IsSelected,RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ListBoxItem}}}" Value="True">
-                                                        <Setter TargetName="Ellipse" Property="Fill" Value="White"/>
-                                                        <Setter TargetName="Ellipse" Property="Stroke" Value="Red"/>
-                                                    </DataTrigger>
-                                                </DataTemplate.Triggers>
-                                            </DataTemplate>
-                                            <DataTemplate DataType="{x:Type local:Connector}">
-                                                <Line x:Name="Line" Stroke="Blue" StrokeThickness="3" X1="{Binding Start.X}" Y1="{Binding Start.Y}" X2="{Binding End.X}" Y2="{Binding End.Y}"/>
-                                                <DataTemplate.Triggers>
-                                                    <DataTrigger Binding="{Binding IsSelected,RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ListBoxItem}}}" Value="True">
-                                                        <Setter TargetName="Line" Property="Stroke" Value="Red"/>
-                                                        <Setter TargetName="Line" Property="StrokeDashArray" Value="2 3"/>
-                                                    </DataTrigger>
-                                                </DataTemplate.Triggers>
-                                            </DataTemplate>
-                                            <DataTemplate DataType="{x:Type local:Capacity}">
-                                                <Line x:Name="Line2" Stroke="Red" StrokeThickness="3" X1="{Binding Start.X}" Y1="{Binding Start.Y}" X2="{Binding End.X}" Y2="{Binding Start.Y}"/>
-                                                <DataTemplate.Triggers>
-                                                    <DataTrigger Binding="{Binding IsSelected,RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ListBoxItem}}}" Value="True">
-                                                        <Setter TargetName="Line2" Property="Stroke" Value="Red"/>
-                                                        <Setter TargetName="Line2" Property="StrokeDashArray" Value="2 3"/>
-                                                    </DataTrigger>
-                                                </DataTemplate.Triggers>
-                                            </DataTemplate>
-                                            <DataTemplate DataType="{x:Type local:Rect}">
-                                                <Canvas Margin="-10,-10,10,10">
-                                                    <Rectangle x:Name="Rectangle" Width="10" Height="{Binding RectHeight}" Fill="Blue" Stroke="Black" StrokeThickness="1"/>
-                                                </Canvas>
-                                                <DataTemplate.Triggers>
-                                                    <DataTrigger Binding="{Binding IsSelected,RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ListBoxItem}}}" Value="True">
-                                                        <Setter TargetName="Rectangle" Property="Fill" Value="White"/>
-                                                        <Setter TargetName="Rectangle" Property="Stroke" Value="Red"/>
-                                                    </DataTrigger>
-                                                </DataTemplate.Triggers>
-                                            </DataTemplate>
+                                <TabItem Header="制冷剂侧" x:Name="TabItem_Ref_Picture" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="61" Visibility="Collapsed">
+                                    <Image HorizontalAlignment="Center" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="制冷剂侧.PNG" />
+                                </TabItem>
+                                <TabItem Header="空气侧" x:Name="TabItem_Wind_Picture" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="61" Visibility="Collapsed">
+                                    <Image HorizontalAlignment="Center" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="空气侧.PNG"/>
+                                </TabItem>
+                                <TabItem Header="流路" x:Name="TabItem_Pass_Picture" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="61" Visibility="Collapsed">
 
-                                        </Grid.Resources>
-                                        <ListBox x:Name="ListBox_this" SelectionChanged="ListBox_SelectionChanged" MouseRightButtonDown="ListBox_MouseRightButtonDown" MouseDoubleClick="ListBox_MouseDoubleClick">
-                                            <ListBox.Template>
-                                                <ControlTemplate>
-                                                    <Border>
-                                                        <Border.Background>
-                                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1" Opacity="0.5">
-                                                                <GradientStop Color="White"  Offset="0"/>
-                                                                <GradientStop Color="White" Offset="1"/>
-                                                            </LinearGradientBrush>
-                                                        </Border.Background>
-                                                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                                    <GroupBox Header="手动分配流路" x:Name="GroupBox_ManualArrangeCirnum" HorizontalAlignment="Left" VerticalAlignment="Top" Height="Auto" Width="425" Margin="8,0,0,10">
+                                        <DockPanel Height="Auto" Margin="0,0,0,0">
+                                            <StackPanel x:Name="StackPanel_ManualArrangeCirnum" Width="110" HorizontalAlignment="Left" DockPanel.Dock="Left" Margin="5,5,5,5">
+                                                <ToggleButton x:Name="ToggleButton1" Content="流路连接" HorizontalAlignment="Stretch"  Margin="5,5,5,5" IsChecked="{Binding CreatNewConnector}"></ToggleButton>
+                                                <Button Content="重连" HorizontalAlignment="Stretch" Margin="5,5,5,5" Click="Button_Click_Reconnect"/>
+                                                <Button Content="放大" HorizontalAlignment="Stretch" Margin="5,20,5,5" Click="Button_Click_zoomout"/>
+                                                <Button Content="缩小" HorizontalAlignment="Stretch" Margin="5,0,5,5" Click="Button_Click_zoomin"/>
+                                                <Button Content="删除" HorizontalAlignment="Stretch" Margin="5,0,5,5" Click="Button_Click_delete"/>
+                                                <Label Content="毛细管长度/m" HorizontalAlignment="Left" Width="Auto" Margin="5,10,0,0"/>
+                                                <TextBox  x:Name="TextBox_Length" HorizontalAlignment="Stretch" Width="Auto" Margin="5,0,5,5" IsEnabled="False"/>
+                                                <Label Content="毛细管直径/mm" HorizontalAlignment="Left" Width="Auto" Margin="5,0,0,0"/>
+                                                <TextBox  x:Name="TextBox_Diameter" HorizontalAlignment="Stretch" Width="Auto" Margin="5,0,5,5" IsEnabled="False"/>
+                                                <Button x:Name="Button_Capacity" Content="确定" HorizontalAlignment="Stretch" Margin="5,0,5,5" Click="Button_Click_Capacity" IsEnabled="False"/>
+                                            </StackPanel>
+                                            <Grid Margin="10">
+                                                <Grid.Resources>
+                                                    <CompositeCollection x:Key="Col">
+                                                        <CollectionContainer Collection="{Binding DataContext.Connectors, Source={x:Reference view}}"/>
+                                                        <CollectionContainer Collection="{Binding DataContext.Capacities, Source={x:Reference view}}"/>
+                                                        <CollectionContainer Collection="{Binding DataContext.Rects, Source={x:Reference view}}"/>
+                                                        <CollectionContainer Collection="{Binding DataContext.Nodes, Source={x:Reference view}}"/>
+                                                    </CompositeCollection>
+                                                    <DataTemplate DataType="{x:Type local:Node}">
+                                                        <Canvas Margin="-10,-10,10,10">
+                                                            <Ellipse x:Name="Ellipse" Width="20" Height="20" Stroke="Black" StrokeThickness="1" Fill="Yellow"/>
+                                                            <Label Width="20" Height="Auto" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" FontSize="9" FontWeight="Bold" Content="{Binding Name}"/>
+                                                        </Canvas>
+                                                        <DataTemplate.Triggers>
+                                                            <DataTrigger Binding="{Binding IsSelected,RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ListBoxItem}}}" Value="True">
+                                                                <Setter TargetName="Ellipse" Property="Fill" Value="White"/>
+                                                                <Setter TargetName="Ellipse" Property="Stroke" Value="Red"/>
+                                                            </DataTrigger>
+                                                        </DataTemplate.Triggers>
+                                                    </DataTemplate>
+                                                    <DataTemplate DataType="{x:Type local:Connector}">
+                                                        <Line x:Name="Line" Stroke="Blue" StrokeThickness="3" X1="{Binding Start.X}" Y1="{Binding Start.Y}" X2="{Binding End.X}" Y2="{Binding End.Y}"/>
+                                                        <DataTemplate.Triggers>
+                                                            <DataTrigger Binding="{Binding IsSelected,RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ListBoxItem}}}" Value="True">
+                                                                <Setter TargetName="Line" Property="Stroke" Value="Red"/>
+                                                                <Setter TargetName="Line" Property="StrokeDashArray" Value="2 3"/>
+                                                            </DataTrigger>
+                                                        </DataTemplate.Triggers>
+                                                    </DataTemplate>
+                                                    <DataTemplate DataType="{x:Type local:Capacity}">
+                                                        <Line x:Name="Line2" Stroke="Red" StrokeThickness="3" X1="{Binding Start.X}" Y1="{Binding Start.Y}" X2="{Binding End.X}" Y2="{Binding Start.Y}"/>
+                                                        <DataTemplate.Triggers>
+                                                            <DataTrigger Binding="{Binding IsSelected,RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ListBoxItem}}}" Value="True">
+                                                                <Setter TargetName="Line2" Property="Stroke" Value="Red"/>
+                                                                <Setter TargetName="Line2" Property="StrokeDashArray" Value="2 3"/>
+                                                            </DataTrigger>
+                                                        </DataTemplate.Triggers>
+                                                    </DataTemplate>
+                                                    <DataTemplate DataType="{x:Type local:Rect}">
+                                                        <Canvas Margin="-10,-10,10,10">
+                                                            <Rectangle x:Name="Rectangle" Width="10" Height="{Binding RectHeight}" Fill="Blue" Stroke="Black" StrokeThickness="1"/>
+                                                        </Canvas>
+                                                        <DataTemplate.Triggers>
+                                                            <DataTrigger Binding="{Binding IsSelected,RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ListBoxItem}}}" Value="True">
+                                                                <Setter TargetName="Rectangle" Property="Fill" Value="White"/>
+                                                                <Setter TargetName="Rectangle" Property="Stroke" Value="Red"/>
+                                                            </DataTrigger>
+                                                        </DataTemplate.Triggers>
+                                                    </DataTemplate>
+
+                                                </Grid.Resources>
+                                                <ListBox x:Name="ListBox_this" SelectionChanged="ListBox_SelectionChanged" MouseRightButtonDown="ListBox_MouseRightButtonDown" MouseDoubleClick="ListBox_MouseDoubleClick">
+                                                    <ListBox.Template>
+                                                        <ControlTemplate>
                                                             <Border>
-                                                                <ItemsPresenter/>
+                                                                <Border.Background>
+                                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1" Opacity="0.5">
+                                                                        <GradientStop Color="White"  Offset="0"/>
+                                                                        <GradientStop Color="White" Offset="1"/>
+                                                                    </LinearGradientBrush>
+                                                                </Border.Background>
+                                                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                                                                    <Border>
+                                                                        <ItemsPresenter/>
+                                                                    </Border>
+                                                                </ScrollViewer>
                                                             </Border>
-                                                        </ScrollViewer>
-                                                    </Border>
-                                                </ControlTemplate>
-                                            </ListBox.Template>
-                                            <ListBox.ItemsSource>
-                                                <StaticResource ResourceKey="Col"/>
-                                            </ListBox.ItemsSource>
-                                            <ListBox.ItemsPanel>
-                                                <ItemsPanelTemplate>
-                                                    <Canvas IsItemsHost="True" Background="#01FFFFFF" VerticalAlignment="Top" HorizontalAlignment="Left" Height="{Binding PanelHeight}" Width="{Binding PanelWidth}"/>
-                                                </ItemsPanelTemplate>
-                                            </ListBox.ItemsPanel>
-                                            <ListBox.ItemContainerStyle>
-                                                <Style TargetType="ListBoxItem">
-                                                    <Setter Property="Canvas.Left" Value="{Binding X}"/>
-                                                    <Setter Property="Canvas.Top" Value="{Binding Y}"/>
-                                                    <Setter Property="Template">
-                                                        <Setter.Value>
-                                                            <ControlTemplate TargetType="ListBoxItem">
-                                                                <ContentPresenter x:Name="Content"/>
-                                                            </ControlTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                </Style>
-                                            </ListBox.ItemContainerStyle>
-                                        </ListBox>
-                                   </Grid>
-                                </DockPanel>
-                            </GroupBox>
-                                
-                        </TabItem>
+                                                        </ControlTemplate>
+                                                    </ListBox.Template>
+                                                    <ListBox.ItemsSource>
+                                                        <StaticResource ResourceKey="Col"/>
+                                                    </ListBox.ItemsSource>
+                                                    <ListBox.ItemsPanel>
+                                                        <ItemsPanelTemplate>
+                                                            <Canvas IsItemsHost="True" Background="#01FFFFFF" VerticalAlignment="Top" HorizontalAlignment="Left" Height="{Binding PanelHeight}" Width="{Binding PanelWidth}"/>
+                                                        </ItemsPanelTemplate>
+                                                    </ListBox.ItemsPanel>
+                                                    <ListBox.ItemContainerStyle>
+                                                        <Style TargetType="ListBoxItem">
+                                                            <Setter Property="Canvas.Left" Value="{Binding X}"/>
+                                                            <Setter Property="Canvas.Top" Value="{Binding Y}"/>
+                                                            <Setter Property="Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate TargetType="ListBoxItem">
+                                                                        <ContentPresenter x:Name="Content"/>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Style>
+                                                    </ListBox.ItemContainerStyle>
+                                                </ListBox>
+                                            </Grid>
+                                        </DockPanel>
+                                    </GroupBox>
+
+                                </TabItem>
 
 
 
                             </TabControl>
-                    </Canvas>
-                    <!-->Picture_End<!-->
+                        </Canvas>
+                        <!-->Picture_End<!-->
 
-                    <!--实时输入显示_Start!-->
-                    <Canvas HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Top" Width="450" Height="Auto">
+                        <!--实时输入显示_Start!-->
+                        <Canvas HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Top" Width="450" Height="Auto">
 
-                        <!--Condenser!-->
+                            <!--Condenser!-->
                             <GroupBox x:Name="GroupBox_RealTimeInputShow_Condenser" Header="当前输入情况" HorizontalAlignment="Right" VerticalAlignment="Top" Height="450" Width="455" Margin="0,0,0,0" Visibility="Collapsed">
                                 <Canvas HorizontalAlignment="Right" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Top" Width="450">
 
                                     <ListBox x:Name="ListBox_RealTimeInputShow_Condenser" Margin="0,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="450" Height="450" ScrollViewer.VerticalScrollBarVisibility="Visible"  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
-                                    <ListBox.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <UniformGrid Columns="3"/>
-                                        </ItemsPanelTemplate>
-                                    </ListBox.ItemsPanel>
+                                        <ListBox.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <UniformGrid Columns="3"/>
+                                            </ItemsPanelTemplate>
+                                        </ListBox.ItemsPanel>
 
 
-                                    <ListBoxItem Content="换热器类型:"/>
-                                    <ListBoxItem Content="{Binding ElementName=ComboBox_hextype,Path=Text}"/>
-                                    <ListBoxItem Content=""/>
+                                        <ListBoxItem Content="换热器类型:"/>
+                                        <ListBoxItem Content="{Binding ElementName=ComboBox_hextype,Path=Text}"/>
+                                        <ListBoxItem Content=""/>
 
-                                    <ListBoxItem Content="------换热管------" FontWeight="Bold"/>
-                                    <ListBoxItem Content=""/>
-                                    <ListBoxItem Content=""/>
+                                        <ListBoxItem Content="------换热管------" FontWeight="Bold"/>
+                                        <ListBoxItem Content=""/>
+                                        <ListBoxItem Content=""/>
 
-                                    <ListBoxItem Content="管型号:"/>
-                                    <ListBoxItem Content="{Binding ElementName=ComboBox_TubeVersion,Path=Text}"/>
-                                    <ListBoxItem Content=""/>
+                                        <ListBoxItem Content="管型号:"/>
+                                        <ListBoxItem Content="{Binding ElementName=ComboBox_TubeVersion,Path=Text}"/>
+                                        <ListBoxItem Content=""/>
 
-                                    <ListBoxItem Content="管种类:"/>
-                                    <ListBoxItem Content="{Binding ElementName=ComboBox_tubetype,Path=Text}"/>
-                                    <ListBoxItem Content=""/>
-
-
-                                    <ListBoxItem Content="管外径:"/>
-                                    <ListBoxItem Content="{Binding ElementName=Do,Path=Text}"/>
-                                    <ListBoxItem Content="mm"/>
+                                        <ListBoxItem Content="管种类:"/>
+                                        <ListBoxItem Content="{Binding ElementName=ComboBox_tubetype,Path=Text}"/>
+                                        <ListBoxItem Content=""/>
 
 
-                                    <ListBoxItem Content="管壁厚:"/>
-                                    <ListBoxItem Content="{Binding ElementName=thick_tube,Path=Text}"/>
-                                    <ListBoxItem Content="mm"/>
-
-                                    <ListBoxItem Content="管长:"/>
-                                    <ListBoxItem Content="{Binding ElementName=L,Path=Text}"/>
-                                    <ListBoxItem Content=""/>
-
-                                    <ListBoxItem Content="管/排:"/>
-                                    <ListBoxItem Content="{Binding ElementName=tube_per,Path=Text}"/>
-                                    <ListBoxItem Content="mm"/>
-
-                                    <ListBoxItem Content="管排:"/>
-                                    <ListBoxItem Content="{Binding ElementName=Row,Path=Text}"/>
-                                    <ListBoxItem Content=""/>
+                                        <ListBoxItem Content="管外径:"/>
+                                        <ListBoxItem Content="{Binding ElementName=Do,Path=Text}"/>
+                                        <ListBoxItem Content="mm"/>
 
 
-                                    <ListBoxItem Content="管间距:"/>
-                                    <ListBoxItem Content="{Binding ElementName=Pt,Path=Text}"/>
-                                    <ListBoxItem Content="mm"/>
+                                        <ListBoxItem Content="管壁厚:"/>
+                                        <ListBoxItem Content="{Binding ElementName=thick_tube,Path=Text}"/>
+                                        <ListBoxItem Content="mm"/>
 
-                                    <ListBoxItem Content="列间距:"/>
-                                    <ListBoxItem Content="{Binding ElementName=Pr,Path=Text}"/>
-                                    <ListBoxItem Content="mm"/>
+                                        <ListBoxItem Content="管长:"/>
+                                        <ListBoxItem Content="{Binding ElementName=L,Path=Text}"/>
+                                        <ListBoxItem Content=""/>
 
-                                    <ListBoxItem Content="------翅片------" FontWeight="Bold"/>
-                                    <ListBoxItem Content=""/>
-                                    <ListBoxItem Content=""/>
+                                        <ListBoxItem Content="管/排:"/>
+                                        <ListBoxItem Content="{Binding ElementName=tube_per,Path=Text}"/>
+                                        <ListBoxItem Content="mm"/>
 
-                                    <ListBoxItem Content="每英尺翅片数"/>
-                                    <ListBoxItem Content="{Binding ElementName=Fnum,Path=Text}"/>
-                                    <ListBoxItem Content=""/>
-
-                                    <ListBoxItem Content="翅片厚度："/>
-                                    <ListBoxItem Content="{Binding ElementName=Fthick,Path=Text}"/>
-                                    <ListBoxItem Content="mm"/>
+                                        <ListBoxItem Content="管排:"/>
+                                        <ListBoxItem Content="{Binding ElementName=Row,Path=Text}"/>
+                                        <ListBoxItem Content=""/>
 
 
-                                    <ListBoxItem Content="翅片种类："/>
-                                    <ListBoxItem Content="{Binding ElementName=ComboBox_fintype,Path=Text}"/>
-                                    <ListBoxItem Content=""/>
+                                        <ListBoxItem Content="管间距:"/>
+                                        <ListBoxItem Content="{Binding ElementName=Pt,Path=Text}"/>
+                                        <ListBoxItem Content="mm"/>
+
+                                        <ListBoxItem Content="列间距:"/>
+                                        <ListBoxItem Content="{Binding ElementName=Pr,Path=Text}"/>
+                                        <ListBoxItem Content="mm"/>
+
+                                        <ListBoxItem Content="------翅片------" FontWeight="Bold"/>
+                                        <ListBoxItem Content=""/>
+                                        <ListBoxItem Content=""/>
+
+                                        <ListBoxItem Content="每英尺翅片数"/>
+                                        <ListBoxItem Content="{Binding ElementName=Fnum,Path=Text}"/>
+                                        <ListBoxItem Content=""/>
+
+                                        <ListBoxItem Content="翅片厚度："/>
+                                        <ListBoxItem Content="{Binding ElementName=Fthick,Path=Text}"/>
+                                        <ListBoxItem Content="mm"/>
 
 
-                                    <ListBoxItem Content="------流路------" FontWeight="Bold"/>
-                                    <ListBoxItem Content=""/>
-                                    <ListBoxItem Content=""/>
-
-                                    <ListBoxItem Content="流路数:"/>
-                                    <ListBoxItem Content="{Binding ElementName=Cirnum,Path=Text}"/>
-                                    <ListBoxItem Content=""/>
+                                        <ListBoxItem Content="翅片种类："/>
+                                        <ListBoxItem Content="{Binding ElementName=ComboBox_fintype,Path=Text}"/>
+                                        <ListBoxItem Content=""/>
 
 
-                                    <ListBoxItem Content="流动形式:"/>
-                                    <ListBoxItem Content="{Binding ElementName=ComboBox_flowtype,Path=Text}"/>
-                                    <ListBoxItem Content=""/>
+                                        <ListBoxItem Content="------流路------" FontWeight="Bold"/>
+                                        <ListBoxItem Content=""/>
+                                        <ListBoxItem Content=""/>
+
+                                        <ListBoxItem Content="流路数:"/>
+                                        <ListBoxItem Content="{Binding ElementName=Cirnum,Path=Text}"/>
+                                        <ListBoxItem Content=""/>
 
 
-                                    <ListBoxItem Content="------制冷剂侧------" FontWeight="Bold"/>
-                                    <ListBoxItem Content=""/>
-                                    <ListBoxItem Content=""/>
+                                        <ListBoxItem Content="流动形式:"/>
+                                        <ListBoxItem Content="{Binding ElementName=ComboBox_flowtype,Path=Text}"/>
+                                        <ListBoxItem Content=""/>
 
-                                    <ListBoxItem Content="制冷剂："/>
-                                    <ListBoxItem Content="{Binding ElementName=ComboBox_Refrigerant,Path=Text}"/>
-                                    <ListBoxItem Content=""/>
 
-                                    <ListBoxItem Content="进口饱和温度:"/>
-                                    <ListBoxItem Content="{Binding ElementName=tc,Path=Text}"/>
-                                    <ListBoxItem Content="C"/>
+                                        <ListBoxItem Content="------制冷剂侧------" FontWeight="Bold"/>
+                                        <ListBoxItem Content=""/>
+                                        <ListBoxItem Content=""/>
 
-                                    <ListBoxItem Content="进口温度:"/>
-                                    <ListBoxItem Content="{Binding ElementName=tri,Path=Text}"/>
-                                    <ListBoxItem Content="C"/>
+                                        <ListBoxItem Content="制冷剂："/>
+                                        <ListBoxItem Content="{Binding ElementName=ComboBox_Refrigerant,Path=Text}"/>
+                                        <ListBoxItem Content=""/>
 
-                                    <ListBoxItem Content="出口制冷剂流量:"/>
-                                    <ListBoxItem Content="{Binding ElementName=mr,Path=Text}"/>
-                                    <ListBoxItem Content="mm"/>
+                                        <ListBoxItem Content="进口饱和温度:"/>
+                                        <ListBoxItem Content="{Binding ElementName=tc,Path=Text}"/>
+                                        <ListBoxItem Content="C"/>
 
-                                    <ListBoxItem Content="出口干度:"/>
-                                    <ListBoxItem Content="{Binding ElementName=x_Cond,Path=Text}"/>
-                                    <ListBoxItem Content="mm"/>
+                                        <ListBoxItem Content="进口温度:"/>
+                                        <ListBoxItem Content="{Binding ElementName=tri,Path=Text}"/>
+                                        <ListBoxItem Content="C"/>
 
-                                    <ListBoxItem Content="出口过冷度:"/>
-                                    <ListBoxItem Content="{Binding ElementName=Tro_ex,Path=Text}"/>
-                                    <ListBoxItem Content="mm"/>
+                                        <ListBoxItem Content="出口制冷剂流量:"/>
+                                        <ListBoxItem Content="{Binding ElementName=mr,Path=Text}"/>
+                                        <ListBoxItem Content="mm"/>
 
-                                    <ListBoxItem Content="------空气侧------" FontWeight="Bold"/>
-                                    <ListBoxItem Content=""/>
-                                    <ListBoxItem Content=""/>
+                                        <ListBoxItem Content="出口干度:"/>
+                                        <ListBoxItem Content="{Binding ElementName=x_Cond,Path=Text}"/>
+                                        <ListBoxItem Content="mm"/>
 
-                                    <ListBoxItem Content="进风温度:"/>
-                                    <ListBoxItem Content="{Binding ElementName=tai,Path=Text}"/>
-                                    <ListBoxItem Content="C"/>
+                                        <ListBoxItem Content="出口过冷度:"/>
+                                        <ListBoxItem Content="{Binding ElementName=Tro_ex,Path=Text}"/>
+                                        <ListBoxItem Content="mm"/>
 
-                                    <ListBoxItem Content="进风相对湿度:"/>
-                                    <ListBoxItem Content="{Binding ElementName=RHi,Path=Text}"/>
-                                    <ListBoxItem Content=""/>
+                                        <ListBoxItem Content="------空气侧------" FontWeight="Bold"/>
+                                        <ListBoxItem Content=""/>
+                                        <ListBoxItem Content=""/>
 
-                                    <ListBoxItem Content="体积流量:"/>
-                                    <ListBoxItem Content="{Binding ElementName=Va,Path=Text}"/>
-                                    <ListBoxItem Content="m3/s"/>
-                                </ListBox>
+                                        <ListBoxItem Content="进风温度:"/>
+                                        <ListBoxItem Content="{Binding ElementName=tai,Path=Text}"/>
+                                        <ListBoxItem Content="C"/>
 
-                            </Canvas>
-                        </GroupBox>
+                                        <ListBoxItem Content="进风相对湿度:"/>
+                                        <ListBoxItem Content="{Binding ElementName=RHi,Path=Text}"/>
+                                        <ListBoxItem Content=""/>
 
-                        <!--Evaporator!-->
+                                        <ListBoxItem Content="体积流量:"/>
+                                        <ListBoxItem Content="{Binding ElementName=Va,Path=Text}"/>
+                                        <ListBoxItem Content="m3/s"/>
+                                    </ListBox>
+
+                                </Canvas>
+                            </GroupBox>
+
+                            <!--Evaporator!-->
                             <GroupBox x:Name="GroupBox_RealTimeInputShow_Evaporator" Header="当前输入情况" HorizontalAlignment="Right" VerticalAlignment="Top" Height="450" Width="455" Margin="0,0,0,0" Visibility="Collapsed">
                                 <Canvas HorizontalAlignment="Right" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Top" Width="450">
 
                                     <ListBox Margin="0,0,0,0" x:Name="ListBox_RealTimeInputShow_Evaporator" HorizontalAlignment="Right" VerticalAlignment="Top" Width="450" Height="450" ScrollViewer.VerticalScrollBarVisibility="Visible"  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
-                                    <ListBox.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <UniformGrid Columns="3"/>
-                                        </ItemsPanelTemplate>
-                                    </ListBox.ItemsPanel>
+                                        <ListBox.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <UniformGrid Columns="3"/>
+                                            </ItemsPanelTemplate>
+                                        </ListBox.ItemsPanel>
 
-                                    <ListBoxItem Content="换热器类型:"/>
-                                    <ListBoxItem Content="{Binding ElementName=ComboBox_hextype,Path=Text}"/>
-                                    <ListBoxItem Content=""/>
+                                        <ListBoxItem Content="换热器类型:"/>
+                                        <ListBoxItem Content="{Binding ElementName=ComboBox_hextype,Path=Text}"/>
+                                        <ListBoxItem Content=""/>
 
-                                    <ListBoxItem Content="------换热管------" FontWeight="Bold"/>
-                                    <ListBoxItem Content=""/>
-                                    <ListBoxItem Content=""/>
+                                        <ListBoxItem Content="------换热管------" FontWeight="Bold"/>
+                                        <ListBoxItem Content=""/>
+                                        <ListBoxItem Content=""/>
 
-                                    <ListBoxItem Content="管型号:"/>
-                                    <ListBoxItem Content="{Binding ElementName=ComboBox_TubeVersion,Path=Text}"/>
-                                    <ListBoxItem Content=""/>
+                                        <ListBoxItem Content="管型号:"/>
+                                        <ListBoxItem Content="{Binding ElementName=ComboBox_TubeVersion,Path=Text}"/>
+                                        <ListBoxItem Content=""/>
 
-                                    <ListBoxItem Content="管种类:"/>
-                                    <ListBoxItem Content="{Binding ElementName=ComboBox_tubetype,Path=Text}"/>
-                                    <ListBoxItem Content=""/>
+                                        <ListBoxItem Content="管种类:"/>
+                                        <ListBoxItem Content="{Binding ElementName=ComboBox_tubetype,Path=Text}"/>
+                                        <ListBoxItem Content=""/>
 
-                                    <ListBoxItem Content="管外径:"/>
-                                    <ListBoxItem Content="{Binding ElementName=Do,Path=Text}"/>
-                                    <ListBoxItem Content="mm"/>
-
-
-                                    <ListBoxItem Content="管壁厚:"/>
-                                    <ListBoxItem Content="{Binding ElementName=thick_tube,Path=Text}"/>
-                                    <ListBoxItem Content="mm"/>
-
-                                    <ListBoxItem Content="管长:"/>
-                                    <ListBoxItem Content="{Binding ElementName=L,Path=Text}"/>
-                                    <ListBoxItem Content=""/>
-
-                                    <ListBoxItem Content="管/排:"/>
-                                    <ListBoxItem Content="{Binding ElementName=tube_per,Path=Text}"/>
-                                    <ListBoxItem Content="mm"/>
-
-                                    <ListBoxItem Content="管排:"/>
-                                    <ListBoxItem Content="{Binding ElementName=Row,Path=Text}"/>
-                                    <ListBoxItem Content=""/>
+                                        <ListBoxItem Content="管外径:"/>
+                                        <ListBoxItem Content="{Binding ElementName=Do,Path=Text}"/>
+                                        <ListBoxItem Content="mm"/>
 
 
-                                    <ListBoxItem Content="管间距:"/>
-                                    <ListBoxItem Content="{Binding ElementName=Pt,Path=Text}"/>
-                                    <ListBoxItem Content="mm"/>
+                                        <ListBoxItem Content="管壁厚:"/>
+                                        <ListBoxItem Content="{Binding ElementName=thick_tube,Path=Text}"/>
+                                        <ListBoxItem Content="mm"/>
 
-                                    <ListBoxItem Content="列间距:"/>
-                                    <ListBoxItem Content="{Binding ElementName=Pr,Path=Text}"/>
-                                    <ListBoxItem Content="mm"/>
+                                        <ListBoxItem Content="管长:"/>
+                                        <ListBoxItem Content="{Binding ElementName=L,Path=Text}"/>
+                                        <ListBoxItem Content=""/>
 
-                                    <ListBoxItem Content="------翅片------" FontWeight="Bold"/>
-                                    <ListBoxItem Content=""/>
-                                    <ListBoxItem Content=""/>
+                                        <ListBoxItem Content="管/排:"/>
+                                        <ListBoxItem Content="{Binding ElementName=tube_per,Path=Text}"/>
+                                        <ListBoxItem Content="mm"/>
 
-                                    <ListBoxItem Content="每英尺翅片数"/>
-                                    <ListBoxItem Content="{Binding ElementName=Fnum,Path=Text}"/>
-                                    <ListBoxItem Content=""/>
-
-                                    <ListBoxItem Content="翅片厚度："/>
-                                    <ListBoxItem Content="{Binding ElementName=Fthick,Path=Text}"/>
-                                    <ListBoxItem Content="mm"/>
+                                        <ListBoxItem Content="管排:"/>
+                                        <ListBoxItem Content="{Binding ElementName=Row,Path=Text}"/>
+                                        <ListBoxItem Content=""/>
 
 
-                                    <ListBoxItem Content="翅片种类："/>
-                                    <ListBoxItem Content="{Binding ElementName=ComboBox_fintype,Path=Text}"/>
-                                    <ListBoxItem Content=""/>
+                                        <ListBoxItem Content="管间距:"/>
+                                        <ListBoxItem Content="{Binding ElementName=Pt,Path=Text}"/>
+                                        <ListBoxItem Content="mm"/>
 
-                                    <ListBoxItem Content="------流路------" FontWeight="Bold"/>
-                                    <ListBoxItem Content=""/>
-                                    <ListBoxItem Content=""/>
+                                        <ListBoxItem Content="列间距:"/>
+                                        <ListBoxItem Content="{Binding ElementName=Pr,Path=Text}"/>
+                                        <ListBoxItem Content="mm"/>
 
-                                    <ListBoxItem Content="流路数:"/>
-                                    <ListBoxItem Content="{Binding ElementName=Cirnum,Path=Text}"/>
-                                    <ListBoxItem Content=""/>
+                                        <ListBoxItem Content="------翅片------" FontWeight="Bold"/>
+                                        <ListBoxItem Content=""/>
+                                        <ListBoxItem Content=""/>
+
+                                        <ListBoxItem Content="每英尺翅片数"/>
+                                        <ListBoxItem Content="{Binding ElementName=Fnum,Path=Text}"/>
+                                        <ListBoxItem Content=""/>
+
+                                        <ListBoxItem Content="翅片厚度："/>
+                                        <ListBoxItem Content="{Binding ElementName=Fthick,Path=Text}"/>
+                                        <ListBoxItem Content="mm"/>
 
 
-                                    <ListBoxItem Content="流动形式:"/>
-                                    <ListBoxItem Content="{Binding ElementName=ComboBox_flowtype,Path=Text}"/>
-                                    <ListBoxItem Content=""/>
+                                        <ListBoxItem Content="翅片种类："/>
+                                        <ListBoxItem Content="{Binding ElementName=ComboBox_fintype,Path=Text}"/>
+                                        <ListBoxItem Content=""/>
+
+                                        <ListBoxItem Content="------流路------" FontWeight="Bold"/>
+                                        <ListBoxItem Content=""/>
+                                        <ListBoxItem Content=""/>
+
+                                        <ListBoxItem Content="流路数:"/>
+                                        <ListBoxItem Content="{Binding ElementName=Cirnum,Path=Text}"/>
+                                        <ListBoxItem Content=""/>
 
 
-                                    <ListBoxItem Content="------制冷剂------" FontWeight="Bold"/>
-                                    <ListBoxItem Content=""/>
-                                    <ListBoxItem Content=""/>
+                                        <ListBoxItem Content="流动形式:"/>
+                                        <ListBoxItem Content="{Binding ElementName=ComboBox_flowtype,Path=Text}"/>
+                                        <ListBoxItem Content=""/>
 
-                                    <ListBoxItem Content="制冷剂："/>
-                                    <ListBoxItem Content="{Binding ElementName=ComboBox_Refrigerant,Path=Text}"/>
-                                    <ListBoxItem Content=""/>
 
-                                    <ListBoxItem Content="进口压力:"/>
-                                    <ListBoxItem Content="{Binding ElementName=Pri_Evap,Path=Text}"/>
-                                    <ListBoxItem Content="kPa"/>
+                                        <ListBoxItem Content="------制冷剂------" FontWeight="Bold"/>
+                                        <ListBoxItem Content=""/>
+                                        <ListBoxItem Content=""/>
 
-                                    <ListBoxItem Content="进口干度:"/>
-                                    <ListBoxItem Content="{Binding ElementName=xi_Evap,Path=Text}"/>
-                                    <ListBoxItem Content=""/>
+                                        <ListBoxItem Content="制冷剂："/>
+                                        <ListBoxItem Content="{Binding ElementName=ComboBox_Refrigerant,Path=Text}"/>
+                                        <ListBoxItem Content=""/>
 
-                                    <ListBoxItem Content="进口焓值:"/>
-                                    <ListBoxItem Content="{Binding ElementName=Hri_Evap,Path=Text}"/>
-                                    <ListBoxItem Content="kJ/kg"/>
+                                        <ListBoxItem Content="进口压力:"/>
+                                        <ListBoxItem Content="{Binding ElementName=Pri_Evap,Path=Text}"/>
+                                        <ListBoxItem Content="kPa"/>
 
-                                    <ListBoxItem Content="进口阀前温度:"/>
-                                    <ListBoxItem Content="{Binding ElementName=Tri_ValveBefore,Path=Text}"/>
-                                    <ListBoxItem Content="C"/>
+                                        <ListBoxItem Content="进口干度:"/>
+                                        <ListBoxItem Content="{Binding ElementName=xi_Evap,Path=Text}"/>
+                                        <ListBoxItem Content=""/>
 
-                                    <ListBoxItem Content="进口阀前压力:"/>
-                                    <ListBoxItem Content="{Binding ElementName=Pri_ValveBefore,Path=Text}"/>
-                                    <ListBoxItem Content="kPa"/>
+                                        <ListBoxItem Content="进口焓值:"/>
+                                        <ListBoxItem Content="{Binding ElementName=Hri_Evap,Path=Text}"/>
+                                        <ListBoxItem Content="kJ/kg"/>
 
-                                    <ListBoxItem Content="出口饱和温度:"/>
-                                    <ListBoxItem Content="{Binding ElementName=Tcro_Evap,Path=Text}"/>
-                                    <ListBoxItem Content="kPa"/>
+                                        <ListBoxItem Content="进口阀前温度:"/>
+                                        <ListBoxItem Content="{Binding ElementName=Tri_ValveBefore,Path=Text}"/>
+                                        <ListBoxItem Content="C"/>
 
-                                    <ListBoxItem Content="出口过热度:"/>
-                                    <ListBoxItem Content="{Binding ElementName=Troex_Evap,Path=Text}"/>
-                                    <ListBoxItem Content="C"/>
+                                        <ListBoxItem Content="进口阀前压力:"/>
+                                        <ListBoxItem Content="{Binding ElementName=Pri_ValveBefore,Path=Text}"/>
+                                        <ListBoxItem Content="kPa"/>
 
-                                    <ListBoxItem Content="出口干度:"/>
-                                    <ListBoxItem Content="{Binding ElementName=xo_Evap,Path=Text}"/>
-                                    <ListBoxItem Content=""/>
+                                        <ListBoxItem Content="出口饱和温度:"/>
+                                        <ListBoxItem Content="{Binding ElementName=Tcro_Evap,Path=Text}"/>
+                                        <ListBoxItem Content="kPa"/>
 
-                                    <ListBoxItem Content="出口流量:"/>
-                                    <ListBoxItem Content="{Binding ElementName=mro_Evap,Path=Text}"/>
-                                    <ListBoxItem Content="kg/s"/>
+                                        <ListBoxItem Content="出口过热度:"/>
+                                        <ListBoxItem Content="{Binding ElementName=Troex_Evap,Path=Text}"/>
+                                        <ListBoxItem Content="C"/>
 
-                                </ListBox>
-                            </Canvas>
-                        </GroupBox>
+                                        <ListBoxItem Content="出口干度:"/>
+                                        <ListBoxItem Content="{Binding ElementName=xo_Evap,Path=Text}"/>
+                                        <ListBoxItem Content=""/>
 
-                    </Canvas>
-                    <!--实时输入显示_End!-->
+                                        <ListBoxItem Content="出口流量:"/>
+                                        <ListBoxItem Content="{Binding ElementName=mro_Evap,Path=Text}"/>
+                                        <ListBoxItem Content="kg/s"/>
+
+                                    </ListBox>
+                                </Canvas>
+                            </GroupBox>
+
+                        </Canvas>
+                        <!--实时输入显示_End!-->
                     </StackPanel>
-                    
+
                     <!--显示图片和实时输入_End!-->
-                   
-                    
+
+
                 </Grid>
 
             </Grid>

@@ -276,17 +276,27 @@ namespace tryRT
         public void Bind_reftype()
         {
             IList<string> customList = new List<string>();
-            string[] sss = new string[5];
+            string[] sss = new string[10];
             sss[0] = "R22";
             sss[1] = "R410A";
             sss[2] = "R290";
             sss[3] = "R32";
             sss[4] = "R600a";
+            sss[5] = "R1234YF";
+            sss[6] = "R1234ZE";
+            sss[7] = "R1233ZD";
+            sss[8] = "R744";
+            sss[9] = "R502";
             customList.Add(sss[0]);
             customList.Add(sss[1]);
             customList.Add(sss[2]);
             customList.Add(sss[3]);
             customList.Add(sss[4]);
+            customList.Add(sss[5]);
+            customList.Add(sss[6]);
+            customList.Add(sss[7]);
+            customList.Add(sss[8]);
+            customList.Add(sss[9]);
 
             ComboBox_Refrigerant.ItemsSource = customList;
             ComboBox_Refrigerant.SelectedValue = customList[0];
