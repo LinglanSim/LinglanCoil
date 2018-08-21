@@ -389,8 +389,8 @@ namespace tryRT
             //string bb = ComboBox6_SelectionChanged(object sender, SelectionChangedEventArgs e);
             //m_Main.W5(a, b).ha
             Model.Basic.CapiliaryInput capInput = new Model.Basic.CapiliaryInput();
-            capInput.d_cap = new double[] { 0.00, 0.00 };//0.006
-            capInput.lenth_cap = new double[] { 0.0, 0.0 };//0.5
+            capInput.d_cap = new double[3] ;//0.006
+            capInput.lenth_cap = new double[3];//0.5
             var r = m_Main.main_condenser(refInput, airInput, geoInput, flowtype, fin_type, tube_type, hex_type, capInput);
 
             //***换热器性能输出***//
@@ -553,6 +553,7 @@ namespace tryRT
         private void TreeView_Pass_GotFocus(object sender, RoutedEventArgs e)
         {
             this.TabItem_Pass.IsSelected = true;
+            
 
             if (RadioButton_ManualArrange.IsChecked == true)
             {
@@ -583,7 +584,7 @@ namespace tryRT
 
 
             //生成手动连流路图
-            int _row = Convert.ToInt32(Row.Text);
+            /*int _row = Convert.ToInt32(Row.Text);
             int _tube = Convert.ToInt32(tube_per.Text);
             vm.Connectors.Clear();
             vm.Capacities.Clear();
@@ -599,7 +600,7 @@ namespace tryRT
             while (vm.Rects.Count > 2)
             {
                 vm.Rects.RemoveAt(2);
-            };
+            };*/
         }
 
         private void TreeView_Ref_GotFocus(object sender, RoutedEventArgs e)
@@ -668,7 +669,8 @@ namespace tryRT
         private void TreeView_DetailResult_GotFocus(object sender, RoutedEventArgs e)
         {
             this.TabItem_DetailResult.IsSelected = true;
-            this.TabItem_Null_Picture.IsSelected = true;
+            //this.TabItem_Null_Picture.IsSelected = true;
+            this.TabItem_Pass_Picture.IsSelected = true;
 
             //调显示宽度
             //TabControl1.Width = 600;//450
@@ -701,13 +703,16 @@ namespace tryRT
                 int Row_int = Convert.ToInt16(Result_Row);
                 int Tube_row_int = Convert.ToInt16(Result_Tube_row);
 
-                for (int i = 0; i < Tube_row_int; i++)
-                    for (int j = 0; j < Row_int; j++)
+                
+                    for (int k = 1; k < Tube_row_int*Row_int+1; k++)
                     {
+                        int i = k % Tube_row_int == 0 ? Tube_row_int - 1 : k % Tube_row_int - 1;
+                        int j = k % Tube_row_int == 0 ? k / Tube_row_int - 1 : k / Tube_row_int;
                         peopleList.Add(new people()
                         {
-                            tube = Convert.ToString(i + 1),
-                            row = Convert.ToString(j + 1),
+                            //tube = Convert.ToString(i + 1),
+                            //row = Convert.ToString(j + 1),
+                            TubeNumber=k.ToString(),
                             Pri = getName_Pri[i, j].ToString("f2"),
                             Tri = getName_Tri[i, j].ToString("f2"),
                             Hri = getName_Hri[i, j].ToString("f2"),
@@ -1010,9 +1015,8 @@ namespace tryRT
             this.TabItem_Pass_Picture.IsSelected = true;
 
             //调显示高度
-            this.Canvas_Picture_HEx.Height = 450;
-            this.TabControl_Picuture.Height = 450;
-            
+            this.Canvas_Picture_HEx.Height = 800;
+            this.TabControl_Picuture.Height = 800;
 
         }
 
@@ -1192,8 +1196,8 @@ namespace tryRT
         //people类
         public class people
         {
-            public string tube { get; set; }
-            public string row { get; set; }
+            public string TubeNumber { get; set; }
+            //public string row { get; set; }
             public string Pri { get; set; }
             public string Tri { get; set; }
             public string Hri { get; set; }

@@ -104,7 +104,7 @@
                                             <Label Content="#" HorizontalAlignment="Left" Margin="130,120,0,0" VerticalAlignment="Top"/>
 
                                             <TextBlock Text="管数/排" HorizontalAlignment="Left" Margin="220,120,0,0" VerticalAlignment="Top" Height="15" Width="50"/>
-                                            <TextBox x:Name="tube_per" Text="6" HorizontalAlignment="Left" Margin="280,120,0,0"  VerticalAlignment="Top" Height="24" Width="60"/>
+                                            <TextBox x:Name="tube_per" Text="4" HorizontalAlignment="Left" Margin="280,120,0,0"  VerticalAlignment="Top" Height="24" Width="60"/>
                                             <Label Content="#" HorizontalAlignment="Left" Margin="340,120,0,0" VerticalAlignment="Top"/>
 
                                             <TextBlock Text="管壁厚" HorizontalAlignment="Left" Margin="220,40,0,0" VerticalAlignment="Top" Height="16" Width="36"/>
@@ -118,7 +118,7 @@
                                             <TextBlock Text="管种类" HorizontalAlignment="Left" Margin="220,0,0,0" VerticalAlignment="Top" Height="15" Width="36"/>
                                             <ComboBox x:Name="ComboBox_tubetype" HorizontalAlignment="Left" Margin="280,0,0,0" VerticalAlignment="Top" Width="100" SelectionChanged="ComboBox_tubetype_SelectionChanged"/>
 
-                                            <Button x:Name="Button1" Content="OK" HorizontalAlignment="Stretch" Margin="5,5,5,5" Click="Button_Click_Sure" Visibility="Hidden"></Button>
+                                            <Button x:Name="Button1" Content="确定" HorizontalAlignment="Stretch" Margin="220,160,5,5" Width="120" Click="Button_Click_Sure" Visibility="Visible"></Button>
 
                                         </Canvas>
                                     </GroupBox>
@@ -495,8 +495,8 @@
                                     <DataGrid x:Name="dataGrid_Result" Margin="0,25,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="270" Width="Auto" AutoGenerateColumns="False">
 
                                         <DataGrid.Columns>
-                                            <DataGridTextColumn Header="换热管" Binding="{Binding tube}" Width="50" />
-                                            <DataGridTextColumn Header="管排" Binding="{Binding row}" Width="50" />
+                                            <DataGridTextColumn Header="换热管" Binding="{Binding TubeNumber}" Width="50" />
+                                            <!--<DataGridTextColumn Header="管排" Binding="{Binding row}" Width="50" />-->
                                             <DataGridTextColumn Header="进口压力/kPa" Binding="{Binding Pri}" Width="85" />
                                             <DataGridTextColumn Header="进口温度/C" Binding="{Binding Tri}" Width="85" />
                                             <DataGridTextColumn Header="进口焓值/(kJ/kg)" Binding="{Binding Hri}" Width="105" />
@@ -552,8 +552,8 @@
                             </TabItem>
                         <TabItem Header="流路" x:Name="TabItem_Pass_Picture" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="61" Visibility="Collapsed">
 
-                            <GroupBox Header="手动分配流路" x:Name="GroupBox_ManualArrangeCirnum" HorizontalAlignment="Left" VerticalAlignment="Top" Height="600" Width="425" Margin="8,0,0,10" Visibility="Hidden">
-                                <DockPanel Height="585" Margin="0,0,0,0">
+                            <GroupBox Header="手动分配流路" x:Name="GroupBox_ManualArrangeCirnum" HorizontalAlignment="Left" VerticalAlignment="Top" Height="Auto" Width="425" Margin="8,0,0,10" Visibility="Hidden">
+                                <DockPanel Height="Auto" Margin="0,0,0,0">
                                             <StackPanel Width="110" HorizontalAlignment="Left" DockPanel.Dock="Left" Margin="5,5,5,5">
 
                                                 <ToggleButton x:Name="ToggleButton1" Content="流路连接" HorizontalAlignment="Stretch"  Margin="5,5,5,5" IsChecked="{Binding CreatNewConnector}"></ToggleButton>
@@ -577,8 +577,8 @@
                                                     </CompositeCollection>
                                                     <DataTemplate DataType="{x:Type local:Node}">
                                                         <Canvas Margin="-10,-10,10,10">
-                                                            <Ellipse x:Name="Ellipse" Width="20" Height="20" Stroke="Black" StrokeThickness="1" Fill="Yellow">
-                                                            </Ellipse>
+                                                            <Ellipse x:Name="Ellipse" Width="20" Height="20" Stroke="Black" StrokeThickness="1" Fill="Yellow"/>
+                                                            <Label Width="20" Height="Auto" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" FontSize="9" FontWeight="Bold" Content="{Binding Name}"/>
                                                         </Canvas>
                                                         <DataTemplate.Triggers>
                                                             <DataTrigger Binding="{Binding IsSelected,RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ListBoxItem}}}" Value="True">
@@ -630,14 +630,6 @@
                                                                 </Border.Background>
                                                                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                                                                     <Border>
-                                                                        <Border.Background>
-                                                                            <VisualBrush TileMode="Tile" Viewport="0,0,50,50" ViewportUnits="Absolute" Viewbox="0,0,50,50" ViewboxUnits="Absolute">
-                                                                                <VisualBrush.Visual>
-                                                                                    <!-->显示网格，这里没显示 去掉了Stroke="DarkGray"<!-->
-                                                                                    <Rectangle StrokeThickness="1" Height="50" Width="50" StrokeDashArray="5 3" />
-                                                                                </VisualBrush.Visual>
-                                                                            </VisualBrush>
-                                                                        </Border.Background>
                                                                         <ItemsPresenter/>
                                                                     </Border>
                                                                 </ScrollViewer>
