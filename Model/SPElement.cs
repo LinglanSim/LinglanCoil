@@ -430,8 +430,8 @@ namespace Model
             if (hexType == 0 && tri < tai)
             {
                 bool isFullyWet = true;
-                hin_a = CoolProp.HAPropsSI("H", "T", Tin_a + 273.15, "P", 101325, "R", RHi);
-                //hin_a = -244.2924077 + 1135.8711 * Tin_a + 10101.404 * RHi - 12.968219 * Math.Pow(Tin_a, 2) - 11.356807 * Math.Pow(RHi, 2) + 357.25464 * Tin_a * RHi + 0.3178346 * Math.Pow(Tin_a, 3) - 0.0024329 * Math.Pow(RHi, 3) + 44.100799 * Tin_a * Math.Pow(RHi, 2) + 50.31444812 * Math.Pow(Tin_a, 2) * RHi;
+                //hin_a = CoolProp.HAPropsSI("H", "T", Tin_a + 273.15, "P", 101325, "R", RHi);
+                hin_a = -244.2924077 + 1135.8711 * Tin_a + 10101.404 * RHi - 12.968219 * Math.Pow(Tin_a, 2) - 11.356807 * Math.Pow(RHi, 2) + 357.25464 * Tin_a * RHi + 0.3178346 * Math.Pow(Tin_a, 3) - 0.0024329 * Math.Pow(RHi, 3) + 44.100799 * Tin_a * Math.Pow(RHi, 2) + 50.31444812 * Math.Pow(Tin_a, 2) * RHi;
 
                 double hout_a = hin_a - Q_dry / ma * Math.Pow(-1, hexType);
 
@@ -444,9 +444,8 @@ namespace Model
                 //***delete***//
 
                 //res.RHout = CoolProp.HAPropsSI("R", "T", Tout_a_dry + 273.15, "P", 101325, "H", hout_a);
-                res.RHout = 0.0259124 - 0.0996818 * Tout_a_dry + 0.0934877 * (hout_a / 1000) + 0.0040018 * Math.Pow(Tout_a_dry, 2) - 0.0003662 * Math.Pow((hout_a / 1000), 2) - 0.0034077 * Tout_a_dry * (hout_a / 1000) - 1.76447 * Math.Pow(10, -5) * Math.Pow(Tout_a_dry, 3) - 2.74524 * Math.Pow(10, -6) * Math.Pow((hout_a / 1000), 3) + 2.99291 * Math.Pow(10, -5) * Tout_a_dry * Math.Pow((hout_a / 1000), 2) - 9.56644 * Math.Pow(10, -6) * Math.Pow(Tout_a_dry, 2) * (hout_a / 1000);
-                
-                /*
+                //res.RHout = 0.0259124 - 0.0996818 * Tout_a_dry + 0.0934877 * (hout_a / 1000) + 0.0040018 * Math.Pow(Tout_a_dry, 2) - 0.0003662 * Math.Pow((hout_a / 1000), 2) - 0.0034077 * Tout_a_dry * (hout_a / 1000) - 1.76447 * Math.Pow(10, -5) * Math.Pow(Tout_a_dry, 3) - 2.74524 * Math.Pow(10, -6) * Math.Pow((hout_a / 1000), 3) + 2.99291 * Math.Pow(10, -5) * Tout_a_dry * Math.Pow((hout_a / 1000), 2) - 9.56644 * Math.Pow(10, -6) * Math.Pow(Tout_a_dry, 2) * (hout_a / 1000);
+
                 if (Tout_a_dry >= 2 && Tout_a_dry <= 4)
                 {
                     res.RHout = 0.0050520 - 0.0996818 * Tout_a_dry + 0.0934877 * (hout_a / 1000) + 0.0040018 * Math.Pow(Tout_a_dry, 2) - 0.0003662 * Math.Pow((hout_a / 1000), 2) - 0.0034077 * Tout_a_dry * (hout_a / 1000) - 1.76447 * Math.Pow(10, -5) * Math.Pow(Tout_a_dry, 3) - 2.74524 * Math.Pow(10, -6) * Math.Pow((hout_a / 1000), 3) + 2.99291 * Math.Pow(10, -5) * Tout_a_dry * Math.Pow((hout_a / 1000), 2) - 9.56644 * Math.Pow(10, -6) * Math.Pow(Tout_a_dry, 2) * (hout_a / 1000);
@@ -465,7 +464,6 @@ namespace Model
                         }
                     }
                 }
-                */
                 Tout_a = Tout_a_dry;
                 Q = Q_dry;
                 if (Tin_s < Tdp)
@@ -490,8 +488,8 @@ namespace Model
                         if (iter > 1)
                             Tout_r = x2;
                         double Tout_r_start = Tout_r;
-                        h_s_w_i = CoolProp.HAPropsSI("H", "T", Tin_r + 273.15, "P", 101325, "R", 1.0);
-                        //h_s_w_i = 58.732687 * Math.Pow(Tin_r + 273.15, 2) - 30921.970577 * (Tin_r + 273.15) + 4075493.951473;
+                        //h_s_w_i = CoolProp.HAPropsSI("H", "T", Tin_r + 273.15, "P", 101325, "R", 1.0);
+                        h_s_w_i = 58.732687 * Math.Pow(Tin_r + 273.15, 2) - 30921.970577 * (Tin_r + 273.15) + 4075493.951473;
                         ///////
                         double h1 = 58.732687 * Math.Pow((Tin_r + Tout_r) / 2 + 273.15 + 0.01, 2) - 30921.970577 * ((Tin_r + Tout_r) / 2 + 273.15 + 0.01) + 4075493.951473;
                         double h2 = 58.732687 * Math.Pow(tri + 273.15, 2) - 30921.970577 * (tri + 273.15 - 0.01) + 4075493.951473;
@@ -520,8 +518,8 @@ namespace Model
                         hout_a = hin_a - Q_wet / ma;
                         Tout_r = Tin_r + ma / (mr * cp_r) * (hin_a - hout_a);
 
-                        h_s_w_o = CoolProp.HAPropsSI("H", "T", Tout_r + 273.15, "P", 101325, "R", 1.0);
-                        //h_s_w_o = 58.732687 * Math.Pow(Tout_r + 273.15, 2) - 30921.970577 * (Tout_r + 273.15) + 4075493.951473;
+                        //h_s_w_o = CoolProp.HAPropsSI("H", "T", Tout_r + 273.15, "P", 101325, "R", 1.0);
+                        h_s_w_o = 58.732687 * Math.Pow(Tout_r + 273.15, 2) - 30921.970577 * (Tout_r + 273.15) + 4075493.951473;
 
                         //double UA_star = 1 / (cp_da / (eta_a * Aa_fin + Aa_tube) / haw + CoolProp.HAPropsSI("C", "T", (Tin_a + Tout_r) / 2.0 + 273.15, "P", 101325, "R", 1) / h_r / Ar);//zzc
                         double UA_star = 1 / (cp_da / (eta_a * Aa_fin + Aa_tube) / haw + c_s / h_r / Ar);//zzc
@@ -605,8 +603,8 @@ namespace Model
                     }
                     else Q = Q_wet;
                     //res.RHout = CoolProp.HAPropsSI("R", "T", Tout_a + 273.15, "P", 101325, "H", hout_a);
-                    res.RHout = 0.0259124 - 0.0996818 * Tout_a + 0.0934877 * (hout_a / 1000) + 0.0040018 * Math.Pow(Tout_a, 2) - 0.0003662 * Math.Pow((hout_a / 1000), 2) - 0.0034077 * Tout_a * (hout_a / 1000) - 1.76447 * Math.Pow(10, -5) * Math.Pow(Tout_a, 3) - 2.74524 * Math.Pow(10, -6) * Math.Pow((hout_a / 1000), 3) + 2.99291 * Math.Pow(10, -5) * Tout_a * Math.Pow((hout_a / 1000), 2) - 9.56644 * Math.Pow(10, -6) * Math.Pow(Tout_a, 2) * (hout_a / 1000);
-                    /*
+                    //res.RHout = 0.0259124 - 0.0996818 * Tout_a + 0.0934877 * (hout_a / 1000) + 0.0040018 * Math.Pow(Tout_a, 2) - 0.0003662 * Math.Pow((hout_a / 1000), 2) - 0.0034077 * Tout_a * (hout_a / 1000) - 1.76447 * Math.Pow(10, -5) * Math.Pow(Tout_a, 3) - 2.74524 * Math.Pow(10, -6) * Math.Pow((hout_a / 1000), 3) + 2.99291 * Math.Pow(10, -5) * Tout_a * Math.Pow((hout_a / 1000), 2) - 9.56644 * Math.Pow(10, -6) * Math.Pow(Tout_a, 2) * (hout_a / 1000);
+
                     if (Tout_a >= 2 && Tout_a <= 4)
                     {
                         res.RHout = 0.0050520 - 0.0996818 * Tout_a + 0.0934877 * (hout_a / 1000) + 0.0040018 * Math.Pow(Tout_a, 2) - 0.0003662 * Math.Pow((hout_a / 1000), 2) - 0.0034077 * Tout_a * (hout_a / 1000) - 1.76447 * Math.Pow(10, -5) * Math.Pow(Tout_a, 3) - 2.74524 * Math.Pow(10, -6) * Math.Pow((hout_a / 1000), 3) + 2.99291 * Math.Pow(10, -5) * Tout_a * Math.Pow((hout_a / 1000), 2) - 9.56644 * Math.Pow(10, -6) * Math.Pow(Tout_a, 2) * (hout_a / 1000);
@@ -625,7 +623,6 @@ namespace Model
                             }
                         }
                     }
-                     */ 
 					if(res.RHout>1)
                     {
                         res.RHout = 1;
@@ -649,8 +646,8 @@ namespace Model
                 //***delete***//
 
                 //res.RHout = CoolProp.HAPropsSI("R", "T", Tout_a + 273.15, "P", 101325, "H", hout_a);
-                res.RHout = 0.0259124 - 0.0996818 * Tout_a + 0.0934877 * (hout_a / 1000) + 0.0040018 * Math.Pow(Tout_a, 2) - 0.0003662 * Math.Pow((hout_a / 1000), 2) - 0.0034077 * Tout_a * (hout_a / 1000) - 1.76447 * Math.Pow(10, -5) * Math.Pow(Tout_a, 3) - 2.74524 * Math.Pow(10, -6) * Math.Pow((hout_a / 1000), 3) + 2.99291 * Math.Pow(10, -5) * Tout_a * Math.Pow((hout_a / 1000), 2) - 9.56644 * Math.Pow(10, -6) * Math.Pow(Tout_a, 2) * (hout_a / 1000);
-                /*
+                //res.RHout = 0.0259124 - 0.0996818 * Tout_a + 0.0934877 * (hout_a / 1000) + 0.0040018 * Math.Pow(Tout_a, 2) - 0.0003662 * Math.Pow((hout_a / 1000), 2) - 0.0034077 * Tout_a * (hout_a / 1000) - 1.76447 * Math.Pow(10, -5) * Math.Pow(Tout_a, 3) - 2.74524 * Math.Pow(10, -6) * Math.Pow((hout_a / 1000), 3) + 2.99291 * Math.Pow(10, -5) * Tout_a * Math.Pow((hout_a / 1000), 2) - 9.56644 * Math.Pow(10, -6) * Math.Pow(Tout_a, 2) * (hout_a / 1000);
+
                 if (Tout_a >= 2 && Tout_a <= 4)
                 {
                     res.RHout = 0.0050520 - 0.0996818 * Tout_a + 0.0934877 * (hout_a / 1000) + 0.0040018 * Math.Pow(Tout_a, 2) - 0.0003662 * Math.Pow((hout_a / 1000), 2) - 0.0034077 * Tout_a * (hout_a / 1000) - 1.76447 * Math.Pow(10, -5) * Math.Pow(Tout_a, 3) - 2.74524 * Math.Pow(10, -6) * Math.Pow((hout_a / 1000), 3) + 2.99291 * Math.Pow(10, -5) * Tout_a * Math.Pow((hout_a / 1000), 2) - 9.56644 * Math.Pow(10, -6) * Math.Pow(Tout_a, 2) * (hout_a / 1000);
@@ -669,7 +666,7 @@ namespace Model
                         }
                     }
                 }
-                */
+
             }
             res.Tao = Tout_a;
             res.Tro = Tout_r;

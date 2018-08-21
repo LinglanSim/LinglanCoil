@@ -199,8 +199,6 @@ namespace tryRT
             
             DataContext = vm;
 
-
-
             Bind1();
             Bind_hextype();
             Bind_reftype();
@@ -213,16 +211,17 @@ namespace tryRT
             GetShowData();
 
             //初始化按钮取值
-            RadioButton_PriTri_Evap.IsChecked = true;
-            RadioButton_Tcro_Evap.IsChecked = true;
-            RadioButton_mro_Evap.IsChecked = true;
-            WetBulbTemperature.IsChecked = true;
-            AirVolumnFlowRate.IsChecked = true;
-            RadioButton_mro_Cond.IsChecked = true;
-            RadioButton_ManualArrange.IsChecked = true;
-            CheckBox_UniformWind.IsChecked = true;
-            RadioButton_HExType_Condenser.IsChecked = true;
-            TreeView_HExType.Focus();
+            this.RadioButton_PriTri_Evap.IsChecked = true;
+            this.RadioButton_Tcro_Evap.IsChecked = true;
+            this.RadioButton_mro_Evap.IsChecked = true;
+            this.WetBulbTemperature.IsChecked = true;
+            this.AirVolumnFlowRate.IsChecked = true;
+            this.RadioButton_mro_Cond.IsChecked = true;
+            this.RadioButton_ManualArrange.IsChecked = true;
+            this.CheckBox_UniformWind.IsChecked = true;
+            this.RadioButton_HExType_Condenser.IsChecked = true;
+            this.TubeArrangement_Crossed_High.IsChecked = true;
+            this.TreeView_HExType.Focus();
 
             //数据初始化
             flag_Calculated = false;
@@ -389,7 +388,7 @@ namespace tryRT
             //string bb = ComboBox6_SelectionChanged(object sender, SelectionChangedEventArgs e);
             //m_Main.W5(a, b).ha
             Model.Basic.CapiliaryInput capInput = new Model.Basic.CapiliaryInput();
-            capInput.d_cap = new double[3] ;//0.006
+            capInput.d_cap = new double[3];//0.006
             capInput.lenth_cap = new double[3];//0.5
             var r = m_Main.main_condenser(refInput, airInput, geoInput, flowtype, fin_type, tube_type, hex_type, capInput);
 
@@ -512,14 +511,9 @@ namespace tryRT
         private void TreeView_HExType_GotFocus(object sender, RoutedEventArgs e)
         {
             this.TabItem_HExType.IsSelected = true;
-            if (RadioButton_HExType_Condenser.IsChecked == true)
-            {
-                this.TabItem_HExTypr_Picture1.IsSelected = true;
-            }
-            if (RadioButton_HExType_Evaporator.IsChecked == true)
-            {
-                this.TabItem_HExTypr_Picture2.IsSelected = true;
-            }
+            this.TabItem_HExTypr_Picture.IsSelected = true;
+
+
 
             //调显示宽度
             TabControl1.Width = 450;//450
@@ -553,11 +547,12 @@ namespace tryRT
         private void TreeView_Pass_GotFocus(object sender, RoutedEventArgs e)
         {
             this.TabItem_Pass.IsSelected = true;
-            
 
             if (RadioButton_ManualArrange.IsChecked == true)
             {
                 TabItem_Pass_Picture.IsSelected = true;
+                this.StackPanel_ManualArrangeCirnum.Visibility = Visibility.Visible;
+                this.GroupBox_ManualArrangeCirnum.Header = "手动分配流路";
 
                 //调显示高度
                 this.Canvas_Picture_HEx.Height = 450;
@@ -576,12 +571,10 @@ namespace tryRT
                 ListBox_RealTimeInputShow_Evaporator.Height = 450;
             }
 
-
             //调显示宽度
             TabControl1.Width = 450;//450
             Canvas_Picture_HEx.Width = 450;//450
             StackPanel_OutPut.Width = 450;
-
 
             //生成手动连流路图
             /*int _row = Convert.ToInt32(Row.Text);
@@ -652,7 +645,8 @@ namespace tryRT
         private void TreeView_Result_GotFocus(object sender, RoutedEventArgs e)
         {
             this.TabItem_Result.IsSelected = true;
-            this.TabItem_Null_Picture.IsSelected = true;
+            this.TabItem_Pass_Picture.IsSelected = true;
+        
 
             //调显示宽度
             TabControl1.Width = 450;//450
@@ -660,28 +654,32 @@ namespace tryRT
             StackPanel_OutPut.Width = 450;
 
             //调显示高度
-            this.Canvas_Picture_HEx.Height = 250;
-            this.TabControl_Picuture.Height = 250;
-            ListBox_RealTimeInputShow_Condenser.Height = 450;
-            ListBox_RealTimeInputShow_Evaporator.Height = 450;
+            this.Canvas_Picture_HEx.Height = 450;
+            this.TabControl_Picuture.Height = 450;
+            this.ListBox_RealTimeInputShow_Condenser.Height = 350;
+            this.ListBox_RealTimeInputShow_Evaporator.Height = 350;
+
+            this.GroupBox_ManualArrangeCirnum.Header = "流路分配";
+            this.StackPanel_ManualArrangeCirnum.Visibility = Visibility.Collapsed;  
         }
 
         private void TreeView_DetailResult_GotFocus(object sender, RoutedEventArgs e)
         {
             this.TabItem_DetailResult.IsSelected = true;
-            //this.TabItem_Null_Picture.IsSelected = true;
             this.TabItem_Pass_Picture.IsSelected = true;
 
             //调显示宽度
-            //TabControl1.Width = 600;//450
-            StackPanel_OutPut.Width=550;
+            StackPanel_OutPut.Width = 550;
             this.TabControl1.Width = 550;
 
             //调显示高度
-            this.Canvas_Picture_HEx.Height = 250;
-            this.TabControl_Picuture.Height = 250;
-            ListBox_RealTimeInputShow_Condenser.Height = 450;
-            ListBox_RealTimeInputShow_Evaporator.Height = 450;
+            this.Canvas_Picture_HEx.Height = 450;
+            this.TabControl_Picuture.Height = 450;
+            this.ListBox_RealTimeInputShow_Condenser.Height = 350;
+            this.ListBox_RealTimeInputShow_Evaporator.Height = 350;
+
+            this.GroupBox_ManualArrangeCirnum.Header = "流路分配";
+            this.StackPanel_ManualArrangeCirnum.Visibility = Visibility.Collapsed;
 
             if (flag_Calculated == true)
             {
@@ -703,27 +701,26 @@ namespace tryRT
                 int Row_int = Convert.ToInt16(Result_Row);
                 int Tube_row_int = Convert.ToInt16(Result_Tube_row);
 
-                
-                    for (int k = 1; k < Tube_row_int*Row_int+1; k++)
+                for (int k = 1; k < Tube_row_int * Row_int + 1; k++)
+                {
+                    int i = k % Tube_row_int == 0 ? Tube_row_int - 1 : k % Tube_row_int - 1;
+                    int j = k % Tube_row_int == 0 ? k / Tube_row_int - 1 : k / Tube_row_int;
+                    peopleList.Add(new people()
                     {
-                        int i = k % Tube_row_int == 0 ? Tube_row_int - 1 : k % Tube_row_int - 1;
-                        int j = k % Tube_row_int == 0 ? k / Tube_row_int - 1 : k / Tube_row_int;
-                        peopleList.Add(new people()
-                        {
-                            //tube = Convert.ToString(i + 1),
-                            //row = Convert.ToString(j + 1),
-                            TubeNumber=k.ToString(),
-                            Pri = getName_Pri[i, j].ToString("f2"),
-                            Tri = getName_Tri[i, j].ToString("f2"),
-                            Hri = getName_Hri[i, j].ToString("f2"),
-                            Pro = getName_Pro[i, j].ToString("f2"),
-                            Tro = getName_Tro[i, j].ToString("f2"),
-                            Hro = getName_Hro[i, j].ToString("f2"),
-                            HTC = getName_HTC[i, j].ToString("f2"),
-                            Q = (1000 * getName_Q[i, j]).ToString("f2"),
-                            mr = (1000 * getName_mr[i, j]).ToString("f2"),
-                        });
-                    }
+                        //tube = Convert.ToString(i + 1),
+                        //row = Convert.ToString(j + 1),
+                        TubeNumber = k.ToString(),
+                        Pri = getName_Pri[i, j].ToString("f2"),
+                        Tri = getName_Tri[i, j].ToString("f2"),
+                        Hri = getName_Hri[i, j].ToString("f2"),
+                        Pro = getName_Pro[i, j].ToString("f2"),
+                        Tro = getName_Tro[i, j].ToString("f2"),
+                        Hro = getName_Hro[i, j].ToString("f2"),
+                        HTC = getName_HTC[i, j].ToString("f2"),
+                        Q = (1000 * getName_Q[i, j]).ToString("f2"),
+                        mr = (1000 * getName_mr[i, j]).ToString("f2"),
+                    });
+                }
 
                 ((this.FindName("dataGrid_Result")) as DataGrid).ItemsSource = peopleList;
                 flag_Calculated = false;
@@ -1015,8 +1012,8 @@ namespace tryRT
             this.TabItem_Pass_Picture.IsSelected = true;
 
             //调显示高度
-            this.Canvas_Picture_HEx.Height = 800;
-            this.TabControl_Picuture.Height = 800;
+            this.Canvas_Picture_HEx.Height = 450;
+            this.TabControl_Picuture.Height = 450;
 
         }
 
@@ -1046,7 +1043,7 @@ namespace tryRT
             this.GroupBox_RealTimeInputShow_Evaporator.Visibility = Visibility.Hidden;
             this.TabItem_HExType.IsSelected = true;
 
-            this.TabItem_HExTypr_Picture1.IsSelected = true;
+            this.TabItem_HExTypr_Picture.IsSelected = true;
         }
 
         private void HExType_Evaporator(object sender, RoutedEventArgs e)
@@ -1060,7 +1057,7 @@ namespace tryRT
             this.GroupBox_RealTimeInputShow_Evaporator.Visibility = Visibility.Visible;
             this.TabItem_HExType.IsSelected = true;
 
-            this.TabItem_HExTypr_Picture2.IsSelected = true;
+            this.TabItem_HExTypr_Picture.IsSelected = true;
         }
 
 
@@ -1343,24 +1340,6 @@ namespace tryRT
             }
 
             //DetailResult******************************************************************************************************End
-
-
-            private void Button_Click_1(object sender, RoutedEventArgs e)
-            {
-                //TabControl_Picuture.Height = 300;
-                this.Canvas_Picture_HEx.Height=450;
-                this.TabControl_Picuture.Height = 450;
-
-                //TabControl_Picuture.Height = 500;
-                
-                //GroupBox_RealTimeInputShow_Condenser.Style.Add("position", "absolute");
-                //button1.Style.Add("left", "0");
-                //button1.Style.Add("top", "0");
-                //tryRT.Midea_Heat_Exchanger_Simulation Window_Midea_Heat_Exchanger_Simulation = new tryRT.Midea_Heat_Exchanger_Simulation();
-                //Window_Midea_Heat_Exchanger_Simulation.Show();
-
-                
-            }
 
             private void Button_Click_Sure(object sender, RoutedEventArgs e)
             {

@@ -55,7 +55,7 @@ namespace tryRT
                 OnPropertyChanged("PanelWidth");
             }
         }
-        private double _panelHeight = 300;
+        private double _panelHeight = 800;
         public double PanelHeight
         {
             get { return _panelHeight; }
@@ -97,7 +97,7 @@ namespace tryRT
         }
         public void GenerateNode(int Nrow, int Ntube)
         {
-            PanelHeight = (Ntube + 3) * TubePitch < 500 ? 500 : (Ntube + 3) * TubePitch;
+            PanelHeight = (Ntube + 3) * TubePitch < 600 ? 600 : (Ntube + 3) * TubePitch;
             PanelWidth = (Nrow + 2) * RowPitch < 500 ? 500 : (Nrow + 2) * RowPitch;
             Nodes.Clear();
             for (int i = 0; i < Ntube; i++)
