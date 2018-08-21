@@ -100,7 +100,7 @@
                             <TabItem x:Name="TabItem_HExTube" Header="换热管" Visibility="Collapsed">
                                 <Grid Background="#FFE5E5E5">
 
-                                    <GroupBox Header="换热管"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="220" Width="410" Margin="8,0,0,0">
+                                    <GroupBox Header="换热管"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="260" Width="410" Margin="8,0,0,0">
                                         <Canvas HorizontalAlignment="Left" Height="480" Width="100" Margin="10,8,0,0" VerticalAlignment="Top">
                                             <TextBlock Text="管型号" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Height="15" Width="36"/>
                                             <ComboBox x:Name="ComboBox_TubeVersion" HorizontalAlignment="Left"  Margin="70,0,0,0" VerticalAlignment="Top" Width="140" Height="26" SelectionChanged="ComboBox_TubeVersion_SelectionChanged"/>
@@ -136,13 +136,13 @@
                                             <TextBlock Text="管种类" HorizontalAlignment="Left" Margin="220,40,0,0" VerticalAlignment="Top" Height="15" Width="36"/>
                                             <ComboBox x:Name="ComboBox_tubetype" HorizontalAlignment="Left" Margin="280,40,0,0" VerticalAlignment="Top" Width="100"  Height="26" SelectionChanged="ComboBox_tubetype_SelectionChanged"/>
 
-                                            <Button x:Name="Button1" Content="确定" HorizontalAlignment="Stretch" Margin="220,160,5,5" Width="120" Click="Button_Click_Sure" Visibility="Visible"></Button>
+                                            <Button x:Name="Button1" Content="确定" HorizontalAlignment="Stretch" Margin="130,200,5,5" Width="120" Click="Button_Click_Sure" Visibility="Visible"></Button>
 
                                         </Canvas>
                                     </GroupBox>
                                     <!-->外形插图_End<!-->
                                     <!-->外形_Start<!-->
-                                    <GroupBox Header="外形"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="290" Width="410" Margin="8,220,0,10">
+                                    <GroupBox Header="外形"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="290" Width="410" Margin="8,265,0,10">
                                         <Canvas HorizontalAlignment="Left" Height="480" Width="100" Margin="10,10,0,0" VerticalAlignment="Top" ContextMenuClosing="TubeArrangement_Cross_Short_Checked" >
                                             <RadioButton GroupName="TubeArrangement" Content="直排" x:Name="TubeArrangement_Straight" Margin="0,5,0,0" Checked="TubeArrangement_Straight_Checked"/>
                                             <RadioButton GroupName="TubeArrangement" Content="叉排(迎风面高)" x:Name="TubeArrangement_Crossed_High" Margin="0,35,0,0" Checked="TubeArrangement_Cross_High_Checked"/>
