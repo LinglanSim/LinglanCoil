@@ -683,6 +683,8 @@
                                                         <DataTemplate.Triggers>
                                                             <DataTrigger Binding="{Binding IsSelected,RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ListBoxItem}}}" Value="True">
                                                                 <Setter TargetName="Line" Property="Stroke" Value="Red"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding FullLine}" Value="False">
                                                                 <Setter TargetName="Line" Property="StrokeDashArray" Value="2 3"/>
                                                             </DataTrigger>
                                                         </DataTemplate.Triggers>
@@ -692,6 +694,8 @@
                                                         <DataTemplate.Triggers>
                                                             <DataTrigger Binding="{Binding IsSelected,RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ListBoxItem}}}" Value="True">
                                                                 <Setter TargetName="Line2" Property="Stroke" Value="Red"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding FullLine}" Value="False">
                                                                 <Setter TargetName="Line2" Property="StrokeDashArray" Value="2 3"/>
                                                             </DataTrigger>
                                                         </DataTemplate.Triggers>

@@ -40,6 +40,16 @@ namespace tryRT
             }
         }
 
+        private bool _fullLine = true;
+        public bool FullLine
+        {
+            get { return _fullLine; }
+            set
+            {
+                _fullLine = value;
+                OnPropertyChanged("FullLine");
+            }
+        }
 
 
 

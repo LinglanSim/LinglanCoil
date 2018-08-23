@@ -41,6 +41,18 @@ namespace tryRT
             set { }
         }
 
+        private bool _fullLine=true;
+        public bool FullLine
+        {
+            get { return _fullLine; }
+            set
+            {
+                _fullLine = value;
+                OnPropertyChanged("FullLine");
+            }
+        }
+
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged(string propertyName)

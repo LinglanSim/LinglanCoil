@@ -1363,6 +1363,7 @@ namespace tryRT
                 vm.Rects[0].X = vm.Nodes[0].X - vm.RowPitch + 5;
                 vm.Rects[0].Y = vm.Nodes[0].Y;
                 vm.Rects[0].RectHeight = (_tube - 1) * vm.TubePitch + 20;
+                vm.Rects[0].FullLine = true;
                 vm.Rects[1].X = vm.Nodes[0].X + _row * vm.RowPitch + 5;
                 vm.Rects[1].Y = vm.Rects[0].Y - (_row + 1) % 2 * vm.TubePitch / 2;
                 vm.Rects[1].RectHeight = vm.Rects[0].RectHeight;
@@ -1375,14 +1376,109 @@ namespace tryRT
             private Node node1;
             private Node node2;
             private Rect rect;
+            private bool rect_start;
             private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
             {
                 //string msg="Successful";
                 //MessageBox.Show(msg);
-                if (vm.CreatNewConnector && ListBox_this.SelectedItem != null)
+                if(vm.CreatNewConnector)
+                {
+                    var item = ListBox_this.SelectedItem;
+                    if(item==null)
+                    {
+                        rect_start = false;
+                    }
+                    else if(item!=null)
+                    {
+                        if (item.GetType().Name == "Rect")
+                        {
+                            rect = item as Rect;
+                            if (rect.X == vm.Rects[0].X && rect.Y == vm.Rects[0].Y)//check selected item is Rect[0] or not
+                            {
+                                rect_start = true;
+                            }
+                            else if (rect_start && node1 != null)
+                            {
+                                Capacity newcapatity = new Capacity();
+                                newcapatity.Start = node1;
+                                newcapatity.End = rect;
+                                newcapatity.FullLine = node1.FullLine;
+                                rect.FullLine = node1.FullLine;
+                                vm.Capacities.Where(x => x.Start == newcapatity.Start && x.End == newcapatity.End).ToList().ForEach(x => vm.Capacities.Remove(x));
+                                vm.Capacities.Add(newcapatity);
+                                if (node1.Y < rect.Y)//change rect height
+                                {
+                                    rect.RectHeight = rect.RectHeight + (rect.Y - node1.Y);
+                                    rect.Y = node1.Y;
+                                }
+                                else if (node1.Y > rect.Y)
+                                {
+                                    if (node1.Y + 20 > rect.Y + rect.RectHeight)
+                                    {
+                                        rect.RectHeight = node1.Y + 20 - rect.Y;
+                                    }
+                                }
+                                node1 = null;
+                            }
+                            if (rect.X == vm.Rects[1].X && rect.Y == vm.Rects[1].Y)
+                            {
+                                rect_start = false;
+                                rect = null;
+                            }
+                        }
+                        else if(item.GetType().Name=="Node")
+                        {
+                            node2 = item as Node;
+                            if(rect_start&&node1!=null&&node1!=node2&&node2.Full==false)
+                            {
+                                Connector newLine = new Connector();
+                                newLine.Start = node1;
+                                newLine.End = node2;
+                                newLine.FullLine = node1.FullLine;
+                                vm.Connectors.Add(newLine);
+                                node2.FullLine = newLine.FullLine ? false : true;
+                                node2.Full = true;
+                                node1 = node2;
+                            }
+                            else if(rect_start&&rect!=null&&node2.Full==false)
+                            {
+                                Capacity newcapacity = new Capacity();
+                                newcapacity.Start = node2;
+                                newcapacity.End = rect;
+                                vm.Capacities.Where(x => x.Start == newcapacity.Start && x.End == newcapacity.End).ToList().ForEach(x => vm.Capacities.Remove(x));//delete same capacity
+                                vm.Capacities.Add(newcapacity);
+                                newcapacity.FullLine = rect.FullLine;
+                                node2.FullLine = rect.FullLine ? false : true;
+                                node2.Full = true;
+                                node1 = node2;
+                                if (node1.Y < rect.Y)
+                                {
+                                    rect.RectHeight = rect.RectHeight + (rect.Y - node1.Y);
+                                    rect.Y = node1.Y;
+                                }
+                                else if (node1.Y > rect.Y)
+                                {
+                                    if (node1.Y + 20 > rect.Y + rect.RectHeight)
+                                    {
+                                        rect.RectHeight = node1.Y + 20 - rect.Y;
+                                    }
+                                }
+                            }
+                            //if (rect_start) node1 = node2;
+                        }
+                    }
+                }//
+
+
+                /*if (vm.CreatNewConnector && ListBox_this.SelectedItem != null)//creat connector
                 {
                     //int nodeindex = ListBox.SelectedIndex;
                     var item = ListBox_this.SelectedItem;
+                    //item.GetType().Name==""
+                    
+
+
+
                     if (item.GetType().Name == "Node")
                     {
                         node2 = item as Node;
@@ -1396,11 +1492,11 @@ namespace tryRT
                         }
                         else if (rect != null)
                         {
-                            Capacity newcapatity = new Capacity();
-                            newcapatity.Start = node2;
-                            newcapatity.End = rect;
-                            vm.Capacities.Where(x => x.Start == newcapatity.Start && x.End == newcapatity.End).ToList().ForEach(x => vm.Capacities.Remove(x));
-                            vm.Capacities.Add(newcapatity);
+                            Capacity newcapacity = new Capacity();
+                            newcapacity.Start = node2;
+                            newcapacity.End = rect;
+                            vm.Capacities.Where(x => x.Start == newcapacity.Start && x.End == newcapacity.End).ToList().ForEach(x => vm.Capacities.Remove(x));//delete same capacity
+                            vm.Capacities.Add(newcapacity);
                             node1 = node2;
                             if (node1.Y < rect.Y)
                             {
@@ -1427,7 +1523,7 @@ namespace tryRT
                             newcapatity.End = rect;
                             vm.Capacities.Where(x => x.Start == newcapatity.Start && x.End == newcapatity.End).ToList().ForEach(x => vm.Capacities.Remove(x));
                             vm.Capacities.Add(newcapatity);
-                            if (node1.Y < rect.Y)
+                            if (node1.Y < rect.Y)//change rect height
                             {
                                 rect.RectHeight = rect.RectHeight + (rect.Y - node1.Y);
                                 rect.Y = node1.Y;
@@ -1464,14 +1560,14 @@ namespace tryRT
                         TextBox_Diameter.Text = "";
                     }
                 }
-                else if (ListBox_this.SelectedItem == null)
+                else if (ListBox_this.SelectedItem == null)//set capatity
                 {
                     TextBox_Length.IsEnabled = false;
                     TextBox_Diameter.IsEnabled = false;
                     Button_Capacity.IsEnabled = false;
                     TextBox_Length.Text = "";
                     TextBox_Diameter.Text = "";
-                }
+                }*/
             }
 
             private void ListBox_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -1561,22 +1657,6 @@ namespace tryRT
                     }
                 }
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     }
 
