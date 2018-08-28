@@ -53,6 +53,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CircuitInput.cs" />
     <Compile Include="Rect.cs" />
     <Compile Include="ViewModel.cs" />
     <Page Include="MainWindow.xaml">

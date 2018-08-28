@@ -7,7 +7,7 @@ using System.ComponentModel;
 
 namespace tryRT
 {
-    class Capacity : INotifyPropertyChanged
+    public class Capacity : INotifyPropertyChanged
     {
         private Node _start;
         public Node Start
@@ -74,6 +74,16 @@ namespace tryRT
             }
         }
 
+        private bool _in;//capacity location
+        public bool In
+        {
+            get { return _in; }
+            set
+            {
+                _in = value;
+                OnPropertyChanged("In");
+            }
+        }
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged(string propertyName)

@@ -7,7 +7,7 @@ using System.ComponentModel;
 
 namespace tryRT
 {
-    class Rect : INotifyPropertyChanged
+    public class Rect : INotifyPropertyChanged
     {
         private double _x;
         public double X

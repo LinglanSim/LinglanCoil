@@ -185,6 +185,8 @@ namespace tryRT
             set { Tri_detail_inter = value; }
         }
 
+        private int CircuitIndex = new int();//0:Manual circuiting 1:Auto circuiting
+
         //声明用来制作不均匀配风的表格
         List<int[]> list = new List<int[]>();
         ObservableCollection<int[]> showdata = new ObservableCollection<int[]>();
@@ -356,7 +358,7 @@ namespace tryRT
             this.Close();
         }
 
-        private void MenuItem_Click_0(object sender, RoutedEventArgs e)//关闭按钮
+        private void MenuItem_Click_0(object sender, RoutedEventArgs e)//calculate
         {
             flag_Calculated = true;
 
@@ -375,6 +377,14 @@ namespace tryRT
             geoInput.L = Convert.ToDouble(L.Text);
             geoInput.Fthickness = Convert.ToDouble(Fthick.Text);
             geoInput.FPI = Convert.ToDouble(Fnum.Text);
+            if(CircuitIndex==0)
+            {
+                geoInput.CirNum = 0;
+            }
+            else
+            {
+                geoInput.CirNum = Convert.ToInt16(Cirnum.Text);
+            }
             geoInput.CirNum = Convert.ToInt16(Cirnum.Text);
             //double mr = Convert.ToDouble(textBox1.Text);
             refInput.Massflowrate = Convert.ToDouble(mr.Text);
@@ -400,7 +410,16 @@ namespace tryRT
             Model.Basic.CapiliaryInput capInput = new Model.Basic.CapiliaryInput();
             capInput.d_cap = new double[3];//0.006
             capInput.lenth_cap = new double[3];//0.5
-            var r = m_Main.main_condenser(refInput, airInput, geoInput, flowtype, fin_type, tube_type, hex_type, capInput);
+
+            //if(GroupBox_ManualArrangeCirnum)
+
+
+            //else(RadioButton_AutoArrange)
+            int[,] CirArrange = CircuitInput.CircuitConvert(vm.Nodes, vm.Connectors, vm.Capacities, vm.Rects);
+            int[, ,] NodeInfo = CircuitInput.NodesConvert(vm.Nodes, vm.Connectors, vm.Capacities, vm.Rects);
+            var r = m_Main.main_condenser(refInput, airInput, geoInput,CirArrange, NodeInfo,flowtype, fin_type, tube_type, hex_type, capInput);
+
+
 
             //***换热器性能输出***//
             Q.Text = r.Q.ToString("f2");
@@ -1024,6 +1043,7 @@ namespace tryRT
             //调显示高度
             this.Canvas_Picture_HEx.Height = 450;
             this.TabControl_Picuture.Height = 450;
+            CircuitIndex = 0;
 
         }
 
@@ -1038,6 +1058,7 @@ namespace tryRT
             this.TabControl_Picuture.Height = 250;
             ListBox_RealTimeInputShow_Condenser.Height = 450;
             ListBox_RealTimeInputShow_Evaporator.Height = 450;
+            CircuitIndex = 1;
         }
 
         //CheckBox*********************************************************************************************************End
@@ -1403,6 +1424,7 @@ namespace tryRT
                                 newcapatity.Start = node1;
                                 newcapatity.End = rect;
                                 newcapatity.FullLine = node1.FullLine;
+                                newcapatity.In = false;
                                 rect.FullLine = node1.FullLine;
                                 vm.Capacities.Where(x => x.Start == newcapatity.Start && x.End == newcapatity.End).ToList().ForEach(x => vm.Capacities.Remove(x));
                                 vm.Capacities.Add(newcapatity);
@@ -1448,6 +1470,7 @@ namespace tryRT
                                 vm.Capacities.Where(x => x.Start == newcapacity.Start && x.End == newcapacity.End).ToList().ForEach(x => vm.Capacities.Remove(x));//delete same capacity
                                 vm.Capacities.Add(newcapacity);
                                 newcapacity.FullLine = rect.FullLine;
+                                newcapacity.In = true;
                                 node2.FullLine = rect.FullLine ? false : true;
                                 node2.Full = true;
                                 node1 = node2;

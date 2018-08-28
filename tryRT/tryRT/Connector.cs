@@ -7,7 +7,7 @@ using System.ComponentModel;
 
 namespace tryRT
 {
-    class Connector : INotifyPropertyChanged
+    public class Connector : INotifyPropertyChanged
     {
         private Node _start;
         public Node Start

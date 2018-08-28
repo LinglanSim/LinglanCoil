@@ -816,7 +816,7 @@ namespace Model
             return res;
 
         }
-        public CalcResult main_condenser(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, string flowtype, string fin_type, string tube_type, string hex_type, CapiliaryInput capInput)
+        public CalcResult main_condenser(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, int[,] CirArrange, int[,,] NodesInfo, string flowtype, string fin_type, string tube_type, string hex_type, CapiliaryInput capInput)
         {
             //制冷剂制热模块计算
             //string fluid = new string[] { "Water" };
@@ -825,26 +825,22 @@ namespace Model
             //string fluid = new string[] { "ISOBUTAN" };
             CalcResult res = new CalcResult();
             int Nrow = geoInput.Nrow;
-            double[] FPI = new double[Nrow + 1];
-            //FPI = new double[] { 1.27, 1.27, 1.27, 1.27, 1.27, 1.27, 1.27, 2.6, 2.6, 2.6, 2.6, 2.6, 2.6, 2.6, 2.6, 5.2, 5.2, 5.2, 5.2, 5.2, 5.2 };
+            double[] FPI = new double[Nrow];
+            
             FPI = new double[] { 25.4 / geoInput.FPI, 25.4 / geoInput.FPI };//to be updated
             double Pt = geoInput.Pt * 0.001;//1 * 25.4 * 0.001;
             double Pr = geoInput.Pr * 0.001;//0.75 * 25.4 * 0.001;
-            //double Di = 8.4074 * 0.001;//8 6.8944
             double Do = geoInput.Do * 0.001;// 10.0584 * 0.001;//8.4 7.35
             double Fthickness = geoInput.Fthickness * 0.001;// 0.095 * 0.001;
             double thickness = geoInput.Tthickness * 0.001;// 0.5 * (Do - Di);
             double Di = Do - 2 * thickness; //8.4074 * 0.001;//8 6.8944
-            //double n_tubes = 10;
-            //double n_rows = 2;
-            //int[] Ntube = { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
-            //int[] Ntube = { 2, 2, 2, 2 };
+
             int[] Ntube = { geoInput.Ntube, geoInput.Ntube };
             int N_tube = Ntube[0];
             double L = geoInput.L * 0.001;// 914.4 * 0.001;
             int Nelement = 5;
             int CirNum = geoInput.CirNum;// 2;//流路数目赋值
-            int[,] CirArrange;
+            //int[,] CirArrange;
 
             CircuitNumber CircuitInfo = new CircuitNumber();
             CircuitInfo.number = new int[] { CirNum, CirNum };
