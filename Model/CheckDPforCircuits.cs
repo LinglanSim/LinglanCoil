@@ -90,7 +90,7 @@ namespace Model
                 DP[i] = pri-pro[i];
             }
 
-            N = 1.8; //1.8
+            N = 2.2; //1.8
 
             for (int i = 0; i < Ncir - 1; i++)
             {
@@ -104,7 +104,7 @@ namespace Model
                     for (int j = i + 1; j < Ncir; j++)
                     {
                         f[i, j] = DP[i] - DP[j];
-                        a[i, j] = -DP[i]* N / mr_cir[i] - DP[i + 1] * N / mr_cir[i + 1];//1.8 to be modified
+                        a[i, j] = -DP[i]* N / mr_cir[i] - DP[j] * N / mr_cir[j];//1.8 to be modified
                         y[i, j] = -f[i, j] / a[i, j];
                         y[j, i] = -y[i, j];
                     }

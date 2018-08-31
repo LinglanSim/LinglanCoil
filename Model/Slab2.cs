@@ -86,7 +86,7 @@ namespace Model
                     index_Node = SearchNode.FindNextNode(-1, 0, Nodes, N_Node);//Find the first node
                     index_status[index_Node] = 0;//initial status
                     //index_FullStatus[index_Node]=Nodes[index_Node].N_out;
-                    index_DP[index_Node] = 0;
+                    //index_DP[index_Node] = 0;
                     index_end = false;
                     for (int i = 0; i < 1000; i++)//for DP converge
                     {
@@ -219,7 +219,7 @@ namespace Model
                                     }
                                     else if (dPconverge.flag == true)
                                     {
-                                        index_DP[index_couple]++;
+                                        index_DP[index_couple]=1;
                                         Nodes[index_couple].mr_ratio = dPconverge.mr_ratio;
                                         double mr_sum = 0;
                                         double tro_ave = 0;
