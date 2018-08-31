@@ -23,6 +23,51 @@ namespace Model
             {
                 r[i] = Element.ElementCal(fluid, l / Nelement, Aa_fin, Aa_tube, A_r_cs, Ar, geo,
                     tai[i], RHi[i], tri, pri, hri, mr, g, ma[i], ha[i], haw[i],eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, coolprop);//elementtest
+ 
+                //SP/TP Smooth
+                if((r[i].x_i>1&&r[i].x_o<1)||(r[i].x_i>0&&r[i].x_o<0)||(r[i].x_i<0&&r[i].x_o>0)||(r[i].x_i<1&&r[i].x_o>1))
+                {
+                    int N_sub = 20;
+                    CalcResult[] r_sub = new CalcResult[N_sub];
+                    double tri_sub=new double();
+                    double pri_sub=new double();
+                    double hri_sub=new double();
+                    tri_sub = tri;
+                    pri_sub = pri;
+                    hri_sub = hri;
+                    for(int j=0;j<N_sub;j++)
+                    {
+                        r_sub[j] = Element.ElementCal(fluid, l / Nelement / N_sub, Aa_fin / N_sub, Aa_tube / N_sub, A_r_cs, Ar / N_sub, geo,
+                            tai[i], RHi[i], tri_sub, pri_sub, hri_sub, mr, g, ma[i] / N_sub, ha[i], haw[i], eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, coolprop);
+                        pri_sub = r_sub[j].Pro;
+                        hri_sub = r_sub[j].hro;
+                        tri_sub = r_sub[j].Tro;
+
+                        r[i].Tao += r_sub[j].Tao;
+                        r[i].RHout += r_sub[j].RHout;
+                        r[i].DP += r_sub[j].DP;
+                        r[i].Q += r_sub[j].Q;
+                        r[i].M += r_sub[j].M;
+                        r[i].href += r_sub[j].href;
+                        r[i].R_1 += r_sub[j].R_1;
+                        r[i].R_1a += r_sub[j].R_1a;
+                        r[i].R_1r += r_sub[j].R_1r;
+                    }
+                    r[i].Tao = r[i].Tao / N_sub;
+                    r[i].RHout = r[i].RHout / N_sub;
+                    r[i].href = r[i].href / N_sub;
+                    r[i].R_1 = r[i].R_1 / N_sub;
+                    r[i].R_1a = r[i].R_1a / N_sub;
+                    r[i].R_1r = r[i].R_1r / N_sub;
+                    r[i].Pro = r_sub[N_sub-1].Pro;
+                    r[i].hro = r_sub[N_sub - 1].hro;
+                    r[i].Tro = r_sub[N_sub - 1].Tro;
+                    r[i].x_o = r_sub[N_sub - 1].x_o;
+                    r[i].Vel_r = r_sub[N_sub - 1].Vel_r;
+                    r[i].x_i = r_sub[0].x_i;
+                    r[i].Tri = r_sub[0].Tri;
+                }
+
                 if (r[i].Pro < 0) { res_tube.Pro = -10000000; return res_tube; }
                 pri = r[i].Pro;
                 hri = r[i].hro;
