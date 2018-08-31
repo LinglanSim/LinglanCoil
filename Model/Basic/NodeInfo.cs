@@ -8,6 +8,7 @@ namespace Model.Basic
 {
     public class NodeInfo
     {
+        public int Name;
         public int N_in;
         public int N_out;
         public int[] inlet;

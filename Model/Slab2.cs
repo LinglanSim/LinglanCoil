@@ -13,7 +13,7 @@ namespace Model
         //Start
         public static CalcResult SlabCalc(int[,] CirArrange, CircuitNumber CircuitInfo, int Nrow, int[] Ntube, int Nelement, string fluid, //double Npass, int[] N_tubes_pass, 
            double l, Geometry geo, double[, ,] ta, double[, ,] RH, double te, double pe, double hri, double mr, double[,] ma, double[,] ha, double[,] haw,
-           double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater, string Airdirection, NodeInfo[] Nodes, int N_Node,double[] d_cap, double[] lenth_cap, AbstractState coolprop)      
+           double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater, string Airdirection, List<NodeInfo> Nodes, int N_Node,double[] d_cap, double[] lenth_cap, AbstractState coolprop)      
         {
             double tri = te; //Refrigerant.SATP(fluid, composition, pri, 1).Temperature - 273.15;
             double pri = pe;
@@ -281,7 +281,19 @@ namespace Model
                                 }//end if
                             }//end for        
                             if (index_end == true) break;
-                        }//end if          
+                        }
+                        else if (Nodes[index_Node].type == 'E')//for 1 out case
+                        {
+                            Nodes[index_Node].pri[0] = r.Pro;
+                            Nodes[index_Node].tri[0] = r.Tro;
+                            Nodes[index_Node].hri[0] = r.hro;
+                            Nodes[index_Node].mro[0] = r.mr;
+                            Nodes[index_Node].pro[0] = r.Pro;
+                            Nodes[index_Node].tro[0] = r.Tro;
+                            Nodes[index_Node].hro[0] = r.hro;
+                            Nodes[index_Node].mro[0] = r.mr;
+                            break;
+                        }
                     }//end out for
                     airConverge = CheckAirConvergeforCircuits.CheckAirConverge2(cirArrforAir.TotalDirection, Nrow, N_tube, Nelement, ta, RH, taout_calc, RHout_calc); //taout_calc, RHout_calc
                     ta = airConverge.ta;

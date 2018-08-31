@@ -68,7 +68,10 @@
     <Compile Include="AirCoef.cs">
       <DependentUpon>DataBase.tt</DependentUpon>
     </Compile>
-    <Compile Include="Basic\Node.cs" />
+    <Compile Include="Basic\ArrayEqual.cs" />
+    <Compile Include="Basic\CircuiConvert.cs" />
+    <Compile Include="Basic\NodeConvert.cs" />
+    <Compile Include="Basic\NodeInfo.cs" />
     <Compile Include="Basic\SearchNode.cs" />
     <Compile Include="GeometryCal.cs" />
     <Compile Include="BaroczyVoidFraction.cs">

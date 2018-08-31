@@ -8,7 +8,7 @@ namespace Model.Basic
 {
     public class SearchNode
     {
-        public static int FindNextNode(int in_Node, int index_status, NodeInfo[] Nodes,int N_Node)
+        public static int FindNextNode(int in_Node, int index_status, List<NodeInfo> Nodes,int N_Node)
         {
             int r=0;
             if(in_Node==-1)//Find the first node

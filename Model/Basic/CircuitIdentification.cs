@@ -12,6 +12,11 @@ namespace Model.Basic
         {
             CircuitType res = new CircuitType();
             //int N_tube = Ntube[0];
+            if(number==null)
+            {
+                res.flag = false;
+                return res;
+            }
             array[] array0 = new array[number[0]];
             array[] array1 = new array[number[0]];
             for (int i = 0; i < number[0]; i++)

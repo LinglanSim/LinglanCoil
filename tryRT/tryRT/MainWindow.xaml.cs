@@ -385,7 +385,7 @@ namespace tryRT
             {
                 geoInput.CirNum = Convert.ToInt16(Cirnum.Text);
             }
-            geoInput.CirNum = Convert.ToInt16(Cirnum.Text);
+            //geoInput.CirNum = Convert.ToInt16(Cirnum.Text);
             //double mr = Convert.ToDouble(textBox1.Text);
             refInput.Massflowrate = Convert.ToDouble(mr.Text);
             //double tc = Convert.ToDouble(textBox2.Text);
@@ -415,8 +415,23 @@ namespace tryRT
 
 
             //else(RadioButton_AutoArrange)
-            int[,] CirArrange = CircuitInput.CircuitConvert(vm.Nodes, vm.Connectors, vm.Capacities, vm.Rects);
-            int[, ,] NodeInfo = CircuitInput.NodesConvert(vm.Nodes, vm.Connectors, vm.Capacities, vm.Rects);
+            int i = 1;
+            int j = 1;
+            int k = 1;
+            int[,] CirArrange = new int[i,j];
+            int[, ,] NodeInfo = new int[i,j,k];
+            if(CircuitIndex==0)//Manual connect
+            {
+                i = CircuitInput.CircuitConvert(vm.Nodes, vm.Connectors, vm.Capacities, vm.Rects).GetLength(0);
+                j = CircuitInput.CircuitConvert(vm.Nodes, vm.Connectors, vm.Capacities, vm.Rects).GetLength(1);
+                CirArrange = new int[i, j];
+                CirArrange = CircuitInput.CircuitConvert(vm.Nodes, vm.Connectors, vm.Capacities, vm.Rects);
+                i = CircuitInput.NodesConvert(vm.Nodes, vm.Connectors, vm.Capacities, vm.Rects).GetLength(0);
+                j = CircuitInput.NodesConvert(vm.Nodes, vm.Connectors, vm.Capacities, vm.Rects).GetLength(2);
+                NodeInfo = new int[i, 2, j];
+                NodeInfo = CircuitInput.NodesConvert(vm.Nodes, vm.Connectors, vm.Capacities, vm.Rects);
+            }
+
             var r = m_Main.main_condenser(refInput, airInput, geoInput,CirArrange, NodeInfo,flowtype, fin_type, tube_type, hex_type, capInput);
 
 
