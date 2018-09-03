@@ -365,6 +365,7 @@ namespace Model
             //double rho_r = CoolProp.PropsSI("D", "H", hri * 1000, "P", (fluid == "Water" ? Pwater : pri) * 1000, fluid);
             double cp_r = coolprop.cpmass();
             //double cp_r = CoolProp.PropsSI("C", "H", hri * 1000, "P", (fluid == "Water" ? Pwater : pri) * 1000, fluid);
+
             double Pr_r = cp_r * mu_r / k_r;
             res.Vel_r = g / rho_r;
             double Re_r = rho_r * res.Vel_r * dh / mu_r;
@@ -492,7 +493,7 @@ namespace Model
                         h_s_w_i = 58.732687 * Math.Pow(Tin_r + 273.15, 2) - 30921.970577 * (Tin_r + 273.15) + 4075493.951473;
                         ///////
                         double h1 = 58.732687 * Math.Pow((Tin_r + Tout_r) / 2 + 273.15 + 0.01, 2) - 30921.970577 * ((Tin_r + Tout_r) / 2 + 273.15 + 0.01) + 4075493.951473;
-                        double h2 = 58.732687 * Math.Pow(tri + 273.15, 2) - 30921.970577 * (tri + 273.15 - 0.01) + 4075493.951473;
+                        double h2 = 58.732687 * Math.Pow((Tin_r + Tout_r) / 2 + 273.15, 2) - 30921.970577 * ((Tin_r + Tout_r) / 2 + 273.15 ) + 4075493.951473;
                         double c_s = (h1 - h2) / 0.01;
                         //double c_s = (CoolProp.HAPropsSI("H", "T", (Tin_r + Tout_r) / 2 + 273.15 + 0.01, "P", 101325, "R", 1) - CoolProp.HAPropsSI("H", "T", (Tin_r + Tout_r) / 2 + 273.15, "P", 101325, "R", 1)) / 0.01;
 

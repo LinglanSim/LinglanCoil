@@ -28,6 +28,7 @@ namespace Model
                 if((r[i].x_i>1&&r[i].x_o<1)||(r[i].x_i>0&&r[i].x_o<0)||(r[i].x_i<0&&r[i].x_o>0)||(r[i].x_i<1&&r[i].x_o>1))
                 {
                     int N_sub = 20;
+                    r[i] = new CalcResult();
                     CalcResult[] r_sub = new CalcResult[N_sub];
                     double tri_sub=new double();
                     double pri_sub=new double();

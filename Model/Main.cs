@@ -1172,37 +1172,38 @@ namespace Model
             int[] Node_couple = { 0, 1, 2, 1, 2, 0 };
 
             int N_Node = Node_in.GetLength(0);
-            NodeInfo[] Nodes = new NodeInfo[N_Node];
+            List<NodeInfo> Nodes = new List<NodeInfo>();
             for (int i = 0; i < N_Node; i++)
             {
-                Nodes[i] = new NodeInfo();
-                Nodes[i].N_in = Node_Nin[i];
-                Nodes[i].N_out = Node_Nout[i];
-                Nodes[i].inlet = new int[Nodes[i].N_in];
-                Nodes[i].inType = new int[Nodes[i].N_in];
-                Nodes[i].outlet = new int[Nodes[i].N_out];
-                Nodes[i].outType = new int[Nodes[i].N_out];
-                for (int j = 0; j < Nodes[i].N_in; j++)
+                NodeInfo newNode = new NodeInfo();
+                newNode.N_in = Node_Nin[i];
+                newNode.N_out = Node_Nout[i];
+                newNode.inlet = new int[newNode.N_in];
+                newNode.inType = new int[newNode.N_in];
+                newNode.outlet = new int[newNode.N_out];
+                newNode.outType = new int[newNode.N_out];
+                for (int j = 0; j < newNode.N_in; j++)
                 {
-                    Nodes[i].inlet[j] = Node_in[i, j];
-                    Nodes[i].inType[j] = Node_inType[i, j];
+                    newNode.inlet[j] = Node_in[i, j];
+                    newNode.inType[j] = Node_inType[i, j];
                 }
-                for (int j = 0; j < Nodes[i].N_out; j++)
+                for (int j = 0; j < newNode.N_out; j++)
                 {
-                    Nodes[i].outlet[j] = Node_out[i, j];
-                    Nodes[i].outType[j] = Node_outType[i, j];
+                    newNode.outlet[j] = Node_out[i, j];
+                    newNode.outType[j] = Node_outType[i, j];
                 }
-                Nodes[i].type = Node_type[i];
-                Nodes[i].couple = Node_couple[i];
-                Nodes[i].mri = new double[Nodes[i].N_in];
-                Nodes[i].mro = new double[Nodes[i].N_out];
-                Nodes[i].pri = new double[Nodes[i].N_in];
-                Nodes[i].pro = new double[Nodes[i].N_out];
-                Nodes[i].hri = new double[Nodes[i].N_in];
-                Nodes[i].hro = new double[Nodes[i].N_out];
-                Nodes[i].tri = new double[Nodes[i].N_in];
-                Nodes[i].tro = new double[Nodes[i].N_out];
-                Nodes[i].mr_ratio = new double[Nodes[i].N_out];
+                newNode.type = Node_type[i];
+                newNode.couple = Node_couple[i];
+                newNode.mri = new double[newNode.N_in];
+                newNode.mro = new double[newNode.N_out];
+                newNode.pri = new double[newNode.N_in];
+                newNode.pro = new double[newNode.N_out];
+                newNode.hri = new double[newNode.N_in];
+                newNode.hro = new double[newNode.N_out];
+                newNode.tri = new double[newNode.N_in];
+                newNode.tro = new double[newNode.N_out];
+                newNode.mr_ratio = new double[newNode.N_out];
+                Nodes.Add(newNode);
             }
 
             CirArr[] cirArr = new CirArr[Nrow * N_tube];
@@ -1307,11 +1308,184 @@ namespace Model
 
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
-            res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, tri, pri, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
-            //res = Slab2.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, tri, pri, hri,
-            //    mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, Nodes, N_Node, d_cap, lenth_cap, coolprop);
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, tri, pri, hri,
+            //    mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
+            res = Slab2.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, tri, pri, hri,
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, Nodes, N_Node, d_cap, lenth_cap, coolprop);
             return res;
+        }
+        public static CalcResult main_water_Slab()
+        {
+            //制冷剂制热模块计算
+            string fluid = "Water";// refri_in;// "R32";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
+            CalcResult res = new CalcResult();
+            int Nrow = 1;
+            double[] FPI = new double[Nrow];
+            FPI = new double[1] { 25.4 / 1.3 };//to be updated
+            double Pt = 21 * 0.001;//1 * 25.4 * 0.001;
+            double Pr = 22 * 0.001;//0.75 * 25.4 * 0.001;
+            double Do = 7.35 * 0.001;// 10.0584 * 0.001;//8.4 7.35
+            double Di = 6.88 * 0.001;
+            double Fthickness = 0.095 * 0.001;// 0.095 * 0.001;
+            double thickness = 0.5 * (Do - Di); //geoInput.Tthickness * 0.001;// 
+            //double Di = Do - 2 * thickness; //8.4074 * 0.001;//8 6.8944
+            int[] Ntube = { 14 };
+            int N_tube = Ntube[0];
+            double L = 150 * 0.001;// 914.4 * 0.001;
+            int Nelement = 5;
+            int CirNum = 2;// 2;//流路数目赋值
+            int[,] CirArrange;
+
+            CircuitNumber CircuitInfo = new CircuitNumber();
+            CirArrange = new int[,] { { 1, 2, 3, 4, 5, 6, 7 }, { 14, 13, 12, 11, 10, 9, 8 } };
+            CircuitInfo.number = new int[] { 2, 2 };//4in 2out
+            CircuitInfo.TubeofCir = new int[] { 7, 7 };//{ 6, 6, 6, 6, 2, 2 };  //{ 4, 8 };
+            //CircuitInfo.UnequalCir = new int[] { 5, 5, 6, 6, 0, 0 };
+
+
+            int[,] Node_in = { { -1, -100 }, { 0, 1 } };
+            int[,] Node_inType = { { -1, -100 }, { 1, 1 } };//0:Node,1:Circuit,-1:in/out,-100:meaningless
+            int[] Node_Nin = { 1, 2 };
+            int[,] Node_out = { { 0, 1 }, { -1, -100 } };
+            int[,] Node_outType = { { 1, 1 }, { -1, -100 } };
+            int[] Node_Nout = { 2, 1 };
+            char[] Node_type = { 'D', 'C' };// Diverse/Converge
+            int[] Node_couple = { 1, 1 };
+
+            int N_Node = Node_in.GetLength(0);
+            //NodeInfo[] Nodes = new NodeInfo[N_Node];
+            List<NodeInfo> Nodes = new List<NodeInfo>();
+            for (int i = 0; i < N_Node; i++)
+            {
+                NodeInfo newNode = new NodeInfo();
+                newNode.N_in = Node_Nin[i];
+                newNode.N_out = Node_Nout[i];
+                newNode.inlet = new int[newNode.N_in];
+                newNode.inType = new int[newNode.N_in];
+                newNode.outlet = new int[newNode.N_out];
+                newNode.outType = new int[newNode.N_out];
+                for (int j = 0; j < newNode.N_in; j++)
+                {
+                    newNode.inlet[j] = Node_in[i, j];
+                    newNode.inType[j] = Node_inType[i, j];
+                }
+                for (int j = 0; j < newNode.N_out; j++)
+                {
+                    newNode.outlet[j] = Node_out[i, j];
+                    newNode.outType[j] = Node_outType[i, j];
+                }
+                newNode.type = Node_type[i];
+                newNode.couple = Node_couple[i];
+                newNode.mri = new double[newNode.N_in];
+                newNode.mro = new double[newNode.N_out];
+                newNode.pri = new double[newNode.N_in];
+                newNode.pro = new double[newNode.N_out];
+                newNode.hri = new double[newNode.N_in];
+                newNode.hro = new double[newNode.N_out];
+                newNode.tri = new double[newNode.N_in];
+                newNode.tro = new double[newNode.N_out];
+                newNode.mr_ratio = new double[newNode.N_out];
+                Nodes.Add(newNode);
+            }
+
+            CirArr[] cirArr = new CirArr[Nrow * N_tube];
+            cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube).CirArr;
+            //CircuitType CirType = new CircuitType();
+            CircuitInfo.CirType = CircuitIdentification.CircuitIdentify(CircuitInfo.number, CircuitInfo.TubeofCir, cirArr);
+
+            //Circuit-Reverse module
+            bool reverse = false; //*********************************false:origin, true:reverse******************************************
+            CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
+
+            double[] d_cap = new double[2];
+            double[] lenth_cap = new double[2];
+
+            GeometryInput geoInput_air = new GeometryInput();
+            geoInput_air.Pt = Pt;
+            geoInput_air.Pr = Pr;
+            geoInput_air.Do = Do;
+            geoInput_air.Fthickness = Fthickness;
+            geoInput_air.FPI = FPI[0];
+            geoInput_air.Nrow = Nrow;
+
+            int hexType = 0;
+
+            double mr = 4.0/60; //mr_in;//0.01;
+            double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
+            //double Vel_ave = 1;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+            AirDistribution VaDistri = new AirDistribution();
+            VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
+            double[,] ma = new double[N_tube, Nelement];
+            double[,] ha = new double[N_tube, Nelement];
+            double H = Pt * N_tube;
+            double Hx = L * H;
+            double rho_a_st = 1.2; //kg/m3
+            double Va = 100;
+            double Vel_ave = Va / Hx / 3600;
+            double za = 1; //Adjust factor
+            int curve = 1;
+            for (int i = 0; i < N_tube; i++)
+            {
+                for (int j = 0; j < Nelement; j++)
+                {
+                    ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
+                    //ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve);// *1.5;
+                    //ha[i, j] = 79;
+                    ha[i, j] = AirHTC.alpha1(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve, geoInput_air, hexType).ha;
+                }
+            }
+            double[,] haw = ha;
+
+            res.DPa = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
+
+            double eta_surface = 1;
+            double zh = 1;
+            double zdp = 1;
+
+            double tai = 30;// tai_in;//26.67;
+            double RHi = 0.5;// RHi_in;//0.469;
+            double tc = 6;// tc_in;//45.0;
+            //double pri = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
+
+            coolprop.update(input_pairs.QT_INPUTS, 0, tc + 273.15);
+            double pri = coolprop.p() / 1000;
+            //double P_exv = 1842.28;//kpa
+            double tri = 6;// tri_in;//78;//C
+            double conductivity = 386; //w/mK for Cu
+            double Pwater = 100.0;
+            //int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
+            coolprop.update(input_pairs.PT_INPUTS, pri * 1000, tri + 273.15);
+            double hri = coolprop.hmass() / 1000;
+            //double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000;
+            //double hri = 354.6;
+            //double xin = 0.57;
+
+            double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
+            double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
+
+            //string AirDirection="DowntoUp";
+            string AirDirection = "Counter";
+            ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
+            RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
+
+            Geometry geo = new Geometry();
+            geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, tri, pri, hri,
+            //    mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
+            res = Slab2.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, tri, pri, hri,
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, Nodes, N_Node, d_cap, lenth_cap, coolprop);
+            using (StreamWriter wr = File.AppendText(@"D:\Midea9_heat.txt"))
+            {
+                    for (int j = 0; j < 14; j++)
+                        for (int k = 0; k < 2;k++ )
+                        {
+                            wr.WriteLine("{0},{1},{2},{3},{4}", res.Tao_Detail[0, j, k], res.Tao_Detail[1, j, k], res.Tao_Detail[2, j, k], res.Tao_Detail[3, j, k], res.Tao_Detail[4, j, k]);
+                        }
+            }
+            
+            return res;
+
         }
 
         public static CalcResult main_RACR32condenser_1()
