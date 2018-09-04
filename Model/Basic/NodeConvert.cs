@@ -92,12 +92,19 @@ namespace Model.Basic
                 {
                     Nodes[i].type = 'C';
                 }
-                if(i==1)//out
+                //single inlet
+                if(i==0&&Nodes[i].N_out==1)
+                {
+                    Nodes[i].type = 'S';
+                    Nodes[i].couple = -1;
+                }
+
+                if(i==1)//single outlet
                 {
                     if (Nodes[i].N_in == 1)
                     {
                         Nodes[i].type = 'E';
-                        Nodes[i].couple=-1;
+                        Nodes[i].couple=-2;
                     }
                 }
             }

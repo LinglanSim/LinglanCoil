@@ -12,7 +12,7 @@ namespace tryRT
     {
         public static int[,] CircuitConvert(ObservableCollection<Node> Nodes, ObservableCollection<Connector> Connectors, ObservableCollection<Capacity> Capacities, ObservableCollection<Rect> Rects)
         {
-            int N_tube=Nodes.Count;
+            int N_tube=Nodes.Count;// Nodes here is tube
             int N_circuit=0;
             for(int i=0;i<Capacities.Count;i++)
             {
@@ -41,7 +41,7 @@ namespace tryRT
                     }
                     m++;
                 }
-            }          
+            }
             return CirArrange;
         }
         public static int[,,] NodesConvert(ObservableCollection<Node> Nodes, ObservableCollection<Connector> Connectors, ObservableCollection<Capacity> Capacities, ObservableCollection<Rect> Rects)

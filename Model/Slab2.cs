@@ -98,7 +98,7 @@ namespace Model
                             Nodes[index_Node].tri[0] = tri;
                             //index_cir=Node[index].out[i];//?
                         }
-                        if (Nodes[index_Node].type == 'D')//Diverse Node Distribution
+                        if (Nodes[index_Node].type == 'D' || Nodes[index_Node].type == 'S')//Diverse Node Distribution
                         {
                             if (index_DP[index_Node] == 0)//first time calculation
                             {
