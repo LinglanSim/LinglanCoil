@@ -14,5 +14,6 @@ namespace Model.Basic
         public double ha;
         public double za;
         public double zdpa;
+        public int AirFlowDirection;
     }
 }

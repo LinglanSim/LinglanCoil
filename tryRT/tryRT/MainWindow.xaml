@@ -20,27 +20,27 @@
                         <Menu HorizontalAlignment="Left" Height="25" Margin="0,0,0,0" Grid.RowSpan="1" VerticalAlignment="Top" Width="1176" Background="#FFE5E5E5">
                             <MenuItem Header="文件" >
                                 <MenuItem.Icon>
-                                    <Image Source="菜单_文件.PNG"/>
+                                    <Image Source="Pictures\菜单_文件.PNG"/>
                                 </MenuItem.Icon>
                                 <MenuItem Header="退出" Click="MenuItem_Click_4">
                                     <MenuItem.Icon>
-                                        <Image Height="25" Width="28" Source="菜单_Close.png"/>
+                                        <Image Height="25" Width="28" Source="Pictures\菜单_Close.png"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
                             </MenuItem>
                             <MenuItem Header="仿真">
                                 <MenuItem.Icon>
-                                    <Image Source="菜单_Run.PNG"/>
+                                    <Image Source="Pictures\菜单_Run.PNG"/>
                                 </MenuItem.Icon>
                                 <MenuItem Header="开始运行"  Click="MenuItem_Click_0">
                                     <MenuItem.Icon>
-                                        <Image Height="25" Width="28" Source="菜单_运行.PNG" />
+                                        <Image Height="25" Width="28" Source="Pictures\菜单_运行.PNG" />
                                     </MenuItem.Icon>
                                 </MenuItem>
                             </MenuItem>
                             <MenuItem Header="帮助">
                                 <MenuItem.Icon>
-                                    <Image Source="菜单_Help.PNG" />
+                                    <Image Source="Pictures\菜单_Help.PNG" />
                                 </MenuItem.Icon>
                                 <MenuItem Header="关于我们"/>
                             </MenuItem>
@@ -80,7 +80,7 @@
                             <TabItem x:Name="TabItem_HExType" Header="换热器类型" Visibility="Collapsed">
                                 <Grid Background="#FFE5E5E5">
                                     <Label Content="美的换热器仿真" HorizontalAlignment="Left" Margin="200,60,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="24"/>
-                                    <Image HorizontalAlignment="Left" Height="65" Margin="100,50,0,0" VerticalAlignment="Top" Width="800" Source="美的Logo.png"/>
+                                    <Image HorizontalAlignment="Left" Height="65" Margin="100,50,0,0" VerticalAlignment="Top" Width="800" Source="Pictures\美的Logo.png"/>
 
                                     <GroupBox Header="换热器类型"  HorizontalAlignment="Center" VerticalAlignment="Top" Height="100" Width="140" Margin="0,110,0,0">
                                         <Canvas HorizontalAlignment="Center" Height="Auto" Width="Auto" Margin="10,10,0,0" VerticalAlignment="Top">
@@ -154,13 +154,13 @@
                                                     <Image HorizontalAlignment="Left" Height="100" Margin="0,0,0,0" VerticalAlignment="Top" Width="467"/>
                                                 </TabItem>
                                                 <TabItem x:Name="TabItem_TubeArrangement_Straight" Header="直排" Visibility="Collapsed">
-                                                    <Image HorizontalAlignment="Center" Height="230" Margin="0,0,0,0" VerticalAlignment="Top" Width="500" Source="直排.PNG"/>
+                                                    <Image HorizontalAlignment="Center" Height="230" Margin="0,0,0,0" VerticalAlignment="Top" Width="500" Source="Pictures\直排.PNG"/>
                                                 </TabItem>
                                                 <TabItem x:Name="TabItem_TubeArrangement_Crossed_High" Header="叉排(迎风面高)" Visibility="Collapsed">
-                                                    <Image HorizontalAlignment="Center" Height="230" Margin="0,0,0,0" VerticalAlignment="Top" Width="500" Source="叉排迎风面高.PNG"/>
+                                                    <Image HorizontalAlignment="Center" Height="230" Margin="0,0,0,0" VerticalAlignment="Top" Width="500" Source="Pictures\叉排迎风面高.PNG"/>
                                                 </TabItem>
                                                 <TabItem x:Name="TabItem_TubeArrangement_Crossed_Short" Header="叉排(迎风面低)" Visibility="Collapsed">
-                                                    <Image HorizontalAlignment="Center" Height="230" Margin="0,0,0,0" VerticalAlignment="Top" Width="500" Source="叉排迎风面低.PNG"/>
+                                                    <Image HorizontalAlignment="Center" Height="230" Margin="0,0,0,0" VerticalAlignment="Top" Width="500" Source="Pictures\叉排迎风面低.PNG"/>
                                                 </TabItem>
                                             </TabControl>
                                         </Canvas>
@@ -191,28 +191,23 @@
                             <TabItem x:Name="TabItem_Pass" Header="流路" Visibility="Collapsed">
                                 <Grid Background="#FFE5E5E5">
 
-                                    <GroupBox Header="流路" HorizontalAlignment="Left" VerticalAlignment="Top" Height="50" Width="410" Margin="8,0,0,10">
+                                    <GroupBox Header="流路" HorizontalAlignment="Left" VerticalAlignment="Top" Height="145" Width="410" Margin="8,0,0,10">
                                         <Grid>
-                                            <RadioButton GroupName="PassArrangement" x:Name="RadioButton_ManualArrange" Margin="50,5,0,0" Checked="RadioButton_ManualArrange_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                            <TextBlock Text="手动分配流路" HorizontalAlignment="Left" Margin="70,5,0,0" VerticalAlignment="Top" Width="75"/>
+                                            <RadioButton GroupName="PassArrangement" x:Name="RadioButton_ManualArrange" Margin="50,15,0,0" Checked="RadioButton_ManualArrange_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                            <TextBlock Text="手动分配流路" HorizontalAlignment="Left" Margin="70,15,0,0" VerticalAlignment="Top" Width="75"/>
 
-                                            <RadioButton GroupName="PassArrangement" x:Name="RadioButton_AutoArrange" Margin="240,5,0,0" Checked="RadioButton_AutoArrange_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                            <TextBlock Text="自动分配流路" HorizontalAlignment="Left" Margin="260,5,0,0" VerticalAlignment="Top" Width="75"/>
+                                            <RadioButton GroupName="PassArrangement" x:Name="RadioButton_AutoArrange" Margin="220,15,0,0" Checked="RadioButton_AutoArrange_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                            <TextBlock Text="自动分配流路" HorizontalAlignment="Left" Margin="240,15,0,0" VerticalAlignment="Top" Width="75"/>
+                                            <TextBlock Text="流路数" HorizontalAlignment="Left" Margin="240,50,0,0" VerticalAlignment="Top"/>
+                                            <TextBox x:Name="Cirnum" Text="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="280,50,0,0" Width="30" TextAlignment="Center" IsEnabled="False"/>
+                                            <Button x:Name="Pass_OK" Content="确定" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="220,85,0,0" Height="Auto" Width="90" IsEnabled="False"/>
+                                            
+                                            <CheckBox x:Name="AirReverse" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,50,0,0" Unchecked="AirFlow_Plus" Checked="AirFlow_Minus"/>
+                                            <TextBlock Text="空气流向反转" HorizontalAlignment="Left" Margin="70,50,0,0" VerticalAlignment="Top" Width="Auto" />
+                                            
+                                            <CheckBox x:Name="RefReverse" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,85,0,0" Unchecked="RefFlow_Plus" Checked="RefFlow_Minus"/>
+                                            <TextBlock Text="制冷剂流向反转" HorizontalAlignment="Left" Margin="70,85,0,0" VerticalAlignment="Top" Width="Auto"/>          
                                         </Grid>
-                                    </GroupBox>
-
-                                    <GroupBox Header="自动分配流路" x:Name="GroupBox_AutoArrangeCirnum" HorizontalAlignment="Left" VerticalAlignment="Top" Height="120" Width="425" Margin="8,50,0,10" Visibility="Hidden">
-                                        <Canvas HorizontalAlignment="Left" Height="480" Width="100" Margin="10,10,0,0" VerticalAlignment="Top">
-
-                                            <TextBlock Text="流路数" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="59"/>
-                                            <TextBox x:Name="Cirnum" Text="2" HorizontalAlignment="Left" Height="23" Margin="70,0,0,0" VerticalAlignment="Top" Width="120"/>
-
-                                            <TextBlock Text="流动形式" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" Width="59"/>
-                                            <ComboBox x:Name="ComboBox_flowtype" HorizontalAlignment="Left" Margin="70,30,0,0" VerticalAlignment="Top" Width="120"/>
-
-                                            <Button HorizontalAlignment="Left" Margin="70,60,0,0" VerticalAlignment="Top" Width="59" Height="22" Content="确定"/>
-
-                                        </Canvas>
                                     </GroupBox>
 
                                 </Grid>
@@ -624,23 +619,23 @@
                         <Canvas x:Name="Canvas_Picture_HEx" HorizontalAlignment="Right" Height="250" Margin="0,0,0,0" VerticalAlignment="Top" Width="450">
                             <TabControl x:Name="TabControl_Picuture"  HorizontalAlignment="Center" Height="250" VerticalAlignment="Top" Width="450" Background="White" >
                                 <TabItem Header="换热管" x:Name="TabItem_HExTube_Picture" Visibility="Collapsed">
-                                    <Image HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="管子.PNG"/>
+                                    <Image HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="Pictures\管子.PNG"/>
                                 </TabItem>
                                 <TabItem Header="翅片" x:Name="TabItem_FinType_Picture" Visibility="Collapsed">
-                                    <Image HorizontalAlignment="Center" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="翅片.PNG"/>
+                                    <Image HorizontalAlignment="Center" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="Pictures\翅片.PNG"/>
                                 </TabItem>
                                 <TabItem Header="Null" x:Name="TabItem_Null_Picture" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="61" Visibility="Collapsed">
                                     <Grid Background="#FFE5E5E5"/>
                                 </TabItem>
                                 <TabItem Header="换热器类型" x:Name="TabItem_HExTypr_Picture" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="61" Visibility="Collapsed">
-                                    <Image HorizontalAlignment="Center" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="空调.png"/>
+                                    <Image HorizontalAlignment="Center" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="Pictures\空调.png"/>
                                 </TabItem>
 
                                 <TabItem Header="制冷剂侧" x:Name="TabItem_Ref_Picture" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="61" Visibility="Collapsed">
-                                    <Image HorizontalAlignment="Center" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="制冷剂侧.PNG" />
+                                    <Image HorizontalAlignment="Center" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="Pictures\制冷剂侧.PNG" />
                                 </TabItem>
                                 <TabItem Header="空气侧" x:Name="TabItem_Wind_Picture" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="61" Visibility="Collapsed">
-                                    <Image HorizontalAlignment="Center" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="空气侧.PNG"/>
+                                    <Image HorizontalAlignment="Center" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="Pictures\空气侧.PNG"/>
                                 </TabItem>
                                 <TabItem Header="流路" x:Name="TabItem_Pass_Picture" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="61" Visibility="Collapsed">
 
@@ -656,13 +651,15 @@
                                                 <TextBox  x:Name="TextBox_Length" HorizontalAlignment="Stretch" Width="Auto" Margin="5,0,5,5" IsEnabled="False"/>
                                                 <Label Content="毛细管直径/mm" HorizontalAlignment="Left" Width="Auto" Margin="5,0,0,0"/>
                                                 <TextBox  x:Name="TextBox_Diameter" HorizontalAlignment="Stretch" Width="Auto" Margin="5,0,5,5" IsEnabled="False"/>
-                                                <Button x:Name="Button_Capacity" Content="确定" HorizontalAlignment="Stretch" Margin="5,0,5,5" Click="Button_Click_Capacity" IsEnabled="False"/>
+                                                <Button x:Name="Button_Capillary" Content="确定" HorizontalAlignment="Stretch" Margin="5,0,5,5" Click="Button_Click_Capillary" IsEnabled="False"/>
                                             </StackPanel>
+                                            <!--AirFlowDirection-->
+                                            <TextBlock x:Name="TextBlock_AirFlow" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" DockPanel.Dock="Top" TextAlignment="Center"/>
                                             <Grid Margin="10">
                                                 <Grid.Resources>
                                                     <CompositeCollection x:Key="Col">
                                                         <CollectionContainer Collection="{Binding DataContext.Connectors, Source={x:Reference view}}"/>
-                                                        <CollectionContainer Collection="{Binding DataContext.Capacities, Source={x:Reference view}}"/>
+                                                        <CollectionContainer Collection="{Binding DataContext.Capillaries, Source={x:Reference view}}"/>
                                                         <CollectionContainer Collection="{Binding DataContext.Rects, Source={x:Reference view}}"/>
                                                         <CollectionContainer Collection="{Binding DataContext.Nodes, Source={x:Reference view}}"/>
                                                     </CompositeCollection>
@@ -689,11 +686,12 @@
                                                             </DataTrigger>
                                                         </DataTemplate.Triggers>
                                                     </DataTemplate>
-                                                    <DataTemplate DataType="{x:Type local:Capacity}">
+                                                    <DataTemplate DataType="{x:Type local:Capillary}">
                                                         <Line x:Name="Line2" Stroke="Red" StrokeThickness="3" X1="{Binding Start.X}" Y1="{Binding Start.Y}" X2="{Binding End.X}" Y2="{Binding Start.Y}"/>
                                                         <DataTemplate.Triggers>
                                                             <DataTrigger Binding="{Binding IsSelected,RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ListBoxItem}}}" Value="True">
-                                                                <Setter TargetName="Line2" Property="Stroke" Value="Red"/>
+                                                                <Setter TargetName="Line2" Property="Stroke" Value="Green"/>
+                                                                <Setter TargetName="Line2" Property="StrokeDashArray" Value="2 3"/>
                                                             </DataTrigger>
                                                             <DataTrigger Binding="{Binding FullLine}" Value="False">
                                                                 <Setter TargetName="Line2" Property="StrokeDashArray" Value="2 3"/>
@@ -711,8 +709,8 @@
                                                             </DataTrigger>
                                                         </DataTemplate.Triggers>
                                                     </DataTemplate>
-
                                                 </Grid.Resources>
+                                                
                                                 <ListBox x:Name="ListBox_this" SelectionChanged="ListBox_SelectionChanged" MouseRightButtonDown="ListBox_MouseRightButtonDown" MouseDoubleClick="ListBox_MouseDoubleClick">
                                                     <ListBox.Template>
                                                         <ControlTemplate>

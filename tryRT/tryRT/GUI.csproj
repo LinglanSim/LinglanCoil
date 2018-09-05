@@ -53,8 +53,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ViewItem\Capillary.cs" />
     <Compile Include="CircuitInput.cs" />
-    <Compile Include="Rect.cs" />
+    <Compile Include="ViewItem\Rect.cs" />
     <Compile Include="ViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -64,8 +65,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Capacity.cs" />
-    <Compile Include="Connector.cs" />
+    <Compile Include="ViewItem\Connector.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -79,7 +79,7 @@
     <Compile Include="Midea Heat Exchanger Simulation.xaml.cs">
       <DependentUpon>Midea Heat Exchanger Simulation.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Node.cs" />
+    <Compile Include="ViewItem\Node.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -144,50 +144,50 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="翅片.PNG" />
+    <Resource Include="Pictures\翅片.PNG" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="管翅式_蒸发器.jpg" />
+    <Resource Include="Pictures\管翅式_蒸发器.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="管翅式_冷凝器.jpg" />
+    <Resource Include="Pictures\管翅式_冷凝器.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="制冷剂侧.PNG" />
+    <Resource Include="Pictures\制冷剂侧.PNG" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="叉排迎风面低.PNG" />
+    <Resource Include="Pictures\叉排迎风面低.PNG" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="叉排迎风面高.PNG" />
-    <Resource Include="直排.PNG" />
+    <Resource Include="Pictures\叉排迎风面高.PNG" />
+    <Resource Include="Pictures\直排.PNG" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="美的Logo.png" />
+    <Resource Include="Pictures\美的Logo.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="管子.PNG" />
+    <Resource Include="Pictures\管子.PNG" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="菜单_Close.png" />
+    <Resource Include="Pictures\菜单_Close.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="空调.png" />
+    <Resource Include="Pictures\空调.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="空气侧.PNG" />
+    <Resource Include="Pictures\空气侧.PNG" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="菜单_文件.PNG" />
+    <Resource Include="Pictures\菜单_文件.PNG" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="菜单_Run.PNG" />
+    <Resource Include="Pictures\菜单_Run.PNG" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="菜单_Help.PNG" />
+    <Resource Include="Pictures\菜单_Help.PNG" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="菜单_运行.PNG" />
+    <Resource Include="Pictures\菜单_运行.PNG" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

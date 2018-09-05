@@ -816,17 +816,14 @@ namespace Model
             return res;
 
         }
-        public CalcResult main_condenser(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, int[,] CirArrangeInput, int[,,] NodesInfo, string flowtype, string fin_type, string tube_type, string hex_type, CapiliaryInput capInput)
+        public CalcResult main_condenser(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, int[,] CirArrangeInput, int[,,] NodesInfo, string fin_type, string tube_type, string hex_type, CapiliaryInput capInput)
         {
-            //制冷剂制热模块计算
-            //string fluid = new string[] { "Water" };
             string fluid = refInput.FluidName;// refri_in;// "R32";
             AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             //string fluid = new string[] { "ISOBUTAN" };
             CalcResult res = new CalcResult();
             int Nrow = geoInput.Nrow;
-            double[] FPI = new double[Nrow];
-            
+            double[] FPI = new double[Nrow];            
             FPI = new double[] { 25.4 / geoInput.FPI, 25.4 / geoInput.FPI };//to be updated
             double Pt = geoInput.Pt * 0.001;//1 * 25.4 * 0.001;
             double Pr = geoInput.Pr * 0.001;//0.75 * 25.4 * 0.001;
@@ -982,10 +979,7 @@ namespace Model
 
             //Circuit-Reverse module
             bool reverse = false; //*********************************false:origin, true:reverse******************************************
-            if (flowtype == "逆流")
-                reverse = false;
-            else
-                reverse = true;
+
 
             //CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
 
@@ -1078,7 +1072,7 @@ namespace Model
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
 
             //string AirDirection="DowntoUp";
-            string AirDirection = flowtype;// "Counter";
+            string AirDirection = "Counter";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
 

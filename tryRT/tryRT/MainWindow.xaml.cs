@@ -186,6 +186,9 @@ namespace tryRT
         }
 
         private int CircuitIndex = new int();//0:Manual circuiting 1:Auto circuiting
+        public int AirFlowDirection = new int();//0:normal 1:reverse
+        public string AirFlowString = "-<-<-<-<-<-AirFlow-<-<-<-<-";
+        private int RefFlowDirection = new int();//0:normal 1:reverse
 
         //声明用来制作不均匀配风的表格
         List<int[]> list = new List<int[]>();
@@ -349,8 +352,8 @@ namespace tryRT
             customList.Add(sss[0]);
             customList.Add(sss[1]);
 
-            ComboBox_flowtype.ItemsSource = customList;
-            ComboBox_flowtype.SelectedValue = customList[0];
+            //ComboBox_flowtype.ItemsSource = customList;
+            //ComboBox_flowtype.SelectedValue = customList[0];
         }
 
         private void MenuItem_Click_4(object sender, RoutedEventArgs e)//关闭按钮
@@ -358,7 +361,7 @@ namespace tryRT
             this.Close();
         }
 
-        private void MenuItem_Click_0(object sender, RoutedEventArgs e)//calculate
+        private void MenuItem_Click_0(object sender, RoutedEventArgs e)//Start calculate
         {
             flag_Calculated = true;
 
@@ -385,22 +388,15 @@ namespace tryRT
             {
                 geoInput.CirNum = Convert.ToInt16(Cirnum.Text);
             }
-            //geoInput.CirNum = Convert.ToInt16(Cirnum.Text);
-            //double mr = Convert.ToDouble(textBox1.Text);
             refInput.Massflowrate = Convert.ToDouble(mr.Text);
-            //double tc = Convert.ToDouble(textBox2.Text);
             refInput.tc = Convert.ToDouble(tc.Text);
-            //double tri = Convert.ToDouble(textBox3.Text);
             refInput.tri = Convert.ToDouble(tri.Text);
-            //double Va = Convert.ToDouble(textBox4.Text);
-            airInput.Volumetricflowrate = Convert.ToDouble(Va.Text);
-            //double tai = Convert.ToDouble(textBox5.Text);
-            airInput.tai = Convert.ToDouble(tai.Text);
-            //double RHi = Convert.ToDouble(textBox6.Text);
-            airInput.RHi = Convert.ToDouble(RHi.Text);
-            string flowtype = ComboBox_flowtype.Text;
-            //string refri = ComboBox3.Text;
             refInput.FluidName = ComboBox_Refrigerant.Text;
+            refInput.RefFlowDirection = RefFlowDirection;
+            airInput.Volumetricflowrate = Convert.ToDouble(Va.Text);
+            airInput.tai = Convert.ToDouble(tai.Text);
+            airInput.RHi = Convert.ToDouble(RHi.Text);
+            airInput.AirFlowDirection = AirFlowDirection;
             string fin_type = ComboBox_fintype.Text;
             string tube_type = ComboBox_tubetype.Text;
             string hex_type = ComboBox_hextype.Text;
@@ -411,10 +407,6 @@ namespace tryRT
             capInput.d_cap = new double[3];//0.006
             capInput.lenth_cap = new double[3];//0.5
 
-            //if(GroupBox_ManualArrangeCirnum)
-
-
-            //else(RadioButton_AutoArrange)
             int i = 1;
             int j = 1;
             int k = 1;
@@ -422,17 +414,17 @@ namespace tryRT
             int[, ,] NodeInfo = new int[i,j,k];
             if(CircuitIndex==0)//Manual connect
             {
-                i = CircuitInput.CircuitConvert(vm.Nodes, vm.Connectors, vm.Capacities, vm.Rects).GetLength(0);
-                j = CircuitInput.CircuitConvert(vm.Nodes, vm.Connectors, vm.Capacities, vm.Rects).GetLength(1);
+                i = CircuitInput.CircuitConvert(vm.Nodes, vm.Connectors, vm.Capillaries, vm.Rects).GetLength(0);
+                j = CircuitInput.CircuitConvert(vm.Nodes, vm.Connectors, vm.Capillaries, vm.Rects).GetLength(1);
                 CirArrange = new int[i, j];
-                CirArrange = CircuitInput.CircuitConvert(vm.Nodes, vm.Connectors, vm.Capacities, vm.Rects);
-                i = CircuitInput.NodesConvert(vm.Nodes, vm.Connectors, vm.Capacities, vm.Rects).GetLength(0);
-                j = CircuitInput.NodesConvert(vm.Nodes, vm.Connectors, vm.Capacities, vm.Rects).GetLength(2);
+                CirArrange = CircuitInput.CircuitConvert(vm.Nodes, vm.Connectors, vm.Capillaries, vm.Rects);
+                i = CircuitInput.NodesConvert(vm.Nodes, vm.Connectors, vm.Capillaries, vm.Rects).GetLength(0);
+                j = CircuitInput.NodesConvert(vm.Nodes, vm.Connectors, vm.Capillaries, vm.Rects).GetLength(2);
                 NodeInfo = new int[i, 2, j];
-                NodeInfo = CircuitInput.NodesConvert(vm.Nodes, vm.Connectors, vm.Capacities, vm.Rects);
+                NodeInfo = CircuitInput.NodesConvert(vm.Nodes, vm.Connectors, vm.Capillaries, vm.Rects);
             }
 
-            var r = m_Main.main_condenser(refInput, airInput, geoInput,CirArrange, NodeInfo,flowtype, fin_type, tube_type, hex_type, capInput);
+            var r = m_Main.main_condenser(refInput, airInput, geoInput,CirArrange, NodeInfo, fin_type, tube_type, hex_type, capInput);
 
 
 
@@ -597,6 +589,7 @@ namespace tryRT
                 TabItem_Pass_Picture.IsSelected = true;
                 this.StackPanel_ManualArrangeCirnum.Visibility = Visibility.Visible;
                 this.GroupBox_ManualArrangeCirnum.Header = "手动分配流路";
+                TextBlock_AirFlow.Text = AirFlowString;
 
                 //调显示高度
                 this.Canvas_Picture_HEx.Height = 450;
@@ -624,7 +617,7 @@ namespace tryRT
             /*int _row = Convert.ToInt32(Row.Text);
             int _tube = Convert.ToInt32(tube_per.Text);
             vm.Connectors.Clear();
-            vm.Capacities.Clear();
+            vm.Capillaries.Clear();
             node1 = null;
             rect = null;
             vm.GenerateNode(_row, _tube);
@@ -1051,9 +1044,11 @@ namespace tryRT
 
         private void RadioButton_ManualArrange_Checked(object sender, RoutedEventArgs e)
         {
-            this.GroupBox_AutoArrangeCirnum.Visibility = Visibility.Hidden;
+            //this.GroupBox_AutoArrangeCirnum.Visibility = Visibility.Hidden;
             this.GroupBox_ManualArrangeCirnum.Visibility = Visibility.Visible;
             this.TabItem_Pass_Picture.IsSelected = true;
+            Cirnum.IsEnabled = false;
+            Pass_OK.IsEnabled = false;
 
             //调显示高度
             this.Canvas_Picture_HEx.Height = 450;
@@ -1064,7 +1059,9 @@ namespace tryRT
 
         private void RadioButton_AutoArrange_Checked(object sender, RoutedEventArgs e)
         {
-            this.GroupBox_AutoArrangeCirnum.Visibility = Visibility.Visible;
+            //this.GroupBox_AutoArrangeCirnum.Visibility = Visibility.Visible;
+            Cirnum.IsEnabled = true;
+            Pass_OK.IsEnabled = true;
             this.GroupBox_ManualArrangeCirnum.Visibility = Visibility.Hidden;
             this.TabItem_Null_Picture.IsSelected = true;
 
@@ -1392,7 +1389,7 @@ namespace tryRT
                 int _row = Convert.ToInt32(Row.Text);
                 int _tube = Convert.ToInt32(tube_per.Text);
                 vm.Connectors.Clear();
-                vm.Capacities.Clear();
+                vm.Capillaries.Clear();
                 node1 = null;
                 rect = null;
                 vm.GenerateNode(_row, _tube);
@@ -1435,14 +1432,14 @@ namespace tryRT
                             }
                             else if (rect_start && node1 != null)
                             {
-                                Capacity newcapatity = new Capacity();
-                                newcapatity.Start = node1;
-                                newcapatity.End = rect;
-                                newcapatity.FullLine = node1.FullLine;
-                                newcapatity.In = false;
+                                Capillary newcapillary = new Capillary();
+                                newcapillary.Start = node1;
+                                newcapillary.End = rect;
+                                newcapillary.FullLine = node1.FullLine;
+                                newcapillary.In = false;
                                 rect.FullLine = node1.FullLine;
-                                vm.Capacities.Where(x => x.Start == newcapatity.Start && x.End == newcapatity.End).ToList().ForEach(x => vm.Capacities.Remove(x));
-                                vm.Capacities.Add(newcapatity);
+                                vm.Capillaries.Where(x => x.Start == newcapillary.Start && x.End == newcapillary.End).ToList().ForEach(x => vm.Capillaries.Remove(x));
+                                vm.Capillaries.Add(newcapillary);
                                 if (node1.Y < rect.Y)//change rect height
                                 {
                                     rect.RectHeight = rect.RectHeight + (rect.Y - node1.Y);
@@ -1479,13 +1476,13 @@ namespace tryRT
                             }
                             else if(rect_start&&rect!=null&&node2.Full==false)
                             {
-                                Capacity newcapacity = new Capacity();
-                                newcapacity.Start = node2;
-                                newcapacity.End = rect;
-                                vm.Capacities.Where(x => x.Start == newcapacity.Start && x.End == newcapacity.End).ToList().ForEach(x => vm.Capacities.Remove(x));//delete same capacity
-                                vm.Capacities.Add(newcapacity);
-                                newcapacity.FullLine = rect.FullLine;
-                                newcapacity.In = true;
+                                Capillary newcapillary = new Capillary();
+                                newcapillary.Start = node2;
+                                newcapillary.End = rect;
+                                vm.Capillaries.Where(x => x.Start == newcapillary.Start && x.End == newcapillary.End).ToList().ForEach(x => vm.Capillaries.Remove(x));//delete same capillary
+                                vm.Capillaries.Add(newcapillary);
+                                newcapillary.FullLine = rect.FullLine;
+                                newcapillary.In = true;
                                 node2.FullLine = rect.FullLine ? false : true;
                                 node2.Full = true;
                                 node1 = node2;
@@ -1530,11 +1527,11 @@ namespace tryRT
                         }
                         else if (rect != null)
                         {
-                            Capacity newcapacity = new Capacity();
-                            newcapacity.Start = node2;
-                            newcapacity.End = rect;
-                            vm.Capacities.Where(x => x.Start == newcapacity.Start && x.End == newcapacity.End).ToList().ForEach(x => vm.Capacities.Remove(x));//delete same capacity
-                            vm.Capacities.Add(newcapacity);
+                            Capillary newcapillary = new Capillary();
+                            newcapillary.Start = node2;
+                            newcapillary.End = rect;
+                            vm.Capillaries.Where(x => x.Start == newcapillary.Start && x.End == newcapillary.End).ToList().ForEach(x => vm.Capillaries.Remove(x));//delete same capillary
+                            vm.Capillaries.Add(newcapillary);
                             node1 = node2;
                             if (node1.Y < rect.Y)
                             {
@@ -1556,11 +1553,11 @@ namespace tryRT
                         rect = item as Rect;
                         if (node1 != null)
                         {
-                            Capacity newcapatity = new Capacity();
-                            newcapatity.Start = node1;
-                            newcapatity.End = rect;
-                            vm.Capacities.Where(x => x.Start == newcapatity.Start && x.End == newcapatity.End).ToList().ForEach(x => vm.Capacities.Remove(x));
-                            vm.Capacities.Add(newcapatity);
+                            Capillary newcapillary = new Capillary();
+                            newcapillary.Start = node1;
+                            newcapillary.End = rect;
+                            vm.Capillaries.Where(x => x.Start == newcapillary.Start && x.End == newcapillary.End).ToList().ForEach(x => vm.Capillaries.Remove(x));
+                            vm.Capillaries.Add(newcapillary);
                             if (node1.Y < rect.Y)//change rect height
                             {
                                 rect.RectHeight = rect.RectHeight + (rect.Y - node1.Y);
@@ -1577,15 +1574,15 @@ namespace tryRT
                         }
                     }
                 }
-                else if (ListBox_this.SelectedItem != null && vm.CreatNewConnector == false)//set capatity
+                else if (ListBox_this.SelectedItem != null && vm.CreatNewConnector == false)//set capillary
                 {
                     var item = ListBox_this.SelectedItem;
-                    if (item.GetType().Name == "Capacity")
+                    if (item.GetType().Name == "Capillary")
                     {
                         TextBox_Length.IsEnabled = true;
                         TextBox_Diameter.IsEnabled = true;
-                        Button_Capacity.IsEnabled = true;
-                        var selectitem = item as Capacity;
+                        Button_Capillary.IsEnabled = true;
+                        var selectitem = item as Capillary;
                         TextBox_Length.Text = selectitem.Length.ToString();
                         TextBox_Diameter.Text = selectitem.Diameter.ToString();
                     }
@@ -1593,16 +1590,16 @@ namespace tryRT
                     {
                         TextBox_Length.IsEnabled = false;
                         TextBox_Diameter.IsEnabled = false;
-                        Button_Capacity.IsEnabled = false;
+                        Button_Capillary.IsEnabled = false;
                         TextBox_Length.Text = "";
                         TextBox_Diameter.Text = "";
                     }
                 }
-                else if (ListBox_this.SelectedItem == null)//set capatity
+                else if (ListBox_this.SelectedItem == null)//set capillary
                 {
                     TextBox_Length.IsEnabled = false;
                     TextBox_Diameter.IsEnabled = false;
-                    Button_Capacity.IsEnabled = false;
+                    Button_Capillary.IsEnabled = false;
                     TextBox_Length.Text = "";
                     TextBox_Diameter.Text = "";
                 }*/
@@ -1669,31 +1666,55 @@ namespace tryRT
                         var selectelement = item as Rect;
                         if (selectelement != vm.Rects[0] && selectelement != vm.Rects[1])
                         {
-                            vm.Capacities.Where(x => x.End == selectelement).ToList().ForEach(x => vm.Capacities.Remove(x));
+                            vm.Capillaries.Where(x => x.End == selectelement).ToList().ForEach(x => vm.Capillaries.Remove(x));
                             vm.Rects.Remove(selectelement);
                         }
                     }
-                    else if (item.GetType().Name == "Capacity")
+                    else if (item.GetType().Name == "Capillary")
                     {
-                        var selectelement = item as Capacity;
-                        vm.Capacities.Remove(selectelement);
+                        var selectelement = item as Capillary;
+                        vm.Capillaries.Remove(selectelement);
                     }
                 }
             }
 
-            private void Button_Click_Capacity(object sender, RoutedEventArgs e)
+            private void Button_Click_Capillary(object sender, RoutedEventArgs e)
             {
                 vm.CreatNewConnector = false;
                 if (ListBox_this.SelectedItem != null)
                 {
                     var item = ListBox_this.SelectedItem;
-                    if (item.GetType().Name == "Capacity")
+                    if (item.GetType().Name == "Capillary")
                     {
-                        var selectitem = item as Capacity;
+                        var selectitem = item as Capillary;
                         selectitem.Length = Convert.ToDouble(TextBox_Length.Text);
                         selectitem.Diameter = Convert.ToDouble(TextBox_Diameter.Text);
                     }
                 }
+            }
+
+            private void AirFlow_Plus(object sender, RoutedEventArgs e)
+            {
+                AirFlowString = "-<-<-<-<-<-AirFlow-<-<-<-<-";
+                TextBlock_AirFlow.Text = AirFlowString;
+                AirFlowDirection = 0;
+            }
+
+            private void AirFlow_Minus(object sender, RoutedEventArgs e)
+            {
+                AirFlowString = "->->->->->-AirFlow->->->->-";
+                TextBlock_AirFlow.Text = AirFlowString;
+                AirFlowDirection = 1;
+            }
+
+            private void RefFlow_Plus(object sender, RoutedEventArgs e)
+            {
+                RefFlowDirection = 0;
+            }
+
+            private void RefFlow_Minus(object sender, RoutedEventArgs e)
+            {
+                RefFlowDirection = 1;
             }
 
     }

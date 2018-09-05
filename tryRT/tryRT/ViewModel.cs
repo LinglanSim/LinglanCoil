@@ -26,10 +26,10 @@ namespace tryRT
         {
             get { return _rects ?? (_rects = new ObservableCollection<Rect>()); }
         }
-        private ObservableCollection<Capacity> _capacities;
-        public ObservableCollection<Capacity> Capacities
+        private ObservableCollection<Capillary> _capillaries;
+        public ObservableCollection<Capillary> Capillaries
         {
-            get { return _capacities ?? (_capacities = new ObservableCollection<Capacity>()); }
+            get { return _capillaries ?? (_capillaries = new ObservableCollection<Capillary>()); }
         }
 
 

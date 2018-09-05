@@ -10,13 +10,13 @@ namespace tryRT
 {
     public class CircuitInput
     {
-        public static int[,] CircuitConvert(ObservableCollection<Node> Nodes, ObservableCollection<Connector> Connectors, ObservableCollection<Capacity> Capacities, ObservableCollection<Rect> Rects)
+        public static int[,] CircuitConvert(ObservableCollection<Node> Nodes, ObservableCollection<Connector> Connectors, ObservableCollection<Capillary> Capillaries, ObservableCollection<Rect> Rects)
         {
             int N_tube=Nodes.Count;// Nodes here is tube
             int N_circuit=0;
-            for(int i=0;i<Capacities.Count;i++)
+            for(int i=0;i<Capillaries.Count;i++)
             {
-                if (Capacities[i].In == true) N_circuit++;
+                if (Capillaries[i].In == true) N_circuit++;
             }
             int[,] CirArrange = new int[N_circuit, N_tube];
             double[] CapLength = new double[N_circuit];
@@ -24,13 +24,13 @@ namespace tryRT
 
             int m=0;
             int n=0;
-            for (int i = 0; i < Capacities.Count; i++)
+            for (int i = 0; i < Capillaries.Count; i++)
             {
-                if (Capacities[i].In == true)
+                if (Capillaries[i].In == true)
                 {
                     //int j=0;
                     n = 0;
-                    CirArrange[m,0]=Convert.ToInt32(Capacities[i].Start.Name);
+                    CirArrange[m,0]=Convert.ToInt32(Capillaries[i].Start.Name);
                     for(int j=0;j<Connectors.Count;j++)
                     {
                         if(Connectors[j].Start.Name==CirArrange[m,n].ToString())
@@ -44,7 +44,7 @@ namespace tryRT
             }
             return CirArrange;
         }
-        public static int[,,] NodesConvert(ObservableCollection<Node> Nodes, ObservableCollection<Connector> Connectors, ObservableCollection<Capacity> Capacities, ObservableCollection<Rect> Rects)
+        public static int[,,] NodesConvert(ObservableCollection<Node> Nodes, ObservableCollection<Connector> Connectors, ObservableCollection<Capillary> Capillaries, ObservableCollection<Rect> Rects)
         {
             int N_node = Rects.Count;
             int Max = 0;
@@ -54,13 +54,13 @@ namespace tryRT
             {
                 inlet=0;
                 outlet=0;
-                for(int j=0;j<Capacities.Count;j++)
+                for(int j=0;j<Capillaries.Count;j++)
                 {
-                    if(Capacities[j].End==Rects[i]&&Capacities[j].In==true)
+                    if(Capillaries[j].End==Rects[i]&&Capillaries[j].In==true)
                     {
                         inlet++;
                     }
-                    else if(Capacities[j].End==Rects[i]&&Capacities[j].In==false)
+                    else if(Capillaries[j].End==Rects[i]&&Capillaries[j].In==false)
                     {
                         outlet++;
                     }
@@ -75,7 +75,7 @@ namespace tryRT
                         NodesInfo[i,j,k]=-100;
                     }
             //int[,] NodesOut=new int[N_node,Max];
-            int[,] CirArrange=CircuitConvert(Nodes,Connectors,Capacities,Rects);
+            int[,] CirArrange=CircuitConvert(Nodes,Connectors,Capillaries,Rects);
             int N_circuit=CirArrange.GetLength(0);
             int N_element=CirArrange.GetLength(1);
             int[] TubeofCir=new int[N_circuit];
@@ -95,13 +95,13 @@ namespace tryRT
                 else
                 {                   
                     int m=0;
-                    for(int j=0;j<Capacities.Count;j++)
+                    for(int j=0;j<Capillaries.Count;j++)
                     {
-                        if(Capacities[j].End==Rects[i]&&Capacities[j].In==false)
+                        if(Capillaries[j].End==Rects[i]&&Capillaries[j].In==false)
                         {
                             for(int k=0;k<N_circuit;k++)
                             {
-                                if(CirArrange[k,TubeofCir[k]-1]==Convert.ToInt32(Capacities[j].Start.Name))
+                                if(CirArrange[k,TubeofCir[k]-1]==Convert.ToInt32(Capillaries[j].Start.Name))
                                 {
                                     NodesInfo[i,0,m]=k;
                                 }                                    
@@ -117,13 +117,13 @@ namespace tryRT
                 else
                 {
                     int m=0;
-                    for(int j=0;j<Capacities.Count;j++)
+                    for(int j=0;j<Capillaries.Count;j++)
                     {
-                        if(Capacities[j].End==Rects[i]&&Capacities[j].In==true)
+                        if(Capillaries[j].End==Rects[i]&&Capillaries[j].In==true)
                         {
                             for(int k=0;k<N_circuit;k++)
                             {
-                                if(CirArrange[k,0]==Convert.ToInt32(Capacities[j].Start.Name))
+                                if(CirArrange[k,0]==Convert.ToInt32(Capillaries[j].Start.Name))
                                 {
                                     NodesInfo[i,1,m]=k;
                                 }

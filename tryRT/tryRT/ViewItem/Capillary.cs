@@ -7,7 +7,7 @@ using System.ComponentModel;
 
 namespace tryRT
 {
-    public class Capacity : INotifyPropertyChanged
+    public class Capillary : INotifyPropertyChanged
     {
         private Node _start;
         public Node Start
@@ -63,7 +63,7 @@ namespace tryRT
             set { }
         }
 
-        private bool _fullLine=true;
+        private bool _fullLine = true;
         public bool FullLine
         {
             get { return _fullLine; }
@@ -74,7 +74,7 @@ namespace tryRT
             }
         }
 
-        private bool _in;//capacity location
+        private bool _in;//capillary location
         public bool In
         {
             get { return _in; }
@@ -94,3 +94,4 @@ namespace tryRT
     }
 
 }
+
