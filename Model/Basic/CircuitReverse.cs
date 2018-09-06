@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Model.Basic
 {
-    class CircuitReverse
+    public class CircuitReverse
     {
         public static int[,] CirReverse(bool reverse, int[,] CirArrange, CircuitNumber CircuitInfo)
         {

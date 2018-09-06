@@ -17,7 +17,7 @@ namespace Model.Basic
             for (int i = 0; i < NodesInput.GetLength(0);i++ )//Initial convert
             {
                 NodeInfo newNode = new NodeInfo();
-                newNode.Name = Name;//0:inlet 1:outlet
+                newNode.Name = Name;//
                 N_element_in = 0;
                 N_element_out = 0;
                 for (int j = 0; j < NodesInput.GetLength(2); j++)
@@ -93,13 +93,13 @@ namespace Model.Basic
                     Nodes[i].type = 'C';
                 }
                 //single inlet
-                if(i==0&&Nodes[i].N_out==1)
+                if(Nodes[i].inlet[0]==-1&&Nodes[i].N_out==1)
                 {
                     Nodes[i].type = 'S';
                     Nodes[i].couple = -1;
                 }
 
-                if(i==1)//single outlet
+                if(Nodes[i].outlet[0]==-1)//single outlet
                 {
                     if (Nodes[i].N_in == 1)
                     {

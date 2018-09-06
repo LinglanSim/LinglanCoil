@@ -10,47 +10,127 @@ namespace tryRT
 {
     public class CircuitInput
     {
-        public static int[,] CircuitConvert(ObservableCollection<Node> Nodes, ObservableCollection<Connector> Connectors, ObservableCollection<Capillary> Capillaries, ObservableCollection<Rect> Rects)
+        
+        public static Model.Basic.CapiliaryInput CapillaryConvert(ObservableCollection<Capillary> Capillaries,int RefFlowDierection)
         {
-            int N_tube=Nodes.Count;// Nodes here is tube
-            int N_circuit=0;
+            Model.Basic.CapiliaryInput res = new Model.Basic.CapiliaryInput();
+            int N_circuit = 0;
+            for (int i = 0; i < Capillaries.Count; i++)
+            {
+                if (Capillaries[i].In == true) N_circuit++;
+            }
+            res.d_cap = new double[N_circuit];
+            res.lenth_cap = new double[N_circuit];
+            if(RefFlowDierection==0)//normal direction
+            {
+                int j = 0;
+                for(int i=0;i<Capillaries.Count;i++)
+                {
+                    if(Capillaries[i].In==true)
+                    {
+                        res.d_cap[j] = Capillaries[i].Diameter;
+                        res.lenth_cap[j] = Capillaries[i].Length;
+                        j++;
+                    }
+                }
+            }
+            else if(RefFlowDierection==1)//reverse direction
+            {
+                int j = 0;
+                for (int i = 0; i < Capillaries.Count; i++)
+                {
+                    if (Capillaries[i].In == false)
+                    {
+                        res.d_cap[j] = Capillaries[i].Diameter;
+                        res.lenth_cap[j] = Capillaries[i].Length;
+                        j++;
+                    }
+                }
+            }
+            return res;
+        }    
+        
+        public static int[,] CircuitConvert(ObservableCollection<Node> Nodes, ObservableCollection<Connector> Connectors, ObservableCollection<Capillary> Capillaries,int RefFlowDirection)
+        {
+            int N_tube=Nodes.Count;
+            int N_circuit=0;                     
             for(int i=0;i<Capillaries.Count;i++)
             {
                 if (Capillaries[i].In == true) N_circuit++;
             }
             int[,] CirArrange = new int[N_circuit, N_tube];
-            double[] CapLength = new double[N_circuit];
-            double[] CapDiameter = new double[N_circuit];
-
             int m=0;
             int n=0;
-            for (int i = 0; i < Capillaries.Count; i++)
+            if(RefFlowDirection==0)// normal direction
             {
-                if (Capillaries[i].In == true)
+                for(int i=0;i<Capillaries.Count;i++)
                 {
-                    //int j=0;
-                    n = 0;
-                    CirArrange[m,0]=Convert.ToInt32(Capillaries[i].Start.Name);
-                    for(int j=0;j<Connectors.Count;j++)
+                    if(Capillaries[i].In==true)
                     {
-                        if(Connectors[j].Start.Name==CirArrange[m,n].ToString())
+                        n = 0;
+                        CirArrange[m, 0] = Convert.ToInt32(Capillaries[i].Start.Name);
+                        for(int j=0;j<Connectors.Count;j++)
                         {
-                            n++;
-                            CirArrange[m, n] = Convert.ToInt32(Connectors[j].End.Name);
+                            if(Convert.ToInt32(Connectors[j].Start.Name)==CirArrange[m,n])
+                            {
+                                n++;
+                                CirArrange[m, n] = Convert.ToInt32(Connectors[j].End.Name);
+                            }
                         }
+                        m++;
                     }
-                    m++;
                 }
             }
-            return CirArrange;
+            else if(RefFlowDirection==1)
+            {
+                m = 0;
+                for(int i=0;i<Capillaries.Count;i++)
+                {
+                    if(Capillaries[i].In==false)
+                    {
+                        n=0;
+                        CirArrange[m, 0] = Convert.ToInt32(Capillaries[i].Start.Name);
+                        for(int j=Connectors.Count-1;j>=0;j--)
+                        {
+                            if(Convert.ToInt32(Connectors[j].End.Name)==CirArrange[m,n])
+                            {
+                                n++;
+                                CirArrange[m, n] = Convert.ToInt32(Connectors[j].Start.Name);
+                            }
+                        }
+                        m++;
+                    }
+                }
+            }
+            int Max = 0;
+            int N_element = 0;
+            for (int i = 0; i < N_circuit; i++)
+            {
+                N_element = 0;
+                for (int j = 0; j < N_tube; j++)
+                {
+                    if (CirArrange[i, j] != 0) N_element++;
+                }
+                Max = Math.Max(Max, N_element);
+            }
+            int[,] res_CirArrange = new int[N_circuit, Max];
+            for (int i = 0; i < N_circuit; i++)
+            {
+                for (int j = 0; j < Max; j++)
+                {
+                    res_CirArrange[i, j] = CirArrange[i, j];
+                }
+            }
+            return res_CirArrange;
         }
-        public static int[,,] NodesConvert(ObservableCollection<Node> Nodes, ObservableCollection<Connector> Connectors, ObservableCollection<Capillary> Capillaries, ObservableCollection<Rect> Rects)
+
+        public static int[,,] NodesConvert(ObservableCollection<Node> Nodes, ObservableCollection<Connector> Connectors, ObservableCollection<Capillary> Capillaries, ObservableCollection<Rect> Rects,int RefFlowDirection)
         {
-            int N_node = Rects.Count;
+            int N_rect = Rects.Count;
             int Max = 0;
             int inlet=0;
             int outlet=0;
-            for(int i=0;i<N_node;i++)
+            for(int i=0;i<N_rect;i++)
             {
                 inlet=0;
                 outlet=0;
@@ -67,15 +147,14 @@ namespace tryRT
                 }                
                 Max=Math.Max(Max,Math.Max(inlet,outlet));
             }// max rect element number
-            int[,,] NodesInfo=new int[N_node,2,Max];
-            for(int i=0;i<N_node;i++)//Initialize
+            int[,,] NodesInfo=new int[N_rect,2,Max];
+            for(int i=0;i<N_rect;i++)//Initialize
                 for(int j=0;j<2;j++)
                     for(int k=0;k<Max;k++)
                     {
                         NodesInfo[i,j,k]=-100;
                     }
-            //int[,] NodesOut=new int[N_node,Max];
-            int[,] CirArrange=CircuitConvert(Nodes,Connectors,Capillaries,Rects);
+            int[,] CirArrange=CircuitConvert(Nodes,Connectors,Capillaries,RefFlowDirection);
             int N_circuit=CirArrange.GetLength(0);
             int N_element=CirArrange.GetLength(1);
             int[] TubeofCir=new int[N_circuit];
@@ -86,55 +165,107 @@ namespace tryRT
                     if(CirArrange[i,j]!=0) TubeofCir[i]++;
                 }
             }
-            for(int i=0;i<Rects.Count;i++)
-            {                
-                if(i==0)
+            if(RefFlowDirection==0)//normal direction
+            {
+                for (int i = 0; i < Rects.Count; i++)
                 {
-                    NodesInfo[i,0,0]=-1;
-                }
-                else
-                {                   
-                    int m=0;
-                    for(int j=0;j<Capillaries.Count;j++)
+                    if (i == 0)
                     {
-                        if(Capillaries[j].End==Rects[i]&&Capillaries[j].In==false)
+                        NodesInfo[i, 0, 0] = -1;
+                    }
+                    else
+                    {
+                        int m = 0;
+                        for (int j = 0; j < Capillaries.Count; j++)
                         {
-                            for(int k=0;k<N_circuit;k++)
+                            if (Capillaries[j].End == Rects[i] && Capillaries[j].In == false)
                             {
-                                if(CirArrange[k,TubeofCir[k]-1]==Convert.ToInt32(Capillaries[j].Start.Name))
+                                for (int k = 0; k < N_circuit; k++)
                                 {
-                                    NodesInfo[i,0,m]=k;
-                                }                                    
+                                    if (CirArrange[k, TubeofCir[k] - 1] == Convert.ToInt32(Capillaries[j].Start.Name))
+                                    {
+                                        NodesInfo[i, 0, m] = k;
+                                    }
+                                }
+                                m++;
                             }
-                            m++;
+                        }
+                    }
+                    if (i == 1)
+                    {
+                        NodesInfo[i, 1, 0] = -1;
+                    }
+                    else
+                    {
+                        int m = 0;
+                        for (int j = 0; j < Capillaries.Count; j++)
+                        {
+                            if (Capillaries[j].End == Rects[i] && Capillaries[j].In == true)
+                            {
+                                for (int k = 0; k < N_circuit; k++)
+                                {
+                                    if (CirArrange[k, 0] == Convert.ToInt32(Capillaries[j].Start.Name))
+                                    {
+                                        NodesInfo[i, 1, m] = k;
+                                    }
+                                }
+                                m++;
+                            }
                         }
                     }
                 }
-                if(i==1)
+            }
+            else if(RefFlowDirection==1)//reverse direction
+            {
+                for (int i = 0; i < Rects.Count; i++)
                 {
-                    NodesInfo[i,1,0]=-1;
-                }
-                else
-                {
-                    int m=0;
-                    for(int j=0;j<Capillaries.Count;j++)
+                    if (i == 1)
                     {
-                        if(Capillaries[j].End==Rects[i]&&Capillaries[j].In==true)
+                        NodesInfo[i, 0, 0] = -1;
+                    }
+                    else
+                    {
+                        int m = 0;
+                        for (int j = 0; j < Capillaries.Count; j++)
                         {
-                            for(int k=0;k<N_circuit;k++)
+                            if (Capillaries[j].End == Rects[i] && Capillaries[j].In == true)
                             {
-                                if(CirArrange[k,0]==Convert.ToInt32(Capillaries[j].Start.Name))
+                                for (int k = 0; k < N_circuit; k++)
                                 {
-                                    NodesInfo[i,1,m]=k;
+                                    if (CirArrange[k, TubeofCir[k] - 1] == Convert.ToInt32(Capillaries[j].Start.Name))
+                                    {
+                                        NodesInfo[i, 0, m] = k;
+                                    }
                                 }
+                                m++;
                             }
-                            m++;
+                        }
+                    }
+                    if (i == 0)
+                    {
+                        NodesInfo[i, 1, 0] = -1;
+                    }
+                    else
+                    {
+                        int m = 0;
+                        for (int j = 0; j < Capillaries.Count; j++)
+                        {
+                            if (Capillaries[j].End == Rects[i] && Capillaries[j].In == false)
+                            {
+                                for (int k = 0; k < N_circuit; k++)
+                                {
+                                    if (CirArrange[k, 0] == Convert.ToInt32(Capillaries[j].Start.Name))
+                                    {
+                                        NodesInfo[i, 1, m] = k;
+                                    }
+                                }
+                                m++;
+                            }
                         }
                     }
                 }
             }
             return NodesInfo;
-
         }
 
 

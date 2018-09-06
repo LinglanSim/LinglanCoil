@@ -203,7 +203,7 @@ namespace Model.Basic
             }
             return flag;
         }
-        public static bool SelfEqu(array A1)
+        public static bool SelfEqu(array A1)// self is able to be symmetry
         {
             bool flag = false;
             int[] Row = A1.Row;

@@ -923,54 +923,7 @@ namespace Model
             }
             
 
-            //CirArrange = new int[,] { { 25, 26, 27, 28, 4, 3, 2, 1 }, { 29, 30, 31, 32, 8, 7, 6, 5 }, { 33, 34, 35, 36, 12, 11, 10, 9 }, { 37, 38, 39, 40, 16, 15, 14, 13 }, { 41, 42, 43, 44, 20, 19, 18, 17 }, { 48, 47, 46, 45, 24, 23, 22, 21 } };
-            //CirArrange = new int[,] { { 7, 8, 2, 1 }, { 9, 10, 4, 3 }, { 11, 12, 6, 5 } };
-            //CircuitInfo.number = new int[] { 2, 1 };//4in 2out
-            //CircuitInfo.TubeofCir = new int[] { 4, 4, 4 };  //{ 4, 8 };
-            //CircuitInfo.UnequalCir = new int[] { 2, 2, 0 };
-            /*
-            int[,] Node_in = { { -1, -100 }, { 0, 1 }, { 1, -100 }, { 2, -100 } };
-            int[,] Node_inType = { { -1, -100 }, { 1, 1 }, { 0, -100 }, { 1, -100 } };//0:Node,1:Circuit,-1:in/out,-100:meaningless
-            int[] Node_Nin = { 1, 2, 1, 1 };
-            int[,] Node_out = { { 0, 1 }, { 2, -100 }, { 2, -100 }, { -1, -100 } };
-            int[,] Node_outType = { { 1, 1 }, { 0, -100 }, { 1, -100 }, { -1, -100 } };
-            int[] Node_Nout = { 2, 1, 1, 1 };
-            char[] Node_type = { 'D', 'C', 'D', 'C' };// Diverse/Converge
-            int[] Node_couple = { 0, 0, 1, 1 };
-
-            int N_Node = Node_in.GetLength(0);
-            NodeInfo[] Nodes = new NodeInfo[N_Node];
-            for (int i = 0; i < N_Node; i++)
-            {
-                Nodes[i] = new NodeInfo();
-                Nodes[i].N_in = Node_Nin[i];
-                Nodes[i].N_out = Node_Nout[i];
-                Nodes[i].inlet = new int[Nodes[i].N_in];
-                Nodes[i].inType = new int[Nodes[i].N_in];
-                Nodes[i].outlet = new int[Nodes[i].N_out];
-                Nodes[i].outType = new int[Nodes[i].N_out];
-                for (int j = 0; j < Nodes[i].N_in; j++)
-                {
-                    Nodes[i].inlet[j] = Node_in[i, j];
-                    Nodes[i].inType[j] = Node_inType[i, j];
-                }
-                for (int j = 0; j < Nodes[i].N_out; j++)
-                {
-                    Nodes[i].outlet[j] = Node_out[i, j];
-                    Nodes[i].outType[j] = Node_outType[i, j];
-                }
-                Nodes[i].type = Node_type[i];
-                Nodes[i].couple = Node_couple[i];
-                Nodes[i].mri = new double[Nodes[i].N_in];
-                Nodes[i].mro = new double[Nodes[i].N_out];
-                Nodes[i].pri = new double[Nodes[i].N_in];
-                Nodes[i].pro = new double[Nodes[i].N_out];
-                Nodes[i].hri = new double[Nodes[i].N_in];
-                Nodes[i].hro = new double[Nodes[i].N_out];
-                Nodes[i].tri = new double[Nodes[i].N_in];
-                Nodes[i].tro = new double[Nodes[i].N_out];
-                Nodes[i].mr_ratio = new double[Nodes[i].N_out];
-            }*/
+            
 
             CirArr[] cirArr = new CirArr[Nrow * N_tube];
             cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube).CirArr;
@@ -978,12 +931,10 @@ namespace Model
             CircuitInfo.CirType = CircuitIdentification.CircuitIdentify(CircuitInfo.number, CircuitInfo.TubeofCir, cirArr);
 
             //Circuit-Reverse module
-            bool reverse = false; //*********************************false:origin, true:reverse******************************************
+            //bool reverse = false; //*********************************false:origin, true:reverse******************************************
 
 
             //CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
-
-
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -1075,12 +1026,6 @@ namespace Model
             string AirDirection = "Counter";
             ta = InitialAirProperty.AirTemp(Nelement, Ntube, Nrow, tai, tc, AirDirection);
             RH = InitialAirProperty.RHTemp(Nelement, Ntube, Nrow, RHi, tc, AirDirection);
-
-
-            //AreaResult geo = new AreaResult();
-            //geo = Areas.Area(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
-            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tri, pri, hri,
-            //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap);
 
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);

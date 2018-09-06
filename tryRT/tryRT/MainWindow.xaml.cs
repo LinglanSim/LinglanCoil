@@ -380,19 +380,10 @@ namespace tryRT
             geoInput.L = Convert.ToDouble(L.Text);
             geoInput.Fthickness = Convert.ToDouble(Fthick.Text);
             geoInput.FPI = Convert.ToDouble(Fnum.Text);
-            if(CircuitIndex==0)
-            {
-                geoInput.CirNum = 0;
-            }
-            else
-            {
-                geoInput.CirNum = Convert.ToInt16(Cirnum.Text);
-            }
             refInput.Massflowrate = Convert.ToDouble(mr.Text);
             refInput.tc = Convert.ToDouble(tc.Text);
             refInput.tri = Convert.ToDouble(tri.Text);
             refInput.FluidName = ComboBox_Refrigerant.Text;
-            refInput.RefFlowDirection = RefFlowDirection;
             airInput.Volumetricflowrate = Convert.ToDouble(Va.Text);
             airInput.tai = Convert.ToDouble(tai.Text);
             airInput.RHi = Convert.ToDouble(RHi.Text);
@@ -404,24 +395,52 @@ namespace tryRT
             //string bb = ComboBox6_SelectionChanged(object sender, SelectionChangedEventArgs e);
             //m_Main.W5(a, b).ha
             Model.Basic.CapiliaryInput capInput = new Model.Basic.CapiliaryInput();
-            capInput.d_cap = new double[3];//0.006
-            capInput.lenth_cap = new double[3];//0.5
-
+            capInput = CircuitInput.CapillaryConvert(vm.Capillaries, RefFlowDirection);
             int i = 1;
             int j = 1;
             int k = 1;
             int[,] CirArrange = new int[i,j];
             int[, ,] NodeInfo = new int[i,j,k];
-            if(CircuitIndex==0)//Manual connect
+            if(CircuitIndex==0)//Manual connect circuit info
             {
-                i = CircuitInput.CircuitConvert(vm.Nodes, vm.Connectors, vm.Capillaries, vm.Rects).GetLength(0);
-                j = CircuitInput.CircuitConvert(vm.Nodes, vm.Connectors, vm.Capillaries, vm.Rects).GetLength(1);
+                i = CircuitInput.CircuitConvert(vm.Nodes, vm.Connectors, vm.Capillaries, RefFlowDirection).GetLength(0);
+                j = CircuitInput.CircuitConvert(vm.Nodes, vm.Connectors, vm.Capillaries, RefFlowDirection).GetLength(1);
                 CirArrange = new int[i, j];
-                CirArrange = CircuitInput.CircuitConvert(vm.Nodes, vm.Connectors, vm.Capillaries, vm.Rects);
-                i = CircuitInput.NodesConvert(vm.Nodes, vm.Connectors, vm.Capillaries, vm.Rects).GetLength(0);
-                j = CircuitInput.NodesConvert(vm.Nodes, vm.Connectors, vm.Capillaries, vm.Rects).GetLength(2);
+                CirArrange = CircuitInput.CircuitConvert(vm.Nodes, vm.Connectors, vm.Capillaries,RefFlowDirection);
+                i = CircuitInput.NodesConvert(vm.Nodes, vm.Connectors, vm.Capillaries, vm.Rects,RefFlowDirection).GetLength(0);
+                j = CircuitInput.NodesConvert(vm.Nodes, vm.Connectors, vm.Capillaries, vm.Rects,RefFlowDirection).GetLength(2);
                 NodeInfo = new int[i, 2, j];
-                NodeInfo = CircuitInput.NodesConvert(vm.Nodes, vm.Connectors, vm.Capillaries, vm.Rects);
+                NodeInfo = CircuitInput.NodesConvert(vm.Nodes, vm.Connectors, vm.Capillaries, vm.Rects,RefFlowDirection);
+            }
+            else if(CircuitIndex==1)//Auto connect circuit info
+            {
+                Model.Basic.CircuitNumber CircuitInfo=new Model.Basic.CircuitNumber();
+                CircuitInfo.number = new int[] { Convert.ToInt32(Cirnum.Text), Convert.ToInt32(Cirnum.Text) };                 
+                if (CircuitInfo.number[0] > geoInput.Ntube)//Avoid invalid Ncir input
+                {
+                    throw new Exception("circuit number is beyond range.");
+                }
+                CircuitInfo.TubeofCir = new int[CircuitInfo.number[0]];
+                //Get AutoCircuitry
+                CircuitInfo = Model.Basic.AutoCircuiting.GetTubeofCir(geoInput.Nrow, geoInput.Ntube, CircuitInfo);
+                CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
+                CirArrange = Model.Basic.AutoCircuiting.GetCirArrange_2Row(CirArrange, geoInput.Nrow, geoInput.Ntube, CircuitInfo);
+                bool reverse = RefFlowDirection == 0 ? false : true;
+                CirArrange = Model.Basic.CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
+                NodeInfo = new int[2, 2, Convert.ToInt32(Cirnum.Text)];
+                for(i=0;i<2;i++)//initialize
+                    for(j=0;j<2;j++)
+                        for(k=0;k<Convert.ToInt32(Cirnum.Text);k++)
+                        {
+                            NodeInfo[i, j, k] = -100;
+                        }
+                NodeInfo[0, 0, 0] = -1;
+                NodeInfo[1, 1, 0] = -1;
+                for (i = 0; i < Convert.ToInt32(Cirnum.Text);i++ )
+                {
+                    NodeInfo[0, 1, i] = i;
+                    NodeInfo[1, 0, i] = i;
+                }
             }
 
             var r = m_Main.main_condenser(refInput, airInput, geoInput,CirArrange, NodeInfo, fin_type, tube_type, hex_type, capInput);

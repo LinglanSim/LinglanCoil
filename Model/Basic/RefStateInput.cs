@@ -18,6 +18,5 @@ namespace Model.Basic
         public double H_exv;
         public double zh;
         public double zdp;
-        public int RefFlowDirection;
     }
 }
