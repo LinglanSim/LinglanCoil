@@ -1532,7 +1532,28 @@ namespace tryRT
                             //if (rect_start) node1 = node2;
                         }
                     }
-                }//
+                }
+                else if(vm.CreatNewConnector==false)
+                {
+                    var item = ListBox_this.SelectedItem;
+                    if (item!=null&&item.GetType().Name == "Capillary")
+                    {
+                        TextBox_Length.IsEnabled = true;
+                        TextBox_Diameter.IsEnabled = true;
+                        Button_Capillary.IsEnabled = true;
+                        var selectitem = item as Capillary;
+                        TextBox_Length.Text = selectitem.Length.ToString();
+                        TextBox_Diameter.Text = selectitem.Diameter.ToString();
+                    }
+                    else
+                    {
+                        TextBox_Length.IsEnabled = false;
+                        TextBox_Diameter.IsEnabled = false;
+                        Button_Capillary.IsEnabled = false;
+                        TextBox_Length.Text = "";
+                        TextBox_Diameter.Text = "";
+                    }
+                }
 
 
                 /*if (vm.CreatNewConnector && ListBox_this.SelectedItem != null)//creat connector
