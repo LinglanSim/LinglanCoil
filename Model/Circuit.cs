@@ -11,7 +11,7 @@ namespace Model
     {
         public static CalcResult CircuitCalc(int index, CirArr[] cirArr, CircuitNumber CircuitInfo, int Nrow, int[] Ntube, int Nelement, string fluid,
             double l, Geometry geo, double[, ,] ta, double[, ,] RH, double tri, double pri, double hri, double mr, double[,] ma, double[,] ha,double[,] haw,
-            double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater, string Airdirection, double[] d_cap, double[] lenth_cap, AbstractState coolprop)
+            double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater, double[] d_cap, double[] lenth_cap, AbstractState coolprop)
         {
             //******蒸发器毛细管******//
             //调用毛细管守恒方程模型
@@ -134,7 +134,7 @@ namespace Model
                     r[i] = Tube.TubeCalc(Nelement, fluid, l, Aa_fin, Aa_tube, Ar_cs, Ar,geo, tai, RHi, tri_tube, pri_tube, hri_tube,
                         mr, ma_tube, ha_tube, haw_tube, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, coolprop);
                     if (r[i].Pro < 0) { res_cir.Pro = -10000000; return res_cir; }
-                    if (Airdirection == "顺流")
+                    /*if (Airdirection == "顺流")
                     {
                         for (int j = 0; j < Nelement; j++)
                         {
@@ -151,7 +151,16 @@ namespace Model
                             taout_calc[j, iTube, iRow] =r[i].Tao_Detail[0, 0, j];
                             RHout_calc[j, iTube, iRow] = r[i].RHout;
                         }
+                    }*/
+
+                    for (int j = 0; j < Nelement; j++)
+                    {
+                        taout_calc[j, iTube, iRow] = r[i].Tao_Detail[0, 0, j];
+                        RHout_calc[j, iTube, iRow] = r[i].RHout;
                     }
+
+
+
 
                     Tri_detail[iTube, iRow] = tri_tube;
                     Pri_detail[iTube, iRow] = pri_tube;

@@ -441,6 +441,8 @@ namespace tryRT
                     NodeInfo[0, 1, i] = i;
                     NodeInfo[1, 0, i] = i;
                 }
+                capInput.d_cap = new double[Convert.ToInt32(Cirnum.Text)];
+                capInput.lenth_cap = new double[Convert.ToInt32(Cirnum.Text)];
             }
 
             var r = m_Main.main_condenser(refInput, airInput, geoInput,CirArrange, NodeInfo, fin_type, tube_type, hex_type, capInput);
@@ -760,7 +762,16 @@ namespace tryRT
                 for (int k = 1; k < Tube_row_int * Row_int + 1; k++)
                 {
                     int i = k % Tube_row_int == 0 ? Tube_row_int - 1 : k % Tube_row_int - 1;
-                    int j = k % Tube_row_int == 0 ? k / Tube_row_int - 1 : k / Tube_row_int;
+                    int j = 0;
+                    if(AirFlowDirection==0)
+                    {
+                        j = k % Tube_row_int == 0 ? k / Tube_row_int - 1 : k / Tube_row_int;
+                    }
+                    else if(AirFlowDirection==1)
+                    {
+                        j = k % Tube_row_int == 0 ?Row_int- k / Tube_row_int : Row_int-1- k / Tube_row_int;
+                    }
+                    
                     peopleList.Add(new people()
                     {
                         //tube = Convert.ToString(i + 1),

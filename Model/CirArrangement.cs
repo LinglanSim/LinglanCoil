@@ -9,7 +9,7 @@ namespace Model
 {
     public class CirArrangement
     {
-        public static CirArrforAir ReadCirArr(int[,] CirArrange, CircuitNumber CircuitInfo, int Nrow, int[] Ntube) //CirArr[]
+        public static CirArrforAir ReadCirArr(int[,] CirArrange, CircuitNumber CircuitInfo, int Nrow, int[] Ntube,int AirFlowDirection) //CirArr[]
         {
             int N_tube = Ntube[0];
             int Ncir = 0;
@@ -35,7 +35,14 @@ namespace Model
                     for (int k = 0; k <CircuitInfo.TubeofCir[j]; k++)
                     {
                         cirArr[i] = new CirArr();
-                        cirArr[i].iRow = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(CirArrange[j, k]) / N_tube)) - 1;
+                        if(AirFlowDirection==0)//zzc
+                        {
+                            cirArr[i].iRow = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(CirArrange[j, k]) / N_tube)) - 1;
+                        }
+                        else if(AirFlowDirection==1)
+                        {
+                            cirArr[i].iRow = (Nrow-1)-(Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(CirArrange[j, k]) / N_tube)) - 1);
+                        }
                         cirArr[i].iTube = CirArrange[j, k] % N_tube == 0 ? N_tube - 1 : CirArrange[j, k] % N_tube - 1;
                         //for each circuit, ref inlet always at the same side..ruhao, 20180310
                         /*

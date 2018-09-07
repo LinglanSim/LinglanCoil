@@ -52,7 +52,7 @@ namespace Model
             CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
 
             CirArr[] cirArr = new CirArr[Nrow * N_tube];
-            cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube).CirArr;
+            cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube,0).CirArr;
             //CircuitType CirType = new CircuitType();
             CircuitInfo.CirType = CircuitIdentification.CircuitIdentify(CircuitInfo.number, CircuitInfo.TubeofCir, cirArr);
 
@@ -229,7 +229,7 @@ namespace Model
             CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
 
             CirArr[] cirArr = new CirArr[Nrow * N_tube];
-            cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube).CirArr;
+            cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube,0).CirArr;
             CircuitInfo.CirType = CircuitIdentification.CircuitIdentify(CircuitInfo.number, CircuitInfo.TubeofCir, cirArr);
 
 
@@ -419,7 +419,7 @@ namespace Model
             CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
 
             CirArr[] cirArr = new CirArr[Nrow * N_tube];
-            cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube).CirArr;
+            cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube,0).CirArr;
             CircuitInfo.CirType = CircuitIdentification.CircuitIdentify(CircuitInfo.number, CircuitInfo.TubeofCir, cirArr);
 
 
@@ -575,7 +575,7 @@ namespace Model
             CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
 
             CirArr[] cirArr = new CirArr[Nrow * N_tube];
-            cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube).CirArr;
+            cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube,0).CirArr;
             //CircuitType CirType = new CircuitType();
             CircuitInfo.CirType = CircuitIdentification.CircuitIdentify(CircuitInfo.number, CircuitInfo.TubeofCir, cirArr);
 
@@ -816,7 +816,7 @@ namespace Model
             return res;
 
         }
-        public CalcResult main_condenser(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, int[,] CirArrangeInput, int[,,] NodesInfo, string fin_type, string tube_type, string hex_type, CapiliaryInput capInput)
+        public CalcResult main_condenser(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, int[,] CirArrange, int[,,] NodesInfo, string fin_type, string tube_type, string hex_type, CapiliaryInput capInput)
         {
             string fluid = refInput.FluidName;// refri_in;// "R32";
             AbstractState coolprop = AbstractState.factory("HEOS", fluid);
@@ -830,111 +830,28 @@ namespace Model
             double Do = geoInput.Do * 0.001;// 10.0584 * 0.001;//8.4 7.35
             double Fthickness = geoInput.Fthickness * 0.001;// 0.095 * 0.001;
             double thickness = geoInput.Tthickness * 0.001;// 0.5 * (Do - Di);
+            double L = geoInput.L * 0.001;// 914.4 * 0.001;
             double Di = Do - 2 * thickness; //8.4074 * 0.001;//8 6.8944
 
             int[] Ntube = { geoInput.Ntube, geoInput.Ntube };
             int N_tube = Ntube[0];
-            double L = geoInput.L * 0.001;// 914.4 * 0.001;
             int Nelement = 5;
 
-            int[,] CirArrange=new int[1,1]; 
-            int CirNum = geoInput.CirNum;// 2;//流路数目赋值
             CircuitNumber CircuitInfo = new CircuitNumber();
-
-
+            CircuitInfo.TubeofCir = CircuitConvert.TubeNumber(CirArrange);
             double[] d_cap = capInput.d_cap;
             double[] lenth_cap = capInput.lenth_cap;
 
-
             List<NodeInfo> Nodes=new List<NodeInfo>();
+            Nodes = NodeConvert.NodeInputConvert(CirArrange, NodesInfo);
             int N_Node = Nodes.Count;
-            if(CirNum!=0)//Auto connect
+            if(N_Node==2)//simple circuit
             {
-                CircuitInfo.number = new int[] { CirNum, CirNum };
-                //Avoid invalid Ncir input 
-                if (CircuitInfo.number[0] > Ntube[0])
-                {
-                    throw new Exception("circuit number is beyond range.");
-                }
-                CircuitInfo.TubeofCir = new int[CircuitInfo.number[0]];
-                //Get AutoCircuitry
-                CircuitInfo = AutoCircuiting.GetTubeofCir(Nrow, N_tube, CircuitInfo);
-                CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
-                CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
-                NodeInfo Node0=new NodeInfo();
-                Node0.inlet = new int[1] { -1 };
-                Node0.inType = new int[1] { -1 };
-                Node0.N_in = 1;
-                Node0.N_out = CirArrange.GetLength(0);
-                Node0.outlet=new int[Node0.N_out];
-                Node0.outType=new int[Node0.N_out];
-                for (int i = 0; i < CirArrange.GetLength(0);i++ )
-                {
-                    Node0.outlet[i] = i;
-                    Node0.outType[i] = 1;
-                }
-                Node0.Name=0;
-                Node0.couple=1;
-                Node0.type='D';
-                NodeInfo Node1=new NodeInfo();
-                Node1.outlet = new int[1] { -1 };
-                Node1.outType = new int[1] { -1 };
-                Node1.N_out = 1;
-                Node1.N_in = CirArrange.GetLength(0);
-                Node1.inlet=new int[Node1.N_in];
-                Node1.inType=new int[Node1.N_in];
-                Node1.inlet=Node0.outlet;
-                Node1.inType=Node0.outType;
-                Node1.Name=1;
-                Node1.couple=1;
-                Node1.type='C';
-                Nodes.Add(Node0);
-                Nodes.Add(Node1);
-                for (int i = 0; i < Nodes.Count; i++)
-                {
-                    Nodes[i].hri = new double[Nodes[i].N_in];
-                    Nodes[i].hro = new double[Nodes[i].N_out];
-                    Nodes[i].mri = new double[Nodes[i].N_in];
-                    Nodes[i].mro = new double[Nodes[i].N_out];
-                    Nodes[i].mr_ratio = new double[Nodes[i].N_in];
-                    Nodes[i].pri = new double[Nodes[i].N_in];
-                    Nodes[i].pro = new double[Nodes[i].N_out];
-                    Nodes[i].tri = new double[Nodes[i].N_in];
-                    Nodes[i].tro = new double[Nodes[i].N_out];
-                }
-                d_cap = new double[CirArrange.GetLength(0)];
-                lenth_cap = new double[CirArrange.GetLength(0)];
-                N_Node = Nodes.Count;
-            }
-            else//Manual connect
-            {
-                int m = CircuitConvert.CircuitInputConvert(CirArrangeInput).GetLength(0);
-                int n = CircuitConvert.CircuitInputConvert(CirArrangeInput).GetLength(1);
-                CirArrange = new int[m, n];
-                CirArrange = CircuitConvert.CircuitInputConvert(CirArrangeInput);
-                CircuitInfo.TubeofCir = new int[CirArrange.GetLength(0)];
-                CircuitInfo.TubeofCir = CircuitConvert.TubeNumber(CirArrangeInput);
-                Nodes.Clear();
-                //List<NodeInfo> newNodes = new List<NodeInfo>();
-                Nodes = NodeConvert.NodeInputConvert(CirArrange, NodesInfo);
-                N_Node = Nodes.Count;
-                d_cap = new double[m];
-                lenth_cap = new double[m];
-            }
-            
-
-            
-
+                CircuitInfo.number = new int[] { CirArrange.GetLength(0), CirArrange.GetLength(0) };
+            }            
             CirArr[] cirArr = new CirArr[Nrow * N_tube];
-            cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube).CirArr;
-            //CircuitType CirType = new CircuitType();
+            cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube,airInput.AirFlowDirection).CirArr;//to be modefied
             CircuitInfo.CirType = CircuitIdentification.CircuitIdentify(CircuitInfo.number, CircuitInfo.TubeofCir, cirArr);
-
-            //Circuit-Reverse module
-            //bool reverse = false; //*********************************false:origin, true:reverse******************************************
-
-
-            //CirArrange = CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -962,10 +879,6 @@ namespace Model
             double Va = airInput.Volumetricflowrate;
             double Vel_ave = Va / Hx;
             //空气侧几何结构选择
-            //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
-            //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
-            //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
-            //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
             int curve = 1; //
 
             double za = 1; //Adjust factor
@@ -981,15 +894,11 @@ namespace Model
                 for (int j = 0; j < Nelement; j++)
                 {
                     ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
-                    //ha[i, j] = AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve);// *1.5;
                     //ha[i, j] = 79;
                     ha[i, j] = AirHTC.alpha1(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve, geoInput_air, hexType).ha;
                 }
             }
             double[,] haw = ha;
-
-            res.DPa = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
-
             double eta_surface = 1;
             double zh = 1;
             double zdp = 1;
@@ -1032,9 +941,9 @@ namespace Model
             //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tri, pri, hri,
             //    mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
             res = Slab2.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, tri, pri, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, Nodes, N_Node, d_cap, lenth_cap, coolprop);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, airInput.AirFlowDirection, Nodes, N_Node, d_cap, lenth_cap, coolprop);
 
-
+            res.DPa = AirHTC.alpha1(Vel_ave, za, curve, geoInput_air, hexType).dP_a;
             return res;
         }
         public static CalcResult main_condenser_Slab(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, string flowtype, string fin_type, string tube_type, string hex_type, CapiliaryInput capInput)
@@ -1146,7 +1055,7 @@ namespace Model
             }
 
             CirArr[] cirArr = new CirArr[Nrow * N_tube];
-            cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube).CirArr;
+            cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube,0).CirArr;
             //CircuitType CirType = new CircuitType();
             CircuitInfo.CirType = CircuitIdentification.CircuitIdentify(CircuitInfo.number, CircuitInfo.TubeofCir, cirArr);
 
@@ -1250,7 +1159,7 @@ namespace Model
             //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, tri, pri, hri,
             //    mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
             res = Slab2.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, tri, pri, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, Nodes, N_Node, d_cap, lenth_cap, coolprop);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, 0, Nodes, N_Node, d_cap, lenth_cap, coolprop);
             return res;
         }
         public static CalcResult main_water_Slab()
@@ -1329,7 +1238,7 @@ namespace Model
             }
 
             CirArr[] cirArr = new CirArr[Nrow * N_tube];
-            cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube).CirArr;
+            cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube,0).CirArr;
             //CircuitType CirType = new CircuitType();
             CircuitInfo.CirType = CircuitIdentification.CircuitIdentify(CircuitInfo.number, CircuitInfo.TubeofCir, cirArr);
 
@@ -1413,7 +1322,7 @@ namespace Model
             //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, tri, pri, hri,
             //    mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, d_cap, lenth_cap, coolprop);
             res = Slab2.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, tri, pri, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, Nodes, N_Node, d_cap, lenth_cap, coolprop);
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, 0, Nodes, N_Node, d_cap, lenth_cap, coolprop);
             using (StreamWriter wr = File.AppendText(@"D:\Midea9_heat.txt"))
             {
                     for (int j = 0; j < 14; j++)
@@ -3644,7 +3553,7 @@ namespace Model
             CircuitInfo.TubeofCir = new int[] { 8, 8, 8, 8 };  //{ 4, 8 };
 
             CirArr[] cirArr = new CirArr[Nrow * N_tube];
-            cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube).CirArr;
+            cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube,0).CirArr;
             //CircuitType CirType = new CircuitType();
             CircuitInfo.CirType = CircuitIdentification.CircuitIdentify(CircuitInfo.number, CircuitInfo.TubeofCir, cirArr);
 
