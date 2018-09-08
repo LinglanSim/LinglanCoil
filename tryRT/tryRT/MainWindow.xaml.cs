@@ -741,6 +741,7 @@ namespace tryRT
 
             if (flag_Calculated == true)
             {
+                peopleList.Clear();               
                 //创建dataGrid数据
                 Result_Tube_row = Convert.ToString(tube_inter);
                 Result_Row = Convert.ToString(N_row_inter);
@@ -789,7 +790,8 @@ namespace tryRT
                     });
                 }
 
-                ((this.FindName("dataGrid_Result")) as DataGrid).ItemsSource = peopleList;
+                //((this.FindName("dataGrid_Result")) as DataGrid).ItemsSource = peopleList;
+                dataGrid_Result.ItemsSource = peopleList;
                 flag_Calculated = false;
             }
 
