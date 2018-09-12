@@ -15,12 +15,13 @@ namespace Model
         public static string connectionString  = "Provider=Microsoft.Jet.OLEDB.4.0;" + "Data Source=" + fileName + ";" + ";Extended Properties=\"Excel 8.0;HDR=YES;IMEX=1\""; //只能是XLS格式的EXCEL
         //创建连接到数据源的对象
 
-        public static object[,] SourceTableData = new object[15017, 253];
+        public static object[,] SourceTableData = new object[25619, 253];
 
-        OleDbConnection connection = new OleDbConnection(connectionString);
 
-        public void InitializeSourceTableData()//取得工作表中所有的行
+        public static void InitializeSourceTableData()//取得工作表中所有的行
         {
+            OleDbConnection connection = new OleDbConnection(connectionString);
+
             //打开连接
             connection.Open();
 
