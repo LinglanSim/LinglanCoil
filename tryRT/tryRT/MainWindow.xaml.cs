@@ -230,6 +230,8 @@ namespace tryRT
 
             //数据初始化
             flag_Calculated = false;
+
+            Model.HumidAirSourceData.InitializeSourceTableData();
         }
 
         public void Bind1()
