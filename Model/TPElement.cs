@@ -162,7 +162,7 @@ namespace Model
 
                 //double omega_in = CoolProp.HAPropsSI("W", "T", tai + 273.15, "P", 101325, "R", RHi);
                 //double omega_in = (-0.0682340 + 0.0292341 * tai + 4.1604535 * RHi - 0.0025985 * Math.Pow(tai, 2) - 0.0769009 * Math.Pow(RHi, 2) + 0.1246489 * tai * RHi + 6.008 * Math.Pow(10, -5) * Math.Pow(tai, 3) - 0.0006775 * Math.Pow(RHi, 3) + 0.0267183 * tai * Math.Pow(RHi, 2) + 0.019904969 * Math.Pow(tai, 2) * RHi) / 1000;
-                double omega_in = humidairprop.O(tai, RHi); 
+                double omega_in = humidairprop.O(tai, RHi);
 
                 //double hai = CoolProp.HAPropsSI("H", "T", tai + 273.15, "P", 101325, "R", RHi);
                 //double hai = -244.2924077 + 1135.8711 * tai + 10101.404 * RHi - 12.968219 * Math.Pow(tai, 2) - 11.356807 * Math.Pow(RHi, 2) + 357.25464 * tai * RHi + 0.3178346 * Math.Pow(tai, 3) - 0.0024329 * Math.Pow(RHi, 3) + 44.100799 * tai * Math.Pow(RHi, 2) + 50.31444812 * Math.Pow(tai, 2) * RHi;
@@ -183,24 +183,27 @@ namespace Model
                 //res.RHout = CoolProp.HAPropsSI("R", "T", tao + 273.15, "P", 101325, "H", hout_a);
                 //res.RHout = 0.0259124 - 0.0996818 * tao + 0.0934877 * (hout_a / 1000) + 0.0040018 * Math.Pow(tao, 2) - 0.0003662 * Math.Pow((hout_a / 1000), 2) - 0.0034077 * tao * (hout_a / 1000) - 1.76447 * Math.Pow(10, -5) * Math.Pow(tao, 3) - 2.74524 * Math.Pow(10, -6) * Math.Pow((hout_a / 1000), 3) + 2.99291 * Math.Pow(10, -5) * tao * Math.Pow((hout_a / 1000), 2) - 9.56644 * Math.Pow(10, -6) * Math.Pow(tao, 2) * (hout_a / 1000);
 
-                if (tao >= 2 && tao <= 4)
-                {
-                    res.RHout = 0.0050520 - 0.0996818 * tao + 0.0934877 * (hout_a / 1000) + 0.0040018 * Math.Pow(tao, 2) - 0.0003662 * Math.Pow((hout_a / 1000), 2) - 0.0034077 * tao * (hout_a / 1000) - 1.76447 * Math.Pow(10, -5) * Math.Pow(tao, 3) - 2.74524 * Math.Pow(10, -6) * Math.Pow((hout_a / 1000), 3) + 2.99291 * Math.Pow(10, -5) * tao * Math.Pow((hout_a / 1000), 2) - 9.56644 * Math.Pow(10, -6) * Math.Pow(tao, 2) * (hout_a / 1000);
+                double Tdp_out = humidairprop.Ts(hout_a);
+                res.RHout = humidairprop.RHI(tao, Tdp_out);
 
-                }
-                else
-                {
-                    res.RHout = 0.0085208 - 0.136810208 * tao + 0.107006008 * (hout_a / 1000) + 0.008282281 * Math.Pow(tao, 2) - 8.67968 * Math.Pow(10, -7) * Math.Pow((hout_a / 1000), 2) - 0.005873912 * tao * (hout_a / 1000) - 2.71106 * Math.Pow(10, -5) * Math.Pow(tao, 3) - 5.35767 * Math.Pow(10, -6) * Math.Pow((hout_a / 1000), 3) + 4.43316 * Math.Pow(10, -5) * tao * Math.Pow((hout_a / 1000), 2) - 2.92966 * Math.Pow(10, -5) * Math.Pow(tao, 2) * (hout_a / 1000);
-                    if (res.RHout < 0.7)
-                    {
-                        res.RHout = 0.0259124 - 0.099681859 * tao + 0.093487704 * (hout_a / 1000) + 0.004001845 * Math.Pow(tao, 2) - 0.000366259 * Math.Pow((hout_a / 1000), 2) - 0.003407719 * tao * (hout_a / 1000) - 1.76447 * Math.Pow(10, -5) * Math.Pow(tao, 3) - 2.79077 * Math.Pow(10, -6) * Math.Pow((hout_a / 1000), 3) + 2.99291 * Math.Pow(10, -5) * tao * Math.Pow((hout_a / 1000), 2) - 9.56903 * Math.Pow(10, -6) * Math.Pow(tao, 2) * (hout_a / 1000);
-                        if (res.RHout < 0.4)
-                        {
-                            res.RHout = -0.0021534 - 0.102137483 * tao + 0.10016414 * (hout_a / 1000) + 0.003999776 * Math.Pow(tao, 2) - 0.000766374 * Math.Pow((hout_a / 1000), 2) - 0.003170007 * tao * (hout_a / 1000) - 1.77801 * Math.Pow(10, -5) * Math.Pow(tao, 3) - 9.57411 * Math.Pow(10, -7) * Math.Pow((hout_a / 1000), 3) + 3.79403 * Math.Pow(10, -5) * tao * Math.Pow((hout_a / 1000), 2) - 1.7912 * Math.Pow(10, -5) * Math.Pow(tao, 2) * (hout_a / 1000);
+                //if (tao >= 2 && tao <= 4)
+                //{
+                //    res.RHout = 0.0050520 - 0.0996818 * tao + 0.0934877 * (hout_a / 1000) + 0.0040018 * Math.Pow(tao, 2) - 0.0003662 * Math.Pow((hout_a / 1000), 2) - 0.0034077 * tao * (hout_a / 1000) - 1.76447 * Math.Pow(10, -5) * Math.Pow(tao, 3) - 2.74524 * Math.Pow(10, -6) * Math.Pow((hout_a / 1000), 3) + 2.99291 * Math.Pow(10, -5) * tao * Math.Pow((hout_a / 1000), 2) - 9.56644 * Math.Pow(10, -6) * Math.Pow(tao, 2) * (hout_a / 1000);
 
-                        }
-                    }
-                }
+                //}
+                //else
+                //{
+                //    res.RHout = 0.0085208 - 0.136810208 * tao + 0.107006008 * (hout_a / 1000) + 0.008282281 * Math.Pow(tao, 2) - 8.67968 * Math.Pow(10, -7) * Math.Pow((hout_a / 1000), 2) - 0.005873912 * tao * (hout_a / 1000) - 2.71106 * Math.Pow(10, -5) * Math.Pow(tao, 3) - 5.35767 * Math.Pow(10, -6) * Math.Pow((hout_a / 1000), 3) + 4.43316 * Math.Pow(10, -5) * tao * Math.Pow((hout_a / 1000), 2) - 2.92966 * Math.Pow(10, -5) * Math.Pow(tao, 2) * (hout_a / 1000);
+                //    if (res.RHout < 0.7)
+                //    {
+                //        res.RHout = 0.0259124 - 0.099681859 * tao + 0.093487704 * (hout_a / 1000) + 0.004001845 * Math.Pow(tao, 2) - 0.000366259 * Math.Pow((hout_a / 1000), 2) - 0.003407719 * tao * (hout_a / 1000) - 1.76447 * Math.Pow(10, -5) * Math.Pow(tao, 3) - 2.79077 * Math.Pow(10, -6) * Math.Pow((hout_a / 1000), 3) + 2.99291 * Math.Pow(10, -5) * tao * Math.Pow((hout_a / 1000), 2) - 9.56903 * Math.Pow(10, -6) * Math.Pow(tao, 2) * (hout_a / 1000);
+                //        if (res.RHout < 0.4)
+                //        {
+                //            res.RHout = -0.0021534 - 0.102137483 * tao + 0.10016414 * (hout_a / 1000) + 0.003999776 * Math.Pow(tao, 2) - 0.000766374 * Math.Pow((hout_a / 1000), 2) - 0.003170007 * tao * (hout_a / 1000) - 1.77801 * Math.Pow(10, -5) * Math.Pow(tao, 3) - 9.57411 * Math.Pow(10, -7) * Math.Pow((hout_a / 1000), 3) + 3.79403 * Math.Pow(10, -5) * tao * Math.Pow((hout_a / 1000), 2) - 1.7912 * Math.Pow(10, -5) * Math.Pow(tao, 2) * (hout_a / 1000);
+
+                //        }
+                //    }
+                //}
 
                 double f_dry = 0;
 
@@ -209,10 +212,10 @@ namespace Model
                 double time08;
                 if (hexType == 0 && tri < tai)
                 {
-                    double hao=0;
+                    double hao = 0;
                     //double Tdp = CoolProp.HAPropsSI("D", "T", tai + 273.15, "P", 101325, "R", RHi) - 273.15;
                     //double Tdp = -273.15 + 241.0212518 + 0.5718833 * tai + 84.99553 * RHi + 0.002691 * Math.Pow(tai, 2) - 95.003186 * Math.Pow(RHi, 2) + 0.7135779 * tai * RHi - 2.691 / Math.Pow(10, 5) * Math.Pow(tai, 3) + 42.58183 * Math.Pow(RHi, 3) - 0.3227474 * tai * Math.Pow(RHi, 2) - 0.000884612 * Math.Pow(tai, 2) * RHi;
-                    double Tdp = humidairprop.Tdp(tai, RHi); 
+                    double Tdp = humidairprop.Tdp(tai, RHi);
 
                     /*
                     double Ps = omega_in * 101325 / (0.622 + omega_in);
@@ -288,27 +291,31 @@ namespace Model
                     //res.RHout = CoolProp.HAPropsSI("R", "T", tao + 273.15, "P", 101325, "H", hout_a);
                     //res.RHout = 0.0259124 - 0.0996818 * tao + 0.0934877 * (hout_a / 1000) + 0.0040018 * Math.Pow(tao, 2) - 0.0003662 * Math.Pow((hout_a / 1000), 2) - 0.0034077 * tao * (hout_a / 1000) - 1.76447 * Math.Pow(10, -5) * Math.Pow(tao, 3) - 2.74524 * Math.Pow(10, -6) * Math.Pow((hout_a / 1000), 3) + 2.99291 * Math.Pow(10, -5) * tao * Math.Pow((hout_a / 1000), 2) - 9.56644 * Math.Pow(10, -6) * Math.Pow(tao, 2) * (hout_a / 1000);
 
-                    if (tao >= 2 && tao <= 4)
-                    {
-                        res.RHout = 0.0050520 - 0.0996818 * tao + 0.0934877 * (hout_a / 1000) + 0.0040018 * Math.Pow(tao, 2) - 0.0003662 * Math.Pow((hout_a / 1000), 2) - 0.0034077 * tao * (hout_a / 1000) - 1.76447 * Math.Pow(10, -5) * Math.Pow(tao, 3) - 2.74524 * Math.Pow(10, -6) * Math.Pow((hout_a / 1000), 3) + 2.99291 * Math.Pow(10, -5) * tao * Math.Pow((hout_a / 1000), 2) - 9.56644 * Math.Pow(10, -6) * Math.Pow(tao, 2) * (hout_a / 1000);
+                    Tdp_out = humidairprop.Ts(hout_a);
+                    res.RHout = humidairprop.RHI(tao, Tdp_out);
 
-                    }
-                    else
-                    {
-                        res.RHout = 0.0085208 - 0.136810208 * tao + 0.107006008 * (hout_a / 1000) + 0.008282281 * Math.Pow(tao, 2) - 8.67968 * Math.Pow(10, -7) * Math.Pow((hout_a / 1000), 2) - 0.005873912 * tao * (hout_a / 1000) - 2.71106 * Math.Pow(10, -5) * Math.Pow(tao, 3) - 5.35767 * Math.Pow(10, -6) * Math.Pow((hout_a / 1000), 3) + 4.43316 * Math.Pow(10, -5) * tao * Math.Pow((hout_a / 1000), 2) - 2.92966 * Math.Pow(10, -5) * Math.Pow(tao, 2) * (hout_a / 1000);
-                        if (res.RHout < 0.7)
-                        {
-                            res.RHout = 0.0259124 - 0.099681859 * tao + 0.093487704 * (hout_a / 1000) + 0.004001845 * Math.Pow(tao, 2) - 0.000366259 * Math.Pow((hout_a / 1000), 2) - 0.003407719 * tao * (hout_a / 1000) - 1.76447 * Math.Pow(10, -5) * Math.Pow(tao, 3) - 2.79077 * Math.Pow(10, -6) * Math.Pow((hout_a / 1000), 3) + 2.99291 * Math.Pow(10, -5) * tao * Math.Pow((hout_a / 1000), 2) - 9.56903 * Math.Pow(10, -6) * Math.Pow(tao, 2) * (hout_a / 1000);
-                            if (res.RHout < 0.4)
-                            {
-                                res.RHout = -0.0021534 - 0.102137483 * tao + 0.10016414 * (hout_a / 1000) + 0.003999776 * Math.Pow(tao, 2) - 0.000766374 * Math.Pow((hout_a / 1000), 2) - 0.003170007 * tao * (hout_a / 1000) - 1.77801 * Math.Pow(10, -5) * Math.Pow(tao, 3) - 9.57411 * Math.Pow(10, -7) * Math.Pow((hout_a / 1000), 3) + 3.79403 * Math.Pow(10, -5) * tao * Math.Pow((hout_a / 1000), 2) - 1.7912 * Math.Pow(10, -5) * Math.Pow(tao, 2) * (hout_a / 1000);
+                    //if (tao >= 2 && tao <= 4)
+                    //{
+                    //    res.RHout = 0.0050520 - 0.0996818 * tao + 0.0934877 * (hout_a / 1000) + 0.0040018 * Math.Pow(tao, 2) - 0.0003662 * Math.Pow((hout_a / 1000), 2) - 0.0034077 * tao * (hout_a / 1000) - 1.76447 * Math.Pow(10, -5) * Math.Pow(tao, 3) - 2.74524 * Math.Pow(10, -6) * Math.Pow((hout_a / 1000), 3) + 2.99291 * Math.Pow(10, -5) * tao * Math.Pow((hout_a / 1000), 2) - 9.56644 * Math.Pow(10, -6) * Math.Pow(tao, 2) * (hout_a / 1000);
 
-                            }
-                        }
-                    }
-					if (res.RHout > 1)
+                    //}
+                    //else
+                    //{
+                    //    res.RHout = 0.0085208 - 0.136810208 * tao + 0.107006008 * (hout_a / 1000) + 0.008282281 * Math.Pow(tao, 2) - 8.67968 * Math.Pow(10, -7) * Math.Pow((hout_a / 1000), 2) - 0.005873912 * tao * (hout_a / 1000) - 2.71106 * Math.Pow(10, -5) * Math.Pow(tao, 3) - 5.35767 * Math.Pow(10, -6) * Math.Pow((hout_a / 1000), 3) + 4.43316 * Math.Pow(10, -5) * tao * Math.Pow((hout_a / 1000), 2) - 2.92966 * Math.Pow(10, -5) * Math.Pow(tao, 2) * (hout_a / 1000);
+                    //    if (res.RHout < 0.7)
+                    //    {
+                    //        res.RHout = 0.0259124 - 0.099681859 * tao + 0.093487704 * (hout_a / 1000) + 0.004001845 * Math.Pow(tao, 2) - 0.000366259 * Math.Pow((hout_a / 1000), 2) - 0.003407719 * tao * (hout_a / 1000) - 1.76447 * Math.Pow(10, -5) * Math.Pow(tao, 3) - 2.79077 * Math.Pow(10, -6) * Math.Pow((hout_a / 1000), 3) + 2.99291 * Math.Pow(10, -5) * tao * Math.Pow((hout_a / 1000), 2) - 9.56903 * Math.Pow(10, -6) * Math.Pow(tao, 2) * (hout_a / 1000);
+                    //        if (res.RHout < 0.4)
+                    //        {
+                    //            res.RHout = -0.0021534 - 0.102137483 * tao + 0.10016414 * (hout_a / 1000) + 0.003999776 * Math.Pow(tao, 2) - 0.000766374 * Math.Pow((hout_a / 1000), 2) - 0.003170007 * tao * (hout_a / 1000) - 1.77801 * Math.Pow(10, -5) * Math.Pow(tao, 3) - 9.57411 * Math.Pow(10, -7) * Math.Pow((hout_a / 1000), 3) + 3.79403 * Math.Pow(10, -5) * tao * Math.Pow((hout_a / 1000), 2) - 1.7912 * Math.Pow(10, -5) * Math.Pow(tao, 2) * (hout_a / 1000);
+
+                    //        }
+                    //    }
+                    //}
+                    //if (res.RHout > 1)
+                    if (res.RHout == 1)
                     {
-                        res.RHout = 1;
+                        //res.RHout = 1;
                         //tao = CoolProp.HAPropsSI("T", "H", hao, "P", 101325, "R", 1)-273.15;
                         //tao = -273.15 - 1.96 * Math.Pow(10, -3) * Math.Pow(hao / 1000, 2) + 0.5357597 * hao / 1000 + 268.871551;
                         tao = humidairprop.Ts(hao);
