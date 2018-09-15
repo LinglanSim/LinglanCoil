@@ -21,7 +21,7 @@ namespace Test
             refInput.FluidName = "R32";
             AbstractState coolprop = AbstractState.factory("HEOS", refInput.FluidName);
             //*************if input SC or Sh, Massflowrate is the initial input***************
-            refInput.Massflowrate = 0.1;//0.02 //kg/s
+            refInput.Massflowrate = 0.02;//0.02 //kg/s
             refInput.zh = 3;
             refInput.zdp = 3;
             airInput.za = 1;
@@ -30,8 +30,11 @@ namespace Test
             //for condenser
             refInput.tc = 45;
             refInput.tri = 80;
+            //refInput.tc = 40;
+            //refInput.tri = 70;
+
             //for evaporator
-            refInput.te = 285.15 - 273.15;
+            refInput.te = 285.15 - 273.15;//12
             //refInput.P_exv = CoolProp.PropsSI("P", "T", refInput.tc + 273.15, "Q", 0, refInput.FluidName) / 1000;
             coolprop.update(input_pairs.QT_INPUTS, 0, refInput.tc + 273.15);
             refInput.P_exv = coolprop.p() / 1000;
@@ -41,7 +44,7 @@ namespace Test
 
             //air input
             airInput.Volumetricflowrate = 0.12; //m3/s
-            airInput.tai = 35;
+            airInput.tai = 35;//24.85
             airInput.RHi = 0.7;
 
             //airInput.ha = 80;
@@ -62,6 +65,8 @@ namespace Test
             //cap input
             capInput.d_cap = new double[] { 0, 0 };//0.006
             capInput.lenth_cap = new double[] { 0, 0 };//0.5
+
+            Model.HumidAirSourceData.InitializeSourceTableData();
 
             DateTime Time1 = DateTime.Now;
             var rr = Main.main_condenser_py(refInput, airInput, geoInput, capInput, coolprop);
