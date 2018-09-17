@@ -151,8 +151,6 @@ namespace Model
                 Z = Convert.ToDouble(Model.HumidAirSourceData.SourceTableData[rowNum, colNum]);
             }
 
-            //string arr1 = Convert.ToString(Z);
-            //Console.WriteLine(arr1);
             return Z;
         }
 
@@ -197,8 +195,7 @@ namespace Model
             {
                 Z = Convert.ToDouble(Model.HumidAirSourceData.SourceTableData[rowNum, colNum]);
             }
-            //string arr1 = Convert.ToString(Z);
-            //Console.WriteLine(arr1);
+
             return Z;
         }
 

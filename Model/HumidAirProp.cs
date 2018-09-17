@@ -97,7 +97,7 @@ namespace Model
 
         public double Ts(double H)//求Tdp
         {
-            int FirstRow = 13815;
+            int FirstRow = 11112;
 
             //Model.OpenExcel OpenExcel = new Model.OpenExcel();
             //DataRowCollection rowCollection = OpenExcel.ExcelRowCollection(tableCollection);//取得工作表中所有的行

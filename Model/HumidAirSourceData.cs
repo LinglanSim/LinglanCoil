@@ -15,7 +15,7 @@ namespace Model
         public static string connectionString = "Provider=Microsoft.Jet.OLEDB.4.0;" + "Data Source=" + fileName + ";" + ";Extended Properties=\"Excel 8.0;HDR=YES;IMEX=1\""; //只能是XLS格式的EXCEL
         //创建连接到数据源的对象
 
-        public static object[,] SourceTableData = new object[32617, 253];
+        public static object[,] SourceTableData = new object[29914, 253];
 
         public static void InitializeSourceTableData()//取得工作表中所有的行
         {
@@ -43,7 +43,7 @@ namespace Model
             //取得table中所有的行
             DataRowCollection rowCollection = table.Rows;//返回了一个行的集合
 
-            for (int i = 0; i < 32617; i++)
+            for (int i = 0; i < 29914; i++)
             {
                 for (int j = 0; j < 253; j++)
                 {
