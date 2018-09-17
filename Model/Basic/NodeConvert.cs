@@ -40,7 +40,7 @@ namespace Model.Basic
                 for (int j = 0; j < N_element_in; j++)
                 {
                     newNode.inlet[j] = NodesInput[i, 0, j];
-                    if(i==0)
+                    if(NodesInput[i,0,j]==-1)
                     {
                         newNode.inType[j] = -1;
                     }
@@ -49,7 +49,7 @@ namespace Model.Basic
                 for (int j = 0; j < N_element_out; j++)
                 {
                     newNode.outlet[j] = NodesInput[i, 1, j];
-                    if(i==1)
+                    if (NodesInput[i, 1, j] == -1)
                     {
                         newNode.outType[j] = -1;
                     }

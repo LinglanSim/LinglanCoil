@@ -60,7 +60,7 @@ namespace Model
             double te_calc_org = 0;
             CirArr[] cirArr = new CirArr[Nrow * N_tube];
             CirArrforAir cirArrforAir = new CirArrforAir();
-            cirArrforAir = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube);
+            cirArrforAir = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube,0);
             cirArr = cirArrforAir.CirArr;
 
             CalcResult res_slab = new CalcResult();
@@ -250,7 +250,7 @@ namespace Model
                                      //   tri_cir[i], pri_cir[i], hri_cir[i], mr_ciro[k], ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, Airdirection, d_cap, lenth_cap);
 
                                     r[i] = Circuit.CircuitCalc(i, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, l, geo, ta, RH,
-                                        tri_cir[i], pri_cir[i], hri_cir[i], mr_ciro[k], ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,Airdirection,d_cap, lenth_cap, coolprop);
+                                        tri_cir[i], pri_cir[i], hri_cir[i], mr_ciro[k], ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,d_cap, lenth_cap, coolprop);
 
                                     if (r[i].Pro < 0) { res_slab.Pro = -10000000; return res_slab; }
                                     r1[k] = r[i].ShallowCopy();
@@ -381,7 +381,7 @@ namespace Model
                                     //tri_cir[i], pri_cir[i], hri_cir[i], mr_ciri[k], ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, Airdirection, d_cap, lenth_cap);
 
                                         r[i] = Circuit.CircuitCalc(i, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, l, geo, ta, RH,
-                                    tri_cir[i], pri_cir[i], hri_cir[i], mr_ciri[k], ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, Airdirection,d_cap, lenth_cap, coolprop);
+                                    tri_cir[i], pri_cir[i], hri_cir[i], mr_ciri[k], ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater,d_cap, lenth_cap, coolprop);
 
                                         if (r[i].Pro < 0) { res_slab.Pro = -10000000; return res_slab; }
 
@@ -401,7 +401,7 @@ namespace Model
                                     //tri_cir[i], pri_cir[i], hri_cir[i], mr_ciri[k], ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, Airdirection, d_cap, lenth_cap);
 
                                     r[i] = Circuit.CircuitCalc(i, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, l, geo, ta, RH,
-                                    tri_cir[i], pri_cir[i], hri_cir[i], mr_ciri[k], ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, Airdirection,d_cap, lenth_cap, coolprop);
+                                    tri_cir[i], pri_cir[i], hri_cir[i], mr_ciri[k], ma, ha,haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, d_cap, lenth_cap, coolprop);
 
                                     if (r[i].Pro < 0) { res_slab.Pro = -10000000; return res_slab; }
                                 }                               

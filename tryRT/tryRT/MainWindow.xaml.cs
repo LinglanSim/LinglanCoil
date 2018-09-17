@@ -590,6 +590,8 @@ namespace tryRT
                     NodeInfo[0, 1, i] = i;
                     NodeInfo[1, 0, i] = i;
                 }
+                capInput.d_cap = new double[Convert.ToInt32(Cirnum.Text)];
+                capInput.lenth_cap = new double[Convert.ToInt32(Cirnum.Text)];
             }
 
             var r = m_Main.main_condenser(refInput, airInput, geoInput,CirArrange, NodeInfo, fin_type, tube_type, hex_type, capInput);
@@ -877,6 +879,7 @@ namespace tryRT
 
             if (flag_Calculated == true)
             {
+                peopleList.Clear();               
                 //创建dataGrid数据
                 Result_Tube_row = Convert.ToString(tube_inter);
                 Result_Row = Convert.ToString(N_row_inter);
@@ -898,7 +901,16 @@ namespace tryRT
                 for (int k = 1; k < Tube_row_int * Row_int + 1; k++)
                 {
                     int i = k % Tube_row_int == 0 ? Tube_row_int - 1 : k % Tube_row_int - 1;
-                    int j = k % Tube_row_int == 0 ? k / Tube_row_int - 1 : k / Tube_row_int;
+                    int j = 0;
+                    if(AirFlowDirection==0)
+                    {
+                        j = k % Tube_row_int == 0 ? k / Tube_row_int - 1 : k / Tube_row_int;
+                    }
+                    else if(AirFlowDirection==1)
+                    {
+                        j = k % Tube_row_int == 0 ?Row_int- k / Tube_row_int : Row_int-1- k / Tube_row_int;
+                    }
+                    
                     peopleList.Add(new people()
                     {
                         //tube = Convert.ToString(i + 1),
@@ -916,7 +928,8 @@ namespace tryRT
                     });
                 }
 
-                ((this.FindName("dataGrid_Result")) as DataGrid).ItemsSource = peopleList;
+                //((this.FindName("dataGrid_Result")) as DataGrid).ItemsSource = peopleList;
+                dataGrid_Result.ItemsSource = peopleList;
                 flag_Calculated = false;
             }
 
@@ -1659,7 +1672,28 @@ namespace tryRT
                             //if (rect_start) node1 = node2;
                         }
                     }
-                }//
+                }
+                else if(vm.CreatNewConnector==false)
+                {
+                    var item = ListBox_this.SelectedItem;
+                    if (item!=null&&item.GetType().Name == "Capillary")
+                    {
+                        TextBox_Length.IsEnabled = true;
+                        TextBox_Diameter.IsEnabled = true;
+                        Button_Capillary.IsEnabled = true;
+                        var selectitem = item as Capillary;
+                        TextBox_Length.Text = selectitem.Length.ToString();
+                        TextBox_Diameter.Text = selectitem.Diameter.ToString();
+                    }
+                    else
+                    {
+                        TextBox_Length.IsEnabled = false;
+                        TextBox_Diameter.IsEnabled = false;
+                        Button_Capillary.IsEnabled = false;
+                        TextBox_Length.Text = "";
+                        TextBox_Diameter.Text = "";
+                    }
+                }
 
 
                 /*if (vm.CreatNewConnector && ListBox_this.SelectedItem != null)//creat connector
