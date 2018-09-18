@@ -9,7 +9,7 @@ namespace Test
     public class TestforRef
     {
         [TestMethod]
-        public void TestMethod1()
+        public void TestMethod1(double[,] SourceTableData)
         {
             //var r = Main.main_evaporator();
             //var r1 = Main.main_condenser();
@@ -43,7 +43,7 @@ namespace Test
             string fin_type="平片";
             string tube_type="光管";
             string hex_type="冷凝器";
-            var r1 = Main.main_condenser_Slab(refInput,airInput,geoInput,flowtype,fin_type,tube_type,hex_type,capInput);
+            var r1 = Main.main_condenser_Slab(refInput,airInput,geoInput,flowtype,fin_type,tube_type,hex_type,capInput, SourceTableData);
             //var r = Main.MinNout();
             //var r = Main.NinMout();
         }

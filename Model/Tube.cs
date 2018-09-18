@@ -12,7 +12,7 @@ namespace Model
         public static CalcResult TubeCalc(int Nelement, string fluid,
             double l, double Aa_fin, double Aa_tube, double A_r_cs, double Ar, Geometry geo, double[] tai,
             double[] RHi, double tri, double pri, double hri, double mr, double[] ma, double[] ha,double[] haw,
-            double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater, AbstractState coolprop)
+            double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater, AbstractState coolprop, double[,] SourceTableData)
         {
             double g = mr / A_r_cs;
 
@@ -22,7 +22,7 @@ namespace Model
             for (int i = 0; i < Nelement; i++)
             {
                 r[i] = Element.ElementCal(fluid, l / Nelement, Aa_fin, Aa_tube, A_r_cs, Ar, geo,
-                    tai[i], RHi[i], tri, pri, hri, mr, g, ma[i], ha[i], haw[i],eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, coolprop);//elementtest
+                    tai[i], RHi[i], tri, pri, hri, mr, g, ma[i], ha[i], haw[i], eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, coolprop, SourceTableData);//elementtest
  
                 //SP/TP Smooth
                 if((r[i].x_i>1&&r[i].x_o<1)||(r[i].x_i>0&&r[i].x_o<0)||(r[i].x_i<0&&r[i].x_o>0)||(r[i].x_i<1&&r[i].x_o>1))
@@ -39,7 +39,7 @@ namespace Model
                     for(int j=0;j<N_sub;j++)
                     {
                         r_sub[j] = Element.ElementCal(fluid, l / Nelement / N_sub, Aa_fin / N_sub, Aa_tube / N_sub, A_r_cs, Ar / N_sub, geo,
-                            tai[i], RHi[i], tri_sub, pri_sub, hri_sub, mr, g, ma[i] / N_sub, ha[i], haw[i], eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, coolprop);
+                            tai[i], RHi[i], tri_sub, pri_sub, hri_sub, mr, g, ma[i] / N_sub, ha[i], haw[i], eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, coolprop, SourceTableData);
                         pri_sub = r_sub[j].Pro;
                         hri_sub = r_sub[j].hro;
                         tri_sub = r_sub[j].Tro;

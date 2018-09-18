@@ -10,7 +10,7 @@ namespace Model
 {
     public class HumidAirProp
     {
-        public double H(double Temp, String Input2, double RHi_or_Omega)
+        public double H(double Temp, String Input2, double RHi_or_Omega, double[,] SourceTableData)
         {
             int FirstRow = 2801;//一般已知干球温度和相对湿度
             double FirstColValue = 0;
@@ -27,7 +27,7 @@ namespace Model
                 double deta_Y = 0.01;
                 int dig_X = 1;
                 int dig_Y = 2;
-                res = interpolate.Interpolate(FirstRow, FirstColValue, Temp, RHi_or_Omega, deta_X, deta_Y, dig_X, dig_Y);//已知干球温度和相对湿度插值
+                res = interpolate.Interpolate(FirstRow, FirstColValue, Temp, RHi_or_Omega, deta_X, deta_Y, dig_X, dig_Y, SourceTableData);//已知干球温度和相对湿度插值
             }
             else
             {
@@ -35,12 +35,12 @@ namespace Model
                 double deta_Y = 0.0002;
                 int dig_X = 2;
                 int dig_Y = 4;
-                res = interpolate.Interpolate(FirstRow, FirstColValue, Temp, RHi_or_Omega, deta_X, deta_Y, dig_X, dig_Y);//已知干球温度和相对湿度插值
+                res = interpolate.Interpolate(FirstRow, FirstColValue, Temp, RHi_or_Omega, deta_X, deta_Y, dig_X, dig_Y, SourceTableData);//已知干球温度和相对湿度插值
             }
             return res * 1000;
         }
 
-        public double O(double Temp, double RHi)
+        public double O(double Temp, double RHi, double[,] SourceTableData)
         {
             int FirstRow = 7007;
             double FirstColValue = 0;
@@ -53,12 +53,12 @@ namespace Model
             int dig_X = 1;
             int dig_Y = 2;
             Interpolator interpolate = new Interpolator();
-            res = interpolate.Interpolate(FirstRow, FirstColValue, Temp, RHi, deta_X, deta_Y, dig_X, dig_Y);//插值
+            res = interpolate.Interpolate(FirstRow, FirstColValue, Temp, RHi, deta_X, deta_Y, dig_X, dig_Y, SourceTableData);//插值
 
             return res;
         }
 
-        public double Cp(double Temp, double RHi)
+        public double Cp(double Temp, double RHi, double[,] SourceTableData)
         {
             int FirstRow = 4203;
             double FirstColValue = 0;
@@ -71,12 +71,12 @@ namespace Model
             int dig_X = 1;
             int dig_Y = 2;
             Interpolator interpolate = new Interpolator();
-            res = interpolate.Interpolate(FirstRow, FirstColValue, Temp, RHi, deta_X, deta_Y, dig_X, dig_Y);//插值
+            res = interpolate.Interpolate(FirstRow, FirstColValue, Temp, RHi, deta_X, deta_Y, dig_X, dig_Y, SourceTableData);//插值
 
             return res * 1000;
         }
 
-        public double Tdp(double Temp, double RHi)
+        public double Tdp(double Temp, double RHi, double[,] SourceTableData)
         {
             int FirstRow = 5605;
             double FirstColValue = 0;
@@ -90,12 +90,12 @@ namespace Model
             int dig_X = 1;
             int dig_Y = 2;
             Interpolator interpolate = new Interpolator();
-            res = interpolate.Interpolate(FirstRow, FirstColValue, Temp, RHi, deta_X, deta_Y, dig_X, dig_Y);//插值
+            res = interpolate.Interpolate(FirstRow, FirstColValue, Temp, RHi, deta_X, deta_Y, dig_X, dig_Y, SourceTableData);//插值
 
             return res;
         }
 
-        public double Ts(double H)//求Tdp
+        public double Ts(double H, double[,] SourceTableData)//求Tdp
         {
             int FirstRow = 11112;
 
@@ -106,34 +106,28 @@ namespace Model
             double deta_X = 0.05;
             int dig_X = 2;
             Interpolator interpolate = new Interpolator();
-            res = interpolate.Interpolate_Ts(FirstRow, H / 1000, deta_X, dig_X);//插值
+            res = interpolate.Interpolate_Ts(FirstRow, H / 1000, deta_X, dig_X, SourceTableData);//插值
 
             return res;
         }
-        public double RHI(double Temp, double Tdp)
+        public double RHI(double Temp, double Tdp, double[,] SourceTableData)
         {
             int FirstRow;//一般已知干球温度和相对湿度
             double FirstColValue;
-            if (Tdp < 1)
-            {
+
                 FirstRow = 8409;
                 FirstColValue = -60;
-            }
-            else
-            {
-                FirstRow = 11112;
-                FirstColValue = 1;
-            }
+
 
             double res = -1000;
             Interpolator interpolate = new Interpolator();
 
             double deta_X = 0.05;
-            double deta_Y = 0.25;
+            double deta_Y = 0.5;
             int dig_X = 2;
-            int dig_Y = 2;
+            int dig_Y = 1;
 
-            res = interpolate.Interpolate(FirstRow, FirstColValue, Temp, Tdp, deta_X, deta_Y, dig_X, dig_Y);//已知干球温度和相对湿度插值
+            res = interpolate.Interpolate(FirstRow, FirstColValue, Temp, Tdp, deta_X, deta_Y, dig_X, dig_Y, SourceTableData);//已知干球温度和相对湿度插值
 
             //if (res > 1)
             //{

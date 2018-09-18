@@ -55,7 +55,7 @@ namespace Test
                 capInput.lenth_cap = new double[] { 0.5, 0.5 };
 
                 DateTime Time1 = DateTime.Now;
-                var rr = Main.main_condenser_py(refInput, airInput, geoInput, capInput, coolprop);
+                var rr = Main.main_condenser_py(refInput, airInput, geoInput, capInput, coolprop, Model.HumidAirSourceData.SourceTableData);
                 DateTime Time2 = DateTime.Now;
                 double time = (Time2 - Time1).TotalSeconds;
                 using (StreamWriter wr = File.AppendText(@"D:\Work\Simulation\Test\smoothness.txt"))

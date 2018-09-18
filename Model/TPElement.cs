@@ -89,7 +89,7 @@ namespace Model
         }
         public static CalcResult ElementCalc1(string fluid, double l, double Aa_fin, double Aa_tube, double A_r_cs, double Ar, Geometry geo, double tai,
             double RHi, double tri, double pri, double hri, double mr, double g, double ma, double ha, double haw,
-            double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, AbstractState coolprop)
+            double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, AbstractState coolprop, double[,] SourceTableData)
         {
             Model.HumidAirProp humidairprop = new Model.HumidAirProp();
 
@@ -143,7 +143,7 @@ namespace Model
                 ////
                 //double cp_a0 = CoolProp.HAPropsSI("C", "T", tai + 273.15, "P", 101325, "R", RHi);
                 //double cp_a = 1005.1458551 + 0.1541627 * tai + 4.3454442 * RHi - 0.0090904 * Math.Pow(tai, 2) - 0.3409659 * Math.Pow(RHi, 2) - 0.0007819 * tai * RHi + 0.0001851 * Math.Pow(tai, 3) + 0.0049274 * Math.Pow(RHi, 3) + 0.0476513 * tai * Math.Pow(RHi, 2) + 0.020268209 * Math.Pow(tai, 2) * RHi;
-                double cp_a = humidairprop.Cp(tai, RHi);
+                double cp_a = humidairprop.Cp(tai, RHi, SourceTableData);
 
                 double UA = 1 / (1 / ha / (Aa_fin * eta_0 + Aa_tube) + 1 / (res.href * Ar) + r_metal);
                 double Ntu_dry = UA / (ma * cp_a);
@@ -162,11 +162,11 @@ namespace Model
 
                 //double omega_in0 = CoolProp.HAPropsSI("W", "T", tai + 273.15, "P", 101325, "R", RHi);
                 //double omega_in = (-0.0682340 + 0.0292341 * tai + 4.1604535 * RHi - 0.0025985 * Math.Pow(tai, 2) - 0.0769009 * Math.Pow(RHi, 2) + 0.1246489 * tai * RHi + 6.008 * Math.Pow(10, -5) * Math.Pow(tai, 3) - 0.0006775 * Math.Pow(RHi, 3) + 0.0267183 * tai * Math.Pow(RHi, 2) + 0.019904969 * Math.Pow(tai, 2) * RHi) / 1000;
-                double omega_in = humidairprop.O(tai, RHi);
+                double omega_in = humidairprop.O(tai, RHi, SourceTableData);
 
                 //double hai0 = CoolProp.HAPropsSI("H", "T", tai + 273.15, "P", 101325, "R", RHi);
                 //double hai = -244.2924077 + 1135.8711 * tai + 10101.404 * RHi - 12.968219 * Math.Pow(tai, 2) - 11.356807 * Math.Pow(RHi, 2) + 357.25464 * tai * RHi + 0.3178346 * Math.Pow(tai, 3) - 0.0024329 * Math.Pow(RHi, 3) + 44.100799 * tai * Math.Pow(RHi, 2) + 50.31444812 * Math.Pow(tai, 2) * RHi;
-                double hai = humidairprop.H(tai, "R", RHi);
+                double hai = humidairprop.H(tai, "R", RHi, SourceTableData);
 
                 //double ha2 = ((1.006 + 1.805 * omega_in1) * tai + 2501 * omega_in1) * 1000;//采用湿空气 物性的关系来写
 
@@ -183,8 +183,8 @@ namespace Model
                 //double resRHout0 = CoolProp.HAPropsSI("R", "T", tao + 273.15, "P", 101325, "H", hout_a);
                 //res.RHout = 0.0259124 - 0.0996818 * tao + 0.0934877 * (hout_a / 1000) + 0.0040018 * Math.Pow(tao, 2) - 0.0003662 * Math.Pow((hout_a / 1000), 2) - 0.0034077 * tao * (hout_a / 1000) - 1.76447 * Math.Pow(10, -5) * Math.Pow(tao, 3) - 2.74524 * Math.Pow(10, -6) * Math.Pow((hout_a / 1000), 3) + 2.99291 * Math.Pow(10, -5) * tao * Math.Pow((hout_a / 1000), 2) - 9.56644 * Math.Pow(10, -6) * Math.Pow(tao, 2) * (hout_a / 1000);
 
-                double Tdp_out = humidairprop.Ts(hout_a);
-                res.RHout = humidairprop.RHI(tao, Tdp_out);
+                double Tdp_out = humidairprop.Ts(hout_a, SourceTableData);
+                res.RHout = humidairprop.RHI(tao, Tdp_out, SourceTableData);
 
                 //if (tao >= 2 && tao <= 4)
                 //{
@@ -215,7 +215,7 @@ namespace Model
                     double hao = 0;
                     //double Tdp0 = CoolProp.HAPropsSI("D", "T", tai + 273.15, "P", 101325, "R", RHi) - 273.15;
                     //double Tdp = -273.15 + 241.0212518 + 0.5718833 * tai + 84.99553 * RHi + 0.002691 * Math.Pow(tai, 2) - 95.003186 * Math.Pow(RHi, 2) + 0.7135779 * tai * RHi - 2.691 / Math.Pow(10, 5) * Math.Pow(tai, 3) + 42.58183 * Math.Pow(RHi, 3) - 0.3227474 * tai * Math.Pow(RHi, 2) - 0.000884612 * Math.Pow(tai, 2) * RHi;
-                    double Tdp = humidairprop.Tdp(tai, RHi);
+                    double Tdp = humidairprop.Tdp(tai, RHi, SourceTableData);
 
                     /*
                     double Ps = omega_in * 101325 / (0.622 + omega_in);
@@ -251,14 +251,14 @@ namespace Model
                             f_dry = -1.0 / Ntu_dry * Math.Log(1.0 - epsilon_dry);
                             //double h_ac0 = CoolProp.HAPropsSI("H", "T", T_ac + 273.15, "P", 101325, "W", omega_in);
                             //h_ac = -244.2924077 + 1135.8711 * T_ac + 10101.404 * RHi - 12.968219 * Math.Pow(T_ac, 2) - 11.356807 * Math.Pow(RHi, 2) + 357.25464 * T_ac * RHi + 0.3178346 * Math.Pow(T_ac, 3) - 0.0024329 * Math.Pow(RHi, 3) + 44.100799 * T_ac * Math.Pow(RHi, 2) + 50.31444812 * Math.Pow(T_ac, 2) * RHi;
-                            h_ac = humidairprop.H(T_ac, "Omega", omega_in);
+                            h_ac = humidairprop.H(T_ac, "Omega", omega_in, SourceTableData);
                             Q_dry = ma * cp_a * (tai - T_ac);
                         }
 
                         //double h1 = 58.732687 * Math.Pow(tri + 273.15 + 0.01, 2) - 30921.970577 * (tri + 273.15 + 0.01) + 4075493.951473;
-                        double h1 = humidairprop.H(tri + 0.01, "R", 1);
+                        double h1 = humidairprop.H(tri + 0.01, "R", 1, SourceTableData);
                         //double h2 = 58.732687 * Math.Pow(tri + 273.15 - 0.01, 2) - 30921.970577 * (tri + 273.15 - 0.01) + 4075493.951473;
-                        double h2 = humidairprop.H(tri - 0.01, "R", 1);
+                        double h2 = humidairprop.H(tri - 0.01, "R", 1, SourceTableData);
                         double c_s = (h1 - h2) / 0.02;
                         //double c_s0 = (CoolProp.HAPropsSI("H", "T", tri + 273.15 + 0.01, "P", 101325, "R", 1.0) - CoolProp.HAPropsSI("H", "T", tri + 273.15 - 0.01, "P", 101325, "R", 1.0)) / 0.02;
 
@@ -273,14 +273,14 @@ namespace Model
                         double epsilon_wet = 1 - Math.Exp(-(1 - f_dry) * Ntu_wet);
                         //double h_s_s_o0 = CoolProp.HAPropsSI("H", "T", tri + 273.15, "P", 101325, "R", 1.0);
                         //double h_s_s_o = 58.732687 * Math.Pow(tri + 273.15, 2) - 30921.970577 * (tri + 273.15 - 0.01) + 4075493.951473;
-                        double h_s_s_o = humidairprop.H(tri, "R", 1);
+                        double h_s_s_o = humidairprop.H(tri, "R", 1, SourceTableData);
                         double Q_wet = epsilon_wet * ma * (h_ac - h_s_s_o);
                         Q = Q_wet + Q_dry;
                         hao = h_ac - Q_wet / ma;
                         double h_s_s_e = h_ac - (h_ac - hao) / (1 - Math.Exp(-(1 - f_dry) * NTU_o));
                         //double T_s_e0 = CoolProp.HAPropsSI("T","H",h_s_s_e,"P",101325,"R",1.0)-273.15;
                         //double T_s_e = -273.15 - 1.96 * Math.Pow(10, -3) * Math.Pow(h_s_s_e / 1000, 2) + 0.5357597 * h_s_s_e / 1000 + 268.871551;
-                        double T_s_e = humidairprop.Ts(h_s_s_e);
+                        double T_s_e = humidairprop.Ts(h_s_s_e, SourceTableData);
                         tao = T_s_e + (T_ac - T_s_e) * Math.Exp(-(1 - f_dry) * NTU_o);
                         Q_sensible = ma * cp_a * (tai - tao);
                         hro = hri + Q / 1000 / mr;
@@ -291,8 +291,8 @@ namespace Model
                     //double resRHout00 = CoolProp.HAPropsSI("R", "T", tao + 273.15, "P", 101325, "H", hout_a);
                     //res.RHout = 0.0259124 - 0.0996818 * tao + 0.0934877 * (hout_a / 1000) + 0.0040018 * Math.Pow(tao, 2) - 0.0003662 * Math.Pow((hout_a / 1000), 2) - 0.0034077 * tao * (hout_a / 1000) - 1.76447 * Math.Pow(10, -5) * Math.Pow(tao, 3) - 2.74524 * Math.Pow(10, -6) * Math.Pow((hout_a / 1000), 3) + 2.99291 * Math.Pow(10, -5) * tao * Math.Pow((hout_a / 1000), 2) - 9.56644 * Math.Pow(10, -6) * Math.Pow(tao, 2) * (hout_a / 1000);
 
-                    Tdp_out = humidairprop.Ts(hout_a);
-                    res.RHout = humidairprop.RHI(tao, Tdp_out);
+                    Tdp_out = humidairprop.Ts(hout_a, SourceTableData);
+                    res.RHout = humidairprop.RHI(tao, Tdp_out, SourceTableData);
 
                     //if (tao >= 2 && tao <= 4)
                     //{
@@ -317,7 +317,7 @@ namespace Model
                         res.RHout = 1;
                         //double tao0 = CoolProp.HAPropsSI("T", "H", hao, "P", 101325, "R", 1)-273.15;
                         //tao = -273.15 - 1.96 * Math.Pow(10, -3) * Math.Pow(hao / 1000, 2) + 0.5357597 * hao / 1000 + 268.871551;
-                        tao = humidairprop.Ts(hao);
+                        tao = humidairprop.Ts(hao, SourceTableData);
                         Q_sensible = ma * cp_a * (tai - tao);
                     }
                 }

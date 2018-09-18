@@ -231,6 +231,7 @@ namespace tryRT
             //数据初始化
             flag_Calculated = false;
 
+            //初始化湿空气数组
             Model.HumidAirSourceData.InitializeSourceTableData();
 
             //#region//测试湿空气物性查表对错用
@@ -594,7 +595,7 @@ namespace tryRT
                 capInput.lenth_cap = new double[Convert.ToInt32(Cirnum.Text)];
             }
 
-            var r = m_Main.main_condenser(refInput, airInput, geoInput,CirArrange, NodeInfo, fin_type, tube_type, hex_type, capInput);
+            var r = m_Main.main_condenser(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, capInput, Model.HumidAirSourceData.SourceTableData);
 
 
 

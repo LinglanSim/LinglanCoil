@@ -15,9 +15,10 @@ namespace Model
         public static string connectionString = "Provider=Microsoft.Jet.OLEDB.4.0;" + "Data Source=D:\\MCoil\\Model\\" + fileName + ";" + ";Extended Properties=\"Excel 8.0;HDR=YES;IMEX=1\""; //只能是XLS格式的EXCEL
         //创建连接到数据源的对象
 
-        public static object[,] SourceTableData = new object[29914, 253];
+        public static double[,] SourceTableData = new double[29914, 253];
+        //SourceTableData=Model.HumidAirSourceData.InitializeSourceTableData();
 
-        public static void InitializeSourceTableData()//取得工作表中所有的行
+         public static void InitializeSourceTableData()//取得工作表中所有的行
         {
             OleDbConnection connection = new OleDbConnection(connectionString);
 
@@ -47,7 +48,11 @@ namespace Model
             {
                 for (int j = 0; j < 253; j++)
                 {
-                    SourceTableData[i, j] = rowCollection[i][j];
+                    if (rowCollection[i][j].GetType().Name!="DBNull")
+                    {
+                        SourceTableData[i, j] = Convert.ToDouble(rowCollection[i][j]);
+                        //Console.WriteLine("rowCollection[{0}][{1}]- type {2}", i, j, rowCollection[i][j].GetType().Name);//查看数据类型
+                    }                   
                 }
             }
         }

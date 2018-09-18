@@ -44,8 +44,8 @@ namespace Test
 
             //air input
             airInput.Volumetricflowrate = 0.12; //m3/s
-            airInput.tai = 35;//24.85
-            airInput.RHi = 0.7;
+            airInput.tai = 25;//24.85
+            airInput.RHi = 0.9;
 
             //airInput.ha = 80;
 
@@ -66,11 +66,12 @@ namespace Test
             capInput.d_cap = new double[] { 0, 0 };//0.006
             capInput.lenth_cap = new double[] { 0, 0 };//0.5
 
+            //初始化湿空气数组
             Model.HumidAirSourceData.InitializeSourceTableData();
 
             DateTime Time1 = DateTime.Now;
-            var rr = Main.main_condenser_py(refInput, airInput, geoInput, capInput, coolprop);
-            //var r = Main.main_evaporator_py(refInput, airInput, geoInput, capInput, coolprop);
+            var rr = Main.main_condenser_py(refInput, airInput, geoInput, capInput, coolprop, Model.HumidAirSourceData.SourceTableData);
+            //var r = Main.main_evaporator_py(refInput, airInput, geoInput, capInput, coolprop, Model.HumidAirSourceData.SourceTableData);
             //for (int i=0;i<5;i++)
             //r = Main.main_evaporator_py(refInput, airInput, geoInput, capInput);
 

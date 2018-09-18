@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Model.Basic;
+using System.Data;
 
 namespace Model
 {
     public class Capiliary
     {
-        public static Capiliary_res CapiliaryCalc(int index, string fluid, double d_cap, double lenth_cap, double tri, double pri, double hri, double mr, double Pwater, int hexType, AbstractState coolprop)
+        public static Capiliary_res CapiliaryCalc(int index, string fluid, double d_cap, double lenth_cap, double tri, double pri, double hri, double mr, double Pwater, int hexType, AbstractState coolprop, double[,] SourceTableData)
         {
             //毛细管守恒方程模型
             //AbstractState coolprop = AbstractState.factory("HEOS", fluid);
