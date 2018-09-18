@@ -199,6 +199,7 @@
       <DependentUpon>DataBase.edmx</DependentUpon>
       <LastGenOutput>DataBase.cs</LastGenOutput>
     </None>
+    <None Include="EESWetAirPropertyXLS.xls" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

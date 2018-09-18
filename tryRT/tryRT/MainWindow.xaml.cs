@@ -520,26 +520,26 @@ namespace tryRT
             Model.Basic.AirStateInput airInput = new Model.Basic.AirStateInput();
 
             //几何结构输入
-            geoInput.Pt = Convert.ToDouble(Pt.Text);
-            geoInput.Pr = Convert.ToDouble(Pr.Text);
-            geoInput.Nrow = Convert.ToInt16(Row.Text);
-            geoInput.Do = Convert.ToDouble(Do.Text);
-            geoInput.Ntube = Convert.ToInt16(tube_per.Text);
-            geoInput.Tthickness = Convert.ToDouble(thick_tube.Text);
-            geoInput.L = Convert.ToDouble(L.Text);
-            geoInput.Fthickness = Convert.ToDouble(Fthick.Text);
-            geoInput.FPI = Convert.ToDouble(Fnum.Text);
-            refInput.Massflowrate = Convert.ToDouble(mr.Text);
-            refInput.tc = Convert.ToDouble(tc.Text);
-            refInput.tri = Convert.ToDouble(tri.Text);
-            refInput.FluidName = ComboBox_Refrigerant.Text;
-            airInput.Volumetricflowrate = Convert.ToDouble(Va.Text);
-            airInput.tai = Convert.ToDouble(tai.Text);
-            airInput.RHi = Convert.ToDouble(RHi.Text);
-            airInput.AirFlowDirection = AirFlowDirection;
-            string fin_type = ComboBox_fintype.Text;
-            string tube_type = ComboBox_tubetype.Text;
-            string hex_type = ComboBox_hextype.Text;
+            geoInput.Pt = Convert.ToDouble(Pt.Text);//管间距
+            geoInput.Pr = Convert.ToDouble(Pr.Text);//列间距
+            geoInput.Nrow = Convert.ToInt16(Row.Text);//管排数
+            geoInput.Do = Convert.ToDouble(Do.Text);//管外径
+            geoInput.Ntube = Convert.ToInt16(tube_per.Text);//管数/排
+            geoInput.Tthickness = Convert.ToDouble(thick_tube.Text);//壁厚
+            geoInput.L = Convert.ToDouble(L.Text);//管长
+            geoInput.Fthickness = Convert.ToDouble(Fthick.Text);//翅片厚度
+            geoInput.FPI = Convert.ToDouble(Fnum.Text);//翅片间距
+            refInput.Massflowrate = Convert.ToDouble(mr.Text);//制冷剂流量kg/s
+            refInput.tc = Convert.ToDouble(tc.Text);//冷凝器饱和温度
+            refInput.tri = Convert.ToDouble(tri.Text);//冷凝器进口温度
+            refInput.FluidName = ComboBox_Refrigerant.Text;//制冷剂名
+            airInput.Volumetricflowrate = Convert.ToDouble(Va.Text);//空气体积流量m3/s
+            airInput.tai = Convert.ToDouble(tai.Text);//进风干球温度
+            airInput.RHi = Convert.ToDouble(RHi.Text);//进风相对湿度
+            airInput.AirFlowDirection = AirFlowDirection;//0:normal 1:reverse
+            string fin_type = ComboBox_fintype.Text;//平片
+            string tube_type = ComboBox_tubetype.Text;//光管
+            string hex_type = ComboBox_hextype.Text;//冷凝器
 
             //string bb = ComboBox6_SelectionChanged(object sender, SelectionChangedEventArgs e);
             //m_Main.W5(a, b).ha
@@ -565,7 +565,7 @@ namespace tryRT
             {
                 Model.Basic.CircuitNumber CircuitInfo=new Model.Basic.CircuitNumber();
                 CircuitInfo.number = new int[] { Convert.ToInt32(Cirnum.Text), Convert.ToInt32(Cirnum.Text) };                 
-                if (CircuitInfo.number[0] > geoInput.Ntube)//Avoid invalid Ncir input
+                if (CircuitInfo.number[0] > geoInput.Ntube)//Avoid invalid Ncir input//管排数比管数还多
                 {
                     throw new Exception("circuit number is beyond range.");
                 }
