@@ -419,7 +419,14 @@ namespace Model
             //Get AutoCircuitry
             CircuitInfo = AutoCircuiting.GetTubeofCir(Nrow, N_tube, CircuitInfo);
             CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
-            CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
+            if (geoInput.Nrow % 2 == 0)
+            {
+                CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
+            }
+            else
+            {
+                CirArrange = AutoCircuiting.GetCirArrange_3Row(CirArrange, Nrow, N_tube, CircuitInfo);
+            }
 
             CirArr[] cirArr = new CirArr[Nrow * N_tube];
             cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube,0).CirArr;
@@ -580,7 +587,14 @@ namespace Model
             //Get AutoCircuitry
             CircuitInfo = AutoCircuiting.GetTubeofCir(Nrow, N_tube, CircuitInfo);
             CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
-            CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
+            if (geoInput.Nrow % 2 == 0)
+            {
+                CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
+            }
+            else
+            {
+                CirArrange = AutoCircuiting.GetCirArrange_3Row(CirArrange, Nrow, N_tube, CircuitInfo);
+            }
 
             CirArr[] cirArr = new CirArr[Nrow * N_tube];
             cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube,0).CirArr;
