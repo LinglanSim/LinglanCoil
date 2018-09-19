@@ -22,8 +22,10 @@ namespace Model
         public static double[,] SourceTableData = new double[29914, 253];
         //SourceTableData=Model.HumidAirSourceData.InitializeSourceTableData();
 
-         public static void InitializeSourceTableData()//取得工作表中所有的行
+        public static double[,] InitializeSourceTableData()//取得工作表中所有的行
         {
+            double[,] _SourceTableData = new double[29914, 253];
+
             OleDbConnection connection = new OleDbConnection(connectionString);
 
             //打开连接
@@ -54,11 +56,12 @@ namespace Model
                 {
                     if (rowCollection[i][j].GetType().Name!="DBNull")
                     {
-                        SourceTableData[i,j] = Convert.ToDouble(rowCollection[i][j]);
+                        _SourceTableData[i,j] = Convert.ToDouble(rowCollection[i][j]);
                         //Console.WriteLine("rowCollection[{0}][{1}]- type {2}", i, j, rowCollection[i][j].GetType().Name);//查看数据类型
                     }                   
                 }
             }
+            return _SourceTableData;
         }
     }
 }
