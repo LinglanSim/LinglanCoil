@@ -12,7 +12,11 @@ namespace Model
     public class HumidAirSourceData
     {
         public static string fileName = "EESWetAirPropertyXLS.xls";
-        public static string connectionString = "Provider=Microsoft.Jet.OLEDB.4.0;" + "Data Source=D:\\MCoil\\Model\\" + fileName + ";" + ";Extended Properties=\"Excel 8.0;HDR=YES;IMEX=1\""; //只能是XLS格式的EXCEL
+        public static string CurrentDirectory = Convert.ToString(System.AppDomain.CurrentDomain.BaseDirectory);
+        public static string SearchStr = "Data Source="+CurrentDirectory.Remove(CurrentDirectory.Length - 23, 23) + "\\Model\\Excel\\" + fileName;
+        
+        //public static string connectionString = "Provider=Microsoft.Jet.OLEDB.4.0;" + "Data Source=D:\\MCoil\\Model\\Excel\\" + fileName + ";" + ";Extended Properties=\"Excel 8.0;HDR=YES;IMEX=1\""; //只能是XLS格式的EXCEL
+        public static string connectionString = "Provider=Microsoft.Jet.OLEDB.4.0;" + SearchStr + ";" + ";Extended Properties=\"Excel 8.0;HDR=YES;IMEX=1\""; //只能是XLS格式的EXCEL
         //创建连接到数据源的对象
 
         public static double[,] SourceTableData = new double[29914, 253];

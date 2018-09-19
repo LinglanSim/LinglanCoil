@@ -70,8 +70,8 @@ namespace Test
             Model.HumidAirSourceData.InitializeSourceTableData();
 
             DateTime Time1 = DateTime.Now;
-            var rr = Main.main_condenser_py(refInput, airInput, geoInput, capInput, coolprop, Model.HumidAirSourceData.SourceTableData);
-            //var r = Main.main_evaporator_py(refInput, airInput, geoInput, capInput, coolprop, Model.HumidAirSourceData.SourceTableData);
+            //var rr = Main.main_condenser_py(refInput, airInput, geoInput, capInput, coolprop, Model.HumidAirSourceData.SourceTableData);
+            var r = Main.main_evaporator_py(refInput, airInput, geoInput, capInput, coolprop, Model.HumidAirSourceData.SourceTableData);
             //for (int i=0;i<5;i++)
             //r = Main.main_evaporator_py(refInput, airInput, geoInput, capInput);
 
