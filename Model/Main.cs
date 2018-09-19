@@ -380,10 +380,13 @@ namespace Model
 
             return res;
         }
-        public static CalcResult main_evaporator_py(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, CapiliaryInput capInput, AbstractState coolprop, double[,] SourceTableData)
+        public static CalcResult main_evaporator_py(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, double[,] SourceTableData)
         {
             CalcResult res = new CalcResult();
-
+            CapiliaryInput capInput=new CapiliaryInput();
+            capInput.d_cap = new double[geoInput.CirNum];
+            capInput.lenth_cap = new double[geoInput.CirNum];
+            AbstractState coolprop = AbstractState.factory("HEOS", refInput.FluidName);
             int Nrow = geoInput.Nrow;//2
             int[] Ntube = { geoInput.Ntube, geoInput.Ntube };
             int N_tube = Ntube[0];
@@ -534,10 +537,15 @@ namespace Model
 
             return res;
         }
-        public static CalcResult main_condenser_py(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, CapiliaryInput capInput, AbstractState coolprop, double[,] SourceTableData)
+        public static CalcResult main_condenser_py(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, double[,] SourceTableData)
         {
             //***几何结构赋值***//
             CalcResult res = new CalcResult();
+            CapiliaryInput capInput = new CapiliaryInput();
+            capInput.d_cap = new double[geoInput.CirNum];
+            capInput.lenth_cap = new double[geoInput.CirNum];
+            AbstractState coolprop = AbstractState.factory("HEOS", refInput.FluidName);
+
             int Nrow = geoInput.Nrow;//2
             int[] Ntube = { geoInput.Ntube, geoInput.Ntube };
             int N_tube = Ntube[0];
