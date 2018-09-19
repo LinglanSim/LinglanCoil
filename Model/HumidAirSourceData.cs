@@ -12,8 +12,8 @@ namespace Model
     public class HumidAirSourceData
     {
         public static string fileName = "EESWetAirPropertyXLS.xls";
-        public static string CurrentDirectory = Convert.ToString(System.AppDomain.CurrentDomain.BaseDirectory);
-        public static string SearchStr = "Data Source="+CurrentDirectory.Remove(CurrentDirectory.Length - 15, 15) + "\\Model\\" + fileName;
+        public static string CurrentDirectory = Convert.ToString(System.AppDomain.CurrentDomain.BaseDirectory);//D:\\MCoil\\tryRT\\tryRT\\bin\\Debug\\
+        public static string SearchStr = "Data Source=" + CurrentDirectory.Substring(0, CurrentDirectory.LastIndexOf("MCoil") + 5) + "\\Model\\" + fileName;
         
         //public static string connectionString = "Provider=Microsoft.Jet.OLEDB.4.0;" + "Data Source=D:\\MCoil\\Model\\Excel\\" + fileName + ";" + ";Extended Properties=\"Excel 8.0;HDR=YES;IMEX=1\""; //只能是XLS格式的EXCEL
         public static string connectionString = "Provider=Microsoft.Jet.OLEDB.4.0;" + SearchStr + ";" + ";Extended Properties=\"Excel 8.0;HDR=YES;IMEX=1\""; //只能是XLS格式的EXCEL
