@@ -54,7 +54,7 @@ namespace Model
                 {
                     if (rowCollection[i][j].GetType().Name!="DBNull")
                     {
-                        SourceTableData[i, j] = Convert.ToDouble(rowCollection[i][j]);
+                        SourceTableData[i,j] = Convert.ToDouble(rowCollection[i][j]);
                         //Console.WriteLine("rowCollection[{0}][{1}]- type {2}", i, j, rowCollection[i][j].GetType().Name);//查看数据类型
                     }                   
                 }
