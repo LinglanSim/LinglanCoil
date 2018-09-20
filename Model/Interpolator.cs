@@ -10,7 +10,7 @@ namespace Model
 {
     class Interpolator
     {
-        public double Interpolate(int FirstRow, double FirstColValue, double X, double Y, double deta_X, double deta_Y, int dig_X, int dig_Y, double[,] SourceTableData)
+        public double Interpolate(int FirstRow, double FirstRowValue, double FirstColValue, double X, double Y, double deta_X, double deta_Y, int dig_X, int dig_Y, double[,] SourceTableData)
         {
             double Z1;
             double Z2;
@@ -29,7 +29,7 @@ namespace Model
             }
 
             int rowNum1 = 1 + FirstRow;
-            double row = (Math.Round(X, dig_X) - (-40)) / deta_X;//四舍五入获取行位置//0.05是表纵坐标相邻间距
+            double row = (Math.Round(X, dig_X) - FirstRowValue) / deta_X;//四舍五入获取行位置//0.05是表纵坐标相邻间距
             int rowNum;//行
             if ((0 == X || 0 < X) && X < 1)//要这么做结果才对，原因可能是deta_X是0.1?
             {

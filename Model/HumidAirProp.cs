@@ -13,6 +13,7 @@ namespace Model
         public double H(double Temp, String Input2, double RHi_or_Omega, double[,] SourceTableData)
         {
             int FirstRow = 2801;//一般已知干球温度和相对湿度
+            double FirstRowValue=-40;
             double FirstColValue = 0;
             if (Input2 == "Omega")//有时已知干球温度和含湿量
             {
@@ -27,7 +28,7 @@ namespace Model
                 double deta_Y = 0.01;
                 int dig_X = 1;
                 int dig_Y = 2;
-                res = interpolate.Interpolate(FirstRow, FirstColValue, Temp, RHi_or_Omega, deta_X, deta_Y, dig_X, dig_Y, SourceTableData);//已知干球温度和相对湿度插值
+                res = interpolate.Interpolate(FirstRow,FirstRowValue, FirstColValue, Temp, RHi_or_Omega, deta_X, deta_Y, dig_X, dig_Y, SourceTableData);//已知干球温度和相对湿度插值
             }
             else
             {
@@ -35,7 +36,7 @@ namespace Model
                 double deta_Y = 0.0002;
                 int dig_X = 2;
                 int dig_Y = 4;
-                res = interpolate.Interpolate(FirstRow, FirstColValue, Temp, RHi_or_Omega, deta_X, deta_Y, dig_X, dig_Y, SourceTableData);//已知干球温度和相对湿度插值
+                res = interpolate.Interpolate(FirstRow, FirstRowValue,FirstColValue, Temp, RHi_or_Omega, deta_X, deta_Y, dig_X, dig_Y, SourceTableData);//已知干球温度和相对湿度插值
             }
             return res * 1000;
         }
@@ -43,6 +44,7 @@ namespace Model
         public double O(double Temp, double RHi, double[,] SourceTableData)
         {
             int FirstRow = 7007;
+            double FirstRowValue = -40;
             double FirstColValue = 0;
             //Model.OpenExcel OpenExcel = new Model.OpenExcel();
             //DataRowCollection rowCollection = OpenExcel.ExcelRowCollection(tableCollection);//取得工作表中所有的行
@@ -53,7 +55,7 @@ namespace Model
             int dig_X = 1;
             int dig_Y = 2;
             Interpolator interpolate = new Interpolator();
-            res = interpolate.Interpolate(FirstRow, FirstColValue, Temp, RHi, deta_X, deta_Y, dig_X, dig_Y, SourceTableData);//插值
+            res = interpolate.Interpolate(FirstRow,FirstRowValue, FirstColValue, Temp, RHi, deta_X, deta_Y, dig_X, dig_Y, SourceTableData);//插值
 
             return res;
         }
@@ -61,6 +63,7 @@ namespace Model
         public double Cp(double Temp, double RHi, double[,] SourceTableData)
         {
             int FirstRow = 4203;
+            double FirstRowValue = -40;
             double FirstColValue = 0;
             //Model.OpenExcel OpenExcel = new Model.OpenExcel();
             //DataRowCollection rowCollection = OpenExcel.ExcelRowCollection(tableCollection);//取得工作表中所有的行
@@ -71,7 +74,7 @@ namespace Model
             int dig_X = 1;
             int dig_Y = 2;
             Interpolator interpolate = new Interpolator();
-            res = interpolate.Interpolate(FirstRow, FirstColValue, Temp, RHi, deta_X, deta_Y, dig_X, dig_Y, SourceTableData);//插值
+            res = interpolate.Interpolate(FirstRow, FirstRowValue, FirstColValue, Temp, RHi, deta_X, deta_Y, dig_X, dig_Y, SourceTableData);//插值
 
             return res * 1000;
         }
@@ -79,6 +82,7 @@ namespace Model
         public double Tdp(double Temp, double RHi, double[,] SourceTableData)
         {
             int FirstRow = 5605;
+            double FirstRowValue = -40;
             double FirstColValue = 0;
 
             //Model.OpenExcel OpenExcel = new Model.OpenExcel();
@@ -90,7 +94,7 @@ namespace Model
             int dig_X = 1;
             int dig_Y = 2;
             Interpolator interpolate = new Interpolator();
-            res = interpolate.Interpolate(FirstRow, FirstColValue, Temp, RHi, deta_X, deta_Y, dig_X, dig_Y, SourceTableData);//插值
+            res = interpolate.Interpolate(FirstRow, FirstRowValue,FirstColValue, Temp, RHi, deta_X, deta_Y, dig_X, dig_Y, SourceTableData);//插值
 
             return res;
         }
@@ -112,12 +116,9 @@ namespace Model
         }
         public double RHI(double Temp, double Tdp, double[,] SourceTableData)
         {
-            int FirstRow;//一般已知干球温度和相对湿度
-            double FirstColValue;
-
-                FirstRow = 8409;
-                FirstColValue = -60;
-
+            int FirstRow = 8409;//一般已知干球温度和相对湿度
+            double FirstRowValue = -40;
+            double FirstColValue=-60;
 
             double res = -1000;
             Interpolator interpolate = new Interpolator();
@@ -127,7 +128,7 @@ namespace Model
             int dig_X = 2;
             int dig_Y = 1;
 
-            res = interpolate.Interpolate(FirstRow, FirstColValue, Temp, Tdp, deta_X, deta_Y, dig_X, dig_Y, SourceTableData);//已知干球温度和相对湿度插值
+            res = interpolate.Interpolate(FirstRow, FirstRowValue, FirstColValue, Temp, Tdp, deta_X, deta_Y, dig_X, dig_Y, SourceTableData);//已知干球温度和相对湿度插值
 
             //if (res > 1)
             //{
@@ -135,6 +136,43 @@ namespace Model
             //}
             return res;
         }
+
+        public double RHI_TwetBulb(double Temp, double Twetbulb, double[,] SourceTableData)
+        {
+            int FirstRow;
+            double FirstColValue;
+            double FirstRowValue=0;
+            if (Twetbulb < 37.5)
+            {
+                FirstRow = 29915;
+                FirstColValue = 0;
+            }
+            else 
+            { 
+                FirstRow = 30518;
+                FirstColValue = 37.5;
+            }
+
+            //Model.OpenExcel OpenExcel = new Model.OpenExcel();
+            //DataRowCollection rowCollection = OpenExcel.ExcelRowCollection(tableCollection);//取得工作表中所有的行
+
+            double res = -1000;
+            double deta_X = 0.15;
+            double deta_Y = 0.15;
+            int dig_X = 2;
+            int dig_Y = 2;
+
+            Interpolator interpolate = new Interpolator();
+
+            if (Twetbulb < 0) { res = 0; return res; }
+            else 
+            {
+                res = interpolate.Interpolate(FirstRow,FirstRowValue, FirstColValue, Temp, Twetbulb, deta_X, deta_Y, dig_X, dig_Y, SourceTableData);
+                if (res>1) { res = 1; }
+                return res;
+            }//-40是因为后面在Interpolator加了40，并非formal修改方法
+            
+        } 
 
     }
 }

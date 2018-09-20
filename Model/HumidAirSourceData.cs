@@ -19,12 +19,12 @@ namespace Model
         public static string connectionString = "Provider=Microsoft.Jet.OLEDB.4.0;" + SearchStr + ";" + ";Extended Properties=\"Excel 8.0;HDR=YES;IMEX=1\""; //只能是XLS格式的EXCEL
         //创建连接到数据源的对象
 
-        public static double[,] SourceTableData = new double[29914, 253];
+        public static double[,] SourceTableData = new double[31119, 253];
         //SourceTableData=Model.HumidAirSourceData.InitializeSourceTableData();
 
         public static double[,] InitializeSourceTableData()//取得工作表中所有的行
         {
-            double[,] _SourceTableData = new double[29914, 253];
+            double[,] _SourceTableData = new double[31119, 253];
 
             OleDbConnection connection = new OleDbConnection(connectionString);
 
@@ -50,15 +50,15 @@ namespace Model
             //取得table中所有的行
             DataRowCollection rowCollection = table.Rows;//返回了一个行的集合
 
-            for (int i = 0; i < 29914; i++)
+            for (int i = 0; i < 31119; i++)
             {
                 for (int j = 0; j < 253; j++)
                 {
-                    if (rowCollection[i][j].GetType().Name!="DBNull")
+                    if (rowCollection[i][j].GetType().Name != "DBNull")
                     {
-                        _SourceTableData[i,j] = Convert.ToDouble(rowCollection[i][j]);
+                        _SourceTableData[i, j] = Convert.ToDouble(rowCollection[i][j]);
                         //Console.WriteLine("rowCollection[{0}][{1}]- type {2}", i, j, rowCollection[i][j].GetType().Name);//查看数据类型
-                    }                   
+                    }
                 }
             }
             return _SourceTableData;

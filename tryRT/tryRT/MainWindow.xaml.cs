@@ -232,7 +232,7 @@ namespace tryRT
             flag_Calculated = false;
 
             //初始化湿空气数组
-            Model.HumidAirSourceData.InitializeSourceTableData();
+            Model.HumidAirSourceData.SourceTableData = Model.HumidAirSourceData.InitializeSourceTableData();
 
             //#region//测试湿空气物性查表对错用
             ////测试用
@@ -269,6 +269,34 @@ namespace tryRT
             //{   0,0,0,0,0,0,0,0,0,
             //    0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,
             //    0.75,0.75,0.75,0.75,0.75,0.75,0.75,0.75,0.75,                
+            //};
+            //double[] Tin_a4 = new double[] 
+            //{   35,35.075,35.075,35.075,35.075,35.075,35.075,35.075,
+            //    45,45.075,45.075,45.075,45.075,45.075,45.075,45.075,
+            //    24,24.075,24.075,24.075,24.075,24.075,24.075,24.075,
+            //    12,12.075,12.075,12.075,12.075,12.075,12.075,12.075, 
+            //    7,7.075,7.075,7.075,7.075,7.075,7.075,7.075
+            //};
+            //double[] Twet1 = new double[] 
+            //{   35,30.075,24.075,20.075,15.075,10.075,5.075,0.075,
+            //    45,35.075,30.075,24.075,20.075,15.075,5.075,0.075,
+            //    24,20,15.075,10.075,5.075,15,5,0.075, 
+            //    12,11,10.075,9.075,8.075,7,5,0.075,  
+            //    7,6,5.075,4.075,3.075,2.075,1.075,0.075 
+            //};
+            //double[] Tin_a5 = new double[] 
+            //{   35,35.675,35.675,35.675,35.675,35.675,35.675,35.675,
+            //    45,45.675,45.675,45.675,45.675,45.675,45.675,45.675,
+            //    24,24.675,24.675,24.675,24.675,24.675,24.675,24.675,
+            //    12,12.675,12.675,12.675,12.675,12.675,12.675,12.675, 
+            //    7,7.675,7.675,7.675,7.675,7.675,7.675,7.675
+            //};
+            //double[] Twet2 = new double[] 
+            //{   35,30.675,24.675,20.675,15.675,10.675,5.675,0.675,
+            //    45,35.675,30.675,24.675,20.675,15.675,5.675,0.675,
+            //    24,20,15.675,10.675,5.675,15,5,0.675, 
+            //    12,11,10.675,9.675,8.675,7,5,0.675,  
+            //    7,6,5.675,4.675,3.675,2.675,1.675,0.675 
             //};
             //double[] H3 = new double[] 
             //{   -0.75,-0.75,-0.75,-0.75,-0.75,-0.75,-0.75,-0.75,-0.75, 
@@ -351,20 +379,26 @@ namespace tryRT
             //////***************************************************************测试运行速度Start***************************************************************
             //DateTime beforDT = System.DateTime.Now;
 
-            //for (int i = 0; i < Tin_a.Count(); i++)
+            //for (int i = 0; i < Tin_a5.Count(); i++)
             //{
-            //    double hin_a = humidairprop.H(Tin_a[i], "R", RHi[i]);     //0ms
+            //    double R = humidairprop.RHI_TwetBulb(Tin_a5[i], Twet2[i], Model.HumidAirSourceData.SourceTableData);
 
-            //    double Z = hin_a;
+            //    double Z = R;
             //    string arr1 = Convert.ToString(Z);
             //    Console.WriteLine(arr1);
             //}
+            ////double R = humidairprop.RHI_TwetBulb(45.075, 35.075, Model.HumidAirSourceData.SourceTableData);
+            ////double Z = R;
+            ////string arr1 = Convert.ToString(Z);
+            ////Console.WriteLine(arr1);
+
             ////double hin_a = humidairprop.H(Tin_a[i], "R", RHi[i]);     //5.859ms/0.0591818181818182ms
             ////double h_ac = humidairprop.H(Tin_a[i], "Omega", Omega[i]);        //6.83ms/0.00683ms
             ////double omega_in = humidairprop.O(Tin_a[i], RHi[i]);       //5.85ms/0.0590909090909091ms
             ////double cp_da = humidairprop.Cp(Tin_a[i], RHi[i]);     //3.9ms/0.0393939393939394ms 
             ////double Tdp = humidairprop.Tdp(Tin_a[i], RHi[i]);      //5.8ms/0.0591818181818182ms
             ////double T_s_e = humidairprop.Ts(H[i]);     //2.9ms/0.0344682352941176ms
+            ////double airInput.RHi = humidairprop.RHI_TwetBulb(Convert.ToDouble(tai.Text), Convert.ToDouble(Tai_wet.Text), Model.HumidAirSourceData.SourceTableData);
 
             ////double hin_a = CoolProp.HAPropsSI("H", "T", Tin_a[i] + 273.15, "P", 101325, "R", RHi[i]);//93.75ms
             ////double h_ac = CoolProp.HAPropsSI("H", "T", Tin_a[i] + 273.15, "P", 101325, "W", Omega[i]);//78.125ms
@@ -519,6 +553,7 @@ namespace tryRT
             Model.Basic.GeometryInput geoInput = new Model.Basic.GeometryInput();
             Model.Basic.RefStateInput refInput = new Model.Basic.RefStateInput();
             Model.Basic.AirStateInput airInput = new Model.Basic.AirStateInput();
+            Model.HumidAirProp humidairprop = new Model.HumidAirProp();
 
             //几何结构输入
             geoInput.Pt = Convert.ToDouble(Pt.Text);//管间距
@@ -536,7 +571,8 @@ namespace tryRT
             refInput.FluidName = ComboBox_Refrigerant.Text;//制冷剂名
             airInput.Volumetricflowrate = Convert.ToDouble(Va.Text);//空气体积流量m3/s
             airInput.tai = Convert.ToDouble(tai.Text);//进风干球温度
-            airInput.RHi = Convert.ToDouble(RHi.Text);//进风相对湿度
+            if (RelativeHumidity.IsChecked == true) { airInput.RHi = Convert.ToDouble(RHi.Text); }//进风相对湿度
+            else { airInput.RHi = humidairprop.RHI_TwetBulb(Convert.ToDouble(tai.Text), Convert.ToDouble(Tai_wet.Text), Model.HumidAirSourceData.SourceTableData); }
             airInput.AirFlowDirection = AirFlowDirection;//0:normal 1:reverse
             string fin_type = ComboBox_fintype.Text;//平片
             string tube_type = ComboBox_tubetype.Text;//光管
