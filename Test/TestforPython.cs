@@ -58,8 +58,8 @@ namespace Test
             geoInput.L = 605;
             geoInput.FPI = 20;
             geoInput.Fthickness = 0.095;
-            geoInput.Nrow = 2;
-            geoInput.Ntube = 13;
+            geoInput.Nrow =1;
+            geoInput.Ntube = 15;
             geoInput.CirNum = 2;
 
             //cap input
@@ -71,7 +71,7 @@ namespace Test
             DateTime Time1 = DateTime.Now;
             //var rr = Main.main_condenser_py(refInput, airInput, geoInput, capInput, coolprop, Model.HumidAirSourceData.SourceTableData);
             //var r = Main.main_evaporator_py(refInput, airInput, geoInput, capInput, coolprop, HumidAirSourceData.SourceTableData);
-            var rr = Main.main_condenser_py(refInput, airInput, geoInput, HumidSourceData);
+            //var rr = Main.main_condenser_py(refInput, airInput, geoInput, HumidSourceData);
             var r = Main.main_evaporator_py(refInput, airInput, geoInput, HumidSourceData);
 
             //for (int i=0;i<5;i++)

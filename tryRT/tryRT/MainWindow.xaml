@@ -201,12 +201,12 @@
                                             <TextBlock Text="流路数" HorizontalAlignment="Left" Margin="240,50,0,0" VerticalAlignment="Top"/>
                                             <TextBox x:Name="Cirnum" Text="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="280,50,0,0" Width="30" TextAlignment="Center" IsEnabled="False"/>
                                             <Button x:Name="Pass_OK" Content="确定" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="220,85,0,0" Height="Auto" Width="90" IsEnabled="False"/>
-                                            
+
                                             <CheckBox x:Name="AirReverse" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,50,0,0" Unchecked="AirFlow_Plus" Checked="AirFlow_Minus"/>
                                             <TextBlock Text="空气流向反转" HorizontalAlignment="Left" Margin="70,50,0,0" VerticalAlignment="Top" Width="Auto" />
-                                            
+
                                             <CheckBox x:Name="RefReverse" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,85,0,0" Unchecked="RefFlow_Plus" Checked="RefFlow_Minus"/>
-                                            <TextBlock Text="制冷剂流向反转" HorizontalAlignment="Left" Margin="70,85,0,0" VerticalAlignment="Top" Width="Auto"/>          
+                                            <TextBlock Text="制冷剂流向反转" HorizontalAlignment="Left" Margin="70,85,0,0" VerticalAlignment="Top" Width="Auto"/>
                                         </Grid>
                                     </GroupBox>
 
@@ -351,7 +351,7 @@
 
                                             <RadioButton GroupName="Humidity" x:Name="WetBulbTemperature" Margin="5,40,0,0" Checked="RadioButton_WetBulbTemperature_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                             <TextBlock  Text="进风湿球温度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,40,0,0" VerticalAlignment="Top" Width="80"/>
-                                            <TextBox x:Name="Tai_wet" Text="24" HorizontalAlignment="Left" Height="24" Margin="100,40,0,0" VerticalAlignment="Top" Width="50" IsEnabled="False"/>
+                                            <TextBox x:Name="Tai_wet" Text="24" HorizontalAlignment="Left" Height="24" Margin="100,40,0,0" VerticalAlignment="Top" Width="50" IsEnabled="False" KeyUp="Tai_wet_KeyDown"/>
                                             <Label Content="C" HorizontalAlignment="Left" Margin="150,40,0,0" VerticalAlignment="Top"/>
 
                                             <RadioButton GroupName="Humidity" x:Name="RelativeHumidity" Margin="200,40,0,0" Checked="RadioButton_RelativeHumidity_Checked" Width="55" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
@@ -365,7 +365,7 @@
 
                                             <RadioButton GroupName="AirFlowRate" x:Name="AirVelocity" Margin="200,80,0,0" Checked="RadioButton_AirVelocity_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                             <TextBlock  Text="风速" TextAlignment="Left" HorizontalAlignment="Left" Margin="215,80,0,0" VerticalAlignment="Top" Width="80"/>
-                                            <TextBox x:Name="q_wind" Text="1" HorizontalAlignment="Left" Height="24" Margin="295,80,0,0" VerticalAlignment="Top" Width="55" IsEnabled="False"/>
+                                            <TextBox x:Name="Velocity_ai" Text="1" HorizontalAlignment="Left" Height="24" Margin="295,80,0,0" VerticalAlignment="Top" Width="55" IsEnabled="False"/>
                                             <Label Content="m/s" HorizontalAlignment="Left" Margin="350,80,0,0" VerticalAlignment="Top"/>
 
                                             <CheckBox x:Name="CheckBox_UniformWind" Content="均匀送风" Margin="5,120,0,0" Checked="CheckBox_UniformWind_Checked" Unchecked="CheckBox_UniformWind_Unchecked"  Width="100" Height="18" HorizontalAlignment="Left" VerticalAlignment="Top"/>
@@ -710,7 +710,7 @@
                                                         </DataTemplate.Triggers>
                                                     </DataTemplate>
                                                 </Grid.Resources>
-                                                
+
                                                 <ListBox x:Name="ListBox_this" SelectionChanged="ListBox_SelectionChanged" MouseRightButtonDown="ListBox_MouseRightButtonDown" MouseDoubleClick="ListBox_MouseDoubleClick">
                                                     <ListBox.Template>
                                                         <ControlTemplate>
