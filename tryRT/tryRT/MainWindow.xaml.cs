@@ -569,6 +569,8 @@ namespace tryRT
             refInput.tc = Convert.ToDouble(tc.Text);//冷凝器饱和温度
             refInput.tri = Convert.ToDouble(tri.Text);//冷凝器进口温度
             refInput.FluidName = ComboBox_Refrigerant.Text;//制冷剂名
+            if (AirVolumnFlowRate.IsChecked == true) { airInput.Volumetricflowrate = Convert.ToDouble(Va.Text); }//空气体积流量m3/s
+            else { airInput.Volumetricflowrate = Convert.ToDouble(Velocity_ai.Text) * geoInput.L * 0.0001 * geoInput.Pt * geoInput.Ntube; }
             airInput.Volumetricflowrate = Convert.ToDouble(Va.Text);//空气体积流量m3/s
             airInput.tai = Convert.ToDouble(tai.Text);//进风干球温度
             if (RelativeHumidity.IsChecked == true) { airInput.RHi = Convert.ToDouble(RHi.Text); }//进风相对湿度
@@ -1078,20 +1080,20 @@ namespace tryRT
         private void RadioButton_AirVolumnFlowRate_Checked(object sender, RoutedEventArgs e)
         {
             this.Va.IsEnabled = true;
-            if (this.q_wind.IsEnabled == true)
+            if (this.Velocity_ai.IsEnabled == true)
             {
-                this.q_wind.IsEnabled = false;
-                this.q_wind.Text = "1";
+                this.Velocity_ai.IsEnabled = false;
+                this.Velocity_ai.Text = "1";
             }
         }
 
         private void RadioButton_AirVelocity_Checked(object sender, RoutedEventArgs e)
         {
-            this.q_wind.IsEnabled = true;
+            this.Velocity_ai.IsEnabled = true;
             if (this.Va.IsEnabled == true)
             {
                 this.Va.IsEnabled = false;
-                this.Va.Text = "0.2";
+                this.Va.Text = "0.12";
             }
         }
 
@@ -1945,6 +1947,28 @@ namespace tryRT
             private void RefFlow_Minus(object sender, RoutedEventArgs e)
             {
                 RefFlowDirection = 1;
+            }
+
+            private void Tai_wet_KeyDown(object sender, KeyEventArgs e)
+            {
+
+	//屏蔽中文输入和非法字符粘贴输入 
+	
+    TextBox textBox = sender as TextBox; 
+	    TextChange[] change = new TextChange[e.Changes.Count]; 
+	    e.Changes.CopyTo(change, 0); 
+	 
+	    int offset = change[0].Offset; 
+	    if (change[0].AddedLength > 0) 
+	    { 
+	        double num = 0; 
+	        if (!Double.TryParse(textBox.Text, out num)) 
+	        { 
+	            textBox.Text = textBox.Text.Remove(offset, change[0].AddedLength); 
+	            textBox.Select(offset, 0); 
+	        } 
+	    } 
+	
             }
 
     }
