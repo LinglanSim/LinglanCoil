@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Office.Interop.Excel;
+using System.Text.RegularExpressions;
 
 namespace tryRT
 {
@@ -1947,28 +1948,167 @@ namespace tryRT
                 RefFlowDirection = 1;
             }
 
-            private void Tai_wet_KeyDown(object sender, KeyEventArgs e)
-            {
+            #region 界面输入合法性检验
 
-	//屏蔽中文输入和非法字符粘贴输入 
-	
-    TextBox textBox = sender as TextBox; 
-	    TextChange[] change = new TextChange[e.Changes.Count]; 
-	    e.Changes.CopyTo(change, 0); 
-	 
-	    int offset = change[0].Offset; 
-	    if (change[0].AddedLength > 0) 
-	    { 
-	        double num = 0; 
-	        if (!Double.TryParse(textBox.Text, out num)) 
-	        { 
-	            textBox.Text = textBox.Text.Remove(offset, change[0].AddedLength); 
-	            textBox.Select(offset, 0); 
-	        } 
-	    } 
-	
+            private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)//只允许负号、小数点、数字
+            {
+                Regex re = new Regex("[^0-9.-]+");
+                e.Handled = re.IsMatch(e.Text);
+
+                System.Windows.Controls.TextBox TextBoxText = (System.Windows.Controls.TextBox)sender;//根据sender引用控件。
+                if (TextBoxText.Text == "0")//0开头是小数
+                {
+                    TextBoxText.Text = TextBoxText.Text + ".";
+                    TextBoxText.SelectionStart = TextBoxText.Text.Length;
+                    return;
+                }
+            }
+            private void TextBox_TextChanged(object sender, TextChangedEventArgs e)//不允许小数点、0开头
+            {
+                int i = 0;
+                System.Windows.Controls.TextBox TextBoxText = (System.Windows.Controls.TextBox)sender;//根据sender引用控件。
+                if (TextBoxText.Text.Contains(Convert.ToString((char)46)))
+                {
+                    if (TextBoxText.Text == "")
+                    {
+                        e.Handled = true;
+                        return;
+                    }
+                    else if (TextBoxText.Text == ".")
+                    {
+                        TextBoxText.Text = "";
+                        TextBoxText.SelectionStart = TextBoxText.Text.Length;
+                    }
+                    else
+                    { //小数点不允许出现2次
+                        foreach (char ch in TextBoxText.Text)
+                        {
+                            if (ch == (char)46)
+                            {
+                                i++;
+                                if (i == 2)
+                                {
+                                    TextBoxText.Text = TextBoxText.Text.Substring(0, TextBoxText.Text.LastIndexOf("."));
+                                    TextBoxText.SelectionStart = TextBoxText.Text.Length;
+                                }
+                            }
+                        }
+                    }
+                }
+                i = 0;
+                if (TextBoxText.Text.Contains(Convert.ToString((char)45)))
+                {
+                    if (TextBoxText.Text != "") //允许第一个输入负号
+                    {
+                        foreach (char ch in TextBoxText.Text)
+                        {
+                            if (ch == (char)45)
+                            {
+                                i++;
+                                if (i == 2)//不允许负号出现2次
+                                {
+                                    TextBoxText.Text = TextBoxText.Text.Substring(0, TextBoxText.Text.LastIndexOf("-"));
+                                    TextBoxText.SelectionStart = TextBoxText.Text.Length;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (TextBoxText.Name == "tai")
+                {
+                    if ((TextBoxText.Text != "" && TextBoxText.Text!="-") && (Convert.ToDouble(TextBoxText.Text) < -40 || Convert.ToDouble(TextBoxText.Text) > 90))
+                    {
+                        MessageBoxResult result = MessageBox.Show("空气干球温度只能在-40~90℃内");
+                        TextBoxText.Text = TextBoxText.Text.Substring(0, TextBoxText.Text.Length-1);
+                        TextBoxText.SelectionStart = TextBoxText.Text.Length;
+                    }
+                }
+                if (TextBoxText.Name == "Tai_wet")
+                {
+                    if ((TextBoxText.Text != "" && TextBoxText.Text != "-") && (Convert.ToDouble(TextBoxText.Text) < 0 || Convert.ToDouble(TextBoxText.Text) > 37.5))
+                    {
+                        MessageBoxResult result = MessageBox.Show("空气湿球温度只能在0~37.5℃内");
+                        TextBoxText.Text = TextBoxText.Text.Substring(0, TextBoxText.Text.Length - 1);
+                        TextBoxText.SelectionStart = TextBoxText.Text.Length;
+                    }
+                }
+
+            }
+            private void PositiveTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)//只允许小数点、数字
+            {
+                Regex re = new Regex("[^0-9.]+");
+                e.Handled = re.IsMatch(e.Text);
+
+                System.Windows.Controls.TextBox TextBoxText = (System.Windows.Controls.TextBox)sender;//根据sender引用控件。
+                if (TextBoxText.Text == "0")//0开头是小数
+                {
+                    TextBoxText.Text = TextBoxText.Text + ".";
+                    TextBoxText.SelectionStart = TextBoxText.Text.Length;
+                    return;
+                }
+            }
+            private void PositiveTextBox_TextChanged(object sender, TextChangedEventArgs e)//不允许小数点、0开头
+            {
+                int i = 0;
+                System.Windows.Controls.TextBox TextBoxText = (System.Windows.Controls.TextBox)sender;//根据sender引用控件。
+                if (TextBoxText.Text.Contains(Convert.ToString((char)46)))
+                {
+                    if (TextBoxText.Text == "")
+                    {
+                        e.Handled = true;
+                        return;
+                    }
+                    else if (TextBoxText.Text == ".")
+                    {
+                        TextBoxText.Text = "";
+                        TextBoxText.SelectionStart = TextBoxText.Text.Length;
+                    }
+                    else
+                    { //小数点不允许出现2次
+                        foreach (char ch in TextBoxText.Text)
+                        {
+                            if (ch == (char)46)
+                            {
+                                i++;
+                                if (i == 2)
+                                {
+                                    TextBoxText.Text = TextBoxText.Text.Substring(0, TextBoxText.Text.LastIndexOf("."));
+                                    TextBoxText.SelectionStart = TextBoxText.Text.Length;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (TextBoxText.Name == "RHi")
+                {
+                    if ((TextBoxText.Text != "") && (Convert.ToDouble(TextBoxText.Text) < 0 || Convert.ToDouble(TextBoxText.Text) > 1))
+                    {
+                        MessageBoxResult result = MessageBox.Show("空气相对湿度只能在0~1内");
+                        TextBoxText.Text = TextBoxText.Text.Substring(0, TextBoxText.Text.Length - 1);
+                        TextBoxText.SelectionStart = TextBoxText.Text.Length;
+                    }
+                }
             }
 
+            private void NumTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)//只允许整数
+            {
+                //只允许输入数字/小数点/负号
+                Regex re = new Regex("[^0-9]+");
+                e.Handled = re.IsMatch(e.Text);
+            }
+            private void NumTextBox_TextChanged(object sender, TextChangedEventArgs e)//不允许0开头
+            {
+                System.Windows.Controls.TextBox TextBoxText = (System.Windows.Controls.TextBox)sender;//根据sender引用控件。
+                if (TextBoxText.Text == "0")
+                {
+                    TextBoxText.Text = "";
+                    return;
+                }
+            }
+
+            #endregion
     }
 
 }

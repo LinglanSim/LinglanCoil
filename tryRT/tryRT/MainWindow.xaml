@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:tryRT"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="tryRT.MainWindow"
+        xmlns:input="clr-namespace:System.Windows.Input;assembly=PresentationCore"
         Title="美的换热器仿真" Height="790" Width="1150" x:Name="view" WindowStartupLocation="CenterScreen">
 
     <ScrollViewer Grid.Column="1" Name="scrollViewer1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
@@ -106,31 +107,31 @@
                                             <ComboBox x:Name="ComboBox_TubeVersion" HorizontalAlignment="Left"  Margin="70,0,0,0" VerticalAlignment="Top" Width="140" Height="26" SelectionChanged="ComboBox_TubeVersion_SelectionChanged"/>
 
                                             <TextBlock Text="管外径" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Height="16" Width="36"/>
-                                            <TextBox x:Name="Do" Text="10.0584" IsEnabled="False" HorizontalAlignment="Left" Margin="70,40,0,0"  VerticalAlignment="Top" Height="24" Width="60"/>
+                                            <TextBox x:Name="Do" Text="10.0584" IsEnabled="False" HorizontalAlignment="Left" Margin="70,40,0,0" VerticalAlignment="Top" Height="24" Width="60" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
                                             <Label Content="mm" HorizontalAlignment="Left" Margin="130,40,0,0" VerticalAlignment="Top"/>
 
                                             <TextBlock Text="管间距" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top" Height="16" Width="36"/>
-                                            <TextBox x:Name="Pt" Text="25.4" IsEnabled="False" HorizontalAlignment="Left" Margin="70,80,0,0"  VerticalAlignment="Top" Height="24" Width="60"/>
+                                            <TextBox x:Name="Pt" Text="25.4" IsEnabled="False" HorizontalAlignment="Left" Margin="70,80,0,0"  VerticalAlignment="Top" Height="24" Width="60" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
                                             <Label Content="mm" HorizontalAlignment="Left" Margin="130,80,0,0" VerticalAlignment="Top"/>
 
                                             <TextBlock Text="列间距" HorizontalAlignment="Left" Margin="220,80,0,0" VerticalAlignment="Top" Height="16" Width="36"/>
-                                            <TextBox x:Name="Pr" Text="19.05" IsEnabled="False" HorizontalAlignment="Left" Margin="280,80,0,0"  VerticalAlignment="Top" Height="24" Width="60"/>
+                                            <TextBox x:Name="Pr" Text="19.05" IsEnabled="False" HorizontalAlignment="Left" Margin="280,80,0,0"  VerticalAlignment="Top" Height="24" Width="60" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
                                             <Label Content="mm" HorizontalAlignment="Left" Margin="340,80,0,0" VerticalAlignment="Top"/>
 
                                             <TextBlock Text="管排"   TextAlignment="Left" HorizontalAlignment="Left" Margin="10,120,0,0" VerticalAlignment="Top" Height="16" Width="36" />
-                                            <TextBox x:Name="Row" Text="2" IsEnabled="False" HorizontalAlignment="Left" Margin="70,120,0,0"  VerticalAlignment="Top" Height="24" Width="60"/>
+                                            <TextBox x:Name="Row" Text="2" IsEnabled="False" HorizontalAlignment="Left" Margin="70,120,0,0"  VerticalAlignment="Top" Height="24" Width="60" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="NumTextBox_PreviewTextInput" TextChanged="NumTextBox_TextChanged"/>
                                             <Label Content="#" HorizontalAlignment="Left" Margin="130,120,0,0" VerticalAlignment="Top"/>
 
                                             <TextBlock Text="管数/排" HorizontalAlignment="Left" Margin="220,120,0,0" VerticalAlignment="Top" Height="15" Width="50"/>
-                                            <TextBox x:Name="tube_per" Text="6" HorizontalAlignment="Left" Margin="280,120,0,0"  VerticalAlignment="Top" Height="24" Width="60"/>
+                                            <TextBox x:Name="tube_per" Text="6" HorizontalAlignment="Left" Margin="280,120,0,0"  VerticalAlignment="Top" Height="24" Width="60" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="NumTextBox_PreviewTextInput" TextChanged="NumTextBox_TextChanged"/>
                                             <Label Content="#" HorizontalAlignment="Left" Margin="340,120,0,0" VerticalAlignment="Top"/>
 
                                             <TextBlock Text="管壁厚" HorizontalAlignment="Left" Margin="220,160,0,0" VerticalAlignment="Top" Height="16" Width="36"/>
-                                            <TextBox x:Name="thick_tube" Text="0.2" HorizontalAlignment="Left" Margin="280,160,0,0" VerticalAlignment="Top" Height="24" Width="60"/>
+                                            <TextBox x:Name="thick_tube" Text="0.2" HorizontalAlignment="Left" Margin="280,160,0,0" VerticalAlignment="Top" Height="24" Width="60" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
                                             <Label Content="mm" HorizontalAlignment="Left" Margin="340,160,0,0" VerticalAlignment="Top"/>
 
                                             <TextBlock Text="管长" TextAlignment="Left" HorizontalAlignment="Left" Margin="10,160,0,0" VerticalAlignment="Top" Height="14" Width="36"/>
-                                            <TextBox x:Name="L" Text="914.4" HorizontalAlignment="Left" Margin="70,160,0,0" VerticalAlignment="Top" Height="24" Width="60"/>
+                                            <TextBox x:Name="L" Text="914.4" HorizontalAlignment="Left" Margin="70,160,0,0" VerticalAlignment="Top" Height="24" Width="60" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
                                             <Label Content="mm" HorizontalAlignment="Left" Margin="130,160,0,0" VerticalAlignment="Top"/>
 
                                             <TextBlock Text="管种类" HorizontalAlignment="Left" Margin="220,40,0,0" VerticalAlignment="Top" Height="15" Width="36"/>
@@ -174,11 +175,11 @@
                                     <GroupBox Header="翅片类型"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="140" Width="410" Margin="8,0,0,10">
                                         <Canvas HorizontalAlignment="Left" Height="480" Width="425" Margin="10,8,0,0" VerticalAlignment="Top">
                                             <TextBlock Text="翅片间距" TextAlignment="Left" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Height="22" Width="80"/>
-                                            <TextBox x:Name="Fnum" Text="1.2" HorizontalAlignment="Left" Margin="100,0,0,0" VerticalAlignment="Top" Height="25" Width="125"/>
+                                            <TextBox x:Name="Fnum" Text="1.2" HorizontalAlignment="Left" Margin="100,0,0,0" VerticalAlignment="Top" Height="25" Width="125" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
                                             <Label Content="mm" HorizontalAlignment="Left" Margin="230,0,0,0" VerticalAlignment="Top"/>
 
                                             <TextBlock Text="翅片厚度" TextAlignment="Left" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Height="22" Width="80"/>
-                                            <TextBox x:Name="Fthick" Text="0.095" HorizontalAlignment="Left" Margin="100,40,0,0" VerticalAlignment="Top" Height="26" Width="125"/>
+                                            <TextBox x:Name="Fthick" Text="0.095" HorizontalAlignment="Left" Margin="100,40,0,0" VerticalAlignment="Top" Height="26" Width="125" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
                                             <Label Content="mm" HorizontalAlignment="Left" Margin="230,40,0,0" VerticalAlignment="Top"/>
 
                                             <TextBlock Text="翅片种类" TextAlignment="Left" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top" Height="22" Width="80"/>
@@ -199,7 +200,7 @@
                                             <RadioButton GroupName="PassArrangement" x:Name="RadioButton_AutoArrange" Margin="220,15,0,0" Checked="RadioButton_AutoArrange_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                             <TextBlock Text="自动分配流路" HorizontalAlignment="Left" Margin="240,15,0,0" VerticalAlignment="Top" Width="75"/>
                                             <TextBlock Text="流路数" HorizontalAlignment="Left" Margin="240,50,0,0" VerticalAlignment="Top"/>
-                                            <TextBox x:Name="Cirnum" Text="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="280,50,0,0" Width="30" TextAlignment="Center" IsEnabled="False"/>
+                                            <TextBox x:Name="Cirnum" Text="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="280,50,0,0" Width="30" TextAlignment="Center" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="NumTextBox_PreviewTextInput" TextChanged="NumTextBox_TextChanged"/>
                                             <Button x:Name="Pass_OK" Content="确定" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="220,85,0,0" Height="Auto" Width="90" IsEnabled="False"/>
 
                                             <CheckBox x:Name="AirReverse" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,50,0,0" Unchecked="AirFlow_Plus" Checked="AirFlow_Minus"/>
@@ -235,26 +236,26 @@
 
                                                     <RadioButton GroupName="Pri+Tcro_Evap" x:Name="RadioButton_Pri_Evap" Margin="5,10,0,0" Checked="RadioButton_Pri_Evap_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                                     <TextBlock Text="压力" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="60"/>
-                                                    <TextBox x:Name="Pri_Evap" Text="" HorizontalAlignment="Left" Height="24" Margin="75,10,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" />
+                                                    <TextBox x:Name="Pri_Evap" Text="" HorizontalAlignment="Left" Height="24" Margin="75,10,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
                                                     <Label Content="kPa" HorizontalAlignment="Left" Margin="150,10,0,0" VerticalAlignment="Top"/>
 
                                                     <RadioButton GroupName="xi+Hri+Tri+Pri_Evap" x:Name="RadioButton_xi_Evap" Margin="5,50,0,0" Checked="RadioButton_xi_Evap_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                                     <TextBlock Text="干度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,50,0,0" VerticalAlignment="Top" Width="60"/>
-                                                    <TextBox x:Name="xi_Evap" Text="" HorizontalAlignment="Left" Height="24" Margin="75,50,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False"/>
+                                                    <TextBox x:Name="xi_Evap" Text="" HorizontalAlignment="Left" Height="24" Margin="75,50,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
                                                     <Label Content="" HorizontalAlignment="Left" Margin="150,50,0,0" VerticalAlignment="Top"/>
 
                                                     <RadioButton GroupName="xi+Hri+Tri+Pri_Evap" x:Name="RadioButton_Hri_Evap" Margin="5,90,0,0" Checked="RadioButton_Hri_Evap_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                                     <TextBlock Text="焓值" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,90,0,0" VerticalAlignment="Top" Width="60"/>
-                                                    <TextBox x:Name="Hri_Evap" Text="" HorizontalAlignment="Left" Height="24" Margin="75,90,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False"/>
+                                                    <TextBox x:Name="Hri_Evap" Text="" HorizontalAlignment="Left" Height="24" Margin="75,90,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
                                                     <Label Content="kJ/kg" HorizontalAlignment="Left" Margin="150,90,0,0" VerticalAlignment="Top"/>
 
                                                     <RadioButton GroupName="xi+Hri+Tri+Pri_Evap" x:Name="RadioButton_PriTri_Evap" Margin="5,130,0,0" Checked="RadioButton_PriTri_Evap_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                                     <TextBlock Text="阀前温度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,130,0,0" VerticalAlignment="Top" Width="60" />
-                                                    <TextBox x:Name="Tri_ValveBefore" Text="45" HorizontalAlignment="Left" Height="24" Margin="75,130,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" />
+                                                    <TextBox x:Name="Tri_ValveBefore" Text="45" HorizontalAlignment="Left" Height="24" Margin="75,130,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
                                                     <Label Content="C" HorizontalAlignment="Left" Margin="150,130,0,0" VerticalAlignment="Top"/>
 
                                                     <TextBlock Text="阀前压力" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,170,0,0" VerticalAlignment="Top" Width="60"/>
-                                                    <TextBox x:Name="Pri_ValveBefore" Text="1729.2" HorizontalAlignment="Left" Height="24" Margin="75,170,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False"/>
+                                                    <TextBox x:Name="Pri_ValveBefore" Text="1729.2" HorizontalAlignment="Left" Height="24" Margin="75,170,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
                                                     <Label Content="kPa" HorizontalAlignment="Left" Margin="150,170,0,0" VerticalAlignment="Top"/>
 
                                                 </Canvas>
@@ -267,22 +268,22 @@
 
                                                     <RadioButton GroupName="Pri+Tcro_Evap" x:Name="RadioButton_Tcro_Evap" Margin="5,10,0,0" Checked="RadioButton_Tcro_Evap_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                                     <TextBlock Text="饱和温度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="60"/>
-                                                    <TextBox x:Name="Tcro_Evap" Text="10" HorizontalAlignment="Left" Height="24" Margin="75,10,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False"/>
+                                                    <TextBox x:Name="Tcro_Evap" Text="10" HorizontalAlignment="Left" Height="24" Margin="75,10,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
                                                     <Label Content="C" HorizontalAlignment="Left" Margin="150,10,0,0" VerticalAlignment="Top"/>
 
                                                     <RadioButton GroupName="Troex+xo+mro_Evap" x:Name="RadioButton_Troex_Evap" Margin="5,50,0,0" Checked="RadioButton_Troex_Evap_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                                     <TextBlock Text="过热度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,50,0,0" VerticalAlignment="Top" Width="60"/>
-                                                    <TextBox x:Name="Troex_Evap" Text="" HorizontalAlignment="Left" Height="24" Margin="75,50,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False"/>
+                                                    <TextBox x:Name="Troex_Evap" Text="" HorizontalAlignment="Left" Height="24" Margin="75,50,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
                                                     <Label Content="" HorizontalAlignment="Left" Margin="150,50,0,0" VerticalAlignment="Top"/>
 
                                                     <RadioButton GroupName="Troex+xo+mro_Evap" x:Name="RadioButton_xo_Evap" Margin="5,90,0,0" Checked="RadioButton_xo_Evap_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                                     <TextBlock Text="干度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,90,0,0" VerticalAlignment="Top" Width="60"/>
-                                                    <TextBox x:Name="xo_Evap" Text="" HorizontalAlignment="Left" Height="24" Margin="75,90,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False"/>
+                                                    <TextBox x:Name="xo_Evap" Text="" HorizontalAlignment="Left" Height="24" Margin="75,90,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
                                                     <Label Content="" HorizontalAlignment="Left" Margin="150,90,0,0" VerticalAlignment="Top"/>
 
                                                     <RadioButton GroupName="Troex+xo+mro_Evap" x:Name="RadioButton_mro_Evap" Margin="5,130,0,0" Checked="RadioButton_mro_Evap_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                                     <TextBlock Text="流量" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,130,0,0" VerticalAlignment="Top" Width="60" />
-                                                    <TextBox x:Name="mro_Evap" Text="0.1" HorizontalAlignment="Left" Height="24" Margin="75,130,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False"/>
+                                                    <TextBox x:Name="mro_Evap" Text="0.1" HorizontalAlignment="Left" Height="24" Margin="75,130,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
                                                     <Label Content="kg/s" HorizontalAlignment="Left" Margin="150,130,0,0" VerticalAlignment="Top"/>
                                                 </Canvas>
                                             </GroupBox>
@@ -296,12 +297,12 @@
                                                 <Canvas HorizontalAlignment="Left" Height="80" Margin="0,0,0,0" VerticalAlignment="Top" Width="Auto">
                                                     <!--从原界面转移到冷凝器20180808!-->
                                                     <TextBlock Text="饱和温度" TextAlignment="Left" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="60"/>
-                                                    <TextBox x:Name="tc" Text="45" HorizontalAlignment="Left" Height="24" Margin="65,10,0,0" VerticalAlignment="Top" Width="70"/>
+                                                    <TextBox x:Name="tc" Text="45" HorizontalAlignment="Left" Height="24" Margin="65,10,0,0" VerticalAlignment="Top" Width="70" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
                                                     <Label Content="C" HorizontalAlignment="Left" Margin="140,10,0,0" VerticalAlignment="Top"/>
 
                                                     <!--从原界面转移到冷凝器20180808!-->
                                                     <TextBlock Text="进口温度" TextAlignment="Left" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" Width="60"/>
-                                                    <TextBox x:Name="tri" Text="78" HorizontalAlignment="Left" Height="24" Margin="65,50,0,0" VerticalAlignment="Top" Width="70"/>
+                                                    <TextBox x:Name="tri" Text="78" HorizontalAlignment="Left" Height="24" Margin="65,50,0,0" VerticalAlignment="Top" Width="70" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
                                                     <Label Content="C" HorizontalAlignment="Left" Margin="140,50,0,0" VerticalAlignment="Top"/>
                                                 </Canvas>
                                             </GroupBox>
@@ -314,19 +315,19 @@
 
                                                     <RadioButton GroupName="mro+xo+Tro_Cond" x:Name="RadioButton_mro_Cond" Margin="5,10,0,0" Checked="RadioButton_mro_Cond_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                                     <TextBlock Text="流量" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="60"/>
-                                                    <TextBox x:Name="mr" Text="0.01" HorizontalAlignment="Left" Height="24" Margin="60,10,0,0" VerticalAlignment="Top" Width="70"/>
+                                                    <TextBox x:Name="mr" Text="0.01" HorizontalAlignment="Left" Height="24" Margin="60,10,0,0" VerticalAlignment="Top" Width="70" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
                                                     <Label Content="kg/s" HorizontalAlignment="Left" Margin="135,10,0,0" VerticalAlignment="Top"/>
 
                                                     <!--新加入20180808!-->
                                                     <RadioButton GroupName="mro+xo+Tro_Cond" x:Name="RadioButton_xo_Cond" Margin="5,50,0,0" Checked="RadioButton_xo_Cond_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                                     <TextBlock Text="干度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,50,0,0" VerticalAlignment="Top" Width="60"/>
-                                                    <TextBox x:Name="x_Cond" Text="" HorizontalAlignment="Left" Height="24" Margin="60,50,0,0" VerticalAlignment="Top" Width="70"/>
+                                                    <TextBox x:Name="x_Cond" Text="" HorizontalAlignment="Left" Height="24" Margin="60,50,0,0" VerticalAlignment="Top" Width="70" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
                                                     <Label Content="kJ/kg" HorizontalAlignment="Left" Margin="135,50,0,0" VerticalAlignment="Top"/>
 
                                                     <!--新加入20180808!-->
                                                     <RadioButton GroupName="mro+xo+Tro_Cond" x:Name="RadioButton_Tro_Cond" Margin="5,90,0,0" Checked="RadioButton_Tro_Cond_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                                     <TextBlock Text="过冷度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,90,0,0" VerticalAlignment="Top" Width="60"/>
-                                                    <TextBox x:Name="Tro_ex" Text="" HorizontalAlignment="Left" Height="24" Margin="60,90,0,0" VerticalAlignment="Top" Width="70"/>
+                                                    <TextBox x:Name="Tro_ex" Text="" HorizontalAlignment="Left" Height="24" Margin="60,90,0,0" VerticalAlignment="Top" Width="70" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
                                                     <Label Content="C" HorizontalAlignment="Left" Margin="135,90,0,0" VerticalAlignment="Top"/>
                                                 </Canvas>
                                             </GroupBox>
@@ -342,30 +343,30 @@
                                     <GroupBox Header="空气侧"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="170" Width="410" Margin="8,0,0,10">
                                         <Canvas HorizontalAlignment="Left" Height="480" Width="100" Margin="10,8,0,0" VerticalAlignment="Top">
                                             <TextBlock  Text="进风干球温度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top" Width="80"/>
-                                            <TextBox x:Name="tai" Text="35" HorizontalAlignment="Left" Height="24" Margin="100,0,0,0" VerticalAlignment="Top" Width="50"/>
+                                            <TextBox x:Name="tai" Text="35" HorizontalAlignment="Left" Height="24" Margin="100,0,0,0" VerticalAlignment="Top" Width="50" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
                                             <Label Content="C" HorizontalAlignment="Left" Margin="150,0,0,0" VerticalAlignment="Top"/>
 
                                             <TextBlock  Text="大气压力" TextAlignment="Left" HorizontalAlignment="Left" Margin="215,0,0,0" VerticalAlignment="Top" Width="70"/>
-                                            <TextBox x:Name="Patm" Text="101.325" HorizontalAlignment="Left" Height="24" Margin="295,0,0,0" VerticalAlignment="Top" Width="55"/>
+                                            <TextBox x:Name="Patm" Text="101.325" HorizontalAlignment="Left" Height="24" Margin="295,0,0,0" VerticalAlignment="Top" Width="55" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
                                             <Label Content="kPa" HorizontalAlignment="Left" Margin="350,0,0,0" VerticalAlignment="Top"/>
 
                                             <RadioButton GroupName="Humidity" x:Name="WetBulbTemperature" Margin="5,40,0,0" Checked="RadioButton_WetBulbTemperature_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                             <TextBlock  Text="进风湿球温度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,40,0,0" VerticalAlignment="Top" Width="80"/>
-                                            <TextBox x:Name="Tai_wet" Text="24" HorizontalAlignment="Left" Height="24" Margin="100,40,0,0" VerticalAlignment="Top" Width="50" IsEnabled="False" KeyUp="Tai_wet_KeyDown"/>
+                                            <TextBox x:Name="Tai_wet" Text="24" HorizontalAlignment="Left" Height="24" Margin="100,40,0,0" VerticalAlignment="Top" Width="50" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
                                             <Label Content="C" HorizontalAlignment="Left" Margin="150,40,0,0" VerticalAlignment="Top"/>
 
                                             <RadioButton GroupName="Humidity" x:Name="RelativeHumidity" Margin="200,40,0,0" Checked="RadioButton_RelativeHumidity_Checked" Width="55" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                             <TextBlock  Text="进风相对湿度" TextAlignment="Left" HorizontalAlignment="Left" Margin="215,40,0,0" VerticalAlignment="Top" Width="80" IsEnabled="False"/>
-                                            <TextBox x:Name="RHi" Text="0.5" HorizontalAlignment="Left" Height="23" Margin="295,40,0,0" VerticalAlignment="Top" Width="55"/>
+                                            <TextBox x:Name="RHi" Text="0.5" HorizontalAlignment="Left" Height="23" Margin="295,40,0,0" VerticalAlignment="Top" Width="55" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
 
                                             <RadioButton GroupName="AirFlowRate" x:Name="AirVolumnFlowRate" Margin="5,80,0,0" Checked="RadioButton_AirVolumnFlowRate_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                             <TextBlock  Text="体积流量" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,80,0,0" VerticalAlignment="Top" Width="80"/>
-                                            <TextBox x:Name="Va" Text="0.2" HorizontalAlignment="Left" Height="22" Margin="100,80,0,0" VerticalAlignment="Top" Width="50" IsEnabled="False"/>
+                                            <TextBox x:Name="Va" Text="0.2" HorizontalAlignment="Left" Height="22" Margin="100,80,0,0" VerticalAlignment="Top" Width="50" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
                                             <Label Content="m3/s" HorizontalAlignment="Left" Margin="150,80,0,0" VerticalAlignment="Top"/>
 
                                             <RadioButton GroupName="AirFlowRate" x:Name="AirVelocity" Margin="200,80,0,0" Checked="RadioButton_AirVelocity_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                             <TextBlock  Text="风速" TextAlignment="Left" HorizontalAlignment="Left" Margin="215,80,0,0" VerticalAlignment="Top" Width="80"/>
-                                            <TextBox x:Name="Velocity_ai" Text="1" HorizontalAlignment="Left" Height="24" Margin="295,80,0,0" VerticalAlignment="Top" Width="55" IsEnabled="False"/>
+                                            <TextBox x:Name="Velocity_ai" Text="1" HorizontalAlignment="Left" Height="24" Margin="295,80,0,0" VerticalAlignment="Top" Width="55" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
                                             <Label Content="m/s" HorizontalAlignment="Left" Margin="350,80,0,0" VerticalAlignment="Top"/>
 
                                             <CheckBox x:Name="CheckBox_UniformWind" Content="均匀送风" Margin="5,120,0,0" Checked="CheckBox_UniformWind_Checked" Unchecked="CheckBox_UniformWind_Unchecked"  Width="100" Height="18" HorizontalAlignment="Left" VerticalAlignment="Top"/>
@@ -381,9 +382,9 @@
                                             <Button x:Name="Button_Create"  Content="创建风速分配表格" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="120" Click="Button_Create_Click" Margin="250,9,0,10"/>
 
                                             <TextBlock Text="横向单元数" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="2" Height="16" Width="60"/>
-                                            <TextBox x:Name="Row_Num" HorizontalAlignment="Left" Height="23" Margin="80,10,0,0" TextWrapping="Wrap" Text="2" VerticalAlignment="Top" Width="30" Grid.Row="2"/>
+                                            <TextBox x:Name="Row_Num" HorizontalAlignment="Left" Height="23" Margin="80,10,0,0" TextWrapping="Wrap" Text="2" VerticalAlignment="Top" Width="30" Grid.Row="2" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="NumTextBox_PreviewTextInput" TextChanged="NumTextBox_TextChanged"/>
                                             <TextBlock Text="竖向单元数" HorizontalAlignment="Left" Margin="130,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="2" Height="16" Width="60"/>
-                                            <TextBox x:Name="Col_Num" HorizontalAlignment="Left" Height="23" Margin="200,10,0,0" TextWrapping="Wrap" Text="2" VerticalAlignment="Top" Width="30" Grid.Row="2"/>
+                                            <TextBox x:Name="Col_Num" HorizontalAlignment="Left" Height="23" Margin="200,10,0,0" TextWrapping="Wrap" Text="2" VerticalAlignment="Top" Width="30" Grid.Row="2" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="NumTextBox_PreviewTextInput" TextChanged="NumTextBox_TextChanged"/>
                                         </Canvas>
                                     </GroupBox>
                                 </Grid>
@@ -648,10 +649,10 @@
                                                 <Button Content="缩小" HorizontalAlignment="Stretch" Margin="5,0,5,5" Click="Button_Click_zoomin"/>
                                                 <Button Content="删除" HorizontalAlignment="Stretch" Margin="5,0,5,5" Click="Button_Click_delete"/>
                                                 <Label Content="毛细管长度/m" HorizontalAlignment="Left" Width="Auto" Margin="5,10,0,0"/>
-                                                <TextBox  x:Name="TextBox_Length" HorizontalAlignment="Stretch" Width="Auto" Margin="5,0,5,5" IsEnabled="False"/>
+                                                <TextBox  x:Name="TextBox_Length" HorizontalAlignment="Stretch" Width="Auto" Margin="5,0,5,5" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
                                                 <Label Content="毛细管直径/mm" HorizontalAlignment="Left" Width="Auto" Margin="5,0,0,0"/>
-                                                <TextBox  x:Name="TextBox_Diameter" HorizontalAlignment="Stretch" Width="Auto" Margin="5,0,5,5" IsEnabled="False"/>
-                                                <Button x:Name="Button_Capillary" Content="确定" HorizontalAlignment="Stretch" Margin="5,0,5,5" Click="Button_Click_Capillary" IsEnabled="False"/>
+                                                <TextBox  x:Name="TextBox_Diameter" HorizontalAlignment="Stretch" Width="Auto" Margin="5,0,5,5" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
+                                                <Button x:Name="Button_Capillary" Content="确定" HorizontalAlignment="Stretch" Margin="5,0,5,5" Click="Button_Click_Capillary" IsEnabled="False" />
                                             </StackPanel>
                                             <!--AirFlowDirection-->
                                             <TextBlock x:Name="TextBlock_AirFlow" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" DockPanel.Dock="Top" TextAlignment="Center"/>
