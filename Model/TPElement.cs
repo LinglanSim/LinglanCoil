@@ -343,11 +343,11 @@ namespace Model
                     flag = true;
                 }
                 iter++;
-            } while (flag && iter < 100);
-            if (iter >= 100)
-            {
-                throw new Exception("iter for href > 100.");
-            }
+            } while (flag && iter < 20);
+            //if (iter >= 20)
+            //{
+            //    throw new Exception("iter for href > 100.");
+            //}
 
             return res;
 

@@ -634,7 +634,9 @@ namespace tryRT
                 capInput.lenth_cap = new double[Convert.ToInt32(Cirnum.Text)];
             }
 
+
             var r = m_Main.main_condenser(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, capInput, Model.HumidAirSourceData.SourceTableData);
+
 
 
 
