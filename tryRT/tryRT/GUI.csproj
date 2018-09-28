@@ -113,6 +113,10 @@
       <Project>{0136c93b-a30d-4730-a7a8-f44238d09cdd}</Project>
       <Name>Model</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WindowControls\WindowControls.csproj">
+      <Project>{471298f8-cb55-42b3-8b17-e8c275fcb719}</Project>
+      <Name>WindowControls</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Microsoft.Office.Core">

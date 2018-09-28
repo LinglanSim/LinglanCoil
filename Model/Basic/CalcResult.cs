@@ -56,6 +56,8 @@ namespace Model.Basic
         public int N_row = 0;
         public int tube_row = 0;
 
+        public int iii = 0;
+
         public CalcResult ShallowCopy()
         {
             return (CalcResult)this.MemberwiseClone();

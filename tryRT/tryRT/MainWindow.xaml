@@ -266,7 +266,7 @@
                                             <GroupBox Header="出口参数" HorizontalAlignment="Left"  Margin="0,10,0,0" Width="200" Height="220">
                                                 <Canvas HorizontalAlignment="Left" Height="80" Margin="0,0,0,0" VerticalAlignment="Top" Width="Auto">
 
-                                                    <RadioButton GroupName="Pri+Tcro_Evap" x:Name="RadioButton_Tcro_Evap" Margin="5,10,0,0" Checked="RadioButton_Tcro_Evap_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                                    <RadioButton GroupName="Pri+Tcro_Evap" x:Name="RadioButton_Tro_Evap" Margin="5,10,0,0" Checked="RadioButton_Tcro_Evap_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                                     <TextBlock Text="饱和温度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="60"/>
                                                     <TextBox x:Name="Tcro_Evap" Text="10" HorizontalAlignment="Left" Height="24" Margin="75,10,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
                                                     <Label Content="C" HorizontalAlignment="Left" Margin="150,10,0,0" VerticalAlignment="Top"/>

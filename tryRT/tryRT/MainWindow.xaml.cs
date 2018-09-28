@@ -218,7 +218,7 @@ namespace tryRT
 
             //初始化按钮取值
             this.RadioButton_PriTri_Evap.IsChecked = true;
-            this.RadioButton_Tcro_Evap.IsChecked = true;
+            this.RadioButton_Tro_Evap.IsChecked = true;
             this.RadioButton_mro_Evap.IsChecked = true;
             this.WetBulbTemperature.IsChecked = true;
             this.AirVolumnFlowRate.IsChecked = true;
@@ -555,8 +555,8 @@ namespace tryRT
             Model.Basic.RefStateInput refInput = new Model.Basic.RefStateInput();
             Model.Basic.AirStateInput airInput = new Model.Basic.AirStateInput();
             Model.HumidAirProp humidairprop = new Model.HumidAirProp();
+            WindowControls.FinTube winControls_fintube=new WindowControls.FinTube();
             
-
             //几何结构输入
             geoInput.Pt = Convert.ToDouble(Pt.Text);//管间距
             geoInput.Pr = Convert.ToDouble(Pr.Text);//列间距
@@ -570,58 +570,153 @@ namespace tryRT
 
             refInput.FluidName = ComboBox_Refrigerant.Text;//制冷剂名
             AbstractState coolprop = AbstractState.factory("HEOS", refInput.FluidName);
-            if (RadioButton_HExType_Condenser.IsChecked == true) 
+            if (RadioButton_HExType_Condenser.IsChecked == true) //Cond
             {
                 refInput.tc = Convert.ToDouble(this.tc.Text);//Cond_in饱和温度
                 refInput.tri = Convert.ToDouble(this.tri.Text);//Cond_in温度
 
-                if (RadioButton_mro_Cond.IsChecked == true) { refInput.Massflowrate = Convert.ToDouble(this.mro_Cond.Text); }//制冷剂流量kg/s
-                else { refInput.Massflowrate = -1000; }
-                if (RadioButton_xo_Cond.IsChecked == true) { refInput.xo_Cond = Convert.ToDouble(this.xo_Cond.Text); }//Cond_out干度
-                else { refInput.xo_Cond = -1000; }
-                if (RadioButton_Tro_sub_Cond.IsChecked == true) { refInput.Tro_sub_Cond = Convert.ToDouble(this.Tro_sub_Cond.Text); }//Cond_out过冷度
-                else { refInput.Tro_sub_Cond = -1000; }
+                if (this.RadioButton_mro_Cond.IsChecked == true) 
+                { 
+                    refInput.Massflowrate = Convert.ToDouble(this.mro_Cond.Text); 
+                    winControls_fintube.RadioButton_mro_Cond = true; 
+                }//制冷剂流量kg/s
+                else 
+                { 
+                    refInput.Massflowrate = 0.01; 
+                    winControls_fintube.RadioButton_mro_Cond = false; 
+                }
+                if (this.RadioButton_xo_Cond.IsChecked == true) 
+                { 
+                    refInput.xo_Cond = Convert.ToDouble(this.xo_Cond.Text);
+                    winControls_fintube.RadioButton_xo_Cond = true; 
+                }//Cond_out干度
+                else 
+                { 
+                    refInput.xo_Cond = 0; 
+                    winControls_fintube.RadioButton_xo_Cond = false; 
+                }
+                if (this.RadioButton_Tro_sub_Cond.IsChecked == true) 
+                { 
+                    refInput.Tro_sub_Cond = Convert.ToDouble(this.Tro_sub_Cond.Text); 
+                    winControls_fintube.RadioButton_Tro_sub_Cond = true; 
+                }//Cond_out过冷度
+                else 
+                { 
+                    refInput.Tro_sub_Cond = 0; 
+                    winControls_fintube.RadioButton_Tro_sub_Cond = false; 
+                }
 
                 refInput.te = -1000;//Evap饱和温度
-                refInput.xi_Evap = -1000;//Evap_in干度
-                refInput.H_exv = -1000;//Evap_in焓
+                refInput.xi_Evap = 0;//Evap_in干度
+                refInput.H_exv = 0;//Evap_in焓
                 refInput.T_exv = -1000;//Evap阀前温度
-                refInput.P_exv = -1000;//Evap阀前压力
-                refInput.Tro_sub_Evap = -1000;//Evap_out过热度
-                refInput.xo_Evap = -1000;//Evap_out干度
+                refInput.P_exv = 0;//Evap阀前压力
+                refInput.Tro_sub_Evap = 0;//Evap_out过热度
+                refInput.xo_Evap = 1;//Evap_out干度
+
+                winControls_fintube.RadioButton_Pri_Evap = false;
+                winControls_fintube.RadioButton_xi_Evap = false;
+                winControls_fintube.RadioButton_Hri_Evap = false;
+                winControls_fintube.RadioButton_PriTri_Evap = false;
+                winControls_fintube.RadioButton_Tro_Evap = false;
+                winControls_fintube.RadioButton_Tro_sub_Evap = false;
+                winControls_fintube.RadioButton_xo_Evap = false;
+                winControls_fintube.RadioButton_mro_Evap = false;
                 
             }
-            else 
+            else  //Evap
             {
-                if (RadioButton_Tcro_Evap.IsChecked == true) { refInput.te = Convert.ToDouble(this.Tcro_Evap.Text); }//Evap饱和温度
-                else if (this.RadioButton_Pri_Evap.IsChecked == true) { coolprop.update(input_pairs.PQ_INPUTS, Convert.ToDouble(this.Pri_Evap.Text) * 1000, 1); refInput.te = coolprop.T() - 273.15; }//调用CoolProp把压力转成饱和温度
-                else { refInput.te = -1000; }
+                if (this.RadioButton_Tro_Evap.IsChecked == true) 
+                { 
+                    refInput.te = Convert.ToDouble(this.Tcro_Evap.Text); 
+                    winControls_fintube.RadioButton_Tro_Evap = true;
+                    winControls_fintube.RadioButton_Pri_Evap = false; 
+                }//Evap饱和温度
+                else if (this.RadioButton_Pri_Evap.IsChecked == true) 
+                { 
+                    coolprop.update(input_pairs.PQ_INPUTS, Convert.ToDouble(this.Pri_Evap.Text) * 1000, 1); 
+                    refInput.te = coolprop.T() - 273.15; 
+                    winControls_fintube.RadioButton_Tro_Evap = false; 
+                    winControls_fintube.RadioButton_Pri_Evap = true; 
+                }//调用CoolProp把压力转成饱和温度
+                else 
+                { 
+                    refInput.te = -1000; 
+                    winControls_fintube.RadioButton_Tro_Evap = false;
+                    winControls_fintube.RadioButton_Pri_Evap = false; 
+                }
 
-                if (this.RadioButton_xi_Evap.IsChecked == true) { refInput.xi_Evap = Convert.ToDouble(this.xi_Evap.Text); }//Evap_in干度
-                else { refInput.xi_Evap = -1000; }
-                if (this.RadioButton_Hri_Evap.IsChecked == true) { refInput.H_exv = Convert.ToDouble(this.Hri_Evap.Text); }//Evap_in焓
-                else { refInput.H_exv = -1000; }
+                if (this.RadioButton_xi_Evap.IsChecked == true) 
+                { 
+                    refInput.xi_Evap = Convert.ToDouble(this.xi_Evap.Text);
+                    winControls_fintube.RadioButton_xi_Evap = true;
+                }//Evap_in干度
+                else 
+                { 
+                    refInput.xi_Evap = 0;
+                    winControls_fintube.RadioButton_xi_Evap = false;
+                }
+                if (this.RadioButton_Hri_Evap.IsChecked == true) 
+                { 
+                    refInput.H_exv = Convert.ToDouble(this.Hri_Evap.Text);
+                    winControls_fintube.RadioButton_Hri_Evap = true;
+                }//Evap_in焓
+                else 
+                { 
+                    refInput.H_exv = -1000;
+                    winControls_fintube.RadioButton_Hri_Evap = false;
+                }
                 if (this.RadioButton_PriTri_Evap.IsChecked == true) 
                 {
                     refInput.P_exv = Convert.ToDouble(this.Pri_ValveBefore.Text);//Evap阀前压力
                     refInput.T_exv = Convert.ToDouble(this.Tri_ValveBefore.Text);//Evap阀前温度
+                    winControls_fintube.RadioButton_PriTri_Evap = true;
                 }
                 else
                 {
-                    refInput.P_exv = -1000;
+                    refInput.P_exv = 0;
                     refInput.T_exv = -1000;
+                    winControls_fintube.RadioButton_PriTri_Evap = false;
                 }
 
-                if (this.RadioButton_Tro_sub_Evap.IsChecked == true) { refInput.Tro_sub_Evap = Convert.ToDouble(this.Tro_sub_Evap.Text); }//Evap_out过热度
-                else { refInput.Tro_sub_Evap = -1000; }
-                if (this.RadioButton_xo_Evap.IsChecked == true) { refInput.xo_Evap = Convert.ToDouble(this.xo_Evap.Text); }
-                else { refInput.xo_Evap = -1000; }
-                if (this.RadioButton_mro_Evap.IsChecked == true) { refInput.Massflowrate = Convert.ToDouble(this.mro_Evap.Text); }//制冷剂流量kg/s
-                else { refInput.Massflowrate = -1000; }
+                if (this.RadioButton_Tro_sub_Evap.IsChecked == true) 
+                { 
+                    refInput.Tro_sub_Evap = Convert.ToDouble(this.Tro_sub_Evap.Text);
+                    winControls_fintube.RadioButton_Tro_sub_Evap = true;
+                }//Evap_out过热度
+                else 
+                { 
+                    refInput.Tro_sub_Evap = 0;
+                    winControls_fintube.RadioButton_Tro_sub_Evap = false;
+                }
+                if (this.RadioButton_xo_Evap.IsChecked == true) 
+                { 
+                    refInput.xo_Evap = Convert.ToDouble(this.xo_Evap.Text);
+                    winControls_fintube.RadioButton_xo_Evap = true;
+                }
+                else 
+                { 
+                    refInput.xo_Evap = 1;
+                    winControls_fintube.RadioButton_xo_Evap = false;
+                }
+                if (this.RadioButton_mro_Evap.IsChecked == true) 
+                { 
+                    refInput.Massflowrate = Convert.ToDouble(this.mro_Evap.Text);
+                    winControls_fintube.RadioButton_mro_Evap = true;
+                }//制冷剂流量kg/s
+                else 
+                { 
+                    refInput.Massflowrate = 0.01;
+                    winControls_fintube.RadioButton_mro_Evap = false;
+                }
 
                 refInput.tc = -1000;//Cond饱和温度
                 refInput.tri = -1000;//Cond进口温度
-                refInput.Tro_sub_Cond = -1000;//Cond_out过冷度
+                refInput.Tro_sub_Cond = 0;//Cond_out过冷度
+
+                winControls_fintube.RadioButton_mro_Cond = false;
+                winControls_fintube.RadioButton_xo_Cond = false;
+                winControls_fintube.RadioButton_Tro_sub_Cond = false;
             }
 
             if (AirVolumnFlowRate.IsChecked == true) { airInput.Volumetricflowrate = Convert.ToDouble(this.Va.Text); }//空气体积流量m3/s
@@ -691,10 +786,26 @@ namespace tryRT
             Model.Basic.CalcResult r=new Model.Basic.CalcResult();
             if (RadioButton_HExType_Condenser.IsChecked == true)
             {
+                if (this.RadioButton_xo_Cond.IsChecked ==true) 
+                {
+                    r = m_Main.main_condenser_inputQ(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, capInput, Model.HumidAirSourceData.SourceTableData); 
+                }
+                else if (this.RadioButton_Tro_sub_Cond.IsChecked ==true)
+                {
+                    r = m_Main.main_condenser_inputSC_py(refInput, airInput, geoInput, capInput, coolprop, Model.HumidAirSourceData.SourceTableData);
+                }
                 r = m_Main.main_condenser(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, capInput, Model.HumidAirSourceData.SourceTableData);
             }
             else 
             {
+                if (this.RadioButton_xo_Evap.IsChecked ==true)
+                {
+                    r = m_Main.main_evaporator_inputQ(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, capInput, Model.HumidAirSourceData.SourceTableData);
+                }
+                else if (this.RadioButton_Tro_sub_Evap.IsChecked == true)
+                {
+                    r = m_Main.main_evaporator_inputSH_py(refInput, airInput, geoInput, capInput, coolprop, Model.HumidAirSourceData.SourceTableData);
+                }
                 r = m_Main.main_evaporator(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, capInput, Model.HumidAirSourceData.SourceTableData);
             }
 
@@ -2093,6 +2204,15 @@ namespace tryRT
                     if ((TextBoxText.Text != "" && TextBoxText.Text != "-") && (Convert.ToDouble(TextBoxText.Text) < 0 || Convert.ToDouble(TextBoxText.Text) > 37.5))
                     {
                         MessageBoxResult result = MessageBox.Show("空气湿球温度只能在0~37.5℃内");
+                        TextBoxText.Text = TextBoxText.Text.Substring(0, TextBoxText.Text.Length - 1);
+                        TextBoxText.SelectionStart = TextBoxText.Text.Length;
+                    }
+                }
+                if (TextBoxText.Name == "xo_Cond" || TextBoxText.Name == "xi_Evap"|| TextBoxText.Name == "xo_Evap")
+                {
+                    if ((TextBoxText.Text != "" && TextBoxText.Text != "-") && (Convert.ToDouble(TextBoxText.Text) < 0 || Convert.ToDouble(TextBoxText.Text) > 1))
+                    {
+                        MessageBoxResult result = MessageBox.Show("制冷剂干度只能在0~1内");
                         TextBoxText.Text = TextBoxText.Text.Substring(0, TextBoxText.Text.Length - 1);
                         TextBoxText.SelectionStart = TextBoxText.Text.Length;
                     }

@@ -73,6 +73,7 @@ namespace Model
                     te = CoolProp.PropsSI("T", "P", pri * 1000, "Q", 0, fluid) - 273.15;
                 }
 
+                int iiii = 0;
                 do//Air iteration
                 {
                     //Node[] Nodes=new Node[N_node];
@@ -140,9 +141,11 @@ namespace Model
                             tri_cal = Nodes[index_Node].tro[0];
                             index_cir = Nodes[index_Node].outlet[0];
                         }
+
                         //index_status[index_Node]=i;//status
                         r = Circuit.CircuitCalc(index_cir, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, l, geo, ta, RH,
                         tri_cal, pri_cal, hri_cal, mri_cal, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, d_cap, lenth_cap, coolprop, SourceTableData);
+
                         res_cir[index_cir] = r;
                         if (r.Pro < 0) { res_slab.Pro = -10000000; return res_slab; }
                         for (int aa = 0; aa < Nrow; aa++)// detail result print
