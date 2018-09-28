@@ -555,6 +555,7 @@ namespace tryRT
             Model.Basic.RefStateInput refInput = new Model.Basic.RefStateInput();
             Model.Basic.AirStateInput airInput = new Model.Basic.AirStateInput();
             Model.HumidAirProp humidairprop = new Model.HumidAirProp();
+            
 
             //几何结构输入
             geoInput.Pt = Convert.ToDouble(Pt.Text);//管间距
@@ -566,20 +567,73 @@ namespace tryRT
             geoInput.L = Convert.ToDouble(L.Text);//管长
             geoInput.Fthickness = Convert.ToDouble(Fthick.Text);//翅片厚度
             geoInput.FPI = Convert.ToDouble(Fnum.Text);//翅片间距
-            refInput.Massflowrate = Convert.ToDouble(mr.Text);//制冷剂流量kg/s
-            refInput.tc = Convert.ToDouble(tc.Text);//冷凝器饱和温度
-            refInput.tri = Convert.ToDouble(tri.Text);//冷凝器进口温度
+
             refInput.FluidName = ComboBox_Refrigerant.Text;//制冷剂名
-            if (AirVolumnFlowRate.IsChecked == true) { airInput.Volumetricflowrate = Convert.ToDouble(Va.Text); }//空气体积流量m3/s
-            else { airInput.Volumetricflowrate = Convert.ToDouble(Velocity_ai.Text) * geoInput.L * 0.0001 * geoInput.Pt * geoInput.Ntube; }
-            airInput.Volumetricflowrate = Convert.ToDouble(Va.Text);//空气体积流量m3/s
-            airInput.tai = Convert.ToDouble(tai.Text);//进风干球温度
-            if (RelativeHumidity.IsChecked == true) { airInput.RHi = Convert.ToDouble(RHi.Text); }//进风相对湿度
-            else { airInput.RHi = humidairprop.RHI_TwetBulb(Convert.ToDouble(tai.Text), Convert.ToDouble(Tai_wet.Text), Model.HumidAirSourceData.SourceTableData); }
+            AbstractState coolprop = AbstractState.factory("HEOS", refInput.FluidName);
+            if (RadioButton_HExType_Condenser.IsChecked == true) 
+            {
+                refInput.tc = Convert.ToDouble(this.tc.Text);//Cond_in饱和温度
+                refInput.tri = Convert.ToDouble(this.tri.Text);//Cond_in温度
+
+                if (RadioButton_mro_Cond.IsChecked == true) { refInput.Massflowrate = Convert.ToDouble(this.mro_Cond.Text); }//制冷剂流量kg/s
+                else { refInput.Massflowrate = -1000; }
+                if (RadioButton_xo_Cond.IsChecked == true) { refInput.xo_Cond = Convert.ToDouble(this.xo_Cond.Text); }//Cond_out干度
+                else { refInput.xo_Cond = -1000; }
+                if (RadioButton_Tro_sub_Cond.IsChecked == true) { refInput.Tro_sub_Cond = Convert.ToDouble(this.Tro_sub_Cond.Text); }//Cond_out过冷度
+                else { refInput.Tro_sub_Cond = -1000; }
+
+                refInput.te = -1000;//Evap饱和温度
+                refInput.xi_Evap = -1000;//Evap_in干度
+                refInput.H_exv = -1000;//Evap_in焓
+                refInput.T_exv = -1000;//Evap阀前温度
+                refInput.P_exv = -1000;//Evap阀前压力
+                refInput.Tro_sub_Evap = -1000;//Evap_out过热度
+                refInput.xo_Evap = -1000;//Evap_out干度
+                
+            }
+            else 
+            {
+                if (RadioButton_Tcro_Evap.IsChecked == true) { refInput.te = Convert.ToDouble(this.Tcro_Evap.Text); }//Evap饱和温度
+                else if (this.RadioButton_Pri_Evap.IsChecked == true) { coolprop.update(input_pairs.PQ_INPUTS, Convert.ToDouble(this.Pri_Evap.Text) * 1000, 1); refInput.te = coolprop.T() - 273.15; }//调用CoolProp把压力转成饱和温度
+                else { refInput.te = -1000; }
+
+                if (this.RadioButton_xi_Evap.IsChecked == true) { refInput.xi_Evap = Convert.ToDouble(this.xi_Evap.Text); }//Evap_in干度
+                else { refInput.xi_Evap = -1000; }
+                if (this.RadioButton_Hri_Evap.IsChecked == true) { refInput.H_exv = Convert.ToDouble(this.Hri_Evap.Text); }//Evap_in焓
+                else { refInput.H_exv = -1000; }
+                if (this.RadioButton_PriTri_Evap.IsChecked == true) 
+                {
+                    refInput.P_exv = Convert.ToDouble(this.Pri_ValveBefore.Text);//Evap阀前压力
+                    refInput.T_exv = Convert.ToDouble(this.Tri_ValveBefore.Text);//Evap阀前温度
+                }
+                else
+                {
+                    refInput.P_exv = -1000;
+                    refInput.T_exv = -1000;
+                }
+
+                if (this.RadioButton_Tro_sub_Evap.IsChecked == true) { refInput.Tro_sub_Evap = Convert.ToDouble(this.Tro_sub_Evap.Text); }//Evap_out过热度
+                else { refInput.Tro_sub_Evap = -1000; }
+                if (this.RadioButton_xo_Evap.IsChecked == true) { refInput.xo_Evap = Convert.ToDouble(this.xo_Evap.Text); }
+                else { refInput.xo_Evap = -1000; }
+                if (this.RadioButton_mro_Evap.IsChecked == true) { refInput.Massflowrate = Convert.ToDouble(this.mro_Evap.Text); }//制冷剂流量kg/s
+                else { refInput.Massflowrate = -1000; }
+
+                refInput.tc = -1000;//Cond饱和温度
+                refInput.tri = -1000;//Cond进口温度
+                refInput.Tro_sub_Cond = -1000;//Cond_out过冷度
+            }
+
+            if (AirVolumnFlowRate.IsChecked == true) { airInput.Volumetricflowrate = Convert.ToDouble(this.Va.Text); }//空气体积流量m3/s
+            else { airInput.Volumetricflowrate = Convert.ToDouble(this.Velocity_ai.Text) * geoInput.L * 0.0001 * geoInput.Pt * geoInput.Ntube; }
+            airInput.tai = Convert.ToDouble(this.tai.Text);//进风干球温度
+            if (RelativeHumidity.IsChecked == true) { airInput.RHi = Convert.ToDouble(this.RHi.Text); }//进风相对湿度
+            else { airInput.RHi = humidairprop.RHI_TwetBulb(Convert.ToDouble(this.tai.Text), Convert.ToDouble(this.Tai_wet.Text), Model.HumidAirSourceData.SourceTableData); }
             airInput.AirFlowDirection = AirFlowDirection;//0:normal 1:reverse
-            string fin_type = ComboBox_fintype.Text;//平片
-            string tube_type = ComboBox_tubetype.Text;//光管
-            string hex_type = ComboBox_hextype.Text;//冷凝器
+
+            string fin_type = this.ComboBox_fintype.Text;//平片
+            string tube_type = this.ComboBox_tubetype.Text;//光管
+            string hex_type = this.ComboBox_hextype.Text;//冷凝器
 
             //string bb = ComboBox6_SelectionChanged(object sender, SelectionChangedEventArgs e);
             //m_Main.W5(a, b).ha
@@ -634,11 +688,15 @@ namespace tryRT
                 capInput.lenth_cap = new double[Convert.ToInt32(Cirnum.Text)];
             }
 
-
-            var r = m_Main.main_condenser(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, capInput, Model.HumidAirSourceData.SourceTableData);
-
-
-
+            Model.Basic.CalcResult r=new Model.Basic.CalcResult();
+            if (RadioButton_HExType_Condenser.IsChecked == true)
+            {
+                r = m_Main.main_condenser(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, capInput, Model.HumidAirSourceData.SourceTableData);
+            }
+            else 
+            {
+                r = m_Main.main_evaporator(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, capInput, Model.HumidAirSourceData.SourceTableData);
+            }
 
             //***换热器性能输出***//
             Q.Text = r.Q.ToString("f2");
@@ -1166,7 +1224,7 @@ namespace tryRT
 
         private void RadioButton_Troex_Evap_Checked(object sender, RoutedEventArgs e)
         {
-            this.Troex_Evap.IsEnabled = true;
+            this.Tro_sub_Evap.IsEnabled = true;
             if (this.xo_Evap.IsEnabled == true)
             {
                 this.xo_Evap.IsEnabled = false;
@@ -1182,10 +1240,10 @@ namespace tryRT
         private void RadioButton_xo_Evap_Checked(object sender, RoutedEventArgs e)
         {
             this.xo_Evap.IsEnabled = true;
-            if (this.Troex_Evap.IsEnabled == true)
+            if (this.Tro_sub_Evap.IsEnabled == true)
             {
-                this.Troex_Evap.IsEnabled = false;
-                this.Troex_Evap.Text = "0";
+                this.Tro_sub_Evap.IsEnabled = false;
+                this.Tro_sub_Evap.Text = "0";
             }
             if (this.mro_Evap.IsEnabled == true)
              {
@@ -1197,10 +1255,10 @@ namespace tryRT
         private void RadioButton_mro_Evap_Checked(object sender, RoutedEventArgs e)
         {
             this.mro_Evap.IsEnabled = true;
-            if (this.Troex_Evap.IsEnabled == true)
+            if (this.Tro_sub_Evap.IsEnabled == true)
             {
-                this.Troex_Evap.IsEnabled = false;
-                this.Troex_Evap.Text = "0";
+                this.Tro_sub_Evap.IsEnabled = false;
+                this.Tro_sub_Evap.Text = "0";
             }
             if (this.xo_Evap.IsEnabled == true)
             {
@@ -1211,46 +1269,46 @@ namespace tryRT
 
         private void RadioButton_mro_Cond_Checked(object sender, RoutedEventArgs e)
         {
-            this.mr.IsEnabled = true;
-            if (this.x_Cond.IsEnabled == true)
+            this.mro_Cond.IsEnabled = true;
+            if (this.xo_Cond.IsEnabled == true)
             {
-                this.x_Cond.IsEnabled = false;
-                this.x_Cond.Text = "0";
+                this.xo_Cond.IsEnabled = false;
+                this.xo_Cond.Text = "0";
             }
-            if (this.Tro_ex.IsEnabled == true)
+            if (this.Tro_sub_Cond.IsEnabled == true)
             {
-                this.Tro_ex.IsEnabled = false;
-                this.Tro_ex.Text = "0";
+                this.Tro_sub_Cond.IsEnabled = false;
+                this.Tro_sub_Cond.Text = "0";
             }
         }
 
         private void RadioButton_xo_Cond_Checked(object sender, RoutedEventArgs e)
         {
-            this.x_Cond.IsEnabled = true;
-            if (this.mr.IsEnabled == true)
+            this.xo_Cond.IsEnabled = true;
+            if (this.mro_Cond.IsEnabled == true)
             {
-                this.mr.IsEnabled = false;
-                this.mr.Text = "0.01";
+                this.mro_Cond.IsEnabled = false;
+                this.mro_Cond.Text = "0.01";
             }
-            if (this.Tro_ex.IsEnabled == true)
+            if (this.Tro_sub_Cond.IsEnabled == true)
             {
-                this.Tro_ex.IsEnabled = false;
-                this.Tro_ex.Text = "0";
+                this.Tro_sub_Cond.IsEnabled = false;
+                this.Tro_sub_Cond.Text = "0";
             }
         }
 
         private void RadioButton_Tro_Cond_Checked(object sender, RoutedEventArgs e)
         {
-            this.Tro_ex.IsEnabled = true;
-            if (this.mr.IsEnabled == true)
+            this.Tro_sub_Cond.IsEnabled = true;
+            if (this.mro_Cond.IsEnabled == true)
             {
-                this.mr.IsEnabled = false;
-                this.mr.Text = "0.01";
+                this.mro_Cond.IsEnabled = false;
+                this.mro_Cond.Text = "0.01";
             }
-            if (this.x_Cond.IsEnabled == true)
+            if (this.xo_Cond.IsEnabled == true)
             {
-                this.x_Cond.IsEnabled = false;
-                this.x_Cond.Text = "0";
+                this.xo_Cond.IsEnabled = false;
+                this.xo_Cond.Text = "0";
             }
         }
 
@@ -1297,6 +1355,8 @@ namespace tryRT
             this.GroupBox_RealTimeInputShow_Condenser.Visibility = Visibility.Visible;
             this.GroupBox_RealTimeInputShow_Evaporator.Visibility = Visibility.Hidden;
             this.TabItem_HExType.IsSelected = true;
+            this.Tri_ValveBefore.Text="24";
+            this.Pri_ValveBefore.Text = "1729.2";
 
             this.TabItem_HExTypr_Picture.IsSelected = true;
         }
@@ -1311,6 +1371,8 @@ namespace tryRT
             this.GroupBox_RealTimeInputShow_Condenser.Visibility = Visibility.Hidden;
             this.GroupBox_RealTimeInputShow_Evaporator.Visibility = Visibility.Visible;
             this.TabItem_HExType.IsSelected = true;
+            this.Tri_ValveBefore.Text = "20";
+            this.Pri_ValveBefore.Text = "1842.28";
 
             this.TabItem_HExTypr_Picture.IsSelected = true;
         }
