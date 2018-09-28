@@ -790,11 +790,14 @@ namespace tryRT
                 {
                     r = m_Main.main_condenser_inputQ(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, capInput, Model.HumidAirSourceData.SourceTableData); 
                 }
-                else if (this.RadioButton_Tro_sub_Cond.IsChecked ==true)
+                else if (this.RadioButton_Tro_sub_Cond.IsChecked == true)
                 {
                     r = m_Main.main_condenser_inputSC_py(refInput, airInput, geoInput, capInput, coolprop, Model.HumidAirSourceData.SourceTableData);
                 }
-                r = m_Main.main_condenser(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, capInput, Model.HumidAirSourceData.SourceTableData);
+                else 
+                {
+                    r = m_Main.main_condenser(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, capInput, Model.HumidAirSourceData.SourceTableData);
+                } 
             }
             else 
             {
@@ -806,7 +809,10 @@ namespace tryRT
                 {
                     r = m_Main.main_evaporator_inputSH_py(refInput, airInput, geoInput, capInput, coolprop, Model.HumidAirSourceData.SourceTableData);
                 }
-                r = m_Main.main_evaporator(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, capInput, Model.HumidAirSourceData.SourceTableData);
+                else
+                {
+                    r = m_Main.main_evaporator(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, capInput, Model.HumidAirSourceData.SourceTableData);
+                }
             }
 
             //***换热器性能输出***//

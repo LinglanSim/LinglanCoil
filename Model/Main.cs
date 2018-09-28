@@ -179,10 +179,14 @@ namespace Model
                 hsc_set = coolprop.hmass() / 1000;
                 //hsc_set = CoolProp.PropsSI("H", "P", res.Pro * 1000, "T", Tro_set + 273.15, fluid) / 1000;
 
-                mr = mr * Math.Pow((hsc_set / hsc_cal), 1.8);//1.8?
+                //mr = mr * Math.Pow((hsc_set / hsc_cal), (hsc_set / hsc_cal));//1.8?
+                mr = mr * (hsc_set / hsc_cal);//1.8?
 
                 ii++;
-
+                string arr1 = Convert.ToString(ii);
+                string arr2 = Convert.ToString(mr);
+                string arr3 = Convert.ToString((hsc_set / hsc_cal));
+                Console.WriteLine(arr1 + ":" + arr2 + "," + arr3);
             } while (Math.Abs((hsc_cal - hsc_set) / hsc_set) > 0.005);
 
             return res;
@@ -382,10 +386,14 @@ namespace Model
                 hsh_set = coolprop.hmass() / 1000;
                 //hsh_set = CoolProp.PropsSI("H", "T", Tro_set + 273.15, "P", res.Pro * 1000, fluid) / 1000;
 
-                mr = mr * Math.Pow((hsh_cal / hsh_set), 3.8);//3.8?
+                //mr = mr * Math.Pow((hsh_cal / hsh_set), (hsh_cal / hsh_set));//3.8?
+                mr = mr * (hsh_cal / hsh_set);//3.8?
 
                 ii++;
-
+                string arr1 = Convert.ToString(ii);
+                string arr2 = Convert.ToString(mr);
+                string arr3 = Convert.ToString((hsh_cal / hsh_set));
+                Console.WriteLine(arr1 + ":" + arr2 + "," + arr3);
             } while (Math.Abs((hsh_cal - hsh_set) / hsh_set) > 0.0027);
 
             return res;
@@ -532,7 +540,7 @@ namespace Model
 
             coolprop.update(input_pairs.QT_INPUTS, refInput.xo_Evap, refInput.te+273.15);
             hxo_set=coolprop.hmass() / 1000;
-
+            int ii = 0;
             do
             {
                 //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, te, pe, hri,
@@ -554,14 +562,19 @@ namespace Model
                     //hsh_cal = CoolProp.PropsSI("H", "P", res.Pro * 1000, "T", res.Tro + 273.15, fluid) / 1000;
                 }
 
-                mr = mr * Math.Pow((hxo_cal / hxo_set), 5);//3.8
-
+                //mr = mr * Math.Pow((hxo_cal / hxo_set), (hxo_cal / hxo_set));//3.8
+                mr = mr * (hxo_cal / hxo_set);//3.8
+                ii++;
+                string arr1 = Convert.ToString(ii);
+                string arr2 = Convert.ToString(mr);
+                string arr3 = Convert.ToString((hxo_cal / hxo_set));
+                Console.WriteLine(arr1 + ":" + arr2 + "," + arr3);
             } while (Math.Abs((hxo_cal - hxo_set) / hxo_set) > 0.0027);
 
             return res;
 
         }
-        public CalcResult main_condenser_inputQ(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, int[,] CirArrange, int[, ,] NodesInfo, string fin_type, string tube_type, string hex_type, CapiliaryInput capInput, double[,] SourceTableData)//mr+te+（P_exv+T_exv/xi_Evap/H_exv）  Va+tai+Rhi
+        public CalcResult main_condenser_inputQ(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, int[,] CirArrange, int[, ,] NodesInfo, string fin_type, string tube_type, string hex_type, CapiliaryInput capInput, double[,] SourceTableData)//mr+tri+tc  Va+tai+Rhi
         {
             string fluid = refInput.FluidName;// refri_in;// "R32";
             AbstractState coolprop = AbstractState.factory("HEOS", fluid);
@@ -713,8 +726,13 @@ namespace Model
                     //hsh_cal = CoolProp.PropsSI("H", "P", res.Pro * 1000, "T", res.Tro + 273.15, fluid) / 1000;
                 }
 
-                mr = mr * Math.Pow((hxo_cal / hxo_set), 3.8);//3.8?
+                //mr = mr * Math.Pow((hxo_cal / hxo_set), (hxo_cal / hxo_set));//3.8?
+                mr = mr *(hxo_cal / hxo_set);//3.8?
                 ii++;
+                string arr1 = Convert.ToString(ii);
+                string arr2 = Convert.ToString(mr);
+                string arr3 = Convert.ToString((hxo_cal / hxo_set));
+                Console.WriteLine(arr1 + ":" + arr2 + "," + arr3);
             } while (Math.Abs((hxo_cal - hxo_set) / hxo_set) > 0.0027);
 
             return res;
@@ -852,7 +870,7 @@ namespace Model
             double conductivity = 386; //w/mK for Cu
             double Pwater = 0;
             double hri = 0;
-            if (refInput.P_exv != -1000)
+            if (refInput.P_exv != -1000)//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@尚未通过界面判断是通过求出进口焓
             {
                 P_exv = refInput.P_exv;
                 T_exv = refInput.T_exv;
