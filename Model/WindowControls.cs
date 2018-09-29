@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WindowControls
+namespace Model
 {
-    public class FinTube
+    public class WindowControls
     {
         public bool RadioButton_Pri_Evap;
         public bool RadioButton_xi_Evap;
@@ -22,4 +22,3 @@ namespace WindowControls
         public bool RadioButton_Tro_sub_Cond;
     }
 }
-
