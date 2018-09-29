@@ -6,1055 +6,1028 @@
         xmlns:input="clr-namespace:System.Windows.Input;assembly=PresentationCore"
         Title="美的换热器仿真" Height="790" Width="1150" x:Name="view" WindowStartupLocation="CenterScreen">
 
-    <ScrollViewer Grid.Column="1" Name="scrollViewer1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-        <Viewbox Stretch="Fill">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-            <Grid Width="1100" Height="750" Margin="0,0,0,0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" MinHeight="775"/>
-                    <RowDefinition Height="Auto" MinHeight="750"/>
-                </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Grid.Column="0" Height="25" VerticalAlignment="Top" Margin="0,0,0,0">
+            <Menu HorizontalAlignment="Left" Height="25" Grid.RowSpan="1" VerticalAlignment="Top" Width="1176" Background="#FFE5E5E5">
+                <MenuItem Header="文件" >
+                    <MenuItem.Icon>
+                        <Image Source="Pictures\菜单_文件.PNG"/>
+                    </MenuItem.Icon>
+                    <MenuItem Header="退出" Click="MenuItem_Click_4">
+                        <MenuItem.Icon>
+                            <Image Height="25" Width="28" Source="Pictures\菜单_Close.png"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </MenuItem>
+                <MenuItem Header="仿真">
+                    <MenuItem.Icon>
+                        <Image Source="Pictures\菜单_Run.PNG"/>
+                    </MenuItem.Icon>
+                    <MenuItem Header="开始运行"  Click="MenuItem_Click_0">
+                        <MenuItem.Icon>
+                            <Image Height="25" Width="28" Source="Pictures\菜单_运行.PNG" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </MenuItem>
+                <MenuItem Header="帮助">
+                    <MenuItem.Icon>
+                        <Image Source="Pictures\菜单_Help.PNG" />
+                    </MenuItem.Icon>
+                    <MenuItem Header="关于我们"/>
+                </MenuItem>
+            </Menu>
+        </Grid>
 
-                <Grid Background="#FFE5E5E5" Margin="0,0,0,0">
-                    <!--菜单_Start!-->
-                    <Canvas HorizontalAlignment="Left" Height="25" Margin="0,0,0,0" VerticalAlignment="Top" Width="0">
-                        <Menu HorizontalAlignment="Left" Height="25" Margin="0,0,0,0" Grid.RowSpan="1" VerticalAlignment="Top" Width="1176" Background="#FFE5E5E5">
-                            <MenuItem Header="文件" >
-                                <MenuItem.Icon>
-                                    <Image Source="Pictures\菜单_文件.PNG"/>
-                                </MenuItem.Icon>
-                                <MenuItem Header="退出" Click="MenuItem_Click_4">
-                                    <MenuItem.Icon>
-                                        <Image Height="25" Width="28" Source="Pictures\菜单_Close.png"/>
-                                    </MenuItem.Icon>
-                                </MenuItem>
-                            </MenuItem>
-                            <MenuItem Header="仿真">
-                                <MenuItem.Icon>
-                                    <Image Source="Pictures\菜单_Run.PNG"/>
-                                </MenuItem.Icon>
-                                <MenuItem Header="开始运行"  Click="MenuItem_Click_0">
-                                    <MenuItem.Icon>
-                                        <Image Height="25" Width="28" Source="Pictures\菜单_运行.PNG" />
-                                    </MenuItem.Icon>
-                                </MenuItem>
-                            </MenuItem>
-                            <MenuItem Header="帮助">
-                                <MenuItem.Icon>
-                                    <Image Source="Pictures\菜单_Help.PNG" />
-                                </MenuItem.Icon>
-                                <MenuItem Header="关于我们"/>
-                            </MenuItem>
-                        </Menu>
+        <Grid Margin="0,25,0,0" VerticalAlignment="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <DockPanel Grid.Row="1" Grid.Column="0">
+                <!--Tree View_Start!-->
+                <TreeView HorizontalAlignment="Left" Height="750" VerticalAlignment="Top" BorderThickness="0">
+                    <TreeViewItem Header="输入" IsExpanded="True" Width="150" HorizontalAlignment="Left" Height="Auto" VerticalAlignment="Top">
+                        <TreeViewItem x:Name="TreeView_HExType" Header="类型" HorizontalAlignment="Left" Width="150" GotFocus="TreeView_HExType_GotFocus"/>
+                        <TreeViewItem x:Name="TreeView_HExTube" Header="换热管" HorizontalAlignment="Left" Width="150" GotFocus="TreeView_HExTube_GotFocus"/>
+                        <TreeViewItem x:Name="TreeView_Fin" Header="翅片" HorizontalAlignment="Left" Width="150" GotFocus="TreeView_Fin_GotFocus"/>
+                        <TreeViewItem x:Name="TreeView_Ref" Header="制冷剂侧" HorizontalAlignment="Left" Width="150" GotFocus="TreeView_Ref_GotFocus"/>
+                        <TreeViewItem x:Name="TreeView_Wind" Header="空气侧" HorizontalAlignment="Left" Width="150" GotFocus="TreeView_Wind_GotFocus"/>
+                        <TreeViewItem x:Name="TreeView_Pass" Header="流路" HorizontalAlignment="Left" Width="150" GotFocus="TreeView_Pass_GotFocus">
+                            <TreeViewItem x:Name="TreeView_Distributer" Header="分流毛细管" HorizontalAlignment="Left" Width="150" GotFocus="TreeView_Distributer_GotFocus"/>
+                        </TreeViewItem>
+                        <TreeViewItem x:Name="TreeView_AdjustParameter" Header="修正系数" HorizontalAlignment="Left" Width="150" GotFocus="TreeView_AdjustParameter_GotFocus"/>
+                    </TreeViewItem>
+                    <TreeViewItem Header="输出" IsExpanded="True">
+                        <TreeViewItem x:Name="TreeView_DetailResult" Header="具体计算结果" HorizontalAlignment="Left" Width="150" GotFocus="TreeView_DetailResult_GotFocus">
+                            <TreeViewItem x:Name="TreeView_DetailResultExcelOutput" Header="输出Excel格式" HorizontalAlignment="Left" Width="320" GotFocus="TreeView_DetailResultExcelOutput_GotFocus"/>
+                        </TreeViewItem>
+                        <TreeViewItem x:Name="TreeView_Result" Header="计算结果" HorizontalAlignment="Left" Width="150" GotFocus="TreeView_Result_GotFocus"/>
+                    </TreeViewItem>
+                </TreeView>
+                <!--Tree View_End!-->
+            </DockPanel>
+
+            <GridSplitter Grid.Row="1" Grid.Column="1" Width="3" Margin="2,0,2,0" Background="Purple" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
+
+            <!-->换热器仿真<!-->
+            <Canvas Grid.Row="1" Grid.Column="2" x:Name="Canvas_0" Width="450" Height="750">
+                <Grid Background="#FFE5E5E5" Width="450" Height="750">
+                    <Label Content="美的换热器仿真" HorizontalAlignment="Center" Margin="100,60,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="24"/>
+                    <Image HorizontalAlignment="Center" Height="65" Margin="-200,50,0,0" VerticalAlignment="Top" Width="Auto" Source="Pictures\美的Logo.png"/>
+
+                    <GroupBox Header="换热器类型"  HorizontalAlignment="Center" VerticalAlignment="Top" Height="100" Width="140" Margin="0,110,0,0">
+                        <Canvas HorizontalAlignment="Center" Height="Auto" Width="Auto" Margin="10,10,0,0" VerticalAlignment="Top">
+                            <Grid>
+                                <ComboBox x:Name="ComboBox_hextype" HorizontalAlignment="Left" Margin="80,5,0,0" VerticalAlignment="Top" Width="150" Height="27" Visibility="Collapsed"/>
+
+                                <RadioButton GroupName="HExType" Content="冷凝器" x:Name="RadioButton_HExType_Condenser" Margin="-40,0,0,0" Width="60" Height="15"  HorizontalAlignment="Center" VerticalAlignment="Top" Checked="HExType_Condenser"/>
+                                <RadioButton GroupName="HExType" Content="蒸发器" x:Name="RadioButton_HExType_Evaporator" Margin="-40,40,0,0" Width="60" Height="15"  HorizontalAlignment="Center" VerticalAlignment="Top" Checked="HExType_Evaporator"/>
+                            </Grid>
+                        </Canvas>
+                    </GroupBox>
+                </Grid>
+            </Canvas>
+
+            <!-->换热管<!-->
+            <Canvas Grid.Row="1" Grid.Column="2" x:Name="Canvas_1" Width="450" Height="750" Visibility="Collapsed">
+                <Grid Background="#FFE5E5E5" Width="450" Height="750">
+                    <GroupBox Header="换热管"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="260" Width="410" Margin="8,0,0,0">
+                        <Canvas HorizontalAlignment="Left" Height="480" Width="100" Margin="10,8,0,0" VerticalAlignment="Top">
+                            <TextBlock Text="管型号" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Height="15" Width="36"/>
+                            <ComboBox x:Name="ComboBox_TubeVersion" HorizontalAlignment="Left"  Margin="70,0,0,0" VerticalAlignment="Top" Width="140" Height="26" SelectionChanged="ComboBox_TubeVersion_SelectionChanged"/>
+
+                            <TextBlock Text="管外径" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Height="16" Width="36"/>
+                            <TextBox x:Name="Do" Text="10.0584" IsEnabled="False" HorizontalAlignment="Left" Margin="70,40,0,0" VerticalAlignment="Top" Height="24" Width="60" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
+                            <Label Content="mm" HorizontalAlignment="Left" Margin="130,40,0,0" VerticalAlignment="Top"/>
+
+                            <TextBlock Text="管间距" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top" Height="16" Width="36"/>
+                            <TextBox x:Name="Pt" Text="25.4" IsEnabled="False" HorizontalAlignment="Left" Margin="70,80,0,0"  VerticalAlignment="Top" Height="24" Width="60" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
+                            <Label Content="mm" HorizontalAlignment="Left" Margin="130,80,0,0" VerticalAlignment="Top"/>
+
+                            <TextBlock Text="列间距" HorizontalAlignment="Left" Margin="220,80,0,0" VerticalAlignment="Top" Height="16" Width="36"/>
+                            <TextBox x:Name="Pr" Text="19.05" IsEnabled="False" HorizontalAlignment="Left" Margin="280,80,0,0"  VerticalAlignment="Top" Height="24" Width="60" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
+                            <Label Content="mm" HorizontalAlignment="Left" Margin="340,80,0,0" VerticalAlignment="Top"/>
+
+                            <TextBlock Text="管排"   TextAlignment="Left" HorizontalAlignment="Left" Margin="10,120,0,0" VerticalAlignment="Top" Height="16" Width="36" />
+                            <TextBox x:Name="Row" Text="2" IsEnabled="False" HorizontalAlignment="Left" Margin="70,120,0,0"  VerticalAlignment="Top" Height="24" Width="60" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="NumTextBox_PreviewTextInput" TextChanged="NumTextBox_TextChanged"/>
+                            <Label Content="#" HorizontalAlignment="Left" Margin="130,120,0,0" VerticalAlignment="Top"/>
+
+                            <TextBlock Text="管数/排" HorizontalAlignment="Left" Margin="220,120,0,0" VerticalAlignment="Top" Height="15" Width="50"/>
+                            <TextBox x:Name="tube_per" Text="6" HorizontalAlignment="Left" Margin="280,120,0,0"  VerticalAlignment="Top" Height="24" Width="60" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="NumTextBox_PreviewTextInput" TextChanged="NumTextBox_TextChanged"/>
+                            <Label Content="#" HorizontalAlignment="Left" Margin="340,120,0,0" VerticalAlignment="Top"/>
+
+                            <TextBlock Text="管壁厚" HorizontalAlignment="Left" Margin="220,160,0,0" VerticalAlignment="Top" Height="16" Width="36"/>
+                            <TextBox x:Name="thick_tube" Text="0.2" HorizontalAlignment="Left" Margin="280,160,0,0" VerticalAlignment="Top" Height="24" Width="60" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
+                            <Label Content="mm" HorizontalAlignment="Left" Margin="340,160,0,0" VerticalAlignment="Top"/>
+
+                            <TextBlock Text="管长" TextAlignment="Left" HorizontalAlignment="Left" Margin="10,160,0,0" VerticalAlignment="Top" Height="14" Width="36"/>
+                            <TextBox x:Name="L" Text="914.4" HorizontalAlignment="Left" Margin="70,160,0,0" VerticalAlignment="Top" Height="24" Width="60" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
+                            <Label Content="mm" HorizontalAlignment="Left" Margin="130,160,0,0" VerticalAlignment="Top"/>
+
+                            <TextBlock Text="管种类" HorizontalAlignment="Left" Margin="220,40,0,0" VerticalAlignment="Top" Height="15" Width="36"/>
+                            <ComboBox x:Name="ComboBox_tubetype" HorizontalAlignment="Left" Margin="280,40,0,0" VerticalAlignment="Top" Width="100"  Height="26" SelectionChanged="ComboBox_tubetype_SelectionChanged"/>
+
+                            <Button x:Name="Button1" Content="确定" HorizontalAlignment="Stretch" Margin="130,200,5,5" Width="120" Click="Button_Click_Sure" Visibility="Visible"></Button>
+
+                        </Canvas>
+                    </GroupBox>
+                    <!-->外形插图_End<!-->
+                    <!-->外形_Start<!-->
+                    <GroupBox Header="外形"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="290" Width="410" Margin="8,265,0,10">
+                        <Canvas HorizontalAlignment="Left" Height="480" Width="100" Margin="10,10,0,0" VerticalAlignment="Top" ContextMenuClosing="TubeArrangement_Cross_Short_Checked" >
+                            <RadioButton GroupName="TubeArrangement" Content="直排" x:Name="TubeArrangement_Straight" Margin="0,5,0,0" Checked="TubeArrangement_Straight_Checked"/>
+                            <RadioButton GroupName="TubeArrangement" Content="叉排(迎风面高)" x:Name="TubeArrangement_Crossed_High" Margin="0,35,0,0" Checked="TubeArrangement_Cross_High_Checked"/>
+                            <RadioButton GroupName="TubeArrangement" Content="叉排(迎风面低)" x:Name="TubeArrangement_Crossed_Short" Margin="0,65,0,0" Checked="TubeArrangement_Cross_Short_Checked"/>
+
+                            <!-->外形插图_Start<!-->
+                            <TabControl HorizontalAlignment="Left" Height="250" Margin="130,-5,0,0" VerticalAlignment="Top" Width="250">
+                                <TabItem x:Name="TabItem_TubeArrangement_Null" Header="Null" Visibility="Collapsed">
+                                    <Image HorizontalAlignment="Left" Height="100" Margin="0,0,0,0" VerticalAlignment="Top" Width="467"/>
+                                </TabItem>
+                                <TabItem x:Name="TabItem_TubeArrangement_Straight" Header="直排" Visibility="Collapsed">
+                                    <Image HorizontalAlignment="Center" Height="230" Margin="0,0,0,0" VerticalAlignment="Top" Width="500" Source="Pictures\直排.PNG"/>
+                                </TabItem>
+                                <TabItem x:Name="TabItem_TubeArrangement_Crossed_High" Header="叉排(迎风面高)" Visibility="Collapsed">
+                                    <Image HorizontalAlignment="Center" Height="230" Margin="0,0,0,0" VerticalAlignment="Top" Width="500" Source="Pictures\叉排迎风面高.PNG"/>
+                                </TabItem>
+                                <TabItem x:Name="TabItem_TubeArrangement_Crossed_Short" Header="叉排(迎风面低)" Visibility="Collapsed">
+                                    <Image HorizontalAlignment="Center" Height="230" Margin="0,0,0,0" VerticalAlignment="Top" Width="500" Source="Pictures\叉排迎风面低.PNG"/>
+                                </TabItem>
+                            </TabControl>
+                        </Canvas>
+                    </GroupBox>
+                </Grid>
+
+            </Canvas>
+
+            <!-->翅片<!-->
+            <Canvas Grid.Row="1" Grid.Column="2" x:Name="Canvas_2" Width="450" Height="750" Visibility="Collapsed">
+                <Grid Background="#FFE5E5E5" Width="450" Height="750">
+
+                    <GroupBox Header="翅片类型"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="140" Width="410" Margin="8,0,0,10">
+                        <Canvas HorizontalAlignment="Left" Height="480" Width="425" Margin="10,8,0,0" VerticalAlignment="Top">
+                            <TextBlock Text="翅片间距" TextAlignment="Left" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Height="22" Width="80"/>
+                            <TextBox x:Name="Fnum" Text="1.2" HorizontalAlignment="Left" Margin="100,0,0,0" VerticalAlignment="Top" Height="25" Width="125" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
+                            <Label Content="mm" HorizontalAlignment="Left" Margin="230,0,0,0" VerticalAlignment="Top"/>
+
+                            <TextBlock Text="翅片厚度" TextAlignment="Left" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Height="22" Width="80"/>
+                            <TextBox x:Name="Fthick" Text="0.095" HorizontalAlignment="Left" Margin="100,40,0,0" VerticalAlignment="Top" Height="26" Width="125" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
+                            <Label Content="mm" HorizontalAlignment="Left" Margin="230,40,0,0" VerticalAlignment="Top"/>
+
+                            <TextBlock Text="翅片种类" TextAlignment="Left" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top" Height="22" Width="80"/>
+                            <ComboBox x:Name="ComboBox_fintype" HorizontalAlignment="Left" Margin="100,80,0,0" VerticalAlignment="Top" Width="125"/>
+                        </Canvas>
+                    </GroupBox>
+                </Grid>
+            </Canvas>
+
+            <!-->制冷剂侧<!-->
+            <Canvas Grid.Row="1" Grid.Column="2" x:Name="Canvas_3" Width="450" Height="750" Visibility="Collapsed">
+                <Grid Background="#FFE5E5E5" Width="450" Height="750">
+                    <GroupBox Header="制冷剂侧"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="70" Width="410" Margin="8,0,0,10">
+                        <Canvas HorizontalAlignment="Left" Height="480" Width="100" Margin="10,8,0,0" VerticalAlignment="Top">
+                            <TextBlock Text="制冷剂" TextAlignment="Left" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="60"/>
+                            <ComboBox x:Name="ComboBox_Refrigerant" HorizontalAlignment="Left" Margin="70,0,0,0" VerticalAlignment="Top" Width="152" SelectionChanged="ComboBox_Refrigerant_SelectionChanged" RenderTransformOrigin="0.067,1.318"/>
+                        </Canvas>
+                    </GroupBox>
+
+                    <Canvas HorizontalAlignment="Left" Height="100" Margin="0,60,0,0" VerticalAlignment="Top" Width="100">
+                        <!--蒸发器_Start!-->
+                        <!--新加入蒸发器20180808!-->
+
+                        <!--进口参数_Start!-->
+                        <Canvas HorizontalAlignment="Left" Height="100" Margin="8,0,0,0" VerticalAlignment="Top" Width="120">
+
+                            <GroupBox Header="进口参数" x:Name="GroupBox_RefInlet_Evaporator" HorizontalAlignment="Left"  Margin="0,10,0,0" Width="200" Height="220"  Visibility="Hidden">
+                                <Canvas HorizontalAlignment="Left" Height="80" Margin="0,0,0,0" VerticalAlignment="Top" Width="Auto">
+
+                                    <RadioButton GroupName="Pri+Tcro_Evap" x:Name="RadioButton_Pri_Evap" Margin="5,10,0,0" Checked="RadioButton_Pri_Evap_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    <TextBlock Text="压力" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="60"/>
+                                    <TextBox x:Name="Pri_Evap" Text="" HorizontalAlignment="Left" Height="24" Margin="75,10,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
+                                    <Label Content="kPa" HorizontalAlignment="Left" Margin="150,10,0,0" VerticalAlignment="Top"/>
+
+                                    <RadioButton GroupName="xi+Hri+Tri+Pri_Evap" x:Name="RadioButton_xi_Evap" Margin="5,50,0,0" Checked="RadioButton_xi_Evap_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    <TextBlock Text="干度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,50,0,0" VerticalAlignment="Top" Width="60"/>
+                                    <TextBox x:Name="xi_Evap" Text="" HorizontalAlignment="Left" Height="24" Margin="75,50,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
+                                    <Label Content="" HorizontalAlignment="Left" Margin="150,50,0,0" VerticalAlignment="Top"/>
+
+                                    <RadioButton GroupName="xi+Hri+Tri+Pri_Evap" x:Name="RadioButton_Hri_Evap" Margin="5,90,0,0" Checked="RadioButton_Hri_Evap_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    <TextBlock Text="焓值" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,90,0,0" VerticalAlignment="Top" Width="60"/>
+                                    <TextBox x:Name="Hri_Evap" Text="" HorizontalAlignment="Left" Height="24" Margin="75,90,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
+                                    <Label Content="kJ/kg" HorizontalAlignment="Left" Margin="150,90,0,0" VerticalAlignment="Top"/>
+
+                                    <RadioButton GroupName="xi+Hri+Tri+Pri_Evap" x:Name="RadioButton_PriTri_Evap" Margin="5,130,0,0" Checked="RadioButton_PriTri_Evap_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    <TextBlock Text="阀前温度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,130,0,0" VerticalAlignment="Top" Width="60" />
+                                    <TextBox x:Name="Tri_ValveBefore"  HorizontalAlignment="Left" Height="24" Margin="75,130,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
+                                    <Label Content="C" HorizontalAlignment="Left" Margin="150,130,0,0" VerticalAlignment="Top"/>
+
+                                    <TextBlock Text="阀前压力" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,170,0,0" VerticalAlignment="Top" Width="60"/>
+                                    <TextBox x:Name="Pri_ValveBefore" HorizontalAlignment="Left" Height="24" Margin="75,170,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
+                                    <Label Content="kPa" HorizontalAlignment="Left" Margin="150,170,0,0" VerticalAlignment="Top"/>
+
+                                </Canvas>
+                            </GroupBox>
+                        </Canvas>
+                        <!--出口参数_Start!-->
+                        <Canvas HorizontalAlignment="Left" x:Name="GroupBox_RefOutlet_Evaporator" Height="100" Margin="220,0,0,0" VerticalAlignment="Top" Width="100"  Visibility="Hidden">
+                            <GroupBox Header="出口参数" HorizontalAlignment="Left"  Margin="0,10,0,0" Width="200" Height="220">
+                                <Canvas HorizontalAlignment="Left" Height="80" Margin="0,0,0,0" VerticalAlignment="Top" Width="Auto">
+
+                                    <RadioButton GroupName="Pri+Tcro_Evap" x:Name="RadioButton_Tro_Evap" Margin="5,10,0,0" Checked="RadioButton_Tcro_Evap_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    <TextBlock Text="饱和温度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="60"/>
+                                    <TextBox x:Name="Tcro_Evap" Text="10" HorizontalAlignment="Left" Height="24" Margin="75,10,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
+                                    <Label Content="C" HorizontalAlignment="Left" Margin="150,10,0,0" VerticalAlignment="Top"/>
+
+                                    <RadioButton GroupName="Troex+xo+mro_Evap" x:Name="RadioButton_Tro_sub_Evap" Margin="5,50,0,0" Checked="RadioButton_Troex_Evap_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    <TextBlock Text="过热度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,50,0,0" VerticalAlignment="Top" Width="60"/>
+                                    <TextBox x:Name="Tro_sub_Evap" Text="" HorizontalAlignment="Left" Height="24" Margin="75,50,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
+                                    <Label Content="" HorizontalAlignment="Left" Margin="150,50,0,0" VerticalAlignment="Top"/>
+
+                                    <RadioButton GroupName="Troex+xo+mro_Evap" x:Name="RadioButton_xo_Evap" Margin="5,90,0,0" Checked="RadioButton_xo_Evap_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    <TextBlock Text="干度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,90,0,0" VerticalAlignment="Top" Width="60"/>
+                                    <TextBox x:Name="xo_Evap" Text="" HorizontalAlignment="Left" Height="24" Margin="75,90,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
+                                    <Label Content="" HorizontalAlignment="Left" Margin="150,90,0,0" VerticalAlignment="Top"/>
+
+                                    <RadioButton GroupName="Troex+xo+mro_Evap" x:Name="RadioButton_mro_Evap" Margin="5,130,0,0" Checked="RadioButton_mro_Evap_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    <TextBlock Text="流量" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,130,0,0" VerticalAlignment="Top" Width="60" />
+                                    <TextBox x:Name="mro_Evap" Text="0.02" HorizontalAlignment="Left" Height="24" Margin="75,130,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
+                                    <Label Content="kg/s" HorizontalAlignment="Left" Margin="150,130,0,0" VerticalAlignment="Top"/>
+                                </Canvas>
+                            </GroupBox>
+                        </Canvas>
+
+                        <!--冷凝器_Start!-->
+                        <!--进口参数_Start!-->
+                        <Canvas HorizontalAlignment="Left" Height="100" Margin="0,0,0,0" VerticalAlignment="Top" Width="200">
+
+                            <GroupBox Header="进口参数" x:Name="GroupBox_RefInlet_Condenser" HorizontalAlignment="Left"  Margin="8,10,0,0" Width="200" Height="150"  Visibility="Hidden">
+                                <Canvas HorizontalAlignment="Left" Height="80" Margin="0,0,0,0" VerticalAlignment="Top" Width="Auto">
+                                    <!--从原界面转移到冷凝器20180808!-->
+                                    <TextBlock Text="饱和温度" TextAlignment="Left" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="60"/>
+                                    <TextBox x:Name="tc" Text="45" HorizontalAlignment="Left" Height="24" Margin="65,10,0,0" VerticalAlignment="Top" Width="70" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
+                                    <Label Content="C" HorizontalAlignment="Left" Margin="140,10,0,0" VerticalAlignment="Top"/>
+
+                                    <!--从原界面转移到冷凝器20180808!-->
+                                    <TextBlock Text="进口温度" TextAlignment="Left" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" Width="60"/>
+                                    <TextBox x:Name="tri" Text="78" HorizontalAlignment="Left" Height="24" Margin="65,50,0,0" VerticalAlignment="Top" Width="70" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
+                                    <Label Content="C" HorizontalAlignment="Left" Margin="140,50,0,0" VerticalAlignment="Top"/>
+                                </Canvas>
+                            </GroupBox>
+
+                        </Canvas>
+                        <!--出口参数_Start!-->
+                        <Canvas HorizontalAlignment="Left" Height="100" Margin="220,0,0,0" VerticalAlignment="Top" Width="100">
+                            <GroupBox Header="出口参数"  x:Name="GroupBox_RefOutlet_Condenser" HorizontalAlignment="Left"  Margin="0,10,0,0" Width="200" Height="150" Visibility="Hidden">
+                                <Canvas HorizontalAlignment="Left" Height="80" Margin="0,0,0,0" VerticalAlignment="Top" Width="Auto">
+
+                                    <RadioButton GroupName="mro+xo+Tro_Cond" x:Name="RadioButton_mro_Cond" Margin="5,10,0,0" Checked="RadioButton_mro_Cond_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    <TextBlock Text="流量" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="60"/>
+                                    <TextBox x:Name="mro_Cond" Text="0.02" HorizontalAlignment="Left" Height="24" Margin="60,10,0,0" VerticalAlignment="Top" Width="70" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
+                                    <Label Content="kg/s" HorizontalAlignment="Left" Margin="135,10,0,0" VerticalAlignment="Top"/>
+
+                                    <!--新加入20180808!-->
+                                    <RadioButton GroupName="mro+xo+Tro_Cond" x:Name="RadioButton_xo_Cond" Margin="5,50,0,0" Checked="RadioButton_xo_Cond_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    <TextBlock Text="干度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,50,0,0" VerticalAlignment="Top" Width="60"/>
+                                    <TextBox x:Name="xo_Cond" Text="" HorizontalAlignment="Left" Height="24" Margin="60,50,0,0" VerticalAlignment="Top" Width="70" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
+
+                                    <!--新加入20180808!-->
+                                    <RadioButton GroupName="mro+xo+Tro_Cond" x:Name="RadioButton_Tro_sub_Cond" Margin="5,90,0,0" Checked="RadioButton_Tro_Cond_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    <TextBlock Text="过冷度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,90,0,0" VerticalAlignment="Top" Width="60"/>
+                                    <TextBox x:Name="Tro_sub_Cond" Text="" HorizontalAlignment="Left" Height="24" Margin="60,90,0,0" VerticalAlignment="Top" Width="70" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
+                                    <Label Content="C" HorizontalAlignment="Left" Margin="135,90,0,0" VerticalAlignment="Top"/>
+                                </Canvas>
+                            </GroupBox>
+                        </Canvas>
                     </Canvas>
-                    <!--菜单_End!-->
-
-                    <!--Tree View_Start!-->
-                    <Canvas HorizontalAlignment="Left" Height="750" VerticalAlignment="Top" Width="200" Margin="0,25,0,0">
-                        <TreeView HorizontalAlignment="Left" Height="750" VerticalAlignment="Top" Width="200">
-                            <TreeViewItem Header="输入" IsExpanded="True" Width="200" HorizontalAlignment="Left" Height="Auto" VerticalAlignment="Top">
-                                <TreeViewItem x:Name="TreeView_HExType" Header="类型" HorizontalAlignment="Left" Width="320" GotFocus="TreeView_HExType_GotFocus"/>
-                                <TreeViewItem x:Name="TreeView_HExTube" Header="换热管" HorizontalAlignment="Left" Width="320" GotFocus="TreeView_HExTube_GotFocus"/>
-                                <TreeViewItem x:Name="TreeView_Fin" Header="翅片" HorizontalAlignment="Left" Width="320" GotFocus="TreeView_Fin_GotFocus"/>
-                                <TreeViewItem x:Name="TreeView_Ref" Header="制冷剂侧" HorizontalAlignment="Left" Width="320" GotFocus="TreeView_Ref_GotFocus"/>
-                                <TreeViewItem x:Name="TreeView_Wind" Header="空气侧" HorizontalAlignment="Left" Width="320" GotFocus="TreeView_Wind_GotFocus"/>
-                                <TreeViewItem x:Name="TreeView_Pass" Header="流路" HorizontalAlignment="Left" Width="320" GotFocus="TreeView_Pass_GotFocus">
-                                    <TreeViewItem x:Name="TreeView_Distributer" Header="分流毛细管" HorizontalAlignment="Left" Width="320" GotFocus="TreeView_Distributer_GotFocus"/>
-                                </TreeViewItem>
-                                <TreeViewItem x:Name="TreeView_AdjustParameter" Header="修正系数" HorizontalAlignment="Left" Width="320" GotFocus="TreeView_AdjustParameter_GotFocus"/>
-                            </TreeViewItem>
-                            <TreeViewItem Header="输出" IsExpanded="True">
-                                <TreeViewItem x:Name="TreeView_DetailResult" Header="具体计算结果" HorizontalAlignment="Left" Width="320" GotFocus="TreeView_DetailResult_GotFocus">
-                                    <TreeViewItem x:Name="TreeView_DetailResultExcelOutput" Header="输出Excel格式" HorizontalAlignment="Left" Width="320" GotFocus="TreeView_DetailResultExcelOutput_GotFocus"/>
-                                </TreeViewItem>
-                                <TreeViewItem x:Name="TreeView_Result" Header="计算结果" HorizontalAlignment="Left" Width="320" GotFocus="TreeView_Result_GotFocus"/>
-                            </TreeViewItem>
-                        </TreeView>
-                    </Canvas>
-                    <!--Tree View_End!-->
-
-                    <!-->输入/结果界面_Start<!-->
-                    <Canvas HorizontalAlignment="Left" Height="750" VerticalAlignment="Top" Width="445" Margin="200,25,0,0">
-                        <TabControl x:Name="TabControl1" HorizontalAlignment="Left" Height="750" VerticalAlignment="Top" Width="450"  Margin="0,0,0,0">
-
-                            <!-->换热器类型_Start<!-->
-                            <TabItem x:Name="TabItem_HExType" Header="换热器类型" Visibility="Collapsed">
-                                <Grid Background="#FFE5E5E5">
-                                    <Label Content="美的换热器仿真" HorizontalAlignment="Left" Margin="200,60,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="24"/>
-                                    <Image HorizontalAlignment="Left" Height="65" Margin="100,50,0,0" VerticalAlignment="Top" Width="800" Source="Pictures\美的Logo.png"/>
-
-                                    <GroupBox Header="换热器类型"  HorizontalAlignment="Center" VerticalAlignment="Top" Height="100" Width="140" Margin="0,110,0,0">
-                                        <Canvas HorizontalAlignment="Center" Height="Auto" Width="Auto" Margin="10,10,0,0" VerticalAlignment="Top">
-                                            <Grid>
-                                                <ComboBox x:Name="ComboBox_hextype" HorizontalAlignment="Left" Margin="80,5,0,0" VerticalAlignment="Top" Width="150" Height="27" Visibility="Collapsed"/>
-
-                                                <RadioButton GroupName="HExType" Content="冷凝器" x:Name="RadioButton_HExType_Condenser" Margin="-40,0,0,0" Width="60" Height="15"  HorizontalAlignment="Center" VerticalAlignment="Top" Checked="HExType_Condenser"/>
-                                                <RadioButton GroupName="HExType" Content="蒸发器" x:Name="RadioButton_HExType_Evaporator" Margin="-40,40,0,0" Width="60" Height="15"  HorizontalAlignment="Center" VerticalAlignment="Top" Checked="HExType_Evaporator"/>
-
-                                            </Grid>
-
-                                        </Canvas>
-                                    </GroupBox>
-                                </Grid>
-                            </TabItem>
-                            <!-->换热管_Start<!-->
-                            <TabItem x:Name="TabItem_HExTube" Header="换热管" Visibility="Collapsed">
-                                <Grid Background="#FFE5E5E5">
-
-                                    <GroupBox Header="换热管"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="260" Width="410" Margin="8,0,0,0">
-                                        <Canvas HorizontalAlignment="Left" Height="480" Width="100" Margin="10,8,0,0" VerticalAlignment="Top">
-                                            <TextBlock Text="管型号" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Height="15" Width="36"/>
-                                            <ComboBox x:Name="ComboBox_TubeVersion" HorizontalAlignment="Left"  Margin="70,0,0,0" VerticalAlignment="Top" Width="140" Height="26" SelectionChanged="ComboBox_TubeVersion_SelectionChanged"/>
-
-                                            <TextBlock Text="管外径" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Height="16" Width="36"/>
-                                            <TextBox x:Name="Do" Text="10.0584" IsEnabled="False" HorizontalAlignment="Left" Margin="70,40,0,0" VerticalAlignment="Top" Height="24" Width="60" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
-                                            <Label Content="mm" HorizontalAlignment="Left" Margin="130,40,0,0" VerticalAlignment="Top"/>
-
-                                            <TextBlock Text="管间距" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top" Height="16" Width="36"/>
-                                            <TextBox x:Name="Pt" Text="25.4" IsEnabled="False" HorizontalAlignment="Left" Margin="70,80,0,0"  VerticalAlignment="Top" Height="24" Width="60" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
-                                            <Label Content="mm" HorizontalAlignment="Left" Margin="130,80,0,0" VerticalAlignment="Top"/>
-
-                                            <TextBlock Text="列间距" HorizontalAlignment="Left" Margin="220,80,0,0" VerticalAlignment="Top" Height="16" Width="36"/>
-                                            <TextBox x:Name="Pr" Text="19.05" IsEnabled="False" HorizontalAlignment="Left" Margin="280,80,0,0"  VerticalAlignment="Top" Height="24" Width="60" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
-                                            <Label Content="mm" HorizontalAlignment="Left" Margin="340,80,0,0" VerticalAlignment="Top"/>
-
-                                            <TextBlock Text="管排"   TextAlignment="Left" HorizontalAlignment="Left" Margin="10,120,0,0" VerticalAlignment="Top" Height="16" Width="36" />
-                                            <TextBox x:Name="Row" Text="2" IsEnabled="False" HorizontalAlignment="Left" Margin="70,120,0,0"  VerticalAlignment="Top" Height="24" Width="60" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="NumTextBox_PreviewTextInput" TextChanged="NumTextBox_TextChanged"/>
-                                            <Label Content="#" HorizontalAlignment="Left" Margin="130,120,0,0" VerticalAlignment="Top"/>
-
-                                            <TextBlock Text="管数/排" HorizontalAlignment="Left" Margin="220,120,0,0" VerticalAlignment="Top" Height="15" Width="50"/>
-                                            <TextBox x:Name="tube_per" Text="6" HorizontalAlignment="Left" Margin="280,120,0,0"  VerticalAlignment="Top" Height="24" Width="60" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="NumTextBox_PreviewTextInput" TextChanged="NumTextBox_TextChanged"/>
-                                            <Label Content="#" HorizontalAlignment="Left" Margin="340,120,0,0" VerticalAlignment="Top"/>
-
-                                            <TextBlock Text="管壁厚" HorizontalAlignment="Left" Margin="220,160,0,0" VerticalAlignment="Top" Height="16" Width="36"/>
-                                            <TextBox x:Name="thick_tube" Text="0.2" HorizontalAlignment="Left" Margin="280,160,0,0" VerticalAlignment="Top" Height="24" Width="60" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
-                                            <Label Content="mm" HorizontalAlignment="Left" Margin="340,160,0,0" VerticalAlignment="Top"/>
-
-                                            <TextBlock Text="管长" TextAlignment="Left" HorizontalAlignment="Left" Margin="10,160,0,0" VerticalAlignment="Top" Height="14" Width="36"/>
-                                            <TextBox x:Name="L" Text="914.4" HorizontalAlignment="Left" Margin="70,160,0,0" VerticalAlignment="Top" Height="24" Width="60" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
-                                            <Label Content="mm" HorizontalAlignment="Left" Margin="130,160,0,0" VerticalAlignment="Top"/>
-
-                                            <TextBlock Text="管种类" HorizontalAlignment="Left" Margin="220,40,0,0" VerticalAlignment="Top" Height="15" Width="36"/>
-                                            <ComboBox x:Name="ComboBox_tubetype" HorizontalAlignment="Left" Margin="280,40,0,0" VerticalAlignment="Top" Width="100"  Height="26" SelectionChanged="ComboBox_tubetype_SelectionChanged"/>
-
-                                            <Button x:Name="Button1" Content="确定" HorizontalAlignment="Stretch" Margin="130,200,5,5" Width="120" Click="Button_Click_Sure" Visibility="Visible"></Button>
-
-                                        </Canvas>
-                                    </GroupBox>
-                                    <!-->外形插图_End<!-->
-                                    <!-->外形_Start<!-->
-                                    <GroupBox Header="外形"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="290" Width="410" Margin="8,265,0,10">
-                                        <Canvas HorizontalAlignment="Left" Height="480" Width="100" Margin="10,10,0,0" VerticalAlignment="Top" ContextMenuClosing="TubeArrangement_Cross_Short_Checked" >
-                                            <RadioButton GroupName="TubeArrangement" Content="直排" x:Name="TubeArrangement_Straight" Margin="0,5,0,0" Checked="TubeArrangement_Straight_Checked"/>
-                                            <RadioButton GroupName="TubeArrangement" Content="叉排(迎风面高)" x:Name="TubeArrangement_Crossed_High" Margin="0,35,0,0" Checked="TubeArrangement_Cross_High_Checked"/>
-                                            <RadioButton GroupName="TubeArrangement" Content="叉排(迎风面低)" x:Name="TubeArrangement_Crossed_Short" Margin="0,65,0,0" Checked="TubeArrangement_Cross_Short_Checked"/>
-
-                                            <!-->外形插图_Start<!-->
-                                            <TabControl HorizontalAlignment="Left" Height="250" Margin="130,-5,0,0" VerticalAlignment="Top" Width="250">
-                                                <TabItem x:Name="TabItem_TubeArrangement_Null" Header="Null" Visibility="Collapsed">
-                                                    <Image HorizontalAlignment="Left" Height="100" Margin="0,0,0,0" VerticalAlignment="Top" Width="467"/>
-                                                </TabItem>
-                                                <TabItem x:Name="TabItem_TubeArrangement_Straight" Header="直排" Visibility="Collapsed">
-                                                    <Image HorizontalAlignment="Center" Height="230" Margin="0,0,0,0" VerticalAlignment="Top" Width="500" Source="Pictures\直排.PNG"/>
-                                                </TabItem>
-                                                <TabItem x:Name="TabItem_TubeArrangement_Crossed_High" Header="叉排(迎风面高)" Visibility="Collapsed">
-                                                    <Image HorizontalAlignment="Center" Height="230" Margin="0,0,0,0" VerticalAlignment="Top" Width="500" Source="Pictures\叉排迎风面高.PNG"/>
-                                                </TabItem>
-                                                <TabItem x:Name="TabItem_TubeArrangement_Crossed_Short" Header="叉排(迎风面低)" Visibility="Collapsed">
-                                                    <Image HorizontalAlignment="Center" Height="230" Margin="0,0,0,0" VerticalAlignment="Top" Width="500" Source="Pictures\叉排迎风面低.PNG"/>
-                                                </TabItem>
-                                            </TabControl>
-                                        </Canvas>
-                                    </GroupBox>
-                                </Grid>
-                            </TabItem>
-                            <!-->翅片_Start<!-->
-                            <TabItem x:Name="TabItem_Fin" Header="翅片" Visibility="Collapsed">
-                                <Grid Background="#FFE5E5E5">
-
-                                    <GroupBox Header="翅片类型"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="140" Width="410" Margin="8,0,0,10">
-                                        <Canvas HorizontalAlignment="Left" Height="480" Width="425" Margin="10,8,0,0" VerticalAlignment="Top">
-                                            <TextBlock Text="翅片间距" TextAlignment="Left" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Height="22" Width="80"/>
-                                            <TextBox x:Name="Fnum" Text="1.2" HorizontalAlignment="Left" Margin="100,0,0,0" VerticalAlignment="Top" Height="25" Width="125" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
-                                            <Label Content="mm" HorizontalAlignment="Left" Margin="230,0,0,0" VerticalAlignment="Top"/>
-
-                                            <TextBlock Text="翅片厚度" TextAlignment="Left" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Height="22" Width="80"/>
-                                            <TextBox x:Name="Fthick" Text="0.095" HorizontalAlignment="Left" Margin="100,40,0,0" VerticalAlignment="Top" Height="26" Width="125" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
-                                            <Label Content="mm" HorizontalAlignment="Left" Margin="230,40,0,0" VerticalAlignment="Top"/>
-
-                                            <TextBlock Text="翅片种类" TextAlignment="Left" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top" Height="22" Width="80"/>
-                                            <ComboBox x:Name="ComboBox_fintype" HorizontalAlignment="Left" Margin="100,80,0,0" VerticalAlignment="Top" Width="125"/>
-                                        </Canvas>
-                                    </GroupBox>
-                                </Grid>
-                            </TabItem>
-                            <!-->流路_Start<!-->
-                            <TabItem x:Name="TabItem_Pass" Header="流路" Visibility="Collapsed">
-                                <Grid Background="#FFE5E5E5">
-
-                                    <GroupBox Header="流路" HorizontalAlignment="Left" VerticalAlignment="Top" Height="145" Width="410" Margin="8,0,0,10">
-                                        <Grid>
-                                            <RadioButton GroupName="PassArrangement" x:Name="RadioButton_ManualArrange" Margin="50,15,0,0" Checked="RadioButton_ManualArrange_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                            <TextBlock Text="手动分配流路" HorizontalAlignment="Left" Margin="70,15,0,0" VerticalAlignment="Top" Width="75"/>
-
-                                            <RadioButton GroupName="PassArrangement" x:Name="RadioButton_AutoArrange" Margin="220,15,0,0" Checked="RadioButton_AutoArrange_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                            <TextBlock Text="自动分配流路" HorizontalAlignment="Left" Margin="240,15,0,0" VerticalAlignment="Top" Width="75"/>
-                                            <TextBlock Text="流路数" HorizontalAlignment="Left" Margin="240,50,0,0" VerticalAlignment="Top"/>
-                                            <TextBox x:Name="Cirnum" Text="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="280,50,0,0" Width="30" TextAlignment="Center" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="NumTextBox_PreviewTextInput" TextChanged="NumTextBox_TextChanged"/>
-                                            <Button x:Name="Pass_OK" Content="确定" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="220,85,0,0" Height="Auto" Width="90" IsEnabled="False"/>
-
-                                            <CheckBox x:Name="AirReverse" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,50,0,0" Unchecked="AirFlow_Plus" Checked="AirFlow_Minus"/>
-                                            <TextBlock Text="空气流向反转" HorizontalAlignment="Left" Margin="70,50,0,0" VerticalAlignment="Top" Width="Auto" />
-
-                                            <CheckBox x:Name="RefReverse" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,85,0,0" Unchecked="RefFlow_Plus" Checked="RefFlow_Minus"/>
-                                            <TextBlock Text="制冷剂流向反转" HorizontalAlignment="Left" Margin="70,85,0,0" VerticalAlignment="Top" Width="Auto"/>
-                                        </Grid>
-                                    </GroupBox>
-
-                                </Grid>
-                            </TabItem>
-                            <!-->制冷剂侧_Start<!-->
-                            <TabItem x:Name="TabItem_Ref" Header="制冷剂侧" Visibility="Collapsed">
-                                <Grid Background="#FFE5E5E5">
-
-                                    <GroupBox Header="制冷剂侧"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="70" Width="410" Margin="8,0,0,10">
-                                        <Canvas HorizontalAlignment="Left" Height="480" Width="100" Margin="10,8,0,0" VerticalAlignment="Top">
-                                            <TextBlock Text="制冷剂" TextAlignment="Left" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="60"/>
-                                            <ComboBox x:Name="ComboBox_Refrigerant" HorizontalAlignment="Left" Margin="70,0,0,0" VerticalAlignment="Top" Width="152" SelectionChanged="ComboBox_Refrigerant_SelectionChanged" RenderTransformOrigin="0.067,1.318"/>
-                                        </Canvas>
-                                    </GroupBox>
-
-                                    <Canvas HorizontalAlignment="Left" Height="100" Margin="0,60,0,0" VerticalAlignment="Top" Width="100">
-                                        <!--蒸发器_Start!-->
-                                        <!--新加入蒸发器20180808!-->
-
-                                        <!--进口参数_Start!-->
-                                        <Canvas HorizontalAlignment="Left" Height="100" Margin="8,0,0,0" VerticalAlignment="Top" Width="120">
-
-                                            <GroupBox Header="进口参数" x:Name="GroupBox_RefInlet_Evaporator" HorizontalAlignment="Left"  Margin="0,10,0,0" Width="200" Height="220"  Visibility="Hidden">
-                                                <Canvas HorizontalAlignment="Left" Height="80" Margin="0,0,0,0" VerticalAlignment="Top" Width="Auto">
-
-                                                    <RadioButton GroupName="Pri+Tcro_Evap" x:Name="RadioButton_Pri_Evap" Margin="5,10,0,0" Checked="RadioButton_Pri_Evap_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                                    <TextBlock Text="压力" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="60"/>
-                                                    <TextBox x:Name="Pri_Evap" Text="" HorizontalAlignment="Left" Height="24" Margin="75,10,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
-                                                    <Label Content="kPa" HorizontalAlignment="Left" Margin="150,10,0,0" VerticalAlignment="Top"/>
-
-                                                    <RadioButton GroupName="xi+Hri+Tri+Pri_Evap" x:Name="RadioButton_xi_Evap" Margin="5,50,0,0" Checked="RadioButton_xi_Evap_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                                    <TextBlock Text="干度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,50,0,0" VerticalAlignment="Top" Width="60"/>
-                                                    <TextBox x:Name="xi_Evap" Text="" HorizontalAlignment="Left" Height="24" Margin="75,50,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
-                                                    <Label Content="" HorizontalAlignment="Left" Margin="150,50,0,0" VerticalAlignment="Top"/>
-
-                                                    <RadioButton GroupName="xi+Hri+Tri+Pri_Evap" x:Name="RadioButton_Hri_Evap" Margin="5,90,0,0" Checked="RadioButton_Hri_Evap_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                                    <TextBlock Text="焓值" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,90,0,0" VerticalAlignment="Top" Width="60"/>
-                                                    <TextBox x:Name="Hri_Evap" Text="" HorizontalAlignment="Left" Height="24" Margin="75,90,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
-                                                    <Label Content="kJ/kg" HorizontalAlignment="Left" Margin="150,90,0,0" VerticalAlignment="Top"/>
-
-                                                    <RadioButton GroupName="xi+Hri+Tri+Pri_Evap" x:Name="RadioButton_PriTri_Evap" Margin="5,130,0,0" Checked="RadioButton_PriTri_Evap_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                                    <TextBlock Text="阀前温度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,130,0,0" VerticalAlignment="Top" Width="60" />
-                                                    <TextBox x:Name="Tri_ValveBefore"  HorizontalAlignment="Left" Height="24" Margin="75,130,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
-                                                    <Label Content="C" HorizontalAlignment="Left" Margin="150,130,0,0" VerticalAlignment="Top"/>
-
-                                                    <TextBlock Text="阀前压力" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,170,0,0" VerticalAlignment="Top" Width="60"/>
-                                                    <TextBox x:Name="Pri_ValveBefore" HorizontalAlignment="Left" Height="24" Margin="75,170,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
-                                                    <Label Content="kPa" HorizontalAlignment="Left" Margin="150,170,0,0" VerticalAlignment="Top"/>
-
-                                                </Canvas>
-                                            </GroupBox>
-                                        </Canvas>
-                                        <!--出口参数_Start!-->
-                                        <Canvas HorizontalAlignment="Left" x:Name="GroupBox_RefOutlet_Evaporator" Height="100" Margin="220,0,0,0" VerticalAlignment="Top" Width="100"  Visibility="Hidden">
-                                            <GroupBox Header="出口参数" HorizontalAlignment="Left"  Margin="0,10,0,0" Width="200" Height="220">
-                                                <Canvas HorizontalAlignment="Left" Height="80" Margin="0,0,0,0" VerticalAlignment="Top" Width="Auto">
-
-                                                    <RadioButton GroupName="Pri+Tcro_Evap" x:Name="RadioButton_Tro_Evap" Margin="5,10,0,0" Checked="RadioButton_Tcro_Evap_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                                    <TextBlock Text="饱和温度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="60"/>
-                                                    <TextBox x:Name="Tcro_Evap" Text="10" HorizontalAlignment="Left" Height="24" Margin="75,10,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
-                                                    <Label Content="C" HorizontalAlignment="Left" Margin="150,10,0,0" VerticalAlignment="Top"/>
-
-                                                    <RadioButton GroupName="Troex+xo+mro_Evap" x:Name="RadioButton_Tro_sub_Evap" Margin="5,50,0,0" Checked="RadioButton_Troex_Evap_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                                    <TextBlock Text="过热度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,50,0,0" VerticalAlignment="Top" Width="60"/>
-                                                    <TextBox x:Name="Tro_sub_Evap" Text="" HorizontalAlignment="Left" Height="24" Margin="75,50,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
-                                                    <Label Content="" HorizontalAlignment="Left" Margin="150,50,0,0" VerticalAlignment="Top"/>
-
-                                                    <RadioButton GroupName="Troex+xo+mro_Evap" x:Name="RadioButton_xo_Evap" Margin="5,90,0,0" Checked="RadioButton_xo_Evap_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                                    <TextBlock Text="干度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,90,0,0" VerticalAlignment="Top" Width="60"/>
-                                                    <TextBox x:Name="xo_Evap" Text="" HorizontalAlignment="Left" Height="24" Margin="75,90,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
-                                                    <Label Content="" HorizontalAlignment="Left" Margin="150,90,0,0" VerticalAlignment="Top"/>
-
-                                                    <RadioButton GroupName="Troex+xo+mro_Evap" x:Name="RadioButton_mro_Evap" Margin="5,130,0,0" Checked="RadioButton_mro_Evap_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                                    <TextBlock Text="流量" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,130,0,0" VerticalAlignment="Top" Width="60" />
-                                                    <TextBox x:Name="mro_Evap" Text="0.02" HorizontalAlignment="Left" Height="24" Margin="75,130,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
-                                                    <Label Content="kg/s" HorizontalAlignment="Left" Margin="150,130,0,0" VerticalAlignment="Top"/>
-                                                </Canvas>
-                                            </GroupBox>
-                                        </Canvas>
-
-                                        <!--冷凝器_Start!-->
-                                        <!--进口参数_Start!-->
-                                        <Canvas HorizontalAlignment="Left" Height="100" Margin="0,0,0,0" VerticalAlignment="Top" Width="200">
-
-                                            <GroupBox Header="进口参数" x:Name="GroupBox_RefInlet_Condenser" HorizontalAlignment="Left"  Margin="8,10,0,0" Width="200" Height="150"  Visibility="Hidden">
-                                                <Canvas HorizontalAlignment="Left" Height="80" Margin="0,0,0,0" VerticalAlignment="Top" Width="Auto">
-                                                    <!--从原界面转移到冷凝器20180808!-->
-                                                    <TextBlock Text="饱和温度" TextAlignment="Left" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="60"/>
-                                                    <TextBox x:Name="tc" Text="45" HorizontalAlignment="Left" Height="24" Margin="65,10,0,0" VerticalAlignment="Top" Width="70" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
-                                                    <Label Content="C" HorizontalAlignment="Left" Margin="140,10,0,0" VerticalAlignment="Top"/>
-
-                                                    <!--从原界面转移到冷凝器20180808!-->
-                                                    <TextBlock Text="进口温度" TextAlignment="Left" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" Width="60"/>
-                                                    <TextBox x:Name="tri" Text="78" HorizontalAlignment="Left" Height="24" Margin="65,50,0,0" VerticalAlignment="Top" Width="70" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
-                                                    <Label Content="C" HorizontalAlignment="Left" Margin="140,50,0,0" VerticalAlignment="Top"/>
-                                                </Canvas>
-                                            </GroupBox>
-
-                                        </Canvas>
-                                        <!--出口参数_Start!-->
-                                        <Canvas HorizontalAlignment="Left" Height="100" Margin="220,0,0,0" VerticalAlignment="Top" Width="100">
-                                            <GroupBox Header="出口参数"  x:Name="GroupBox_RefOutlet_Condenser" HorizontalAlignment="Left"  Margin="0,10,0,0" Width="200" Height="150" Visibility="Hidden">
-                                                <Canvas HorizontalAlignment="Left" Height="80" Margin="0,0,0,0" VerticalAlignment="Top" Width="Auto">
-
-                                                    <RadioButton GroupName="mro+xo+Tro_Cond" x:Name="RadioButton_mro_Cond" Margin="5,10,0,0" Checked="RadioButton_mro_Cond_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                                    <TextBlock Text="流量" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="60"/>
-                                                    <TextBox x:Name="mro_Cond" Text="0.02" HorizontalAlignment="Left" Height="24" Margin="60,10,0,0" VerticalAlignment="Top" Width="70" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
-                                                    <Label Content="kg/s" HorizontalAlignment="Left" Margin="135,10,0,0" VerticalAlignment="Top"/>
-
-                                                    <!--新加入20180808!-->
-                                                    <RadioButton GroupName="mro+xo+Tro_Cond" x:Name="RadioButton_xo_Cond" Margin="5,50,0,0" Checked="RadioButton_xo_Cond_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                                    <TextBlock Text="干度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,50,0,0" VerticalAlignment="Top" Width="60"/>
-                                                    <TextBox x:Name="xo_Cond" Text="" HorizontalAlignment="Left" Height="24" Margin="60,50,0,0" VerticalAlignment="Top" Width="70" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
-                                                    <Label Content="kJ/kg" HorizontalAlignment="Left" Margin="135,50,0,0" VerticalAlignment="Top"/>
-
-                                                    <!--新加入20180808!-->
-                                                    <RadioButton GroupName="mro+xo+Tro_Cond" x:Name="RadioButton_Tro_sub_Cond" Margin="5,90,0,0" Checked="RadioButton_Tro_Cond_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                                    <TextBlock Text="过冷度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,90,0,0" VerticalAlignment="Top" Width="60"/>
-                                                    <TextBox x:Name="Tro_sub_Cond" Text="" HorizontalAlignment="Left" Height="24" Margin="60,90,0,0" VerticalAlignment="Top" Width="70" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
-                                                    <Label Content="C" HorizontalAlignment="Left" Margin="135,90,0,0" VerticalAlignment="Top"/>
-                                                </Canvas>
-                                            </GroupBox>
-                                        </Canvas>
-                                    </Canvas>
-
-                                </Grid>
-                            </TabItem>
-                            <!-->空气侧_Start<!-->
-                            <TabItem x:Name="TabItem_Wind" Header="空气侧" Visibility="Collapsed">
-                                <Grid Background="#FFE5E5E5">
-
-                                    <GroupBox Header="空气侧"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="170" Width="410" Margin="8,0,0,10">
-                                        <Canvas HorizontalAlignment="Left" Height="480" Width="100" Margin="10,8,0,0" VerticalAlignment="Top">
-                                            <TextBlock  Text="进风干球温度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top" Width="80"/>
-                                            <TextBox x:Name="tai" Text="35" HorizontalAlignment="Left" Height="24" Margin="100,0,0,0" VerticalAlignment="Top" Width="50" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
-                                            <Label Content="C" HorizontalAlignment="Left" Margin="150,0,0,0" VerticalAlignment="Top"/>
-
-                                            <TextBlock  Text="大气压力" TextAlignment="Left" HorizontalAlignment="Left" Margin="215,0,0,0" VerticalAlignment="Top" Width="70"/>
-                                            <TextBox x:Name="Patm" Text="101.325" HorizontalAlignment="Left" Height="24" Margin="295,0,0,0" VerticalAlignment="Top" Width="55" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
-                                            <Label Content="kPa" HorizontalAlignment="Left" Margin="350,0,0,0" VerticalAlignment="Top"/>
-
-                                            <RadioButton GroupName="Humidity" x:Name="WetBulbTemperature" Margin="5,40,0,0" Checked="RadioButton_WetBulbTemperature_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                            <TextBlock  Text="进风湿球温度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,40,0,0" VerticalAlignment="Top" Width="80"/>
-                                            <TextBox x:Name="Tai_wet" Text="24" HorizontalAlignment="Left" Height="24" Margin="100,40,0,0" VerticalAlignment="Top" Width="50" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
-                                            <Label Content="C" HorizontalAlignment="Left" Margin="150,40,0,0" VerticalAlignment="Top"/>
-
-                                            <RadioButton GroupName="Humidity" x:Name="RelativeHumidity" Margin="200,40,0,0" Checked="RadioButton_RelativeHumidity_Checked" Width="55" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                            <TextBlock  Text="进风相对湿度" TextAlignment="Left" HorizontalAlignment="Left" Margin="215,40,0,0" VerticalAlignment="Top" Width="80" IsEnabled="False"/>
-                                            <TextBox x:Name="RHi" Text="0.5" HorizontalAlignment="Left" Height="23" Margin="295,40,0,0" VerticalAlignment="Top" Width="55" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
-
-                                            <RadioButton GroupName="AirFlowRate" x:Name="AirVolumnFlowRate" Margin="5,80,0,0" Checked="RadioButton_AirVolumnFlowRate_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                            <TextBlock  Text="体积流量" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,80,0,0" VerticalAlignment="Top" Width="80"/>
-                                            <TextBox x:Name="Va" Text="0.12" HorizontalAlignment="Left" Height="22" Margin="100,80,0,0" VerticalAlignment="Top" Width="50" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
-                                            <Label Content="m3/s" HorizontalAlignment="Left" Margin="150,80,0,0" VerticalAlignment="Top"/>
-
-                                            <RadioButton GroupName="AirFlowRate" x:Name="AirVelocity" Margin="200,80,0,0" Checked="RadioButton_AirVelocity_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                            <TextBlock  Text="风速" TextAlignment="Left" HorizontalAlignment="Left" Margin="215,80,0,0" VerticalAlignment="Top" Width="80"/>
-                                            <TextBox x:Name="Velocity_ai" Text="1" HorizontalAlignment="Left" Height="24" Margin="295,80,0,0" VerticalAlignment="Top" Width="55" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
-                                            <Label Content="m/s" HorizontalAlignment="Left" Margin="350,80,0,0" VerticalAlignment="Top"/>
-
-                                            <CheckBox x:Name="CheckBox_UniformWind" Content="均匀送风" Margin="5,120,0,0" Checked="CheckBox_UniformWind_Checked" Unchecked="CheckBox_UniformWind_Unchecked"  Width="100" Height="18" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                        </Canvas>
-                                    </GroupBox>
-
-                                    <GroupBox Header="不均匀风速" x:Name="GroupBox_AsymmetricalWind" HorizontalAlignment="Left" VerticalAlignment="Top" Height="Auto" Width="410" Margin="8,170,0,10">
-                                        <Canvas HorizontalAlignment="Left" Height="480" Width="100" Margin="10,0,0,0" VerticalAlignment="Top">
-                                            <ListBox x:Name="lbxData" Margin="10,40,0,0"/>
-                                            <ComboBox x:Name="cbbSelectMode" SelectionChanged="cbbSelectMode_SelectionChanged" Visibility="Collapsed"/>
-                                            <DataGrid x:Name="dtgShow" AutoGenerateColumns="False" Margin="10,40,0,0" LoadingRow="dtgShow_LoadingRow" PreviewKeyDown="dtgShow_PreviewKeyDown" Visibility="Collapsed"/>
-
-                                            <Button x:Name="Button_Create"  Content="创建风速分配表格" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="120" Click="Button_Create_Click" Margin="250,9,0,10"/>
-
-                                            <TextBlock Text="横向单元数" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="2" Height="16" Width="60"/>
-                                            <TextBox x:Name="Row_Num" HorizontalAlignment="Left" Height="23" Margin="80,10,0,0" TextWrapping="Wrap" Text="2" VerticalAlignment="Top" Width="30" Grid.Row="2" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="NumTextBox_PreviewTextInput" TextChanged="NumTextBox_TextChanged"/>
-                                            <TextBlock Text="竖向单元数" HorizontalAlignment="Left" Margin="130,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="2" Height="16" Width="60"/>
-                                            <TextBox x:Name="Col_Num" HorizontalAlignment="Left" Height="23" Margin="200,10,0,0" TextWrapping="Wrap" Text="2" VerticalAlignment="Top" Width="30" Grid.Row="2" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="NumTextBox_PreviewTextInput" TextChanged="NumTextBox_TextChanged"/>
-                                        </Canvas>
-                                    </GroupBox>
-                                </Grid>
-                            </TabItem>
-                            <!-->流路_Start<!-->
-                            <TabItem x:Name="TabItem_Distributer" Header="流路" Visibility="Collapsed">
-                                <Grid Background="#FFE5E5E5">
-
-                                    <GroupBox Header="分流毛细管" HorizontalAlignment="Left" VerticalAlignment="Top" Height="50" Width="410" Margin="8,5,10,0">
-                                        <Grid/>
-                                    </GroupBox>
-
-                                </Grid>
-                            </TabItem>
-                            <!-->修正系数_Start<!-->
-                            <TabItem x:Name="TabItem_AdjustParameter" Header="修正参数" Visibility="Collapsed">
-                                <Grid Background="#FFE5E5E5">
-                                    <Canvas HorizontalAlignment="Left" VerticalAlignment="Top" Height="50" Width="100" Margin="0,0,0,0">
-                                        <!-->制冷剂侧修正_End<!-->
-
-                                        <!-->管外侧修正_End<!-->
-                                        <!-->制冷剂侧系数_Start<!-->
-                                        <GroupBox Header="制冷剂侧修正"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="60" Width="410" Margin="8,5,10,0">
-                                            <Canvas HorizontalAlignment="Left" Height="480" Width="100" Margin="10,8,0,0" VerticalAlignment="Top" >
-                                                <TextBlock  Text="传热系数修正" TextAlignment="Left"  Margin="10,0,0,0" VerticalAlignment="Top" Width="80"/>
-                                                <TextBox x:Name="Zhr" Text="1" HorizontalAlignment="Left" Height="24" Margin="90,0,0,0" VerticalAlignment="Top" Width="50"/>
-
-                                                <TextBlock  Text="压降系数修正" TextAlignment="Left"  Margin="220,0,0,0" VerticalAlignment="Top" Width="80"/>
-                                                <TextBox x:Name="Zapr" Text="1" HorizontalAlignment="Left" Height="24" Margin="295,0,0,0" VerticalAlignment="Top" Width="50"/>
-                                            </Canvas>
-                                        </GroupBox>
-                                        <!-->管外侧修正_Start<!-->
-                                        <GroupBox Header="管外侧修正"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="60" Width="410" Margin="8,70,10,0">
-                                            <Canvas HorizontalAlignment="Left" Height="480" Width="100" Margin="10,8,0,0" VerticalAlignment="Top" >
-                                                <TextBlock  Text="传热系数修正" TextAlignment="Left"  Margin="10,0,0,0" VerticalAlignment="Top" Width="80"/>
-                                                <TextBox x:Name="Zha" Text="1" HorizontalAlignment="Left" Height="24" Margin="90,0,0,0" VerticalAlignment="Top" Width="50"/>
-
-                                                <TextBlock  Text="压降系数修正" TextAlignment="Left"  Margin="220,0,0,0" VerticalAlignment="Top" Width="80"/>
-                                                <TextBox x:Name="Zapa" Text="1" HorizontalAlignment="Left" Height="24" Margin="295,0,0,0" VerticalAlignment="Top" Width="50"/>
-                                            </Canvas>
-                                        </GroupBox>
-                                    </Canvas>
-                                </Grid>
-                            </TabItem>
-                            <!--计算结果_Start!-->
-                            <TabItem x:Name="TabItem_Result" Header="计算结果" Visibility="Collapsed">
-                                <Grid Background="White">
-
-                                    <!--综合计算结果!-->
-
-                                    <Canvas HorizontalAlignment="Center" Height="600" Margin="0,-15,0,0" VerticalAlignment="Top" Width="449">
-
-                                        <ListBox x:Name="ListBox_ComprehensiveCalculationResults" Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Width="448" Height="400" BorderBrush="White"  ScrollViewer.VerticalScrollBarVisibility="Visible"  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-
-                                            <ListBox.ItemsPanel>
-                                                <ItemsPanelTemplate>
-                                                    <UniformGrid Columns="3"/>
-                                                </ItemsPanelTemplate>
-                                            </ListBox.ItemsPanel>
-
-                                            <ListBoxItem Content="------综合计算结果------" FontWeight="Bold"/>
-                                            <ListBoxItem Content=""/>
-                                            <ListBoxItem Content=""/>
-
-                                            <ListBoxItem Content="换热量:"/>
-                                            <ListBoxItem Content="{Binding ElementName=Q,Path=Text}"/>
-                                            <ListBoxItem Content="kW"/>
-
-                                            <ListBoxItem Content="制冷剂压降"/>
-                                            <ListBoxItem Content="{Binding ElementName=DP_ref,Path=Text}"/>
-                                            <ListBoxItem Content="kPa"/>
-
-                                            <!-->
+                </Grid>
+            </Canvas>
+
+            <!-->空气侧<!-->
+            <Canvas Grid.Row="1" Grid.Column="2" x:Name="Canvas_4" Width="450" Height="750" Visibility="Collapsed">
+                <Grid Background="#FFE5E5E5" Width="450" Height="750">
+                    <GroupBox Header="空气侧"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="170" Width="410" Margin="8,0,0,10">
+                        <Canvas HorizontalAlignment="Left" Height="480" Width="100" Margin="10,8,0,0" VerticalAlignment="Top">
+                            <TextBlock  Text="进风干球温度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top" Width="80"/>
+                            <TextBox x:Name="tai" Text="35" HorizontalAlignment="Left" Height="24" Margin="100,0,0,0" VerticalAlignment="Top" Width="50" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
+                            <Label Content="C" HorizontalAlignment="Left" Margin="150,0,0,0" VerticalAlignment="Top"/>
+
+                            <TextBlock  Text="大气压力" TextAlignment="Left" HorizontalAlignment="Left" Margin="215,0,0,0" VerticalAlignment="Top" Width="70"/>
+                            <TextBox x:Name="Patm" Text="101.325" HorizontalAlignment="Left" Height="24" Margin="295,0,0,0" VerticalAlignment="Top" Width="55" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
+                            <Label Content="kPa" HorizontalAlignment="Left" Margin="350,0,0,0" VerticalAlignment="Top"/>
+
+                            <RadioButton GroupName="Humidity" x:Name="WetBulbTemperature" Margin="5,40,0,0" Checked="RadioButton_WetBulbTemperature_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                            <TextBlock  Text="进风湿球温度" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,40,0,0" VerticalAlignment="Top" Width="80"/>
+                            <TextBox x:Name="Tai_wet" Text="24" HorizontalAlignment="Left" Height="24" Margin="100,40,0,0" VerticalAlignment="Top" Width="50" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TextBox_TextChanged"/>
+                            <Label Content="C" HorizontalAlignment="Left" Margin="150,40,0,0" VerticalAlignment="Top"/>
+
+                            <RadioButton GroupName="Humidity" x:Name="RelativeHumidity" Margin="200,40,0,0" Checked="RadioButton_RelativeHumidity_Checked" Width="55" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                            <TextBlock  Text="进风相对湿度" TextAlignment="Left" HorizontalAlignment="Left" Margin="215,40,0,0" VerticalAlignment="Top" Width="80" IsEnabled="False"/>
+                            <TextBox x:Name="RHi" Text="0.5" HorizontalAlignment="Left" Height="23" Margin="295,40,0,0" VerticalAlignment="Top" Width="55" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
+
+                            <RadioButton GroupName="AirFlowRate" x:Name="AirVolumnFlowRate" Margin="5,80,0,0" Checked="RadioButton_AirVolumnFlowRate_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                            <TextBlock  Text="体积流量" TextAlignment="Left" HorizontalAlignment="Left" Margin="20,80,0,0" VerticalAlignment="Top" Width="80"/>
+                            <TextBox x:Name="Va" Text="0.12" HorizontalAlignment="Left" Height="22" Margin="100,80,0,0" VerticalAlignment="Top" Width="50" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
+                            <Label Content="m3/s" HorizontalAlignment="Left" Margin="150,80,0,0" VerticalAlignment="Top"/>
+
+                            <RadioButton GroupName="AirFlowRate" x:Name="AirVelocity" Margin="200,80,0,0" Checked="RadioButton_AirVelocity_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                            <TextBlock  Text="风速" TextAlignment="Left" HorizontalAlignment="Left" Margin="215,80,0,0" VerticalAlignment="Top" Width="80"/>
+                            <TextBox x:Name="Velocity_ai" Text="1" HorizontalAlignment="Left" Height="24" Margin="295,80,0,0" VerticalAlignment="Top" Width="55" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
+                            <Label Content="m/s" HorizontalAlignment="Left" Margin="350,80,0,0" VerticalAlignment="Top"/>
+
+                            <CheckBox x:Name="CheckBox_UniformWind" Content="均匀送风" Margin="5,120,0,0" Checked="CheckBox_UniformWind_Checked" Unchecked="CheckBox_UniformWind_Unchecked"  Width="100" Height="18" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        </Canvas>
+                    </GroupBox>
+
+                    <GroupBox Header="不均匀风速" x:Name="GroupBox_AsymmetricalWind" HorizontalAlignment="Left" VerticalAlignment="Top" Height="Auto" Width="410" Margin="8,170,0,10">
+                        <Canvas HorizontalAlignment="Left" Height="480" Width="100" Margin="10,0,0,0" VerticalAlignment="Top">
+                            <ListBox x:Name="lbxData" Margin="10,40,0,0"/>
+                            <ComboBox x:Name="cbbSelectMode" SelectionChanged="cbbSelectMode_SelectionChanged" Visibility="Collapsed"/>
+                            <DataGrid x:Name="dtgShow" AutoGenerateColumns="False" Margin="10,40,0,0" LoadingRow="dtgShow_LoadingRow" PreviewKeyDown="dtgShow_PreviewKeyDown" Visibility="Collapsed"/>
+
+                            <Button x:Name="Button_Create"  Content="创建风速分配表格" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="120" Click="Button_Create_Click" Margin="250,9,0,10"/>
+
+                            <TextBlock Text="横向单元数" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="2" Height="16" Width="60"/>
+                            <TextBox x:Name="Row_Num" HorizontalAlignment="Left" Height="23" Margin="80,10,0,0" TextWrapping="Wrap" Text="2" VerticalAlignment="Top" Width="30" Grid.Row="2" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="NumTextBox_PreviewTextInput" TextChanged="NumTextBox_TextChanged"/>
+                            <TextBlock Text="竖向单元数" HorizontalAlignment="Left" Margin="130,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="2" Height="16" Width="60"/>
+                            <TextBox x:Name="Col_Num" HorizontalAlignment="Left" Height="23" Margin="200,10,0,0" TextWrapping="Wrap" Text="2" VerticalAlignment="Top" Width="30" Grid.Row="2" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="NumTextBox_PreviewTextInput" TextChanged="NumTextBox_TextChanged"/>
+                        </Canvas>
+                    </GroupBox>
+                </Grid>
+            </Canvas>
+
+            <!-->流路<!-->
+            <Canvas Grid.Row="1" Grid.Column="2" x:Name="Canvas_5" Width="450" Height="750" Visibility="Collapsed">
+                <Grid Background="#FFE5E5E5" Width="450" Height="750">
+                    <GroupBox Header="流路" HorizontalAlignment="Left" VerticalAlignment="Top" Height="145" Width="410" Margin="8,0,0,10">
+                        <Grid>
+                            <RadioButton GroupName="PassArrangement" x:Name="RadioButton_ManualArrange" Margin="50,15,0,0" Checked="RadioButton_ManualArrange_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                            <TextBlock Text="手动分配流路" HorizontalAlignment="Left" Margin="70,15,0,0" VerticalAlignment="Top" Width="75"/>
+
+                            <RadioButton GroupName="PassArrangement" x:Name="RadioButton_AutoArrange" Margin="220,15,0,0" Checked="RadioButton_AutoArrange_Checked" Width="12" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                            <TextBlock Text="自动分配流路" HorizontalAlignment="Left" Margin="240,15,0,0" VerticalAlignment="Top" Width="75"/>
+                            <TextBlock Text="流路数" HorizontalAlignment="Left" Margin="240,50,0,0" VerticalAlignment="Top"/>
+                            <TextBox x:Name="Cirnum" Text="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="280,50,0,0" Width="30" TextAlignment="Center" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="NumTextBox_PreviewTextInput" TextChanged="NumTextBox_TextChanged"/>
+                            <Button x:Name="Pass_OK" Content="确定" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="220,85,0,0" Height="Auto" Width="90" IsEnabled="False"/>
+
+                            <CheckBox x:Name="AirReverse" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,50,0,0" Unchecked="AirFlow_Plus" Checked="AirFlow_Minus"/>
+                            <TextBlock Text="空气流向反转" HorizontalAlignment="Left" Margin="70,50,0,0" VerticalAlignment="Top" Width="Auto" />
+
+                            <CheckBox x:Name="RefReverse" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,85,0,0" Unchecked="RefFlow_Plus" Checked="RefFlow_Minus"/>
+                            <TextBlock Text="制冷剂流向反转" HorizontalAlignment="Left" Margin="70,85,0,0" VerticalAlignment="Top" Width="Auto"/>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </Canvas>
+
+            <!-->分流毛细管<!-->
+            <Canvas Grid.Row="1" Grid.Column="2" x:Name="Canvas_6" Width="450" Height="750" Visibility="Collapsed">
+                <Grid Background="#FFE5E5E5" Width="450" Height="750">
+                    <GroupBox Header="分流毛细管" HorizontalAlignment="Left" VerticalAlignment="Top" Height="50" Width="410" Margin="8,5,10,0">
+                        <Grid/>
+                    </GroupBox>
+                </Grid>
+            </Canvas>
+
+            <!-->修正系数<!-->
+            <Canvas Grid.Row="1" Grid.Column="2" x:Name="Canvas_7" Width="450" Height="750" Visibility="Collapsed">
+                <Grid Background="#FFE5E5E5" Width="450" Height="750">
+                    <!-->制冷剂侧系数_Start<!-->
+                    <GroupBox Header="制冷剂侧修正"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="60" Width="410" Margin="8,5,10,0">
+                        <Canvas HorizontalAlignment="Left" Height="480" Width="100" Margin="10,8,0,0" VerticalAlignment="Top" >
+                            <TextBlock  Text="传热系数修正" TextAlignment="Left"  Margin="10,0,0,0" VerticalAlignment="Top" Width="80"/>
+                            <TextBox x:Name="Zhr" Text="1" HorizontalAlignment="Left" Height="24" Margin="90,0,0,0" VerticalAlignment="Top" Width="50"/>
+
+                            <TextBlock  Text="压降系数修正" TextAlignment="Left"  Margin="220,0,0,0" VerticalAlignment="Top" Width="80"/>
+                            <TextBox x:Name="Zapr" Text="1" HorizontalAlignment="Left" Height="24" Margin="295,0,0,0" VerticalAlignment="Top" Width="50"/>
+                        </Canvas>
+                    </GroupBox>
+                    <!-->管外侧修正_Start<!-->
+                    <GroupBox Header="管外侧修正"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="60" Width="410" Margin="8,70,10,0">
+                        <Canvas HorizontalAlignment="Left" Height="480" Width="100" Margin="10,8,0,0" VerticalAlignment="Top" >
+                            <TextBlock  Text="传热系数修正" TextAlignment="Left"  Margin="10,0,0,0" VerticalAlignment="Top" Width="80"/>
+                            <TextBox x:Name="Zha" Text="1" HorizontalAlignment="Left" Height="24" Margin="90,0,0,0" VerticalAlignment="Top" Width="50"/>
+
+                            <TextBlock  Text="压降系数修正" TextAlignment="Left"  Margin="220,0,0,0" VerticalAlignment="Top" Width="80"/>
+                            <TextBox x:Name="Zapa" Text="1" HorizontalAlignment="Left" Height="24" Margin="295,0,0,0" VerticalAlignment="Top" Width="50"/>
+                        </Canvas>
+                    </GroupBox>
+                </Grid>
+            </Canvas>
+
+            <!-->综合计算结果<!-->
+            <Canvas Grid.Row="1" Grid.Column="2" x:Name="Canvas_8" Width="450" Height="750" Visibility="Collapsed">
+                <Grid Background="#FFE5E5E5" Width="450" Height="750">
+                    <Canvas HorizontalAlignment="Center" Height="Auto" Margin="0,-15,0,0" VerticalAlignment="Top" Width="449">
+
+                        <ListBox x:Name="ListBox_ComprehensiveCalculationResults" Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Width="448" Height="400" BorderBrush="White"  ScrollViewer.VerticalScrollBarVisibility="Visible"  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="3"/>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+
+                            <ListBoxItem Content="------综合计算结果------" FontWeight="Bold"/>
+                            <ListBoxItem Content=""/>
+                            <ListBoxItem Content=""/>
+
+                            <ListBoxItem Content="换热量:"/>
+                            <ListBoxItem Content="{Binding ElementName=Q,Path=Text}"/>
+                            <ListBoxItem Content="kW"/>
+
+                            <ListBoxItem Content="制冷剂压降"/>
+                            <ListBoxItem Content="{Binding ElementName=DP_ref,Path=Text}"/>
+                            <ListBoxItem Content="kPa"/>
+
+                            <!-->
                                     <ListBoxItem Content="风侧压降"/>
                                     <ListBoxItem Content="{Binding ElementName=DP_air,Path=Text}"/>
                                     <ListBoxItem Content="Pa"/>
                                     <!-->
 
-                                            <ListBoxItem Content="空气换热系数"/>
-                                            <ListBoxItem Content="{Binding ElementName=ha,Path=Text}"/>
-                                            <ListBoxItem Content="W/(m2*K)"/>
+                            <ListBoxItem Content="空气换热系数"/>
+                            <ListBoxItem Content="{Binding ElementName=ha,Path=Text}"/>
+                            <ListBoxItem Content="W/(m2*K)"/>
 
-                                            <ListBoxItem Content="冷媒换热系数"/>
-                                            <ListBoxItem Content="{Binding ElementName=href,Path=Text}"/>
-                                            <ListBoxItem Content="W/(m2*K)"/>
+                            <ListBoxItem Content="冷媒换热系数"/>
+                            <ListBoxItem Content="{Binding ElementName=href,Path=Text}"/>
+                            <ListBoxItem Content="W/(m2*K)"/>
 
-                                            <ListBoxItem Content="风侧热阻占比"/>
-                                            <ListBoxItem Content="{Binding ElementName=Ra_ratio,Path=Text}"/>
-                                            <ListBoxItem Content=""/>
+                            <ListBoxItem Content="风侧热阻占比"/>
+                            <ListBoxItem Content="{Binding ElementName=Ra_ratio,Path=Text}"/>
+                            <ListBoxItem Content=""/>
 
-                                            <ListBoxItem Content="------制冷剂侧------" FontWeight="Bold"/>
-                                            <ListBoxItem Content=""/>
-                                            <ListBoxItem Content=""/>
+                            <ListBoxItem Content="------制冷剂侧------" FontWeight="Bold"/>
+                            <ListBoxItem Content=""/>
+                            <ListBoxItem Content=""/>
 
-                                            <ListBoxItem Content="出口压力"/>
-                                            <ListBoxItem Content="{Binding ElementName=Pro,Path=Text}"/>
-                                            <ListBoxItem Content="kPa"/>
+                            <ListBoxItem Content="出口压力"/>
+                            <ListBoxItem Content="{Binding ElementName=Pro,Path=Text}"/>
+                            <ListBoxItem Content="kPa"/>
 
-                                            <ListBoxItem Content="出口焓"/>
-                                            <ListBoxItem Content="{Binding ElementName=hro,Path=Text}"/>
-                                            <ListBoxItem Content="kJ/kg"/>
+                            <ListBoxItem Content="出口焓"/>
+                            <ListBoxItem Content="{Binding ElementName=hro,Path=Text}"/>
+                            <ListBoxItem Content="kJ/kg"/>
 
-                                            <ListBoxItem Content="出口温度"/>
-                                            <ListBoxItem Content="{Binding ElementName=Tro,Path=Text}"/>
-                                            <ListBoxItem Content="C"/>
+                            <ListBoxItem Content="出口温度"/>
+                            <ListBoxItem Content="{Binding ElementName=Tro,Path=Text}"/>
+                            <ListBoxItem Content="C"/>
 
-                                            <ListBoxItem Content="流量"/>
-                                            <ListBoxItem Content="{Binding ElementName=mro,Path=Text}"/>
-                                            <ListBoxItem Content="g/s"/>
+                            <ListBoxItem Content="流量"/>
+                            <ListBoxItem Content="{Binding ElementName=mro,Path=Text}"/>
+                            <ListBoxItem Content="g/s"/>
 
-                                            <ListBoxItem Content="------空气侧------" FontWeight="Bold"/>
-                                            <ListBoxItem Content=""/>
-                                            <ListBoxItem Content=""/>
+                            <ListBoxItem Content="------空气侧------" FontWeight="Bold"/>
+                            <ListBoxItem Content=""/>
+                            <ListBoxItem Content=""/>
 
-                                            <ListBoxItem Content="出口温度"/>
-                                            <ListBoxItem Content="{Binding ElementName=Tao,Path=Text}"/>
-                                            <ListBoxItem Content="C"/>
+                            <ListBoxItem Content="出口温度"/>
+                            <ListBoxItem Content="{Binding ElementName=Tao,Path=Text}"/>
+                            <ListBoxItem Content="C"/>
 
-                                            <ListBoxItem Content="出口湿度"/>
-                                            <ListBoxItem Content="{Binding ElementName=RHout,Path=Text}"/>
-                                            <ListBoxItem Content=""/>
+                            <ListBoxItem Content="出口湿度"/>
+                            <ListBoxItem Content="{Binding ElementName=RHout,Path=Text}"/>
+                            <ListBoxItem Content=""/>
 
-                                            <ListBoxItem Content="风量"/>
-                                            <ListBoxItem Content="{Binding ElementName=mao,Path=Text}"/>
-                                            <ListBoxItem Content="g/s"/>
+                            <ListBoxItem Content="风量"/>
+                            <ListBoxItem Content="{Binding ElementName=mao,Path=Text}"/>
+                            <ListBoxItem Content="g/s"/>
 
-                                        </ListBox>
+                        </ListBox>
 
-                                    </Canvas>
-
-
-                                    <!--综合仿真结果-->
-
-                                    <TextBlock Text="换热量" HorizontalAlignment="Left" Margin="10,30,0,0"  VerticalAlignment="Top" Height="16" Width="36" Visibility="Collapsed"/>
-                                    <TextBlock x:Name="Q" Text="" Background="AliceBlue" HorizontalAlignment="Left" Margin="85,30,0,0"  VerticalAlignment="Top" Height="22" Width="40" Visibility="Collapsed"/>
-                                    <Label Content="kW" HorizontalAlignment="Left" Margin="140,30,0,0" VerticalAlignment="Top" Width="32" Height="26" Visibility="Collapsed"/>
-
-                                    <TextBlock Text="制冷剂压降" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" Height="16" Width="60" Visibility="Collapsed"/>
-                                    <TextBlock x:Name="DP_ref" Text=""  Background="AliceBlue" HorizontalAlignment="Left" Margin="85,70,0,0" VerticalAlignment="Top" Height="23" Width="40" Visibility="Collapsed"/>
-                                    <Label Content="kPa" HorizontalAlignment="Left" Margin="140,70,0,0" VerticalAlignment="Top" Width="32" Height="23" Visibility="Collapsed"/>
-
-                                    <TextBlock Text="风侧压降" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top" Height="16" Width="54" Visibility="Collapsed"/>
-                                    <TextBlock x:Name="DP_air" Text=""  Background="AliceBlue" HorizontalAlignment="Left" Margin="85,110,0,0" VerticalAlignment="Top" Height="22" Width="40" Visibility="Collapsed"/>
-                                    <Label Content="Pa" HorizontalAlignment="Left" Margin="140,110,0,0" VerticalAlignment="Top" Width="32" Height="27" Visibility="Collapsed"/>
-
-                                    <TextBlock Text="空气换热系数" HorizontalAlignment="Left" Margin="230,30,0,0" VerticalAlignment="Top" Width="80" Height="18" Visibility="Collapsed"/>
-                                    <TextBlock x:Name="ha" Text="" Background="AliceBlue" HorizontalAlignment="Left"  Margin="305,30,0,0" VerticalAlignment="Top" Height="24" Width="40" Visibility="Collapsed"/>
-                                    <Label Content="W/(m2*K)" HorizontalAlignment="Left" Margin="360,30,0,0" VerticalAlignment="Top" Width="78" Height="28" Visibility="Collapsed"/>
-
-                                    <TextBlock Text="冷媒换热系数" HorizontalAlignment="Left" Margin="230,70,0,0" VerticalAlignment="Top" Height="16" Width="72" Visibility="Collapsed"/>
-                                    <TextBlock x:Name="href" Text="" Background="AliceBlue" HorizontalAlignment="Left" Margin="305,70,0,0" VerticalAlignment="Top" Height="22" Width="50" Visibility="Collapsed"/>
-                                    <Label Content="W/(m2*K)" HorizontalAlignment="Left" Margin="360,70,0,0" VerticalAlignment="Top" Width="78" Height="28" Visibility="Collapsed"/>
-
-                                    <TextBlock Text="风侧热阻占比" HorizontalAlignment="Left" Margin="230,110,0,0" VerticalAlignment="Top" Height="16" Width="72" Visibility="Collapsed"/>
-                                    <TextBlock x:Name="Ra_ratio" Text="" Background="AliceBlue" HorizontalAlignment="Left" Margin="305,110,0,0" VerticalAlignment="Top" Height="22" Width="40" Visibility="Collapsed"/>
-
-                                    <!--制冷剂-->
-
-                                    <TextBlock Text="出口压力" HorizontalAlignment="Left" Margin="10,180,0,0" VerticalAlignment="Top" Height="16" Width="50" Visibility="Collapsed"/>
-                                    <TextBlock x:Name="Pro" Text=""  Background="AliceBlue" HorizontalAlignment="Left" Margin="85,180,0,0" VerticalAlignment="Top" Height="24" Width="50" Visibility="Collapsed"/>
-                                    <Label Content="kPa" HorizontalAlignment="Left" Margin="140,180,0,0" VerticalAlignment="Top" Width="32" Height="24" Visibility="Collapsed"/>
-
-                                    <TextBlock Text="出口焓" HorizontalAlignment="Left" Margin="10,220,0,0" VerticalAlignment="Top" Height="16" Width="50" Visibility="Collapsed"/>
-                                    <TextBlock x:Name="hro" Text=""  Background="AliceBlue" HorizontalAlignment="Left" Margin="85,220,0,0" VerticalAlignment="Top" Height="24" Width="40" Visibility="Collapsed"/>
-                                    <Label Content="kJ/kg" HorizontalAlignment="Left" Margin="140,220,0,0" VerticalAlignment="Top" Width="41" Height="28" Visibility="Collapsed"/>
-
-                                    <TextBlock Text="出口温度" HorizontalAlignment="Left" Margin="10,260,0,0" VerticalAlignment="Top" Height="16" Width="50" Visibility="Collapsed"/>
-                                    <TextBlock x:Name="Tro" Text=""  Background="AliceBlue" HorizontalAlignment="Left" Margin="85,260,0,0" VerticalAlignment="Top" Height="24" Width="40" Visibility="Collapsed"/>
-                                    <Label Content="C" HorizontalAlignment="Left" Margin="140,260,0,0" VerticalAlignment="Top" Width="41" Height="28" Visibility="Collapsed"/>
-
-                                    <TextBlock Text="流量" HorizontalAlignment="Left" Margin="10,300,0,0" VerticalAlignment="Top" Height="16" Width="50" Visibility="Collapsed"/>
-                                    <TextBlock x:Name="mro" Text=""  Background="AliceBlue" HorizontalAlignment="Left" Margin="85,300,0,0" VerticalAlignment="Top" Height="22" Width="40" Visibility="Collapsed"/>
-                                    <Label Content="g/s" HorizontalAlignment="Left" Margin="140,300,0,0" VerticalAlignment="Top" Width="41" Height="26" Visibility="Collapsed"/>
-
-                                    <!--风-->
-
-                                    <TextBlock Text="出口温度" HorizontalAlignment="Left" Margin="230,180,0,0" VerticalAlignment="Top" Height="16" Width="50" Visibility="Collapsed"/>
-                                    <TextBlock x:Name="Tao" Text=""  Background="AliceBlue" HorizontalAlignment="Left" Margin="305,180,0,0" VerticalAlignment="Top" Height="24" Width="40" Visibility="Collapsed"/>
-                                    <Label Content="C" HorizontalAlignment="Left" Margin="360,180,0,0" VerticalAlignment="Top" Width="41" Height="28" Visibility="Collapsed"/>
-
-                                    <TextBlock Text="出口湿度" HorizontalAlignment="Left" Margin="230,220,0,0" VerticalAlignment="Top" Height="16" Width="50" Visibility="Collapsed"/>
-                                    <TextBlock x:Name="RHout" Text=""  Background="AliceBlue" HorizontalAlignment="Left" Margin="305,220,0,0" VerticalAlignment="Top" Height="23" Width="40" Visibility="Collapsed"/>
-
-                                    <TextBlock Text="风量" HorizontalAlignment="Left" Margin="230,260,0,0" VerticalAlignment="Top" Height="16" Width="50" Visibility="Collapsed"/>
-                                    <TextBlock x:Name="mao" Text=""  Background="AliceBlue" HorizontalAlignment="Left" Margin="305,260,0,0" VerticalAlignment="Top" Height="22" Width="40" Visibility="Collapsed"/>
-                                    <Label Content="g/s" HorizontalAlignment="Left" Margin="360,260,0,0" VerticalAlignment="Top" Width="41" Height="26" Visibility="Collapsed"/>
+                    </Canvas>
 
 
+                    <!--综合仿真结果-->
 
-                                </Grid>
-                            </TabItem>
+                    <TextBlock Text="换热量" HorizontalAlignment="Left" Margin="10,30,0,0"  VerticalAlignment="Top" Height="16" Width="36" Visibility="Collapsed"/>
+                    <TextBlock x:Name="Q" Text="" Background="AliceBlue" HorizontalAlignment="Left" Margin="85,30,0,0"  VerticalAlignment="Top" Height="22" Width="40" Visibility="Collapsed"/>
+                    <Label Content="kW" HorizontalAlignment="Left" Margin="140,30,0,0" VerticalAlignment="Top" Width="32" Height="26" Visibility="Collapsed"/>
 
-                            <TabItem x:Name="TabItem_DetailResult" Header="具体计算结果" Visibility="Collapsed">
-                                <Grid Background="#FFE5E5E5">
-                                    <!--具体结果-->
-                                    <TextBlock Text="具体计算结果" TextAlignment="Center" VerticalAlignment="Top" Height="22" Width="220" Margin="0,5,1,0"/>
+                    <TextBlock Text="制冷剂压降" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" Height="16" Width="60" Visibility="Collapsed"/>
+                    <TextBlock x:Name="DP_ref" Text=""  Background="AliceBlue" HorizontalAlignment="Left" Margin="85,70,0,0" VerticalAlignment="Top" Height="23" Width="40" Visibility="Collapsed"/>
+                    <Label Content="kPa" HorizontalAlignment="Left" Margin="140,70,0,0" VerticalAlignment="Top" Width="32" Height="23" Visibility="Collapsed"/>
 
-                                    <DataGrid x:Name="dataGrid_Result" Margin="0,25,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="270" Width="Auto" AutoGenerateColumns="False">
+                    <TextBlock Text="风侧压降" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top" Height="16" Width="54" Visibility="Collapsed"/>
+                    <TextBlock x:Name="DP_air" Text=""  Background="AliceBlue" HorizontalAlignment="Left" Margin="85,110,0,0" VerticalAlignment="Top" Height="22" Width="40" Visibility="Collapsed"/>
+                    <Label Content="Pa" HorizontalAlignment="Left" Margin="140,110,0,0" VerticalAlignment="Top" Width="32" Height="27" Visibility="Collapsed"/>
 
-                                        <DataGrid.Columns>
-                                            <DataGridTextColumn Header="换热管" Binding="{Binding TubeNumber}" Width="50" />
-                                            <!--<DataGridTextColumn Header="管排" Binding="{Binding row}" Width="50" />-->
-                                            <DataGridTextColumn Header="进口压力/kPa" Binding="{Binding Pri}" Width="85" />
-                                            <DataGridTextColumn Header="进口温度/C" Binding="{Binding Tri}" Width="85" />
-                                            <DataGridTextColumn Header="进口焓值/(kJ/kg)" Binding="{Binding Hri}" Width="105" />
-                                            <DataGridTextColumn Header="出口压力/kPa" Binding="{Binding Pro}" Width="85" />
-                                            <DataGridTextColumn Header="出口温度/C" Binding="{Binding Tro}" Width="85" />
-                                            <DataGridTextColumn Header="出口焓值/(kJ/kg)" Binding="{Binding Hro}" Width="105" />
-                                            <DataGridTextColumn Header="换热系数/(W/kg/K)" Binding="{Binding HTC}" Width="120" />
-                                            <DataGridTextColumn Header="换热量/W" Binding="{Binding Q}" Width="85" />
-                                            <DataGridTextColumn Header="制冷剂流量/(g/s)" Binding="{Binding mr}" Width="100" />
-                                        </DataGrid.Columns>
+                    <TextBlock Text="空气换热系数" HorizontalAlignment="Left" Margin="230,30,0,0" VerticalAlignment="Top" Width="80" Height="18" Visibility="Collapsed"/>
+                    <TextBlock x:Name="ha" Text="" Background="AliceBlue" HorizontalAlignment="Left"  Margin="305,30,0,0" VerticalAlignment="Top" Height="24" Width="40" Visibility="Collapsed"/>
+                    <Label Content="W/(m2*K)" HorizontalAlignment="Left" Margin="360,30,0,0" VerticalAlignment="Top" Width="78" Height="28" Visibility="Collapsed"/>
 
-                                        <DataGrid.ColumnHeaderStyle>
-                                            <Style TargetType="DataGridColumnHeader">
-                                                <Setter Property="HorizontalContentAlignment" Value="Center">
+                    <TextBlock Text="冷媒换热系数" HorizontalAlignment="Left" Margin="230,70,0,0" VerticalAlignment="Top" Height="16" Width="72" Visibility="Collapsed"/>
+                    <TextBlock x:Name="href" Text="" Background="AliceBlue" HorizontalAlignment="Left" Margin="305,70,0,0" VerticalAlignment="Top" Height="22" Width="50" Visibility="Collapsed"/>
+                    <Label Content="W/(m2*K)" HorizontalAlignment="Left" Margin="360,70,0,0" VerticalAlignment="Top" Width="78" Height="28" Visibility="Collapsed"/>
+
+                    <TextBlock Text="风侧热阻占比" HorizontalAlignment="Left" Margin="230,110,0,0" VerticalAlignment="Top" Height="16" Width="72" Visibility="Collapsed"/>
+                    <TextBlock x:Name="Ra_ratio" Text="" Background="AliceBlue" HorizontalAlignment="Left" Margin="305,110,0,0" VerticalAlignment="Top" Height="22" Width="40" Visibility="Collapsed"/>
+
+                    <!--制冷剂-->
+
+                    <TextBlock Text="出口压力" HorizontalAlignment="Left" Margin="10,180,0,0" VerticalAlignment="Top" Height="16" Width="50" Visibility="Collapsed"/>
+                    <TextBlock x:Name="Pro" Text=""  Background="AliceBlue" HorizontalAlignment="Left" Margin="85,180,0,0" VerticalAlignment="Top" Height="24" Width="50" Visibility="Collapsed"/>
+                    <Label Content="kPa" HorizontalAlignment="Left" Margin="140,180,0,0" VerticalAlignment="Top" Width="32" Height="24" Visibility="Collapsed"/>
+
+                    <TextBlock Text="出口焓" HorizontalAlignment="Left" Margin="10,220,0,0" VerticalAlignment="Top" Height="16" Width="50" Visibility="Collapsed"/>
+                    <TextBlock x:Name="hro" Text=""  Background="AliceBlue" HorizontalAlignment="Left" Margin="85,220,0,0" VerticalAlignment="Top" Height="24" Width="40" Visibility="Collapsed"/>
+                    <Label Content="kJ/kg" HorizontalAlignment="Left" Margin="140,220,0,0" VerticalAlignment="Top" Width="41" Height="28" Visibility="Collapsed"/>
+
+                    <TextBlock Text="出口温度" HorizontalAlignment="Left" Margin="10,260,0,0" VerticalAlignment="Top" Height="16" Width="50" Visibility="Collapsed"/>
+                    <TextBlock x:Name="Tro" Text=""  Background="AliceBlue" HorizontalAlignment="Left" Margin="85,260,0,0" VerticalAlignment="Top" Height="24" Width="40" Visibility="Collapsed"/>
+                    <Label Content="C" HorizontalAlignment="Left" Margin="140,260,0,0" VerticalAlignment="Top" Width="41" Height="28" Visibility="Collapsed"/>
+
+                    <TextBlock Text="流量" HorizontalAlignment="Left" Margin="10,300,0,0" VerticalAlignment="Top" Height="16" Width="50" Visibility="Collapsed"/>
+                    <TextBlock x:Name="mro" Text=""  Background="AliceBlue" HorizontalAlignment="Left" Margin="85,300,0,0" VerticalAlignment="Top" Height="22" Width="40" Visibility="Collapsed"/>
+                    <Label Content="g/s" HorizontalAlignment="Left" Margin="140,300,0,0" VerticalAlignment="Top" Width="41" Height="26" Visibility="Collapsed"/>
+
+                    <!--风-->
+
+                    <TextBlock Text="出口温度" HorizontalAlignment="Left" Margin="230,180,0,0" VerticalAlignment="Top" Height="16" Width="50" Visibility="Collapsed"/>
+                    <TextBlock x:Name="Tao" Text=""  Background="AliceBlue" HorizontalAlignment="Left" Margin="305,180,0,0" VerticalAlignment="Top" Height="24" Width="40" Visibility="Collapsed"/>
+                    <Label Content="C" HorizontalAlignment="Left" Margin="360,180,0,0" VerticalAlignment="Top" Width="41" Height="28" Visibility="Collapsed"/>
+
+                    <TextBlock Text="出口湿度" HorizontalAlignment="Left" Margin="230,220,0,0" VerticalAlignment="Top" Height="16" Width="50" Visibility="Collapsed"/>
+                    <TextBlock x:Name="RHout" Text=""  Background="AliceBlue" HorizontalAlignment="Left" Margin="305,220,0,0" VerticalAlignment="Top" Height="23" Width="40" Visibility="Collapsed"/>
+
+                    <TextBlock Text="风量" HorizontalAlignment="Left" Margin="230,260,0,0" VerticalAlignment="Top" Height="16" Width="50" Visibility="Collapsed"/>
+                    <TextBlock x:Name="mao" Text=""  Background="AliceBlue" HorizontalAlignment="Left" Margin="305,260,0,0" VerticalAlignment="Top" Height="22" Width="40" Visibility="Collapsed"/>
+                    <Label Content="g/s" HorizontalAlignment="Left" Margin="360,260,0,0" VerticalAlignment="Top" Width="41" Height="26" Visibility="Collapsed"/>
+                </Grid>
+            </Canvas>
+
+            <!-->具体计算结果<!-->
+            <Canvas Grid.Row="1" Grid.Column="2" x:Name="Canvas_9" Width="450" Height="750" Visibility="Collapsed">
+                <Grid Background="#FFE5E5E5" Width="450" Height="750">
+                    <TextBlock Text="具体计算结果" TextAlignment="Center" VerticalAlignment="Top" Height="22" Width="220" Margin="0,5,1,0"/>
+
+                    <DataGrid x:Name="dataGrid_Result" Margin="0,25,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="270" Width="Auto" AutoGenerateColumns="False">
+
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="换热管" Binding="{Binding TubeNumber}" Width="50" />
+                            <!--<DataGridTextColumn Header="管排" Binding="{Binding row}" Width="50" />-->
+                            <DataGridTextColumn Header="进口压力/kPa" Binding="{Binding Pri}" Width="85" />
+                            <DataGridTextColumn Header="进口温度/C" Binding="{Binding Tri}" Width="85" />
+                            <DataGridTextColumn Header="进口焓值/(kJ/kg)" Binding="{Binding Hri}" Width="105" />
+                            <DataGridTextColumn Header="出口压力/kPa" Binding="{Binding Pro}" Width="85" />
+                            <DataGridTextColumn Header="出口温度/C" Binding="{Binding Tro}" Width="85" />
+                            <DataGridTextColumn Header="出口焓值/(kJ/kg)" Binding="{Binding Hro}" Width="105" />
+                            <DataGridTextColumn Header="换热系数/(W/kg/K)" Binding="{Binding HTC}" Width="120" />
+                            <DataGridTextColumn Header="换热量/W" Binding="{Binding Q}" Width="85" />
+                            <DataGridTextColumn Header="制冷剂流量/(g/s)" Binding="{Binding mr}" Width="100" />
+                        </DataGrid.Columns>
+
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="HorizontalContentAlignment" Value="Center">
+                                </Setter>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
+
+                    </DataGrid>
+                </Grid>
+            </Canvas>
+
+            <GridSplitter Grid.Row="1" Grid.Column="3" Width="3" Margin="2,0,2,0" Background="Purple" VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
+
+            <!-->图 & 实时输入<!-->
+            <Grid Grid.Row="1" Grid.Column="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <!-->图<!-->
+                <TabControl Grid.Row="0" Grid.Column="0" x:Name="TabControl_Picuture"  HorizontalAlignment="Center" Height="250" VerticalAlignment="Top" Width="464" Background="White" Margin="0,0,-13,0" >
+                    <TabItem Header="换热管" x:Name="TabItem_HExTube_Picture" Visibility="Collapsed">
+                        <Image HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="Pictures\管子.PNG"/>
+                    </TabItem>
+                    <TabItem Header="翅片" x:Name="TabItem_FinType_Picture" Visibility="Collapsed">
+                        <Image HorizontalAlignment="Center" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="Pictures\翅片.PNG"/>
+                    </TabItem>
+                    <TabItem Header="Null" x:Name="TabItem_Null_Picture" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="61" Visibility="Collapsed">
+                        <Grid Background="#FFE5E5E5"/>
+                    </TabItem>
+                    <TabItem Header="换热器类型" x:Name="TabItem_HExTypr_Picture" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="61" Visibility="Collapsed">
+                        <Image HorizontalAlignment="Center" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="Pictures\空调.png"/>
+                    </TabItem>
+
+                    <TabItem Header="制冷剂侧" x:Name="TabItem_Ref_Picture" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="61" Visibility="Collapsed">
+                        <Image HorizontalAlignment="Center" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="Pictures\制冷剂侧.PNG" />
+                    </TabItem>
+                    <TabItem Header="空气侧" x:Name="TabItem_Wind_Picture" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="61" Visibility="Collapsed">
+                        <Image HorizontalAlignment="Center" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="Pictures\空气侧.PNG"/>
+                    </TabItem>
+                    <TabItem Header="流路" x:Name="TabItem_Pass_Picture" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="61" Visibility="Collapsed">
+
+                        <GroupBox Header="手动分配流路" x:Name="GroupBox_ManualArrangeCirnum" HorizontalAlignment="Left" VerticalAlignment="Top" Height="Auto" Width="425" Margin="8,0,0,10">
+                            <DockPanel Height="Auto" Margin="0,0,0,0">
+                                <StackPanel x:Name="StackPanel_ManualArrangeCirnum" Width="110" HorizontalAlignment="Left" DockPanel.Dock="Left" Margin="5,5,5,5">
+                                    <ToggleButton x:Name="ToggleButton1" Content="流路连接" HorizontalAlignment="Stretch"  Margin="5,5,5,5" IsChecked="{Binding CreatNewConnector}"></ToggleButton>
+                                    <Button Content="重连" HorizontalAlignment="Stretch" Margin="5,5,5,5" Click="Button_Click_Reconnect"/>
+                                    <Button Content="放大" HorizontalAlignment="Stretch" Margin="5,20,5,5" Click="Button_Click_zoomout"/>
+                                    <Button Content="缩小" HorizontalAlignment="Stretch" Margin="5,0,5,5" Click="Button_Click_zoomin"/>
+                                    <Button Content="删除" HorizontalAlignment="Stretch" Margin="5,0,5,5" Click="Button_Click_delete"/>
+                                    <Label Content="毛细管长度/m" HorizontalAlignment="Left" Width="Auto" Margin="5,10,0,0"/>
+                                    <TextBox  x:Name="TextBox_Length" HorizontalAlignment="Stretch" Width="Auto" Margin="5,0,5,5" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
+                                    <Label Content="毛细管直径/mm" HorizontalAlignment="Left" Width="Auto" Margin="5,0,0,0"/>
+                                    <TextBox  x:Name="TextBox_Diameter" HorizontalAlignment="Stretch" Width="Auto" Margin="5,0,5,5" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
+                                    <Button x:Name="Button_Capillary" Content="确定" HorizontalAlignment="Stretch" Margin="5,0,5,5" Click="Button_Click_Capillary" IsEnabled="False" />
+                                </StackPanel>
+                                <!--AirFlowDirection-->
+                                <TextBlock x:Name="TextBlock_AirFlow" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" DockPanel.Dock="Top" TextAlignment="Center"/>
+                                <Grid Margin="10">
+                                    <Grid.Resources>
+                                        <CompositeCollection x:Key="Col">
+                                            <CollectionContainer Collection="{Binding DataContext.Connectors, Source={x:Reference view}}"/>
+                                            <CollectionContainer Collection="{Binding DataContext.Capillaries, Source={x:Reference view}}"/>
+                                            <CollectionContainer Collection="{Binding DataContext.Rects, Source={x:Reference view}}"/>
+                                            <CollectionContainer Collection="{Binding DataContext.Nodes, Source={x:Reference view}}"/>
+                                        </CompositeCollection>
+                                        <DataTemplate DataType="{x:Type local:Node}">
+                                            <Canvas Margin="-10,-10,10,10">
+                                                <Ellipse x:Name="Ellipse" Width="20" Height="20" Stroke="Black" StrokeThickness="1" Fill="Yellow"/>
+                                                <Label Width="20" Height="Auto" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" FontSize="9" FontWeight="Bold" Content="{Binding Name}"/>
+                                            </Canvas>
+                                            <DataTemplate.Triggers>
+                                                <DataTrigger Binding="{Binding IsSelected,RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ListBoxItem}}}" Value="True">
+                                                    <Setter TargetName="Ellipse" Property="Fill" Value="White"/>
+                                                    <Setter TargetName="Ellipse" Property="Stroke" Value="Red"/>
+                                                </DataTrigger>
+                                            </DataTemplate.Triggers>
+                                        </DataTemplate>
+                                        <DataTemplate DataType="{x:Type local:Connector}">
+                                            <Line x:Name="Line" Stroke="Blue" StrokeThickness="3" X1="{Binding Start.X}" Y1="{Binding Start.Y}" X2="{Binding End.X}" Y2="{Binding End.Y}"/>
+                                            <DataTemplate.Triggers>
+                                                <DataTrigger Binding="{Binding IsSelected,RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ListBoxItem}}}" Value="True">
+                                                    <Setter TargetName="Line" Property="Stroke" Value="Red"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding FullLine}" Value="False">
+                                                    <Setter TargetName="Line" Property="StrokeDashArray" Value="2 3"/>
+                                                </DataTrigger>
+                                            </DataTemplate.Triggers>
+                                        </DataTemplate>
+                                        <DataTemplate DataType="{x:Type local:Capillary}">
+                                            <Line x:Name="Line2" Stroke="Red" StrokeThickness="3" X1="{Binding Start.X}" Y1="{Binding Start.Y}" X2="{Binding End.X}" Y2="{Binding Start.Y}"/>
+                                            <DataTemplate.Triggers>
+                                                <DataTrigger Binding="{Binding IsSelected,RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ListBoxItem}}}" Value="True">
+                                                    <Setter TargetName="Line2" Property="Stroke" Value="Green"/>
+                                                    <Setter TargetName="Line2" Property="StrokeDashArray" Value="2 3"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding FullLine}" Value="False">
+                                                    <Setter TargetName="Line2" Property="StrokeDashArray" Value="2 3"/>
+                                                </DataTrigger>
+                                            </DataTemplate.Triggers>
+                                        </DataTemplate>
+                                        <DataTemplate DataType="{x:Type local:Rect}">
+                                            <Canvas Margin="-10,-10,10,10">
+                                                <Rectangle x:Name="Rectangle" Width="10" Height="{Binding RectHeight}" Fill="Blue" Stroke="Black" StrokeThickness="1"/>
+                                            </Canvas>
+                                            <DataTemplate.Triggers>
+                                                <DataTrigger Binding="{Binding IsSelected,RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ListBoxItem}}}" Value="True">
+                                                    <Setter TargetName="Rectangle" Property="Fill" Value="White"/>
+                                                    <Setter TargetName="Rectangle" Property="Stroke" Value="Red"/>
+                                                </DataTrigger>
+                                            </DataTemplate.Triggers>
+                                        </DataTemplate>
+                                    </Grid.Resources>
+
+                                    <ListBox x:Name="ListBox_this" SelectionChanged="ListBox_SelectionChanged" MouseRightButtonDown="ListBox_MouseRightButtonDown" MouseDoubleClick="ListBox_MouseDoubleClick">
+                                        <ListBox.Template>
+                                            <ControlTemplate>
+                                                <Border>
+                                                    <Border.Background>
+                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1" Opacity="0.5">
+                                                            <GradientStop Color="White"  Offset="0"/>
+                                                            <GradientStop Color="White" Offset="1"/>
+                                                        </LinearGradientBrush>
+                                                    </Border.Background>
+                                                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                                                        <Border>
+                                                            <ItemsPresenter/>
+                                                        </Border>
+                                                    </ScrollViewer>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </ListBox.Template>
+                                        <ListBox.ItemsSource>
+                                            <StaticResource ResourceKey="Col"/>
+                                        </ListBox.ItemsSource>
+                                        <ListBox.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <Canvas IsItemsHost="True" Background="#01FFFFFF" VerticalAlignment="Top" HorizontalAlignment="Left" Height="{Binding PanelHeight}" Width="{Binding PanelWidth}"/>
+                                            </ItemsPanelTemplate>
+                                        </ListBox.ItemsPanel>
+                                        <ListBox.ItemContainerStyle>
+                                            <Style TargetType="ListBoxItem">
+                                                <Setter Property="Canvas.Left" Value="{Binding X}"/>
+                                                <Setter Property="Canvas.Top" Value="{Binding Y}"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="ListBoxItem">
+                                                            <ContentPresenter x:Name="Content"/>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
                                                 </Setter>
                                             </Style>
-                                        </DataGrid.ColumnHeaderStyle>
-
-                                    </DataGrid>
+                                        </ListBox.ItemContainerStyle>
+                                    </ListBox>
                                 </Grid>
-                            </TabItem>
-
-                        </TabControl>
-                    </Canvas>
-                    <!--输入/结果界面!-->
-
-                    <!--显示图片和实时输入_Start!-->
-                    <StackPanel x:Name="StackPanel_OutPut" Orientation="Vertical" Margin="650,25,0,0" Width="450">
-
-                        <!-->Picture_Start<!-->
-                        <Canvas x:Name="Canvas_Picture_HEx" HorizontalAlignment="Right" Height="250" Margin="0,0,0,0" VerticalAlignment="Top" Width="450">
-                            <TabControl x:Name="TabControl_Picuture"  HorizontalAlignment="Center" Height="250" VerticalAlignment="Top" Width="450" Background="White" >
-                                <TabItem Header="换热管" x:Name="TabItem_HExTube_Picture" Visibility="Collapsed">
-                                    <Image HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="Pictures\管子.PNG"/>
-                                </TabItem>
-                                <TabItem Header="翅片" x:Name="TabItem_FinType_Picture" Visibility="Collapsed">
-                                    <Image HorizontalAlignment="Center" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="Pictures\翅片.PNG"/>
-                                </TabItem>
-                                <TabItem Header="Null" x:Name="TabItem_Null_Picture" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="61" Visibility="Collapsed">
-                                    <Grid Background="#FFE5E5E5"/>
-                                </TabItem>
-                                <TabItem Header="换热器类型" x:Name="TabItem_HExTypr_Picture" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="61" Visibility="Collapsed">
-                                    <Image HorizontalAlignment="Center" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="Pictures\空调.png"/>
-                                </TabItem>
-
-                                <TabItem Header="制冷剂侧" x:Name="TabItem_Ref_Picture" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="61" Visibility="Collapsed">
-                                    <Image HorizontalAlignment="Center" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="Pictures\制冷剂侧.PNG" />
-                                </TabItem>
-                                <TabItem Header="空气侧" x:Name="TabItem_Wind_Picture" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="61" Visibility="Collapsed">
-                                    <Image HorizontalAlignment="Center" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Center" Width="Auto" Source="Pictures\空气侧.PNG"/>
-                                </TabItem>
-                                <TabItem Header="流路" x:Name="TabItem_Pass_Picture" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="61" Visibility="Collapsed">
-
-                                    <GroupBox Header="手动分配流路" x:Name="GroupBox_ManualArrangeCirnum" HorizontalAlignment="Left" VerticalAlignment="Top" Height="Auto" Width="425" Margin="8,0,0,10">
-                                        <DockPanel Height="Auto" Margin="0,0,0,0">
-                                            <StackPanel x:Name="StackPanel_ManualArrangeCirnum" Width="110" HorizontalAlignment="Left" DockPanel.Dock="Left" Margin="5,5,5,5">
-                                                <ToggleButton x:Name="ToggleButton1" Content="流路连接" HorizontalAlignment="Stretch"  Margin="5,5,5,5" IsChecked="{Binding CreatNewConnector}"></ToggleButton>
-                                                <Button Content="重连" HorizontalAlignment="Stretch" Margin="5,5,5,5" Click="Button_Click_Reconnect"/>
-                                                <Button Content="放大" HorizontalAlignment="Stretch" Margin="5,20,5,5" Click="Button_Click_zoomout"/>
-                                                <Button Content="缩小" HorizontalAlignment="Stretch" Margin="5,0,5,5" Click="Button_Click_zoomin"/>
-                                                <Button Content="删除" HorizontalAlignment="Stretch" Margin="5,0,5,5" Click="Button_Click_delete"/>
-                                                <Label Content="毛细管长度/m" HorizontalAlignment="Left" Width="Auto" Margin="5,10,0,0"/>
-                                                <TextBox  x:Name="TextBox_Length" HorizontalAlignment="Stretch" Width="Auto" Margin="5,0,5,5" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
-                                                <Label Content="毛细管直径/mm" HorizontalAlignment="Left" Width="Auto" Margin="5,0,0,0"/>
-                                                <TextBox  x:Name="TextBox_Diameter" HorizontalAlignment="Stretch" Width="Auto" Margin="5,0,5,5" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
-                                                <Button x:Name="Button_Capillary" Content="确定" HorizontalAlignment="Stretch" Margin="5,0,5,5" Click="Button_Click_Capillary" IsEnabled="False" />
-                                            </StackPanel>
-                                            <!--AirFlowDirection-->
-                                            <TextBlock x:Name="TextBlock_AirFlow" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" DockPanel.Dock="Top" TextAlignment="Center"/>
-                                            <Grid Margin="10">
-                                                <Grid.Resources>
-                                                    <CompositeCollection x:Key="Col">
-                                                        <CollectionContainer Collection="{Binding DataContext.Connectors, Source={x:Reference view}}"/>
-                                                        <CollectionContainer Collection="{Binding DataContext.Capillaries, Source={x:Reference view}}"/>
-                                                        <CollectionContainer Collection="{Binding DataContext.Rects, Source={x:Reference view}}"/>
-                                                        <CollectionContainer Collection="{Binding DataContext.Nodes, Source={x:Reference view}}"/>
-                                                    </CompositeCollection>
-                                                    <DataTemplate DataType="{x:Type local:Node}">
-                                                        <Canvas Margin="-10,-10,10,10">
-                                                            <Ellipse x:Name="Ellipse" Width="20" Height="20" Stroke="Black" StrokeThickness="1" Fill="Yellow"/>
-                                                            <Label Width="20" Height="Auto" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" FontSize="9" FontWeight="Bold" Content="{Binding Name}"/>
-                                                        </Canvas>
-                                                        <DataTemplate.Triggers>
-                                                            <DataTrigger Binding="{Binding IsSelected,RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ListBoxItem}}}" Value="True">
-                                                                <Setter TargetName="Ellipse" Property="Fill" Value="White"/>
-                                                                <Setter TargetName="Ellipse" Property="Stroke" Value="Red"/>
-                                                            </DataTrigger>
-                                                        </DataTemplate.Triggers>
-                                                    </DataTemplate>
-                                                    <DataTemplate DataType="{x:Type local:Connector}">
-                                                        <Line x:Name="Line" Stroke="Blue" StrokeThickness="3" X1="{Binding Start.X}" Y1="{Binding Start.Y}" X2="{Binding End.X}" Y2="{Binding End.Y}"/>
-                                                        <DataTemplate.Triggers>
-                                                            <DataTrigger Binding="{Binding IsSelected,RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ListBoxItem}}}" Value="True">
-                                                                <Setter TargetName="Line" Property="Stroke" Value="Red"/>
-                                                            </DataTrigger>
-                                                            <DataTrigger Binding="{Binding FullLine}" Value="False">
-                                                                <Setter TargetName="Line" Property="StrokeDashArray" Value="2 3"/>
-                                                            </DataTrigger>
-                                                        </DataTemplate.Triggers>
-                                                    </DataTemplate>
-                                                    <DataTemplate DataType="{x:Type local:Capillary}">
-                                                        <Line x:Name="Line2" Stroke="Red" StrokeThickness="3" X1="{Binding Start.X}" Y1="{Binding Start.Y}" X2="{Binding End.X}" Y2="{Binding Start.Y}"/>
-                                                        <DataTemplate.Triggers>
-                                                            <DataTrigger Binding="{Binding IsSelected,RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ListBoxItem}}}" Value="True">
-                                                                <Setter TargetName="Line2" Property="Stroke" Value="Green"/>
-                                                                <Setter TargetName="Line2" Property="StrokeDashArray" Value="2 3"/>
-                                                            </DataTrigger>
-                                                            <DataTrigger Binding="{Binding FullLine}" Value="False">
-                                                                <Setter TargetName="Line2" Property="StrokeDashArray" Value="2 3"/>
-                                                            </DataTrigger>
-                                                        </DataTemplate.Triggers>
-                                                    </DataTemplate>
-                                                    <DataTemplate DataType="{x:Type local:Rect}">
-                                                        <Canvas Margin="-10,-10,10,10">
-                                                            <Rectangle x:Name="Rectangle" Width="10" Height="{Binding RectHeight}" Fill="Blue" Stroke="Black" StrokeThickness="1"/>
-                                                        </Canvas>
-                                                        <DataTemplate.Triggers>
-                                                            <DataTrigger Binding="{Binding IsSelected,RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ListBoxItem}}}" Value="True">
-                                                                <Setter TargetName="Rectangle" Property="Fill" Value="White"/>
-                                                                <Setter TargetName="Rectangle" Property="Stroke" Value="Red"/>
-                                                            </DataTrigger>
-                                                        </DataTemplate.Triggers>
-                                                    </DataTemplate>
-                                                </Grid.Resources>
-
-                                                <ListBox x:Name="ListBox_this" SelectionChanged="ListBox_SelectionChanged" MouseRightButtonDown="ListBox_MouseRightButtonDown" MouseDoubleClick="ListBox_MouseDoubleClick">
-                                                    <ListBox.Template>
-                                                        <ControlTemplate>
-                                                            <Border>
-                                                                <Border.Background>
-                                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1" Opacity="0.5">
-                                                                        <GradientStop Color="White"  Offset="0"/>
-                                                                        <GradientStop Color="White" Offset="1"/>
-                                                                    </LinearGradientBrush>
-                                                                </Border.Background>
-                                                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                                                                    <Border>
-                                                                        <ItemsPresenter/>
-                                                                    </Border>
-                                                                </ScrollViewer>
-                                                            </Border>
-                                                        </ControlTemplate>
-                                                    </ListBox.Template>
-                                                    <ListBox.ItemsSource>
-                                                        <StaticResource ResourceKey="Col"/>
-                                                    </ListBox.ItemsSource>
-                                                    <ListBox.ItemsPanel>
-                                                        <ItemsPanelTemplate>
-                                                            <Canvas IsItemsHost="True" Background="#01FFFFFF" VerticalAlignment="Top" HorizontalAlignment="Left" Height="{Binding PanelHeight}" Width="{Binding PanelWidth}"/>
-                                                        </ItemsPanelTemplate>
-                                                    </ListBox.ItemsPanel>
-                                                    <ListBox.ItemContainerStyle>
-                                                        <Style TargetType="ListBoxItem">
-                                                            <Setter Property="Canvas.Left" Value="{Binding X}"/>
-                                                            <Setter Property="Canvas.Top" Value="{Binding Y}"/>
-                                                            <Setter Property="Template">
-                                                                <Setter.Value>
-                                                                    <ControlTemplate TargetType="ListBoxItem">
-                                                                        <ContentPresenter x:Name="Content"/>
-                                                                    </ControlTemplate>
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                        </Style>
-                                                    </ListBox.ItemContainerStyle>
-                                                </ListBox>
-                                            </Grid>
-                                        </DockPanel>
-                                    </GroupBox>
-
-                                </TabItem>
-
-
-
-                            </TabControl>
-                        </Canvas>
-                        <!-->Picture_End<!-->
-
-                        <!--实时输入显示_Start!-->
-                        <Canvas HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Top" Width="450" Height="Auto">
-
-                            <!--Condenser!-->
-                            <GroupBox x:Name="GroupBox_RealTimeInputShow_Condenser" Header="当前输入情况" HorizontalAlignment="Right" VerticalAlignment="Top" Height="450" Width="455" Margin="0,0,0,0" Visibility="Collapsed">
-                                <Canvas HorizontalAlignment="Right" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Top" Width="450">
-
-                                    <ListBox x:Name="ListBox_RealTimeInputShow_Condenser" Margin="0,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="450" Height="450" ScrollViewer.VerticalScrollBarVisibility="Visible"  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-
-                                        <ListBox.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <UniformGrid Columns="3"/>
-                                            </ItemsPanelTemplate>
-                                        </ListBox.ItemsPanel>
-
-
-                                        <ListBoxItem Content="换热器类型:"/>
-                                        <ListBoxItem Content="{Binding ElementName=ComboBox_hextype,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="------换热管------" FontWeight="Bold"/>
-                                        <ListBoxItem Content=""/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="管型号:"/>
-                                        <ListBoxItem Content="{Binding ElementName=ComboBox_TubeVersion,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="管种类:"/>
-                                        <ListBoxItem Content="{Binding ElementName=ComboBox_tubetype,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-
-                                        <ListBoxItem Content="管外径:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Do,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
-
-
-                                        <ListBoxItem Content="管壁厚:"/>
-                                        <ListBoxItem Content="{Binding ElementName=thick_tube,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
-
-                                        <ListBoxItem Content="管长:"/>
-                                        <ListBoxItem Content="{Binding ElementName=L,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="管/排:"/>
-                                        <ListBoxItem Content="{Binding ElementName=tube_per,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
-
-                                        <ListBoxItem Content="管排:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Row,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-
-                                        <ListBoxItem Content="管间距:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Pt,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
-
-                                        <ListBoxItem Content="列间距:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Pr,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
-
-                                        <ListBoxItem Content="------翅片------" FontWeight="Bold"/>
-                                        <ListBoxItem Content=""/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="每英尺翅片数"/>
-                                        <ListBoxItem Content="{Binding ElementName=Fnum,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="翅片厚度："/>
-                                        <ListBoxItem Content="{Binding ElementName=Fthick,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
-
-
-                                        <ListBoxItem Content="翅片种类："/>
-                                        <ListBoxItem Content="{Binding ElementName=ComboBox_fintype,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-
-                                        <ListBoxItem Content="------流路------" FontWeight="Bold"/>
-                                        <ListBoxItem Content=""/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="流路数:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Cirnum,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-
-                                        <ListBoxItem Content="流动形式:"/>
-                                        <ListBoxItem Content="{Binding ElementName=ComboBox_flowtype,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-
-                                        <ListBoxItem Content="------制冷剂侧------" FontWeight="Bold"/>
-                                        <ListBoxItem Content=""/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="制冷剂："/>
-                                        <ListBoxItem Content="{Binding ElementName=ComboBox_Refrigerant,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="进口饱和温度:"/>
-                                        <ListBoxItem Content="{Binding ElementName=tc,Path=Text}"/>
-                                        <ListBoxItem Content="C"/>
-
-                                        <ListBoxItem Content="进口温度:"/>
-                                        <ListBoxItem Content="{Binding ElementName=tri,Path=Text}"/>
-                                        <ListBoxItem Content="C"/>
-
-                                        <ListBoxItem Content="出口制冷剂流量:"/>
-                                        <ListBoxItem Content="{Binding ElementName=mr,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
+                            </DockPanel>
+                        </GroupBox>
 
-                                        <ListBoxItem Content="出口干度:"/>
-                                        <ListBoxItem Content="{Binding ElementName=xo_Cond,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
+                    </TabItem>
 
-                                        <ListBoxItem Content="出口过冷度:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Tro_sub_Cond,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
+                </TabControl>
+                <GridSplitter Height="5" Grid.ColumnSpan="2" Background="Purple" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"></GridSplitter>
 
-                                        <ListBoxItem Content="------空气侧------" FontWeight="Bold"/>
-                                        <ListBoxItem Content=""/>
-                                        <ListBoxItem Content=""/>
+                <!-->实时输入<!-->
+                <!--Condenser!-->
+                <GroupBox Grid.Row="1" Grid.Column="0" x:Name="GroupBox_RealTimeInputShow_Condenser" Header="当前输入情况" HorizontalAlignment="Right" VerticalAlignment="Top" Height="450" Width="455" Margin="0,0,0,0" Visibility="Collapsed">
 
-                                        <ListBoxItem Content="进风温度:"/>
-                                        <ListBoxItem Content="{Binding ElementName=tai,Path=Text}"/>
-                                        <ListBoxItem Content="C"/>
 
-                                        <ListBoxItem Content="进风相对湿度:"/>
-                                        <ListBoxItem Content="{Binding ElementName=RHi,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
+                    <ListBox x:Name="ListBox_RealTimeInputShow_Condenser" Margin="0,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="450" Height="450" ScrollViewer.VerticalScrollBarVisibility="Visible"  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
-                                        <ListBoxItem Content="体积流量:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Va,Path=Text}"/>
-                                        <ListBoxItem Content="m3/s"/>
-                                    </ListBox>
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="3"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
 
-                                </Canvas>
-                            </GroupBox>
 
-                            <!--Evaporator!-->
-                            <GroupBox x:Name="GroupBox_RealTimeInputShow_Evaporator" Header="当前输入情况" HorizontalAlignment="Right" VerticalAlignment="Top" Height="450" Width="455" Margin="0,0,0,0" Visibility="Collapsed">
-                                <Canvas HorizontalAlignment="Right" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Top" Width="450">
+                        <ListBoxItem Content="换热器类型:"/>
+                        <ListBoxItem Content="{Binding ElementName=ComboBox_hextype,Path=Text}"/>
+                        <ListBoxItem Content=""/>
 
-                                    <ListBox Margin="0,0,0,0" x:Name="ListBox_RealTimeInputShow_Evaporator" HorizontalAlignment="Right" VerticalAlignment="Top" Width="450" Height="450" ScrollViewer.VerticalScrollBarVisibility="Visible"  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListBoxItem Content="------换热管------" FontWeight="Bold"/>
+                        <ListBoxItem Content=""/>
+                        <ListBoxItem Content=""/>
 
-                                        <ListBox.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <UniformGrid Columns="3"/>
-                                            </ItemsPanelTemplate>
-                                        </ListBox.ItemsPanel>
+                        <ListBoxItem Content="管型号:"/>
+                        <ListBoxItem Content="{Binding ElementName=ComboBox_TubeVersion,Path=Text}"/>
+                        <ListBoxItem Content=""/>
 
-                                        <ListBoxItem Content="换热器类型:"/>
-                                        <ListBoxItem Content="{Binding ElementName=ComboBox_hextype,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
+                        <ListBoxItem Content="管种类:"/>
+                        <ListBoxItem Content="{Binding ElementName=ComboBox_tubetype,Path=Text}"/>
+                        <ListBoxItem Content=""/>
 
-                                        <ListBoxItem Content="------换热管------" FontWeight="Bold"/>
-                                        <ListBoxItem Content=""/>
-                                        <ListBoxItem Content=""/>
 
-                                        <ListBoxItem Content="管型号:"/>
-                                        <ListBoxItem Content="{Binding ElementName=ComboBox_TubeVersion,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
+                        <ListBoxItem Content="管外径:"/>
+                        <ListBoxItem Content="{Binding ElementName=Do,Path=Text}"/>
+                        <ListBoxItem Content="mm"/>
 
-                                        <ListBoxItem Content="管种类:"/>
-                                        <ListBoxItem Content="{Binding ElementName=ComboBox_tubetype,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
 
-                                        <ListBoxItem Content="管外径:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Do,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
+                        <ListBoxItem Content="管壁厚:"/>
+                        <ListBoxItem Content="{Binding ElementName=thick_tube,Path=Text}"/>
+                        <ListBoxItem Content="mm"/>
 
+                        <ListBoxItem Content="管长:"/>
+                        <ListBoxItem Content="{Binding ElementName=L,Path=Text}"/>
+                        <ListBoxItem Content=""/>
 
-                                        <ListBoxItem Content="管壁厚:"/>
-                                        <ListBoxItem Content="{Binding ElementName=thick_tube,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
+                        <ListBoxItem Content="管/排:"/>
+                        <ListBoxItem Content="{Binding ElementName=tube_per,Path=Text}"/>
+                        <ListBoxItem Content="mm"/>
 
-                                        <ListBoxItem Content="管长:"/>
-                                        <ListBoxItem Content="{Binding ElementName=L,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
+                        <ListBoxItem Content="管排:"/>
+                        <ListBoxItem Content="{Binding ElementName=Row,Path=Text}"/>
+                        <ListBoxItem Content=""/>
 
-                                        <ListBoxItem Content="管/排:"/>
-                                        <ListBoxItem Content="{Binding ElementName=tube_per,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
 
-                                        <ListBoxItem Content="管排:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Row,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
+                        <ListBoxItem Content="管间距:"/>
+                        <ListBoxItem Content="{Binding ElementName=Pt,Path=Text}"/>
+                        <ListBoxItem Content="mm"/>
 
+                        <ListBoxItem Content="列间距:"/>
+                        <ListBoxItem Content="{Binding ElementName=Pr,Path=Text}"/>
+                        <ListBoxItem Content="mm"/>
 
-                                        <ListBoxItem Content="管间距:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Pt,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
+                        <ListBoxItem Content="------翅片------" FontWeight="Bold"/>
+                        <ListBoxItem Content=""/>
+                        <ListBoxItem Content=""/>
 
-                                        <ListBoxItem Content="列间距:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Pr,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
+                        <ListBoxItem Content="每英尺翅片数"/>
+                        <ListBoxItem Content="{Binding ElementName=Fnum,Path=Text}"/>
+                        <ListBoxItem Content=""/>
 
-                                        <ListBoxItem Content="------翅片------" FontWeight="Bold"/>
-                                        <ListBoxItem Content=""/>
-                                        <ListBoxItem Content=""/>
+                        <ListBoxItem Content="翅片厚度："/>
+                        <ListBoxItem Content="{Binding ElementName=Fthick,Path=Text}"/>
+                        <ListBoxItem Content="mm"/>
 
-                                        <ListBoxItem Content="每英尺翅片数"/>
-                                        <ListBoxItem Content="{Binding ElementName=Fnum,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
 
-                                        <ListBoxItem Content="翅片厚度："/>
-                                        <ListBoxItem Content="{Binding ElementName=Fthick,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
+                        <ListBoxItem Content="翅片种类："/>
+                        <ListBoxItem Content="{Binding ElementName=ComboBox_fintype,Path=Text}"/>
+                        <ListBoxItem Content=""/>
 
 
-                                        <ListBoxItem Content="翅片种类："/>
-                                        <ListBoxItem Content="{Binding ElementName=ComboBox_fintype,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
+                        <ListBoxItem Content="------流路------" FontWeight="Bold"/>
+                        <ListBoxItem Content=""/>
+                        <ListBoxItem Content=""/>
 
-                                        <ListBoxItem Content="------流路------" FontWeight="Bold"/>
-                                        <ListBoxItem Content=""/>
-                                        <ListBoxItem Content=""/>
+                        <ListBoxItem Content="流路数:"/>
+                        <ListBoxItem Content="{Binding ElementName=Cirnum,Path=Text}"/>
+                        <ListBoxItem Content=""/>
 
-                                        <ListBoxItem Content="流路数:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Cirnum,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
 
+                        <ListBoxItem Content="流动形式:"/>
+                        <ListBoxItem Content="{Binding ElementName=ComboBox_flowtype,Path=Text}"/>
+                        <ListBoxItem Content=""/>
 
-                                        <ListBoxItem Content="流动形式:"/>
-                                        <ListBoxItem Content="{Binding ElementName=ComboBox_flowtype,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
 
+                        <ListBoxItem Content="------制冷剂侧------" FontWeight="Bold"/>
+                        <ListBoxItem Content=""/>
+                        <ListBoxItem Content=""/>
 
-                                        <ListBoxItem Content="------制冷剂------" FontWeight="Bold"/>
-                                        <ListBoxItem Content=""/>
-                                        <ListBoxItem Content=""/>
+                        <ListBoxItem Content="制冷剂："/>
+                        <ListBoxItem Content="{Binding ElementName=ComboBox_Refrigerant,Path=Text}"/>
+                        <ListBoxItem Content=""/>
 
-                                        <ListBoxItem Content="制冷剂："/>
-                                        <ListBoxItem Content="{Binding ElementName=ComboBox_Refrigerant,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
+                        <ListBoxItem Content="进口饱和温度:"/>
+                        <ListBoxItem Content="{Binding ElementName=tc,Path=Text}"/>
+                        <ListBoxItem Content="C"/>
 
-                                        <ListBoxItem Content="进口压力:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Pri_Evap,Path=Text}"/>
-                                        <ListBoxItem Content="kPa"/>
+                        <ListBoxItem Content="进口温度:"/>
+                        <ListBoxItem Content="{Binding ElementName=tri,Path=Text}"/>
+                        <ListBoxItem Content="C"/>
 
-                                        <ListBoxItem Content="进口干度:"/>
-                                        <ListBoxItem Content="{Binding ElementName=xi_Evap,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
+                        <ListBoxItem Content="出口制冷剂流量:"/>
+                        <ListBoxItem Content="{Binding ElementName=mr,Path=Text}"/>
+                        <ListBoxItem Content="mm"/>
 
-                                        <ListBoxItem Content="进口焓值:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Hri_Evap,Path=Text}"/>
-                                        <ListBoxItem Content="kJ/kg"/>
+                        <ListBoxItem Content="出口干度:"/>
+                        <ListBoxItem Content="{Binding ElementName=xo_Cond,Path=Text}"/>
+                        <ListBoxItem Content="mm"/>
 
-                                        <ListBoxItem Content="进口阀前温度:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Tri_ValveBefore,Path=Text}"/>
-                                        <ListBoxItem Content="C"/>
+                        <ListBoxItem Content="出口过冷度:"/>
+                        <ListBoxItem Content="{Binding ElementName=Tro_sub_Cond,Path=Text}"/>
+                        <ListBoxItem Content="mm"/>
 
-                                        <ListBoxItem Content="进口阀前压力:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Pri_ValveBefore,Path=Text}"/>
-                                        <ListBoxItem Content="kPa"/>
+                        <ListBoxItem Content="------空气侧------" FontWeight="Bold"/>
+                        <ListBoxItem Content=""/>
+                        <ListBoxItem Content=""/>
 
-                                        <ListBoxItem Content="出口饱和温度:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Tcro_Evap,Path=Text}"/>
-                                        <ListBoxItem Content="kPa"/>
+                        <ListBoxItem Content="进风温度:"/>
+                        <ListBoxItem Content="{Binding ElementName=tai,Path=Text}"/>
+                        <ListBoxItem Content="C"/>
 
-                                        <ListBoxItem Content="出口过热度:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Tro_sub_Evap,Path=Text}"/>
-                                        <ListBoxItem Content="C"/>
+                        <ListBoxItem Content="进风相对湿度:"/>
+                        <ListBoxItem Content="{Binding ElementName=RHi,Path=Text}"/>
+                        <ListBoxItem Content=""/>
 
-                                        <ListBoxItem Content="出口干度:"/>
-                                        <ListBoxItem Content="{Binding ElementName=xo_Evap,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
+                        <ListBoxItem Content="体积流量:"/>
+                        <ListBoxItem Content="{Binding ElementName=Va,Path=Text}"/>
+                        <ListBoxItem Content="m3/s"/>
+                    </ListBox>
 
-                                        <ListBoxItem Content="出口流量:"/>
-                                        <ListBoxItem Content="{Binding ElementName=mro_Evap,Path=Text}"/>
-                                        <ListBoxItem Content="kg/s"/>
+                </GroupBox>
 
-                                    </ListBox>
-                                </Canvas>
-                            </GroupBox>
+                <!--Evaporator!-->
+                <GroupBox Grid.Row="1" Grid.Column="0" x:Name="GroupBox_RealTimeInputShow_Evaporator" Header="当前输入情况" HorizontalAlignment="Right" VerticalAlignment="Top" Height="450" Width="455" Margin="0,0,0,0" Visibility="Collapsed">
 
-                        </Canvas>
-                        <!--实时输入显示_End!-->
-                    </StackPanel>
+                    <ListBox Margin="0,0,0,0" x:Name="ListBox_RealTimeInputShow_Evaporator" HorizontalAlignment="Right" VerticalAlignment="Top" Width="450" Height="450" ScrollViewer.VerticalScrollBarVisibility="Visible"  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
-                    <!--显示图片和实时输入_End!-->
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="3"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
 
+                        <ListBoxItem Content="换热器类型:"/>
+                        <ListBoxItem Content="{Binding ElementName=ComboBox_hextype,Path=Text}"/>
+                        <ListBoxItem Content=""/>
 
-                </Grid>
+                        <ListBoxItem Content="------换热管------" FontWeight="Bold"/>
+                        <ListBoxItem Content=""/>
+                        <ListBoxItem Content=""/>
 
+                        <ListBoxItem Content="管型号:"/>
+                        <ListBoxItem Content="{Binding ElementName=ComboBox_TubeVersion,Path=Text}"/>
+                        <ListBoxItem Content=""/>
+
+                        <ListBoxItem Content="管种类:"/>
+                        <ListBoxItem Content="{Binding ElementName=ComboBox_tubetype,Path=Text}"/>
+                        <ListBoxItem Content=""/>
+
+                        <ListBoxItem Content="管外径:"/>
+                        <ListBoxItem Content="{Binding ElementName=Do,Path=Text}"/>
+                        <ListBoxItem Content="mm"/>
+
+
+                        <ListBoxItem Content="管壁厚:"/>
+                        <ListBoxItem Content="{Binding ElementName=thick_tube,Path=Text}"/>
+                        <ListBoxItem Content="mm"/>
+
+                        <ListBoxItem Content="管长:"/>
+                        <ListBoxItem Content="{Binding ElementName=L,Path=Text}"/>
+                        <ListBoxItem Content=""/>
+
+                        <ListBoxItem Content="管/排:"/>
+                        <ListBoxItem Content="{Binding ElementName=tube_per,Path=Text}"/>
+                        <ListBoxItem Content="mm"/>
+
+                        <ListBoxItem Content="管排:"/>
+                        <ListBoxItem Content="{Binding ElementName=Row,Path=Text}"/>
+                        <ListBoxItem Content=""/>
+
+
+                        <ListBoxItem Content="管间距:"/>
+                        <ListBoxItem Content="{Binding ElementName=Pt,Path=Text}"/>
+                        <ListBoxItem Content="mm"/>
+
+                        <ListBoxItem Content="列间距:"/>
+                        <ListBoxItem Content="{Binding ElementName=Pr,Path=Text}"/>
+                        <ListBoxItem Content="mm"/>
+
+                        <ListBoxItem Content="------翅片------" FontWeight="Bold"/>
+                        <ListBoxItem Content=""/>
+                        <ListBoxItem Content=""/>
+
+                        <ListBoxItem Content="每英尺翅片数"/>
+                        <ListBoxItem Content="{Binding ElementName=Fnum,Path=Text}"/>
+                        <ListBoxItem Content=""/>
+
+                        <ListBoxItem Content="翅片厚度："/>
+                        <ListBoxItem Content="{Binding ElementName=Fthick,Path=Text}"/>
+                        <ListBoxItem Content="mm"/>
+
+
+                        <ListBoxItem Content="翅片种类："/>
+                        <ListBoxItem Content="{Binding ElementName=ComboBox_fintype,Path=Text}"/>
+                        <ListBoxItem Content=""/>
+
+                        <ListBoxItem Content="------流路------" FontWeight="Bold"/>
+                        <ListBoxItem Content=""/>
+                        <ListBoxItem Content=""/>
+
+                        <ListBoxItem Content="流路数:"/>
+                        <ListBoxItem Content="{Binding ElementName=Cirnum,Path=Text}"/>
+                        <ListBoxItem Content=""/>
+
+
+                        <ListBoxItem Content="流动形式:"/>
+                        <ListBoxItem Content="{Binding ElementName=ComboBox_flowtype,Path=Text}"/>
+                        <ListBoxItem Content=""/>
+
+
+                        <ListBoxItem Content="------制冷剂------" FontWeight="Bold"/>
+                        <ListBoxItem Content=""/>
+                        <ListBoxItem Content=""/>
+
+                        <ListBoxItem Content="制冷剂："/>
+                        <ListBoxItem Content="{Binding ElementName=ComboBox_Refrigerant,Path=Text}"/>
+                        <ListBoxItem Content=""/>
+
+                        <ListBoxItem Content="进口压力:"/>
+                        <ListBoxItem Content="{Binding ElementName=Pri_Evap,Path=Text}"/>
+                        <ListBoxItem Content="kPa"/>
+
+                        <ListBoxItem Content="进口干度:"/>
+                        <ListBoxItem Content="{Binding ElementName=xi_Evap,Path=Text}"/>
+                        <ListBoxItem Content=""/>
+
+                        <ListBoxItem Content="进口焓值:"/>
+                        <ListBoxItem Content="{Binding ElementName=Hri_Evap,Path=Text}"/>
+                        <ListBoxItem Content="kJ/kg"/>
+
+                        <ListBoxItem Content="进口阀前温度:"/>
+                        <ListBoxItem Content="{Binding ElementName=Tri_ValveBefore,Path=Text}"/>
+                        <ListBoxItem Content="C"/>
+
+                        <ListBoxItem Content="进口阀前压力:"/>
+                        <ListBoxItem Content="{Binding ElementName=Pri_ValveBefore,Path=Text}"/>
+                        <ListBoxItem Content="kPa"/>
+
+                        <ListBoxItem Content="出口饱和温度:"/>
+                        <ListBoxItem Content="{Binding ElementName=Tcro_Evap,Path=Text}"/>
+                        <ListBoxItem Content="kPa"/>
+
+                        <ListBoxItem Content="出口过热度:"/>
+                        <ListBoxItem Content="{Binding ElementName=Tro_sub_Evap,Path=Text}"/>
+                        <ListBoxItem Content="C"/>
+
+                        <ListBoxItem Content="出口干度:"/>
+                        <ListBoxItem Content="{Binding ElementName=xo_Evap,Path=Text}"/>
+                        <ListBoxItem Content=""/>
+
+                        <ListBoxItem Content="出口流量:"/>
+                        <ListBoxItem Content="{Binding ElementName=mro_Evap,Path=Text}"/>
+                        <ListBoxItem Content="kg/s"/>
+
+                    </ListBox>
+                </GroupBox>
             </Grid>
+        </Grid>
 
-        </Viewbox>
-    </ScrollViewer>
+
+    </Grid>
+
 </Window>

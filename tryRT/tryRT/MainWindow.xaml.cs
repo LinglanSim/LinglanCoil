@@ -934,18 +934,23 @@ namespace tryRT
         //TreeView****************************************************************************************************************Start
         private void TreeView_HExType_GotFocus(object sender, RoutedEventArgs e)
         {
-            this.TabItem_HExType.IsSelected = true;
+            this.Canvas_0.Visibility = Visibility.Visible;
+            this.Canvas_1.Visibility = Visibility.Collapsed;
+            this.Canvas_2.Visibility = Visibility.Collapsed;
+            this.Canvas_3.Visibility = Visibility.Collapsed;
+            this.Canvas_4.Visibility = Visibility.Collapsed;
+            this.Canvas_5.Visibility = Visibility.Collapsed;
+            this.Canvas_6.Visibility = Visibility.Collapsed;
+            this.Canvas_7.Visibility = Visibility.Collapsed;
+            this.Canvas_8.Visibility = Visibility.Collapsed;
+            this.Canvas_9.Visibility = Visibility.Collapsed;
+
             this.TabItem_HExTypr_Picture.IsSelected = true;
 
-
-
             //调显示宽度
-            TabControl1.Width = 450;//450
-            Canvas_Picture_HEx.Width = 450;//450
-            StackPanel_OutPut.Width = 450;
 
             //调显示高度
-            this.Canvas_Picture_HEx.Height = 250;
+             
             this.TabControl_Picuture.Height = 250;
             ListBox_RealTimeInputShow_Condenser.Height = 450;
             ListBox_RealTimeInputShow_Evaporator.Height = 450;
@@ -953,16 +958,24 @@ namespace tryRT
 
         private void TreeView_Fin_GotFocus(object sender, RoutedEventArgs e)
         {
-            this.TabItem_Fin.IsSelected = true;
+            this.Canvas_0.Visibility = Visibility.Collapsed;
+            this.Canvas_1.Visibility = Visibility.Collapsed;
+            this.Canvas_2.Visibility = Visibility.Visible;
+            this.Canvas_3.Visibility = Visibility.Collapsed;
+            this.Canvas_4.Visibility = Visibility.Collapsed;
+            this.Canvas_5.Visibility = Visibility.Collapsed;
+            this.Canvas_6.Visibility = Visibility.Collapsed;
+            this.Canvas_7.Visibility = Visibility.Collapsed;
+            this.Canvas_8.Visibility = Visibility.Collapsed;
+            this.Canvas_9.Visibility = Visibility.Collapsed;
+
             this.TabItem_FinType_Picture.IsSelected = true;
 
             //调显示宽度
-            TabControl1.Width = 450;//450
-            Canvas_Picture_HEx.Width = 450;//450
-            StackPanel_OutPut.Width = 450;
+
 
             //调显示高度
-            this.Canvas_Picture_HEx.Height = 250;
+            // 
             this.TabControl_Picuture.Height = 250;
             ListBox_RealTimeInputShow_Condenser.Height = 450;
             ListBox_RealTimeInputShow_Evaporator.Height = 450;
@@ -970,7 +983,16 @@ namespace tryRT
 
         private void TreeView_Pass_GotFocus(object sender, RoutedEventArgs e)
         {
-            this.TabItem_Pass.IsSelected = true;
+            this.Canvas_0.Visibility = Visibility.Collapsed;
+            this.Canvas_1.Visibility = Visibility.Collapsed;
+            this.Canvas_2.Visibility = Visibility.Collapsed;
+            this.Canvas_3.Visibility = Visibility.Collapsed;
+            this.Canvas_4.Visibility = Visibility.Collapsed;
+            this.Canvas_5.Visibility = Visibility.Visible;
+            this.Canvas_6.Visibility = Visibility.Collapsed;
+            this.Canvas_7.Visibility = Visibility.Collapsed;
+            this.Canvas_8.Visibility = Visibility.Collapsed;
+            this.Canvas_9.Visibility = Visibility.Collapsed;
 
             if (RadioButton_ManualArrange.IsChecked == true)
             {
@@ -980,7 +1002,7 @@ namespace tryRT
                 TextBlock_AirFlow.Text = AirFlowString;
 
                 //调显示高度
-                this.Canvas_Picture_HEx.Height = 450;
+                // 
                 this.TabControl_Picuture.Height = 450;
                 ListBox_RealTimeInputShow_Condenser.Height = 350;
                 ListBox_RealTimeInputShow_Evaporator.Height = 350;
@@ -990,16 +1012,14 @@ namespace tryRT
                 TabItem_Null_Picture.IsSelected = true;
 
                 //调显示高度
-                this.Canvas_Picture_HEx.Height = 250;
+                // 
                 this.TabControl_Picuture.Height = 250;
                 ListBox_RealTimeInputShow_Condenser.Height = 450;
                 ListBox_RealTimeInputShow_Evaporator.Height = 450;
             }
 
             //调显示宽度
-            TabControl1.Width = 450;//450
-            Canvas_Picture_HEx.Width = 450;//450
-            StackPanel_OutPut.Width = 450;
+
 
             //生成手动连流路图
             /*int _row = Convert.ToInt32(Row.Text);
@@ -1023,16 +1043,23 @@ namespace tryRT
 
         private void TreeView_Ref_GotFocus(object sender, RoutedEventArgs e)
         {
-            this.TabItem_Ref.IsSelected = true;
+            this.Canvas_0.Visibility = Visibility.Collapsed;
+            this.Canvas_1.Visibility = Visibility.Collapsed;
+            this.Canvas_2.Visibility = Visibility.Collapsed;
+            this.Canvas_3.Visibility = Visibility.Visible;
+            this.Canvas_4.Visibility = Visibility.Collapsed;
+            this.Canvas_5.Visibility = Visibility.Collapsed;
+            this.Canvas_6.Visibility = Visibility.Collapsed;
+            this.Canvas_7.Visibility = Visibility.Collapsed;
+            this.Canvas_8.Visibility = Visibility.Collapsed;
+            this.Canvas_9.Visibility = Visibility.Collapsed;
             this.TabItem_Ref_Picture.IsSelected = true;
 
             //调显示宽度
-            TabControl1.Width = 450;//450
-            Canvas_Picture_HEx.Width = 450;//450
-            StackPanel_OutPut.Width = 450;
+               
 
             //调显示高度
-            this.Canvas_Picture_HEx.Height = 250;
+             
             this.TabControl_Picuture.Height = 250;
             ListBox_RealTimeInputShow_Condenser.Height = 450;
             ListBox_RealTimeInputShow_Evaporator.Height = 450;
@@ -1040,16 +1067,24 @@ namespace tryRT
 
         private void TreeView_Wind_GotFocus(object sender, RoutedEventArgs e)
         {
-            this.TabItem_Wind.IsSelected = true;
+            this.Canvas_0.Visibility = Visibility.Collapsed;
+            this.Canvas_1.Visibility = Visibility.Collapsed;
+            this.Canvas_2.Visibility = Visibility.Collapsed;
+            this.Canvas_3.Visibility = Visibility.Collapsed;
+            this.Canvas_4.Visibility = Visibility.Visible;
+            this.Canvas_5.Visibility = Visibility.Collapsed;
+            this.Canvas_6.Visibility = Visibility.Collapsed;
+            this.Canvas_7.Visibility = Visibility.Collapsed;
+            this.Canvas_8.Visibility = Visibility.Collapsed;
+            this.Canvas_9.Visibility = Visibility.Collapsed;
+
             this.TabItem_Wind_Picture.IsSelected = true;
 
-            //调显示宽度
-            TabControl1.Width = 450;//450
-            Canvas_Picture_HEx.Width = 450;//450
-            StackPanel_OutPut.Width = 450;
+            //调显示宽度         
+             
 
             //调显示高度
-            this.Canvas_Picture_HEx.Height = 250;
+             
             this.TabControl_Picuture.Height = 250;
             ListBox_RealTimeInputShow_Condenser.Height = 450;
             ListBox_RealTimeInputShow_Evaporator.Height = 450;
@@ -1058,17 +1093,23 @@ namespace tryRT
 
         private void TreeView_Result_GotFocus(object sender, RoutedEventArgs e)
         {
-            this.TabItem_Result.IsSelected = true;
+            this.Canvas_0.Visibility = Visibility.Collapsed;
+            this.Canvas_1.Visibility = Visibility.Collapsed;
+            this.Canvas_2.Visibility = Visibility.Collapsed;
+            this.Canvas_3.Visibility = Visibility.Collapsed;
+            this.Canvas_4.Visibility = Visibility.Collapsed;
+            this.Canvas_5.Visibility = Visibility.Collapsed;
+            this.Canvas_6.Visibility = Visibility.Collapsed;
+            this.Canvas_7.Visibility = Visibility.Collapsed;
+            this.Canvas_8.Visibility = Visibility.Visible;
+            this.Canvas_9.Visibility = Visibility.Collapsed;
             this.TabItem_Pass_Picture.IsSelected = true;
         
 
-            //调显示宽度
-            TabControl1.Width = 450;//450
-            Canvas_Picture_HEx.Width = 450;//450
-            StackPanel_OutPut.Width = 450;
+            //调显示宽度                       
 
             //调显示高度
-            this.Canvas_Picture_HEx.Height = 450;
+             
             this.TabControl_Picuture.Height = 450;
             this.ListBox_RealTimeInputShow_Condenser.Height = 350;
             this.ListBox_RealTimeInputShow_Evaporator.Height = 350;
@@ -1079,15 +1120,23 @@ namespace tryRT
 
         private void TreeView_DetailResult_GotFocus(object sender, RoutedEventArgs e)
         {
-            this.TabItem_DetailResult.IsSelected = true;
+            this.Canvas_0.Visibility = Visibility.Collapsed;
+            this.Canvas_1.Visibility = Visibility.Collapsed;
+            this.Canvas_2.Visibility = Visibility.Collapsed;
+            this.Canvas_3.Visibility = Visibility.Collapsed;
+            this.Canvas_4.Visibility = Visibility.Collapsed;
+            this.Canvas_5.Visibility = Visibility.Collapsed;
+            this.Canvas_6.Visibility = Visibility.Collapsed;
+            this.Canvas_7.Visibility = Visibility.Collapsed;
+            this.Canvas_8.Visibility = Visibility.Collapsed;
+            this.Canvas_9.Visibility = Visibility.Visible;
+
             this.TabItem_Pass_Picture.IsSelected = true;
 
             //调显示宽度
-            StackPanel_OutPut.Width = 550;
-            this.TabControl1.Width = 550;
 
             //调显示高度
-            this.Canvas_Picture_HEx.Height = 450;
+             
             this.TabControl_Picuture.Height = 450;
             this.ListBox_RealTimeInputShow_Condenser.Height = 350;
             this.ListBox_RealTimeInputShow_Evaporator.Height = 350;
@@ -1156,16 +1205,24 @@ namespace tryRT
 
         private void TreeView_AdjustParameter_GotFocus(object sender, RoutedEventArgs e)
         {
-            this.TabItem_AdjustParameter.IsSelected = true;
+            this.Canvas_0.Visibility = Visibility.Collapsed;
+            this.Canvas_1.Visibility = Visibility.Collapsed;
+            this.Canvas_2.Visibility = Visibility.Collapsed;
+            this.Canvas_3.Visibility = Visibility.Collapsed;
+            this.Canvas_4.Visibility = Visibility.Collapsed;
+            this.Canvas_5.Visibility = Visibility.Collapsed;
+            this.Canvas_6.Visibility = Visibility.Collapsed;
+            this.Canvas_7.Visibility = Visibility.Visible;
+            this.Canvas_8.Visibility = Visibility.Collapsed;
+            this.Canvas_9.Visibility = Visibility.Collapsed;
+
             this.TabItem_Null_Picture.IsSelected = true;
 
-            //调显示宽度
-            TabControl1.Width = 450;//450
-            Canvas_Picture_HEx.Width = 450;//450
-            StackPanel_OutPut.Width = 450;
+            //调显示宽度            
+             
 
             //调显示高度
-            this.Canvas_Picture_HEx.Height = 250;
+             
             this.TabControl_Picuture.Height = 250;
             ListBox_RealTimeInputShow_Condenser.Height = 450;
             ListBox_RealTimeInputShow_Evaporator.Height = 450;
@@ -1173,16 +1230,25 @@ namespace tryRT
 
         private void TreeView_Distributer_GotFocus(object sender, RoutedEventArgs e)
         {
-            this.TabItem_Distributer.IsSelected = true;
+            this.Canvas_0.Visibility = Visibility.Collapsed;
+            this.Canvas_1.Visibility = Visibility.Collapsed;
+            this.Canvas_2.Visibility = Visibility.Collapsed;
+            this.Canvas_3.Visibility = Visibility.Collapsed;
+            this.Canvas_4.Visibility = Visibility.Collapsed;
+            this.Canvas_5.Visibility = Visibility.Collapsed;
+            this.Canvas_6.Visibility = Visibility.Visible;
+            this.Canvas_7.Visibility = Visibility.Collapsed;
+            this.Canvas_8.Visibility = Visibility.Collapsed;
+            this.Canvas_9.Visibility = Visibility.Collapsed;
+
             this.TabItem_Null_Picture.IsSelected = true;
 
             //调显示宽度
-            TabControl1.Width = 450;//450
-            Canvas_Picture_HEx.Width = 450;//450
-            StackPanel_OutPut.Width = 450;
+             
+             
 
             //调显示高度
-            this.Canvas_Picture_HEx.Height = 250;
+             
             this.TabControl_Picuture.Height = 250;
             ListBox_RealTimeInputShow_Condenser.Height = 450;
             ListBox_RealTimeInputShow_Evaporator.Height = 450;
@@ -1190,16 +1256,25 @@ namespace tryRT
 
         private void TreeView_HExTube_GotFocus(object sender, RoutedEventArgs e)
         {
-            this.TabItem_HExTube.IsSelected = true;
+            this.Canvas_0.Visibility = Visibility.Collapsed;
+            this.Canvas_1.Visibility = Visibility.Visible;
+            this.Canvas_2.Visibility = Visibility.Collapsed;
+            this.Canvas_3.Visibility = Visibility.Collapsed;
+            this.Canvas_4.Visibility = Visibility.Collapsed;
+            this.Canvas_5.Visibility = Visibility.Collapsed;
+            this.Canvas_6.Visibility = Visibility.Collapsed;
+            this.Canvas_7.Visibility = Visibility.Collapsed;
+            this.Canvas_8.Visibility = Visibility.Collapsed;
+            this.Canvas_9.Visibility = Visibility.Collapsed;
+
             this.TabItem_HExTube_Picture.IsSelected = true;
 
             //调显示宽度
-            TabControl1.Width = 450;//450
-            Canvas_Picture_HEx.Width = 450;//450
-            StackPanel_OutPut.Width = 450;
+             
+             
 
             //调显示高度
-            this.Canvas_Picture_HEx.Height = 250;
+             
             this.TabControl_Picuture.Height = 250;
             ListBox_RealTimeInputShow_Condenser.Height = 450;
             ListBox_RealTimeInputShow_Evaporator.Height = 450;
@@ -1439,8 +1514,8 @@ namespace tryRT
             Pass_OK.IsEnabled = false;
 
             //调显示高度
-            this.Canvas_Picture_HEx.Height = 450;
-            this.TabControl_Picuture.Height = 450;
+             
+            this.TabControl_Picuture.Height = 250;
             CircuitIndex = 0;
 
         }
@@ -1454,7 +1529,7 @@ namespace tryRT
             this.TabItem_Null_Picture.IsSelected = true;
 
             //调显示高度
-            this.Canvas_Picture_HEx.Height = 250;
+             
             this.TabControl_Picuture.Height = 250;
             ListBox_RealTimeInputShow_Condenser.Height = 450;
             ListBox_RealTimeInputShow_Evaporator.Height = 450;
@@ -1472,7 +1547,7 @@ namespace tryRT
             this.GroupBox_RefOutlet_Condenser.Visibility = Visibility.Visible;
             this.GroupBox_RealTimeInputShow_Condenser.Visibility = Visibility.Visible;
             this.GroupBox_RealTimeInputShow_Evaporator.Visibility = Visibility.Hidden;
-            this.TabItem_HExType.IsSelected = true;
+            this.Canvas_0.Visibility = Visibility.Visible;
             this.Tri_ValveBefore.Text="24";
             this.Pri_ValveBefore.Text = "1729.2";
 
@@ -1488,7 +1563,7 @@ namespace tryRT
             this.GroupBox_RefOutlet_Condenser.Visibility = Visibility.Hidden;
             this.GroupBox_RealTimeInputShow_Condenser.Visibility = Visibility.Hidden;
             this.GroupBox_RealTimeInputShow_Evaporator.Visibility = Visibility.Visible;
-            this.TabItem_HExType.IsSelected = true;
+            this.Canvas_0.Visibility = Visibility.Visible;
             this.Tri_ValveBefore.Text = "20";
             this.Pri_ValveBefore.Text = "1842.28";
 
@@ -2215,16 +2290,6 @@ namespace tryRT
                         TextBoxText.SelectionStart = TextBoxText.Text.Length;
                     }
                 }
-                if (TextBoxText.Name == "xo_Cond" || TextBoxText.Name == "xi_Evap"|| TextBoxText.Name == "xo_Evap")
-                {
-                    if ((TextBoxText.Text != "" && TextBoxText.Text != "-") && (Convert.ToDouble(TextBoxText.Text) < 0 || Convert.ToDouble(TextBoxText.Text) > 1))
-                    {
-                        MessageBoxResult result = MessageBox.Show("制冷剂干度只能在0~1内");
-                        TextBoxText.Text = TextBoxText.Text.Substring(0, TextBoxText.Text.Length - 1);
-                        TextBoxText.SelectionStart = TextBoxText.Text.Length;
-                    }
-                }
-
             }
             private void PositiveTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)//只允许小数点、数字
             {
@@ -2281,6 +2346,24 @@ namespace tryRT
                         TextBoxText.SelectionStart = TextBoxText.Text.Length;
                     }
                 }
+                if (TextBoxText.Name == "xo_Cond" || TextBoxText.Name == "xi_Evap" || TextBoxText.Name == "xo_Evap")
+                {
+                    if ((TextBoxText.Text != "" && TextBoxText.Text != "-") && (Convert.ToDouble(TextBoxText.Text) < 0 || Convert.ToDouble(TextBoxText.Text) > 1))
+                    {
+                        MessageBoxResult result = MessageBox.Show("制冷剂干度只能在0~1内");
+                        TextBoxText.Text = TextBoxText.Text.Substring(0, TextBoxText.Text.Length - 1);
+                        TextBoxText.SelectionStart = TextBoxText.Text.Length;
+                    }
+                }
+                //if (TextBoxText.Name == "Tro_sub_Evap" || TextBoxText.Name == "Tro_sub_Cond")
+                //{
+                //    if ((TextBoxText.Text != "" && TextBoxText.Text != "-") && (Convert.ToDouble(TextBoxText.Text) < 0 || Convert.ToDouble(TextBoxText.Text) > 1))
+                //    {
+                //        MessageBoxResult result = MessageBox.Show("制冷剂干度只能在0~1内");
+                //        TextBoxText.Text = TextBoxText.Text.Substring(0, TextBoxText.Text.Length - 1);
+                //        TextBoxText.SelectionStart = TextBoxText.Text.Length;
+                //    }
+                //}
             }
 
             private void NumTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)//只允许整数
