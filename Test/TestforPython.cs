@@ -62,10 +62,6 @@ namespace Test
             geoInput.Ntube = 15;
             geoInput.CirNum = 2;
 
-            //cap input
-            capInput.d_cap = new double[] { 0, 0 };//0.006
-            capInput.lenth_cap = new double[] { 0, 0 };//0.5
-
             //初始化湿空气数组
             double[,] HumidSourceData= Model.HumidAirSourceData.InitializeSourceTableData();
             DateTime Time1 = DateTime.Now;
