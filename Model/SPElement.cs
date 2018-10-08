@@ -432,8 +432,6 @@ namespace Model
 
             //double omega_out = omega_in;
             double hin_a = 0;
-
-            double time05 = 0;
             if (hexType == 0 && tri < tai)
             {
                 bool isFullyWet = true;
