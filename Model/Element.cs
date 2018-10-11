@@ -15,15 +15,7 @@ namespace Model
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater, AbstractState coolprop, double[,] SourceTableData)
         {
             //AbstractState coolprop = AbstractState.factory("HEOS", fluid);
-
-            double href = 0;
-            double gg = 9.8;
             double tsat;
-            int phase1 = 1;
-            int phase2 = 2;
-
-            
-
             coolprop.update(input_pairs.PQ_INPUTS, pri * 1000, 0);
             tsat = coolprop.T();
             //tsat = CoolProp.PropsSI("T", "P", pri * 1000, "Q", 0, fluid);
@@ -38,7 +30,6 @@ namespace Model
             //double h_v1 = CoolProp.PropsSI("H", "T", tsat, "Q", 1, fluid) / 1000 ;
             double Tri_mod;
             double alpha;
-            double M;
             var res_element = new CalcResult();
             // **********Superheated state**********
             if (hri > h_v && fluid != "Water")
@@ -56,7 +47,6 @@ namespace Model
                 //{Equations are for charge calculation}
                 coolprop.update(input_pairs.HmassP_INPUTS, hri * 1000, pri * 1000);
                 double rho = coolprop.rhomass();
-                //double rho = CoolProp.PropsSI("D", "P", pri * 1000, "H", hri * 1000, fluid);
                 res_element.M = Vol_tubes * rho; //"Mass calculated"
             }
          
@@ -107,7 +97,6 @@ namespace Model
                 //{Equations are for charge calculation}
                 coolprop.update(input_pairs.HmassP_INPUTS, hri * 1000, pri * 1000);
                 double rho = coolprop.rhomass();
-                //double rho = CoolProp.PropsSI("D", "P", pri * 1000, "H", hri * 1000, fluid);
                 res_element.M = Vol_tubes * rho; //Mass calculated
             }
 
