@@ -36,6 +36,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -47,6 +48,7 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -147,12 +149,6 @@
     <Resource Include="Pictures\翅片.PNG" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Pictures\管翅式_蒸发器.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Pictures\管翅式_冷凝器.jpg" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Pictures\制冷剂侧.PNG" />
   </ItemGroup>
   <ItemGroup>
@@ -188,6 +184,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Pictures\菜单_运行.PNG" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Pictures\菜单_默认设置.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
