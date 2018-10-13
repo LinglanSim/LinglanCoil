@@ -621,9 +621,8 @@
                         <!-->图 & 实时输入<!-->
                         <Grid Grid.Column="1" Margin="0,0,0,0" VerticalAlignment="Top" Background="White" Height="725">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="290" x:Name="Grid_Picture"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="425"/>
+                                <RowDefinition x:Name="Grid_Picture"/>
+                                <RowDefinition />
                             </Grid.RowDefinitions>
                             
                             <!-->20181009待加滚动条<!-->
@@ -757,284 +756,275 @@
 
                             </Canvas>
 
-                            <GridSplitter Grid.Row="1" Background="Purple" Height="3" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
-
-                            <!-->实时输入<!-->
-                            <Canvas Grid.Row="2" x:Name="Canvas_RealTimeInput" Width="450" MaxHeight="450" VerticalAlignment="Top" HorizontalAlignment="Left" Background="White">
-                                <!--Condenser!-->
-                                <GroupBox  Grid.Column="0" x:Name="GroupBox_RealTimeInputShow_Condenser" Header="当前输入情况" HorizontalAlignment="Center" VerticalAlignment="Top" Height="Auto" MinWidth="455" Width="Auto" Margin="0,0,0,0" Visibility="Collapsed">
-
-                                    <ListBox x:Name="ListBox_RealTimeInputShow_Condenser" Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Width="450" Height="414" ScrollViewer.VerticalScrollBarVisibility="Visible"  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-
-                                        <ListBox.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <UniformGrid Columns="3"/>
-                                            </ItemsPanelTemplate>
-                                        </ListBox.ItemsPanel>
-
-                                        <ListBoxItem Content="换热器类型:"/>
-                                        <ListBoxItem Content="{Binding ElementName=ComboBox_hextype,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="------换热管------" FontWeight="Bold"/>
-                                        <ListBoxItem Content=""/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="管型号:"/>
-                                        <ListBoxItem Content="{Binding ElementName=ComboBox_TubeVersion,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="管种类:"/>
-                                        <ListBoxItem Content="{Binding ElementName=ComboBox_tubetype,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-
-                                        <ListBoxItem Content="管外径:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Do,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
-
-
-                                        <ListBoxItem Content="管壁厚:"/>
-                                        <ListBoxItem Content="{Binding ElementName=thick_tube,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
-
-                                        <ListBoxItem Content="管长:"/>
-                                        <ListBoxItem Content="{Binding ElementName=L,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="管/排:"/>
-                                        <ListBoxItem Content="{Binding ElementName=tube_per,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
-
-                                        <ListBoxItem Content="管排:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Row,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-
-                                        <ListBoxItem Content="管间距:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Pt,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
-
-                                        <ListBoxItem Content="列间距:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Pr,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
-
-                                        <ListBoxItem Content="------翅片------" FontWeight="Bold"/>
-                                        <ListBoxItem Content=""/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="每英尺翅片数"/>
-                                        <ListBoxItem Content="{Binding ElementName=Fnum,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="翅片厚度："/>
-                                        <ListBoxItem Content="{Binding ElementName=Fthick,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
-
-
-                                        <ListBoxItem Content="翅片种类："/>
-                                        <ListBoxItem Content="{Binding ElementName=ComboBox_fintype,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-
-                                        <ListBoxItem Content="------流路------" FontWeight="Bold"/>
-                                        <ListBoxItem Content=""/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="流路数:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Cirnum,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-
-                                        <ListBoxItem Content="流动形式:"/>
-                                        <ListBoxItem Content="{Binding ElementName=ComboBox_flowtype,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-
-                                        <ListBoxItem Content="------制冷剂侧------" FontWeight="Bold"/>
-                                        <ListBoxItem Content=""/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="制冷剂："/>
-                                        <ListBoxItem Content="{Binding ElementName=ComboBox_Refrigerant,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="进口饱和温度:"/>
-                                        <ListBoxItem Content="{Binding ElementName=tc,Path=Text}"/>
-                                        <ListBoxItem Content="C"/>
-
-                                        <ListBoxItem Content="进口温度:"/>
-                                        <ListBoxItem Content="{Binding ElementName=tri,Path=Text}"/>
-                                        <ListBoxItem Content="C"/>
-
-                                        <ListBoxItem Content="出口制冷剂流量:"/>
-                                        <ListBoxItem Content="{Binding ElementName=mr,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
-
-                                        <ListBoxItem Content="出口干度:"/>
-                                        <ListBoxItem Content="{Binding ElementName=xo_Cond,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
-
-                                        <ListBoxItem Content="出口过冷度:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Tro_sub_Cond,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
-
-                                        <ListBoxItem Content="------空气侧------" FontWeight="Bold"/>
-                                        <ListBoxItem Content=""/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="进风温度:"/>
-                                        <ListBoxItem Content="{Binding ElementName=tai,Path=Text}"/>
-                                        <ListBoxItem Content="C"/>
-
-                                        <ListBoxItem Content="进风相对湿度:"/>
-                                        <ListBoxItem Content="{Binding ElementName=RHi,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="体积流量:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Va,Path=Text}"/>
-                                        <ListBoxItem Content="m3/s"/>
-                                    </ListBox>
-
-                                </GroupBox>
-
-                                <!--Evaporator!-->
-                                <GroupBox Grid.Row="2" x:Name="GroupBox_RealTimeInputShow_Evaporator" Header="当前输入情况" HorizontalAlignment="Center" VerticalAlignment="Top" Height="Auto" MinWidth="455" Width="Auto" Margin="0,0,0,0" Visibility="Collapsed">
-
-                                    <ListBox Margin="0,0,0,0" x:Name="ListBox_RealTimeInputShow_Evaporator" HorizontalAlignment="Center" VerticalAlignment="Top" MinWidth="450" Width="Auto" Height="414" ScrollViewer.VerticalScrollBarVisibility="Visible"  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-
-                                        <ListBox.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <UniformGrid Columns="3"/>
-                                            </ItemsPanelTemplate>
-                                        </ListBox.ItemsPanel>
-
-                                        <ListBoxItem Content="换热器类型:"/>
-                                        <ListBoxItem Content="{Binding ElementName=ComboBox_hextype,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="------换热管------" FontWeight="Bold"/>
-                                        <ListBoxItem Content=""/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="管型号:"/>
-                                        <ListBoxItem Content="{Binding ElementName=ComboBox_TubeVersion,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="管种类:"/>
-                                        <ListBoxItem Content="{Binding ElementName=ComboBox_tubetype,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="管外径:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Do,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
-
-
-                                        <ListBoxItem Content="管壁厚:"/>
-                                        <ListBoxItem Content="{Binding ElementName=thick_tube,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
-
-                                        <ListBoxItem Content="管长:"/>
-                                        <ListBoxItem Content="{Binding ElementName=L,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="管/排:"/>
-                                        <ListBoxItem Content="{Binding ElementName=tube_per,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
-
-                                        <ListBoxItem Content="管排:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Row,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-
-                                        <ListBoxItem Content="管间距:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Pt,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
-
-                                        <ListBoxItem Content="列间距:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Pr,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
-
-                                        <ListBoxItem Content="------翅片------" FontWeight="Bold"/>
-                                        <ListBoxItem Content=""/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="每英尺翅片数"/>
-                                        <ListBoxItem Content="{Binding ElementName=Fnum,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="翅片厚度："/>
-                                        <ListBoxItem Content="{Binding ElementName=Fthick,Path=Text}"/>
-                                        <ListBoxItem Content="mm"/>
-
-
-                                        <ListBoxItem Content="翅片种类："/>
-                                        <ListBoxItem Content="{Binding ElementName=ComboBox_fintype,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="------流路------" FontWeight="Bold"/>
-                                        <ListBoxItem Content=""/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="流路数:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Cirnum,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-
-                                        <ListBoxItem Content="流动形式:"/>
-                                        <ListBoxItem Content="{Binding ElementName=ComboBox_flowtype,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-
-                                        <ListBoxItem Content="------制冷剂------" FontWeight="Bold"/>
-                                        <ListBoxItem Content=""/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="制冷剂："/>
-                                        <ListBoxItem Content="{Binding ElementName=ComboBox_Refrigerant,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="进口压力:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Pri_Evap,Path=Text}"/>
-                                        <ListBoxItem Content="kPa"/>
-
-                                        <ListBoxItem Content="进口干度:"/>
-                                        <ListBoxItem Content="{Binding ElementName=xi_Evap,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="进口焓值:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Hri_Evap,Path=Text}"/>
-                                        <ListBoxItem Content="kJ/kg"/>
-
-                                        <ListBoxItem Content="进口阀前温度:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Tri_ValveBefore,Path=Text}"/>
-                                        <ListBoxItem Content="C"/>
-
-                                        <ListBoxItem Content="进口阀前压力:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Pri_ValveBefore,Path=Text}"/>
-                                        <ListBoxItem Content="kPa"/>
-
-                                        <ListBoxItem Content="出口饱和温度:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Tcro_Evap,Path=Text}"/>
-                                        <ListBoxItem Content="kPa"/>
-
-                                        <ListBoxItem Content="出口过热度:"/>
-                                        <ListBoxItem Content="{Binding ElementName=Tro_sub_Evap,Path=Text}"/>
-                                        <ListBoxItem Content="C"/>
-
-                                        <ListBoxItem Content="出口干度:"/>
-                                        <ListBoxItem Content="{Binding ElementName=xo_Evap,Path=Text}"/>
-                                        <ListBoxItem Content=""/>
-
-                                        <ListBoxItem Content="出口流量:"/>
-                                        <ListBoxItem Content="{Binding ElementName=mro_Evap,Path=Text}"/>
-                                        <ListBoxItem Content="kg/s"/>
-
-                                    </ListBox>
-                                </GroupBox>
-                                
-                            </Canvas>
+                            <!--><GridSplitter Grid.Row="1" Background="Purple" Height="3" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                            <!-->
+                            <GridSplitter Background="Purple" Height="3" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
                             
+                            <!-->实时输入<!-->
+                            <!--Condenser!-->
+                            <ListBox Grid.Row="1" x:Name="ListBox_RealTimeInputShow_Condenser" Margin="0,0,0,0" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Visible"  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="3"/>
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+
+                                <ListBoxItem Content="换热器类型:"/>
+                                <ListBoxItem Content="{Binding ElementName=ComboBox_hextype,Path=Text}"/>
+                                <ListBoxItem Content=""/>
+
+                                <ListBoxItem Content="------换热管------" FontWeight="Bold"/>
+                                <ListBoxItem Content=""/>
+                                <ListBoxItem Content=""/>
+
+                                <ListBoxItem Content="管型号:"/>
+                                <ListBoxItem Content="{Binding ElementName=ComboBox_TubeVersion,Path=Text}"/>
+                                <ListBoxItem Content=""/>
+
+                                <ListBoxItem Content="管种类:"/>
+                                <ListBoxItem Content="{Binding ElementName=ComboBox_tubetype,Path=Text}"/>
+                                <ListBoxItem Content=""/>
+
+
+                                <ListBoxItem Content="管外径:"/>
+                                <ListBoxItem Content="{Binding ElementName=Do,Path=Text}"/>
+                                <ListBoxItem Content="mm"/>
+
+
+                                <ListBoxItem Content="管壁厚:"/>
+                                <ListBoxItem Content="{Binding ElementName=thick_tube,Path=Text}"/>
+                                <ListBoxItem Content="mm"/>
+
+                                <ListBoxItem Content="管长:"/>
+                                <ListBoxItem Content="{Binding ElementName=L,Path=Text}"/>
+                                <ListBoxItem Content=""/>
+
+                                <ListBoxItem Content="管/排:"/>
+                                <ListBoxItem Content="{Binding ElementName=tube_per,Path=Text}"/>
+                                <ListBoxItem Content="mm"/>
+
+                                <ListBoxItem Content="管排:"/>
+                                <ListBoxItem Content="{Binding ElementName=Row,Path=Text}"/>
+                                <ListBoxItem Content=""/>
+
+
+                                <ListBoxItem Content="管间距:"/>
+                                <ListBoxItem Content="{Binding ElementName=Pt,Path=Text}"/>
+                                <ListBoxItem Content="mm"/>
+
+                                <ListBoxItem Content="列间距:"/>
+                                <ListBoxItem Content="{Binding ElementName=Pr,Path=Text}"/>
+                                <ListBoxItem Content="mm"/>
+
+                                <ListBoxItem Content="------翅片------" FontWeight="Bold"/>
+                                <ListBoxItem Content=""/>
+                                <ListBoxItem Content=""/>
+
+                                <ListBoxItem Content="每英尺翅片数"/>
+                                <ListBoxItem Content="{Binding ElementName=Fnum,Path=Text}"/>
+                                <ListBoxItem Content=""/>
+
+                                <ListBoxItem Content="翅片厚度："/>
+                                <ListBoxItem Content="{Binding ElementName=Fthick,Path=Text}"/>
+                                <ListBoxItem Content="mm"/>
+
+
+                                <ListBoxItem Content="翅片种类："/>
+                                <ListBoxItem Content="{Binding ElementName=ComboBox_fintype,Path=Text}"/>
+                                <ListBoxItem Content=""/>
+
+
+                                <ListBoxItem Content="------流路------" FontWeight="Bold"/>
+                                <ListBoxItem Content=""/>
+                                <ListBoxItem Content=""/>
+
+                                <ListBoxItem Content="流路数:"/>
+                                <ListBoxItem Content="{Binding ElementName=Cirnum,Path=Text}"/>
+                                <ListBoxItem Content=""/>
+
+
+                                <ListBoxItem Content="流动形式:"/>
+                                <ListBoxItem Content="{Binding ElementName=ComboBox_flowtype,Path=Text}"/>
+                                <ListBoxItem Content=""/>
+
+
+                                <ListBoxItem Content="------制冷剂侧------" FontWeight="Bold"/>
+                                <ListBoxItem Content=""/>
+                                <ListBoxItem Content=""/>
+
+                                <ListBoxItem Content="制冷剂："/>
+                                <ListBoxItem Content="{Binding ElementName=ComboBox_Refrigerant,Path=Text}"/>
+                                <ListBoxItem Content=""/>
+
+                                <ListBoxItem Content="进口饱和温度:"/>
+                                <ListBoxItem Content="{Binding ElementName=tc,Path=Text}"/>
+                                <ListBoxItem Content="C"/>
+
+                                <ListBoxItem Content="进口温度:"/>
+                                <ListBoxItem Content="{Binding ElementName=tri,Path=Text}"/>
+                                <ListBoxItem Content="C"/>
+
+                                <ListBoxItem Content="出口制冷剂流量:"/>
+                                <ListBoxItem Content="{Binding ElementName=mr,Path=Text}"/>
+                                <ListBoxItem Content="mm"/>
+
+                                <ListBoxItem Content="出口干度:"/>
+                                <ListBoxItem Content="{Binding ElementName=xo_Cond,Path=Text}"/>
+                                <ListBoxItem Content="mm"/>
+
+                                <ListBoxItem Content="出口过冷度:"/>
+                                <ListBoxItem Content="{Binding ElementName=Tro_sub_Cond,Path=Text}"/>
+                                <ListBoxItem Content="mm"/>
+
+                                <ListBoxItem Content="------空气侧------" FontWeight="Bold"/>
+                                <ListBoxItem Content=""/>
+                                <ListBoxItem Content=""/>
+
+                                <ListBoxItem Content="进风温度:"/>
+                                <ListBoxItem Content="{Binding ElementName=tai,Path=Text}"/>
+                                <ListBoxItem Content="C"/>
+
+                                <ListBoxItem Content="进风相对湿度:"/>
+                                <ListBoxItem Content="{Binding ElementName=RHi,Path=Text}"/>
+                                <ListBoxItem Content=""/>
+
+                                <ListBoxItem Content="体积流量:"/>
+                                <ListBoxItem Content="{Binding ElementName=Va,Path=Text}"/>
+                                <ListBoxItem Content="m3/s"/>
+                            </ListBox>
+
+                            <!--Evaporator!-->
+                            <ListBox Grid.Row="1" x:Name="ListBox_RealTimeInputShow_Evaporator" Margin="0,0,0,0" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Visible"  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="3"/>
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+
+                                <ListBoxItem Content="换热器类型:"/>
+                                <ListBoxItem Content="{Binding ElementName=ComboBox_hextype,Path=Text}"/>
+                                <ListBoxItem Content=""/>
+
+                                <ListBoxItem Content="------换热管------" FontWeight="Bold"/>
+                                <ListBoxItem Content=""/>
+                                <ListBoxItem Content=""/>
+
+                                <ListBoxItem Content="管型号:"/>
+                                <ListBoxItem Content="{Binding ElementName=ComboBox_TubeVersion,Path=Text}"/>
+                                <ListBoxItem Content=""/>
+
+                                <ListBoxItem Content="管种类:"/>
+                                <ListBoxItem Content="{Binding ElementName=ComboBox_tubetype,Path=Text}"/>
+                                <ListBoxItem Content=""/>
+
+                                <ListBoxItem Content="管外径:"/>
+                                <ListBoxItem Content="{Binding ElementName=Do,Path=Text}"/>
+                                <ListBoxItem Content="mm"/>
+
+
+                                <ListBoxItem Content="管壁厚:"/>
+                                <ListBoxItem Content="{Binding ElementName=thick_tube,Path=Text}"/>
+                                <ListBoxItem Content="mm"/>
+
+                                <ListBoxItem Content="管长:"/>
+                                <ListBoxItem Content="{Binding ElementName=L,Path=Text}"/>
+                                <ListBoxItem Content=""/>
+
+                                <ListBoxItem Content="管/排:"/>
+                                <ListBoxItem Content="{Binding ElementName=tube_per,Path=Text}"/>
+                                <ListBoxItem Content="mm"/>
+
+                                <ListBoxItem Content="管排:"/>
+                                <ListBoxItem Content="{Binding ElementName=Row,Path=Text}"/>
+                                <ListBoxItem Content=""/>
+
+
+                                <ListBoxItem Content="管间距:"/>
+                                <ListBoxItem Content="{Binding ElementName=Pt,Path=Text}"/>
+                                <ListBoxItem Content="mm"/>
+
+                                <ListBoxItem Content="列间距:"/>
+                                <ListBoxItem Content="{Binding ElementName=Pr,Path=Text}"/>
+                                <ListBoxItem Content="mm"/>
+
+                                <ListBoxItem Content="------翅片------" FontWeight="Bold"/>
+                                <ListBoxItem Content=""/>
+                                <ListBoxItem Content=""/>
+
+                                <ListBoxItem Content="每英尺翅片数"/>
+                                <ListBoxItem Content="{Binding ElementName=Fnum,Path=Text}"/>
+                                <ListBoxItem Content=""/>
+
+                                <ListBoxItem Content="翅片厚度："/>
+                                <ListBoxItem Content="{Binding ElementName=Fthick,Path=Text}"/>
+                                <ListBoxItem Content="mm"/>
+
+
+                                <ListBoxItem Content="翅片种类："/>
+                                <ListBoxItem Content="{Binding ElementName=ComboBox_fintype,Path=Text}"/>
+                                <ListBoxItem Content=""/>
+
+                                <ListBoxItem Content="------流路------" FontWeight="Bold"/>
+                                <ListBoxItem Content=""/>
+                                <ListBoxItem Content=""/>
+
+                                <ListBoxItem Content="流路数:"/>
+                                <ListBoxItem Content="{Binding ElementName=Cirnum,Path=Text}"/>
+                                <ListBoxItem Content=""/>
+
+
+                                <ListBoxItem Content="流动形式:"/>
+                                <ListBoxItem Content="{Binding ElementName=ComboBox_flowtype,Path=Text}"/>
+                                <ListBoxItem Content=""/>
+
+
+                                <ListBoxItem Content="------制冷剂------" FontWeight="Bold"/>
+                                <ListBoxItem Content=""/>
+                                <ListBoxItem Content=""/>
+
+                                <ListBoxItem Content="制冷剂："/>
+                                <ListBoxItem Content="{Binding ElementName=ComboBox_Refrigerant,Path=Text}"/>
+                                <ListBoxItem Content=""/>
+
+                                <ListBoxItem Content="进口压力:"/>
+                                <ListBoxItem Content="{Binding ElementName=Pri_Evap,Path=Text}"/>
+                                <ListBoxItem Content="kPa"/>
+
+                                <ListBoxItem Content="进口干度:"/>
+                                <ListBoxItem Content="{Binding ElementName=xi_Evap,Path=Text}"/>
+                                <ListBoxItem Content=""/>
+
+                                <ListBoxItem Content="进口焓值:"/>
+                                <ListBoxItem Content="{Binding ElementName=Hri_Evap,Path=Text}"/>
+                                <ListBoxItem Content="kJ/kg"/>
+
+                                <ListBoxItem Content="进口阀前温度:"/>
+                                <ListBoxItem Content="{Binding ElementName=Tri_ValveBefore,Path=Text}"/>
+                                <ListBoxItem Content="C"/>
+
+                                <ListBoxItem Content="进口阀前压力:"/>
+                                <ListBoxItem Content="{Binding ElementName=Pri_ValveBefore,Path=Text}"/>
+                                <ListBoxItem Content="kPa"/>
+
+                                <ListBoxItem Content="出口饱和温度:"/>
+                                <ListBoxItem Content="{Binding ElementName=Tcro_Evap,Path=Text}"/>
+                                <ListBoxItem Content="kPa"/>
+
+                                <ListBoxItem Content="出口过热度:"/>
+                                <ListBoxItem Content="{Binding ElementName=Tro_sub_Evap,Path=Text}"/>
+                                <ListBoxItem Content="C"/>
+
+                                <ListBoxItem Content="出口干度:"/>
+                                <ListBoxItem Content="{Binding ElementName=xo_Evap,Path=Text}"/>
+                                <ListBoxItem Content=""/>
+
+                                <ListBoxItem Content="出口流量:"/>
+                                <ListBoxItem Content="{Binding ElementName=mro_Evap,Path=Text}"/>
+                                <ListBoxItem Content="kg/s"/>
+                            </ListBox>
+                          
                         </Grid>
                         
                     </Grid>

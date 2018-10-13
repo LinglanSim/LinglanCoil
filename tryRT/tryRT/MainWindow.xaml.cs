@@ -240,7 +240,7 @@ namespace tryRT
             this.xo_Evap.Text = "0";
 
             //初始化湿空气数组
-            Model.HumidAirSourceData.SourceTableData = Model.HumidAirSourceData.InitializeSourceTableData();
+            //Model.HumidAirSourceData.SourceTableData = Model.HumidAirSourceData.InitializeSourceTableData();
 
             //#region//测试湿空气物性查表对错用
             ////测试用
@@ -965,9 +965,9 @@ namespace tryRT
             this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);
 
             //调显示高度
-            this.Grid_Picture.Height = new GridLength(290, GridUnitType.Pixel);
-            this.ListBox_RealTimeInputShow_Condenser.Height = 414;
-            this.ListBox_RealTimeInputShow_Evaporator.Height = 414;
+            //this.Grid_Picture.Height = new GridLength(290, GridUnitType.Pixel);
+            //this.ListBox_RealTimeInputShow_Condenser.Height = 414;
+            //this.ListBox_RealTimeInputShow_Evaporator.Height = 414;
         }
 
         private void TreeView_Fin_GotFocus(object sender, RoutedEventArgs e)
@@ -996,9 +996,9 @@ namespace tryRT
             this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);
 
             //调显示高度
-            this.Grid_Picture.Height = new GridLength(290, GridUnitType.Pixel);
-            this.ListBox_RealTimeInputShow_Condenser.Height = 414;
-            this.ListBox_RealTimeInputShow_Evaporator.Height = 414;
+            //this.Grid_Picture.Height = new GridLength(290, GridUnitType.Pixel);
+            //this.ListBox_RealTimeInputShow_Condenser.Height = 414;
+            //this.ListBox_RealTimeInputShow_Evaporator.Height = 414;
         }
 
         private void TreeView_Pass_GotFocus(object sender, RoutedEventArgs e)
@@ -1029,9 +1029,9 @@ namespace tryRT
                 TextBlock_AirFlow.Text = AirFlowString;
 
                 //调显示高度
-                this.Grid_Picture.Height = new GridLength(450, GridUnitType.Pixel);
-                this.ListBox_RealTimeInputShow_Condenser.Height = 254;
-                this.ListBox_RealTimeInputShow_Evaporator.Height = 254;
+                //this.Grid_Picture.Height = new GridLength(450, GridUnitType.Pixel);
+                //this.ListBox_RealTimeInputShow_Condenser.Height = 254;
+                //this.ListBox_RealTimeInputShow_Evaporator.Height = 254;
             }
             else 
             {
@@ -1044,9 +1044,9 @@ namespace tryRT
                 this.DockPanel_Picture.Visibility = Visibility.Collapsed;
 
                 //调显示高度
-                this.Grid_Picture.Height = new GridLength(290, GridUnitType.Pixel);
-                this.ListBox_RealTimeInputShow_Condenser.Height = 414;
-                this.ListBox_RealTimeInputShow_Evaporator.Height = 414;
+                //this.Grid_Picture.Height = new GridLength(290, GridUnitType.Pixel);
+                //this.ListBox_RealTimeInputShow_Condenser.Height = 414;
+                //this.ListBox_RealTimeInputShow_Evaporator.Height = 414;
             }
             //调显示宽度
             this.Grid_Mid.MaxWidth = 450;
@@ -1098,9 +1098,9 @@ namespace tryRT
             this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);
 
             //调显示高度
-            this.Grid_Picture.Height = new GridLength(290, GridUnitType.Pixel);
-            this.ListBox_RealTimeInputShow_Condenser.Height = 414;
-            this.ListBox_RealTimeInputShow_Evaporator.Height = 414;
+            //this.Grid_Picture.Height = new GridLength(290, GridUnitType.Pixel);
+            //this.ListBox_RealTimeInputShow_Condenser.Height = 414;
+            //this.ListBox_RealTimeInputShow_Evaporator.Height = 414;
         }
 
         private void TreeView_Wind_GotFocus(object sender, RoutedEventArgs e)
@@ -1130,9 +1130,9 @@ namespace tryRT
              
 
             //调显示高度
-            this.Grid_Picture.Height = new GridLength(290, GridUnitType.Pixel);
-            this.ListBox_RealTimeInputShow_Condenser.Height = 414;
-            this.ListBox_RealTimeInputShow_Evaporator.Height = 414;
+            //this.Grid_Picture.Height = new GridLength(290, GridUnitType.Pixel);
+            //this.ListBox_RealTimeInputShow_Condenser.Height = 414;
+            //this.ListBox_RealTimeInputShow_Evaporator.Height = 414;
 
         }
 
@@ -1162,10 +1162,10 @@ namespace tryRT
             this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);                       
 
             //调显示高度
-            this.Grid_Picture.Height = new GridLength(450, GridUnitType.Pixel);
+            //this.Grid_Picture.Height = new GridLength(450, GridUnitType.Pixel);
 
-            this.ListBox_RealTimeInputShow_Condenser.Height = 254;
-            this.ListBox_RealTimeInputShow_Evaporator.Height = 254;
+            //this.ListBox_RealTimeInputShow_Condenser.Height = 254;
+            //this.ListBox_RealTimeInputShow_Evaporator.Height = 254;
 
             //this.GroupBox_ManualArrangeCirnum.Header = "流路分配";
             this.StackPanel_ManualArrangeCirnum.Visibility = Visibility.Collapsed;  
@@ -1197,10 +1197,10 @@ namespace tryRT
             this.Grid_Mid.Width = new GridLength(650, GridUnitType.Pixel);
 
             //调显示高度
-            this.Grid_Picture.Height = new GridLength(450, GridUnitType.Pixel);
+            //this.Grid_Picture.Height = new GridLength(450, GridUnitType.Pixel);
 
-            this.ListBox_RealTimeInputShow_Condenser.Height = 254;
-            this.ListBox_RealTimeInputShow_Evaporator.Height = 254;
+            //this.ListBox_RealTimeInputShow_Condenser.Height = 254;
+            //this.ListBox_RealTimeInputShow_Evaporator.Height = 254;
 
             //this.GroupBox_ManualArrangeCirnum.Header = "流路分配";
             this.StackPanel_ManualArrangeCirnum.Visibility = Visibility.Collapsed;
@@ -1290,10 +1290,10 @@ namespace tryRT
             this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);
 
             //调显示高度
-            this.Grid_Picture.Height = new GridLength(290, GridUnitType.Pixel);
+            //this.Grid_Picture.Height = new GridLength(290, GridUnitType.Pixel);
 
-            this.ListBox_RealTimeInputShow_Condenser.Height = 414;
-            this.ListBox_RealTimeInputShow_Evaporator.Height = 414;
+            //this.ListBox_RealTimeInputShow_Condenser.Height = 414;
+            //this.ListBox_RealTimeInputShow_Evaporator.Height = 414;
         }
 
         private void TreeView_Distributer_GotFocus(object sender, RoutedEventArgs e)
@@ -1322,10 +1322,10 @@ namespace tryRT
             this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);
 
             //调显示高度
-            this.Grid_Picture.Height = new GridLength(450, GridUnitType.Pixel);
+            //this.Grid_Picture.Height = new GridLength(450, GridUnitType.Pixel);
 
-            this.ListBox_RealTimeInputShow_Condenser.Height = 254;
-            this.ListBox_RealTimeInputShow_Evaporator.Height = 254;
+            //this.ListBox_RealTimeInputShow_Condenser.Height = 254;
+            //this.ListBox_RealTimeInputShow_Evaporator.Height = 254;
         }
 
         private void TreeView_HExTube_GotFocus(object sender, RoutedEventArgs e)
@@ -1354,10 +1354,10 @@ namespace tryRT
             this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);
 
             //调显示高度
-            this.Grid_Picture.Height = new GridLength(290, GridUnitType.Pixel);
+            //this.Grid_Picture.Height = new GridLength(290, GridUnitType.Pixel);
 
-            this.ListBox_RealTimeInputShow_Condenser.Height = 414;
-            this.ListBox_RealTimeInputShow_Evaporator.Height = 414;
+            //this.ListBox_RealTimeInputShow_Condenser.Height = 414;
+            //this.ListBox_RealTimeInputShow_Evaporator.Height = 414;
         }
 
         //TreeView****************************************************************************************************************End
@@ -1636,8 +1636,8 @@ namespace tryRT
             this.GroupBox_RefOutlet_Evaporator.Visibility = Visibility.Hidden;
             this.GroupBox_RefInlet_Condenser.Visibility = Visibility.Visible;
             this.GroupBox_RefOutlet_Condenser.Visibility = Visibility.Visible;
-            this.GroupBox_RealTimeInputShow_Condenser.Visibility = Visibility.Visible;
-            this.GroupBox_RealTimeInputShow_Evaporator.Visibility = Visibility.Hidden;
+            this.ListBox_RealTimeInputShow_Condenser.Visibility = Visibility.Visible;
+            this.ListBox_RealTimeInputShow_Evaporator.Visibility = Visibility.Hidden;
             this.Canvas_0.Visibility = Visibility.Visible;
             this.Tri_ValveBefore.Text="24";
             this.Pri_ValveBefore.Text = "1729.2";
@@ -1658,8 +1658,8 @@ namespace tryRT
             this.GroupBox_RefOutlet_Evaporator.Visibility = Visibility.Visible;
             this.GroupBox_RefInlet_Condenser.Visibility = Visibility.Hidden;
             this.GroupBox_RefOutlet_Condenser.Visibility = Visibility.Hidden;
-            this.GroupBox_RealTimeInputShow_Condenser.Visibility = Visibility.Hidden;
-            this.GroupBox_RealTimeInputShow_Evaporator.Visibility = Visibility.Visible;
+            this.ListBox_RealTimeInputShow_Condenser.Visibility = Visibility.Hidden;
+            this.ListBox_RealTimeInputShow_Evaporator.Visibility = Visibility.Visible;
             this.Canvas_0.Visibility = Visibility.Visible;
             this.Tri_ValveBefore.Text = "20";
             this.Pri_ValveBefore.Text = "1842.28";
