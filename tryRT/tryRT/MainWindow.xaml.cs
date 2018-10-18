@@ -247,7 +247,7 @@ namespace tryRT
 
 
             //初始化湿空气数组
-            //Model.HumidAirSourceData.SourceTableData = Model.HumidAirSourceData.InitializeSourceTableData();
+            Model.HumidAirSourceData.SourceTableData = Model.HumidAirSourceData.InitializeSourceTableData();
 
             //#region//测试湿空气物性查表对错用
             ////测试用
