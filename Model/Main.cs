@@ -11,8 +11,11 @@ namespace Model
 {
     public class Main
     {
-        public CalcResult main_condenser_inputSC_py(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, CapiliaryInput capInput, AbstractState coolprop, double[,] SourceTableData)//mr+tri+tc+Tro_sub_Cond  Va+tai+Rhi   既可以输入流量也可以输入过冷度？按道理是:tri+tc+Tro_sub_Cond
+        public CalcResult main_condenser_inputSC(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, int[,] CirArrange, int[, ,] NodesInfo, string fin_type, string tube_type, string hex_type, CapiliaryInput capInput, double[,] SourceTableData,
+            double zh_a, double zdp_a, double zh_r, double zdp_r)//mr+tri+tc+Tro_sub_Cond  Va+tai+Rhi   既可以输入流量也可以输入过冷度？按道理是:tri+tc+Tro_sub_Cond
         {
+            string fluid = refInput.FluidName;// refri_in;// "R32";
+            AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             //***几何结构赋值***//
             CalcResult res = new CalcResult();
             int Nrow = geoInput.Nrow;//2
@@ -34,7 +37,7 @@ namespace Model
             int Nelement = 5;//5;单管单元格数赋值
 
             //流路均分设计
-            int[,] CirArrange;
+            //int[,] CirArrange;
 
             CircuitNumber CircuitInfo = new CircuitNumber();
             CircuitInfo.number = new int[] { CirNum, CirNum };
@@ -69,7 +72,7 @@ namespace Model
 
             int hexType = 1;
             //******制冷剂、风进口参数输入******//
-            string fluid = refInput.FluidName;
+            //string fluid = refInput.FluidName;
             //AbstractState coolprop = AbstractState.factory("HEOS", fluid);
             //double mr = refInput.Massflowrate;//initial input 
             double mr = 0.006;//initial input 
@@ -100,7 +103,16 @@ namespace Model
             //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
             //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
             int curve = 1; //
-            //double za = 1; //Adjust factor
+            double za = 1; //Adjust factor
+                        if (fin_type == "平片")
+                za = 1.0;
+            else if (fin_type == "louver")
+                za = 1.3;
+            else
+                za = 1.1;
+            za = za * zh_a;
+
+
             for (int i = 0; i < N_tube; i++)
             {
                 for (int j = 0; j < Nelement; j++)
@@ -117,8 +129,20 @@ namespace Model
             res.DPa = AirHTC.alpha1(Vel_ave, airInput.za, curve, geoInput_air, hexType).dP_a * airInput.zdpa;
 
             double eta_surface = 1;
-            double zh = refInput.zh;
-            double zdp = refInput.zdp;
+            double zh = 1;
+            double zdp = 1;
+
+            if (tube_type == "光管")
+            { zh = 1.0; zdp = 1.0; }
+            else if (tube_type == "内螺纹管")
+            { zh = 1.4; zdp = 1.2; }
+            else
+            { zh = 1.2; zdp = 1.1; }
+            zh = zh * zh_r;
+            zdp = zdp * zdp_r;
+
+
+
             coolprop.update(input_pairs.QT_INPUTS, 0, tc + 273.15);
             double pri = coolprop.p() / 1000;
             //double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
@@ -412,7 +436,8 @@ namespace Model
    
         //}
 
-        public CalcResult main_evaporator_inputSH_py(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, int[,] CirArrange, int[, ,] NodesInfo, string fin_type, string tube_type, string hex_type, CapiliaryInput capInput, double[,] SourceTableData)//mr+te+（P_exv+T_exv/xi_Evap/H_exv）+Tro_sub_Evap  Va+tai+Rhi   既可以输入流量也可以输入过冷度？按道理是:te+P_exv+T_exv+Tro_sub_Evap
+        public CalcResult main_evaporator_inputSH(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, int[,] CirArrange, int[, ,] NodesInfo, string fin_type, string tube_type, string hex_type, CapiliaryInput capInput, double[,] SourceTableData,
+            double zh_a, double zdp_a, double zh_r, double zdp_r)//mr+te+（P_exv+T_exv/xi_Evap/H_exv）+Tro_sub_Evap  Va+tai+Rhi   既可以输入流量也可以输入过冷度？按道理是:te+P_exv+T_exv+Tro_sub_Evap
         {
             string fluid = refInput.FluidName;// refri_in;// "R32";
             AbstractState coolprop = AbstractState.factory("HEOS", fluid);
@@ -484,6 +509,7 @@ namespace Model
                 za = 1.3;
             else
                 za = 1.1;
+            za = za * zh_a;
 
             for (int i = 0; i < N_tube; i++)
             {
@@ -505,6 +531,8 @@ namespace Model
             { zh = 1.4; zdp = 1.2; }
             else
             { zh = 1.2; zdp = 1.1; }
+            zh = zh * zh_r;
+            zdp = zdp * zdp_r;
 
             double tai = airInput.tai;
             double RHi = airInput.RHi;
@@ -605,7 +633,8 @@ namespace Model
             return res;
         }
 
-        public CalcResult main_evaporator_inputQ(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, int[,] CirArrange, int[, ,] NodesInfo, string fin_type, string tube_type, string hex_type, CapiliaryInput capInput, double[,] SourceTableData)//mr+te+（P_exv+T_exv/xi_Evap/H_exv）  Va+tai+Rhi
+        public CalcResult main_evaporator_inputQ(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, int[,] CirArrange, int[, ,] NodesInfo, string fin_type, string tube_type, string hex_type, CapiliaryInput capInput, double[,] SourceTableData,
+            double zh_a, double zdp_a, double zh_r, double zdp_r)//mr+te+（P_exv+T_exv/xi_Evap/H_exv）  Va+tai+Rhi
         {
             string fluid = refInput.FluidName;// refri_in;// "R32";
             AbstractState coolprop = AbstractState.factory("HEOS", fluid);
@@ -677,6 +706,7 @@ namespace Model
                 za = 1.3;
             else
                 za = 1.1;
+            za = za * zh_a;
 
             for (int i = 0; i < N_tube; i++)
             {
@@ -698,6 +728,8 @@ namespace Model
             { zh = 1.4; zdp = 1.2; }
             else
             { zh = 1.2; zdp = 1.1; }
+            zh = zh * zh_r;
+            zdp = zdp * zdp_r;
 
             double tai = airInput.tai;
             double RHi = airInput.RHi;
@@ -788,7 +820,8 @@ namespace Model
             return res;
 
         }
-        public CalcResult main_condenser_inputQ(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, int[,] CirArrange, int[, ,] NodesInfo, string fin_type, string tube_type, string hex_type, CapiliaryInput capInput, double[,] SourceTableData)//mr+tri+tc  Va+tai+Rhi
+        public CalcResult main_condenser_inputQ(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, int[,] CirArrange, int[, ,] NodesInfo, string fin_type, string tube_type, string hex_type, CapiliaryInput capInput, double[,] SourceTableData,
+            double zh_a, double zdp_a, double zh_r, double zdp_r)//mr+tri+tc  Va+tai+Rhi
         {
             string fluid = refInput.FluidName;// refri_in;// "R32";
             AbstractState coolprop = AbstractState.factory("HEOS", fluid);
@@ -860,6 +893,7 @@ namespace Model
                 za = 1.3;
             else
                 za = 1.1;
+            za = za * zh_a;
 
             for (int i = 0; i < N_tube; i++)
             {
@@ -881,6 +915,8 @@ namespace Model
             { zh = 1.4; zdp = 1.2; }
             else
             { zh = 1.2; zdp = 1.1; }
+            zh = zh * zh_r;
+            zdp = zdp * zdp_r;
 
             double tai = airInput.tai;// tai_in;//26.67;
             double RHi = airInput.RHi;// RHi_in;//0.469;
@@ -1276,7 +1312,8 @@ namespace Model
 
             return res;
         }
-        public CalcResult main_evaporator(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, int[,] CirArrange, int[, ,] NodesInfo, string fin_type, string tube_type, string hex_type, CapiliaryInput capInput, double[,] SourceTableData)//mr+te+（P_exv+T_exv/xi_Evap/H_exv）  Va+tai+Rhi
+        public CalcResult main_evaporator(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, int[,] CirArrange, int[, ,] NodesInfo, string fin_type, string tube_type, string hex_type,
+            CapiliaryInput capInput, double[,] SourceTableData, double zh_a, double zdp_a, double zh_r, double zdp_r)//mr+te+（P_exv+T_exv/xi_Evap/H_exv）  Va+tai+Rhi
         {
             string fluid = refInput.FluidName;// refri_in;// "R32";
             AbstractState coolprop = AbstractState.factory("HEOS", fluid);
@@ -1347,7 +1384,9 @@ namespace Model
             else if (fin_type == "louver")
                 za = 1.3;
             else
-                za = 1.1;
+                za = 1.1;// wavy-fin
+
+            za = za*zh_a;
 
             for (int i = 0; i < N_tube; i++)
             {
@@ -1370,6 +1409,8 @@ namespace Model
             { zh = 1.4; zdp = 1.2; }
             else
             { zh = 1.2; zdp = 1.1; }
+            zh = zh * zh_r;
+            zdp = zdp * zdp_r;
 
             double tai = airInput.tai;
             double RHi = airInput.RHi;
@@ -1385,7 +1426,6 @@ namespace Model
             double hri = 0;
             if(refInput.H_exv!=0)
             {
-
                 hri = refInput.H_exv;
             }
             else if(refInput.xi_Evap!=0)
@@ -1424,7 +1464,9 @@ namespace Model
             return res;
 
         }
-        public CalcResult main_condenser(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, int[,] CirArrange, int[, ,] NodesInfo, string fin_type, string tube_type, string hex_type, CapiliaryInput capInput, double[,] SourceTableData)//mr+tc+tri  Va+tai+Rhi
+        public CalcResult main_condenser(RefStateInput refInput, AirStateInput airInput, GeometryInput geoInput, int[,] CirArrange, int[, ,] NodesInfo,
+            string fin_type, string tube_type, string hex_type, CapiliaryInput capInput, double[,] SourceTableData, double zh_a, double zdp_a,
+            double zh_r, double zdp_r)//mr+tc+tri  Va+tai+Rhi
         {
             string fluid = refInput.FluidName;// refri_in;// "R32";
             AbstractState coolprop = AbstractState.factory("HEOS", fluid);
@@ -1496,6 +1538,7 @@ namespace Model
                 za = 1.3;
             else
                 za = 1.1;
+            za = za * zh_a;
 
             for (int i = 0; i < N_tube; i++)
             {
@@ -1517,6 +1560,8 @@ namespace Model
             { zh = 1.4; zdp = 1.2; }
             else
             { zh = 1.2; zdp = 1.1; }
+            zh = zh * zh_r;
+            zdp = zdp * zdp_r;
 
             double tai = airInput.tai;// tai_in;//26.67;
             double RHi = airInput.RHi;// RHi_in;//0.469;
