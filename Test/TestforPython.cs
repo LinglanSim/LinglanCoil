@@ -21,11 +21,11 @@ namespace Test
             refInput.FluidName = "R32";
             AbstractState coolprop = AbstractState.factory("HEOS", refInput.FluidName);
             //*************if input SC or Sh, Massflowrate is the initial input***************
-            refInput.Massflowrate = 0.02;//0.02 //kg/s
-            refInput.zh = 3;
-            refInput.zdp = 3;
+            refInput.Massflowrate = 0.02161311486;//0.02 //kg/s
+            refInput.zh = 1.6;
+            refInput.zdp = 4;
             airInput.za = 1;
-            airInput.zdpa = 1;
+            airInput.zdpa = 1.0;
 
             //for condenser
             refInput.tc = 45;
@@ -34,18 +34,17 @@ namespace Test
             //refInput.tri = 70;
 
             //for evaporator
-            refInput.te = 285.15 - 273.15;//12
+            refInput.te = 6.92842345;//12
             //refInput.P_exv = CoolProp.PropsSI("P", "T", refInput.tc + 273.15, "Q", 0, refInput.FluidName) / 1000;
             coolprop.update(input_pairs.QT_INPUTS, 0, refInput.tc + 273.15);
             refInput.P_exv = coolprop.p() / 1000;
-
             refInput.T_exv = refInput.tc - 8;
-            refInput.H_exv = 260;
+            refInput.H_exv = 272;
 
             //air input
-            airInput.Volumetricflowrate = 0.12; //m3/s
-            airInput.tai = 25;//24.85
-            airInput.RHi = 0.9;
+            airInput.Volumetricflowrate = 0.23; //m3/s
+            airInput.tai = 27;//24.85
+            airInput.RHi = 0.47;
 
             //airInput.ha = 80;
 
@@ -58,7 +57,7 @@ namespace Test
             geoInput.L = 605;
             geoInput.FPI = 20;
             geoInput.Fthickness = 0.095;
-            geoInput.Nrow =1;
+            geoInput.Nrow =2;
             geoInput.Ntube = 15;
             geoInput.CirNum = 2;
 
@@ -79,10 +78,28 @@ namespace Test
 
             //DateTime Time2 = DateTime.Now;
             //double time01 = (Time2 - Time1).TotalSeconds;
-            //using (StreamWriter wr = File.AppendText(@"D:\time01.txt"))
+
+            //using (StreamWriter wr = File.AppendText(@"D:\QQQ.txt"))
             //{
-            //wr.WriteLine("time01, {0}", time01);
+            //    for (int i = 0; i < 10; i++)
+            //    {
+            //        refInput.H_exv = 270 + i;
+            //        var r = Main.main_evaporator_py(refInput, airInput, geoInput, HumidSourceData);
+            //        wr.WriteLine("{0}", r.Q);
+            //    }
             //}
+
+            //using (StreamWriter wr = File.AppendText(@"D:\QQQ.txt"))
+            //{
+            //    for (int i = 0; i < 15; i++)
+            //    {
+            //        for (int j = 0; j < 2;j++ )
+            //        {
+            //            wr.WriteLine("{0}", r.Q_detail[i,j]);
+            //        }
+            //    }
+            //}
+
             //double Tsc_set = 5;
             //double Tsh_set = 5;
             //var rr = Main.main_condenser_inputSC_py(Tsc_set, refInput, airInput, geoInput, capInput, coolprop);

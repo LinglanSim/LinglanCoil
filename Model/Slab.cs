@@ -653,7 +653,7 @@ namespace Model
             {
                 priconverge = CheckPin.CheckPriConverge(te, te_calc - 273.15, te_calc_org - 273.15, pri, pe, r[Ncir - 1].Pro); //res_slab.Pro
                 iterforPri++;
-                if (iterforPri >= 5)
+                if (iterforPri >= 20)
                 {
                     pri_4 =pri_3;
                     pri_3 =pri_2;
@@ -661,8 +661,8 @@ namespace Model
                     pri_1 = pri;
                     try
                     {
-                        if (pri_1 < pri_2 && (Math.Abs(pri_1 - pri_3) / pri_1 < 0.0001) ||
-                            Math.Abs(pri_1 - pri_4) / pri_1 < 0.0001)
+                        if (pri_1 < pri_2 && (Math.Abs(pri_1 - pri_3) / pri_1 < 1e-5) ||
+                            Math.Abs(pri_1 - pri_4) / pri_1 < 1e-5)
                         {
                             priconverge.flag = true;
                         }
@@ -681,19 +681,19 @@ namespace Model
             else
                 priconverge.flag = true;
 
-            } while (!priconverge.flag && iterforPri < 50);
+            } while (!priconverge.flag && iterforPri < 100);
 
 
-            if (iterforDP >= 200)
-            {
-                return res_slab;
-                throw new Exception("iter for DPConverge > 100.");
-            }
-            if (iterforPri >= 50)
-            {
-                return res_slab;
-                throw new Exception("iter for Pri > 50.");
-            }
+           // if (iterforDP >= 200)
+            //{
+            //    return res_slab;
+            //    throw new Exception("iter for DPConverge > 100.");
+            //}
+            //if (iterforPri >= 50)
+            //{
+            //    return res_slab;
+            //    throw new Exception("iter for Pri > 50.");
+            //}
 
             #region //Result print out
 

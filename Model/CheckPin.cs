@@ -13,13 +13,14 @@ namespace Model
         {
             CheckPri res = new CheckPri();
             bool flag = false;//means not converge
-            double err = 0.01; 
-            double err2 = 0.05; //to be updated, need to be >0.01 if err for dp is 0.02...
+            double err = 0.005; 
+            double err2 = 0.02; //to be updated, need to be >0.01 if err for dp is 0.02...
 
-            if (Math.Abs(te_calc - te) <= err || (Math.Abs(te_calc - te) <= err2 && Math.Abs(te_calc - te_calc_org) <= 0.001))
+            //if (Math.Abs(te_calc - te) <= err || (Math.Abs(te_calc - te) <= err2 && Math.Abs(te_calc - te_calc_org) <= 0.001))
+            if (Math.Abs(pro - pe) <= err)
                 flag = true;
             else
-                pri += 1 * (pe - pro);
+                pri += 0.6 * (pe - pro);
             //if (Math.Abs(te_calc - te) <= err)
             //    flag = true;
             //else
