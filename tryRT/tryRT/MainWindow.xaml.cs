@@ -1284,7 +1284,7 @@ namespace tryRT
             }
         }
 
-        private void RadioButton_Tcro_Evap_Checked(object sender, RoutedEventArgs e)
+        private void RadioButton_Tcro_Evap_Checked(object sender, RoutedEventArgs e)//saturation temperature
         {
             this.Tcro_Evap.IsEnabled = true;
             if (this.Pri_Evap.IsEnabled == true)

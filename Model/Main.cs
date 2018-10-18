@@ -1091,21 +1091,16 @@ namespace Model
             double conductivity = 386; //w/mK for Cu
             double Pwater = 0;
             double hri = 0;
-            if (refInput.P_exv != -1000)//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@尚未通过界面判断是通过求出进口焓
+            if (refInput.H_exv != 0)//
+            {
+                hri = refInput.H_exv;
+            }
+            else if (refInput.H_exv ==0)
             {
                 P_exv = refInput.P_exv;
                 T_exv = refInput.T_exv;
                 coolprop.update(input_pairs.PT_INPUTS, P_exv * 1000, T_exv + 273.15);
                 hri = coolprop.hmass() / 1000;
-            }
-            else if (refInput.xi_Evap != -1000)
-            {
-                coolprop.update(input_pairs.QT_INPUTS, refInput.xi_Evap, refInput.te + 273.15);
-                hri = coolprop.hmass() / 1000;
-            }
-            else if (refInput.H_exv != -1000)
-            {
-                hri = refInput.H_exv;
             }
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
@@ -1361,6 +1356,7 @@ namespace Model
                     ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
                     //ha[i, j] = 79;
                     ha[i, j] = AirHTC.alpha1(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve, geoInput_air, hexType).ha;
+                    //ha[i, j] = 61;
                 }
             }
             double[,] haw = ha;
@@ -1385,27 +1381,28 @@ namespace Model
             double conductivity = 386; //w/mK for Cu
             double Pwater = 0;
 
-            WindowControls winControls = new WindowControls();
+            WindowControls winControls = new WindowControls();//null
             double hri = 0;
-            if (winControls.RadioButton_PriTri_Evap == true)
+            if(refInput.H_exv!=0)
             {
-                double P_exv = refInput.P_exv;//1842.28;//kpa
-                double T_exv = refInput.T_exv;// 20;//C
-                //int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
-                coolprop.update(input_pairs.PT_INPUTS, P_exv * 1000, T_exv + 273.15);
-                hri = coolprop.hmass() / 1000;
-                //hri=airInput.
-                //double hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000 ;
+
+                hri = refInput.H_exv;
             }
-            else if (winControls.RadioButton_xi_Evap == true)
+            else if(refInput.xi_Evap!=0)
             {
                 coolprop.update(input_pairs.QT_INPUTS, refInput.xi_Evap, refInput.te + 273.15);
                 hri = coolprop.hmass() / 1000;
             }
-            else if (winControls.RadioButton_Hri_Evap == true)
+            else
             {
-                hri = refInput.H_exv;
+                double P_exv = refInput.P_exv;//1842.28;//kpa
+                double T_exv = refInput.T_exv;// 20;//C
+                coolprop.update(input_pairs.PT_INPUTS, P_exv * 1000, T_exv + 273.15);
+                hri = coolprop.hmass() / 1000;
             }
+            //int hexType = 0; //*********************************0 is evap, 1 is cond******************************************
+            //hri=airInput.
+            //double hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000 ;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
