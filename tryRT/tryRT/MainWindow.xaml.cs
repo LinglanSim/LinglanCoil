@@ -734,7 +734,7 @@ namespace tryRT
             }
 
             if (RadioButton_AirVolumnFlowRate.IsChecked == true) { airInput.Volumetricflowrate = Convert.ToDouble(this.Va.Text); }//空气体积流量m3/s
-            else { airInput.Volumetricflowrate = Convert.ToDouble(this.Velocity_ai.Text) * geoInput.L * 0.0001 * geoInput.Pt * geoInput.Ntube; }
+            else { airInput.Volumetricflowrate = Convert.ToDouble(this.Velocity_ai.Text) * geoInput.L * 0.001 * geoInput.Pt * geoInput.Ntube; }
             airInput.tai = Convert.ToDouble(this.tai.Text);//进风干球温度
             if (RadioButton_RelativeHumidity.IsChecked == true) { airInput.RHi = Convert.ToDouble(this.RHi.Text); }//进风相对湿度
             else { airInput.RHi = humidairprop.RHI_TwetBulb(Convert.ToDouble(this.tai.Text), Convert.ToDouble(this.Tai_wet.Text), Model.HumidAirSourceData.SourceTableData); }
