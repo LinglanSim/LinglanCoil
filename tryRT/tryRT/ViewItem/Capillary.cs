@@ -9,6 +9,8 @@ namespace tryRT
 {
     public class Capillary : INotifyPropertyChanged
     {
+        public static List<Capillary> List_Capillary = new List<Capillary>();
+
         private Node _start;
         public Node Start
         {
@@ -84,6 +86,18 @@ namespace tryRT
                 OnPropertyChanged("In");
             }
         }
+
+        private string _name;
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                _name = value;
+                OnPropertyChanged("Name");
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged(string propertyName)

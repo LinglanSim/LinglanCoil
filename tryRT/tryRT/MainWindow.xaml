@@ -625,7 +625,6 @@
                                 <RowDefinition />
                             </Grid.RowDefinitions>
                             
-                            <!-->20181009待加滚动条<!-->
                             <!-->图<!-->
                             <Canvas Grid.Row="0" x:Name="Canvas_Picture"  Width="Auto" VerticalAlignment="Top" HorizontalAlignment="Left" Background="White">
                                 <Image x:Name="Picture_HExTube" HorizontalAlignment="Center" VerticalAlignment="Center" Width="250" Margin="0,0,0,0"  Source="Pictures\管子.PNG" Canvas.Left="90"/>
@@ -633,23 +632,25 @@
                                 <Image x:Name="Picture_HExType" HorizontalAlignment="Center" VerticalAlignment="Center" Width="250" Margin="0,0,0,0"  Source="Pictures\空调.png"  Canvas.Left="90"/>
                                 <Image x:Name="Picture_Ref" HorizontalAlignment="Center" VerticalAlignment="Center" Width="250" Margin="0,0,0,0"  Source="Pictures\制冷剂侧.PNG" Canvas.Left="90"/>
                                 <Image x:Name="Picture_Wind" HorizontalAlignment="Center" VerticalAlignment="Center" Width="250" Margin="0,0,0,0"  Source="Pictures\空气侧.PNG" Canvas.Left="90"/>
-                                
-                                <DockPanel x:Name="DockPanel_Picture" Height="450" Width="450" Margin="0,0,0,0">
+
+                                <DockPanel x:Name="DockPanel_Picture" VerticalAlignment="Stretch"  HorizontalAlignment="Stretch" Margin="0,0,0,0">
                                     <StackPanel x:Name="StackPanel_ManualArrangeCirnum" Width="110" HorizontalAlignment="Left" DockPanel.Dock="Left" Margin="5,5,5,5">
-                                        <ToggleButton x:Name="ToggleButton1" Content="流路连接" HorizontalAlignment="Stretch"  Margin="5,5,5,5" IsChecked="{Binding CreatNewConnector}"></ToggleButton>
+                                        <ToggleButton x:Name="ToggleButton1" Content="点击开始连接流路" HorizontalAlignment="Stretch"  Margin="5,5,5,5" IsChecked="{Binding CreatNewConnector}"></ToggleButton>
                                         <Button Content="重连" HorizontalAlignment="Stretch" Margin="5,5,5,5" Click="Button_Click_Reconnect"/>
                                         <Button Content="放大" HorizontalAlignment="Stretch" Margin="5,20,5,5" Click="Button_Click_zoomout"/>
                                         <Button Content="缩小" HorizontalAlignment="Stretch" Margin="5,0,5,5" Click="Button_Click_zoomin"/>
+                                        <Button Content="删除选定流路" HorizontalAlignment="Stretch" Margin="5,0,5,5" Click="Button_Delete_Controls" />
                                         <Button Content="删除" HorizontalAlignment="Stretch" Margin="5,0,5,5" Click="Button_Click_delete"/>
                                         <Label Content="毛细管长度/m" HorizontalAlignment="Left" Width="Auto" Margin="5,10,0,0"/>
                                         <TextBox  x:Name="TextBox_Length" HorizontalAlignment="Stretch" Width="Auto" Margin="5,0,5,5" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
                                         <Label Content="毛细管直径/mm" HorizontalAlignment="Left" Width="Auto" Margin="5,0,0,0"/>
                                         <TextBox  x:Name="TextBox_Diameter" HorizontalAlignment="Stretch" Width="Auto" Margin="5,0,5,5" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
                                         <Button x:Name="Button_Capillary" Content="确定" HorizontalAlignment="Stretch" Margin="5,0,5,5" Click="Button_Click_Capillary" IsEnabled="False" />
+                                        <Button Content="添加流路" HorizontalAlignment="Stretch" Margin="5,0,5,5" Click="Button_Click_AddCircuit"/>
                                     </StackPanel>
 
                                     <!--AirFlowDirection-->
-                                    <TextBlock x:Name="TextBlock_AirFlow" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Top" DockPanel.Dock="Top" TextAlignment="Center"/>
+                                    <TextBlock x:Name="TextBlock_AirFlow" Width="Auto" HorizontalAlignment="Left"  VerticalAlignment="Top" DockPanel.Dock="Top" TextAlignment="Center" FontSize="20"/>
 
                                     <Grid>
                                         <Grid.Resources>
@@ -672,7 +673,6 @@
                                                     </DataTrigger>
                                                 </DataTemplate.Triggers>
                                             </DataTemplate>
-
                                             <DataTemplate DataType="{x:Type local:Connector}">
                                                 <Line x:Name="Line" Stroke="Blue" StrokeThickness="3" X1="{Binding Start.X}" Y1="{Binding Start.Y}" X2="{Binding End.X}" Y2="{Binding End.Y}"/>
                                                 <DataTemplate.Triggers>
@@ -696,7 +696,6 @@
                                                     </DataTrigger>
                                                 </DataTemplate.Triggers>
                                             </DataTemplate>
-
                                             <DataTemplate DataType="{x:Type local:Rect}">
                                                 <Canvas Margin="-10,-10,10,10">
                                                     <Rectangle x:Name="Rectangle" Width="10" Height="{Binding RectHeight}" Fill="Blue" Stroke="Black" StrokeThickness="1"/>
@@ -711,46 +710,48 @@
 
                                         </Grid.Resources>
 
-                                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                                            <ListBox x:Name="ListBox_this" SelectionChanged="ListBox_SelectionChanged" MouseRightButtonDown="ListBox_MouseRightButtonDown" MouseDoubleClick="ListBox_MouseDoubleClick">
-                                                <ListBox.Template>
-                                                    <ControlTemplate>
+                                        <ListBox x:Name="ListBox_this" SelectionChanged="ListBox_SelectionChanged" MouseRightButtonDown="ListBox_MouseRightButtonDown" MouseDoubleClick="ListBox_MouseDoubleClick" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" MaxHeight="780">
+                                            <ListBox.Template>
+                                                <ControlTemplate>
+                                                    <Border>
+                                                        <Border.Background>
+                                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1" Opacity="0.5">
+                                                                <GradientStop Color="White"  Offset="0"/>
+                                                                <GradientStop Color="White" Offset="1"/>
+                                                            </LinearGradientBrush>
+                                                        </Border.Background>
                                                         <Border>
-                                                            <Border.Background>
-                                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1" Opacity="0.5">
-                                                                    <GradientStop Color="White"  Offset="0"/>
-                                                                    <GradientStop Color="White" Offset="1"/>
-                                                                </LinearGradientBrush>
-                                                            </Border.Background>
-                                                            <Border>
+                                                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                                                                 <ItemsPresenter/>
-                                                            </Border>
+                                                            </ScrollViewer>
                                                         </Border>
-                                                    </ControlTemplate>
-                                                </ListBox.Template>
-                                                <ListBox.ItemsSource>
-                                                    <StaticResource ResourceKey="Col"/>
-                                                </ListBox.ItemsSource>
-                                                <ListBox.ItemsPanel>
-                                                    <ItemsPanelTemplate>
-                                                        <Canvas IsItemsHost="True" Background="#01FFFFFF" VerticalAlignment="Top" HorizontalAlignment="Left" Height="{Binding PanelHeight}" Width="{Binding PanelWidth}"/>
-                                                    </ItemsPanelTemplate>
-                                                </ListBox.ItemsPanel>
-                                                <ListBox.ItemContainerStyle>
-                                                    <Style TargetType="ListBoxItem">
-                                                        <Setter Property="Canvas.Left" Value="{Binding X}"/>
-                                                        <Setter Property="Canvas.Top" Value="{Binding Y}"/>
-                                                        <Setter Property="Template">
-                                                            <Setter.Value>
-                                                                <ControlTemplate TargetType="ListBoxItem">
-                                                                    <ContentPresenter x:Name="Content"/>
-                                                                </ControlTemplate>
-                                                            </Setter.Value>
-                                                        </Setter>
-                                                    </Style>
-                                                </ListBox.ItemContainerStyle>
-                                            </ListBox>
-                                        </ScrollViewer>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </ListBox.Template>
+                                            <ListBox.ItemsSource>
+                                                <StaticResource ResourceKey="Col"/>
+                                            </ListBox.ItemsSource>
+                                            <ListBox.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <Canvas IsItemsHost="True" Background="#01FFFFFF" VerticalAlignment="Top" HorizontalAlignment="Left" Height="{Binding PanelHeight}" Width="{Binding PanelWidth}"/>
+                                                </ItemsPanelTemplate>
+                                            </ListBox.ItemsPanel>
+                                            <ListBox.ItemContainerStyle>
+                                                <Style TargetType="ListBoxItem">
+                                                    <Setter Property="Canvas.Left" Value="{Binding X}"/>
+                                                    <Setter Property="Canvas.Top" Value="{Binding Y}"/>
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="ListBoxItem">
+                                                                <ContentPresenter x:Name="Content"/>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </ListBox.ItemContainerStyle>
+                                        </ListBox>
+
+
                                     </Grid>
                                 </DockPanel>
 

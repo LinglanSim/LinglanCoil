@@ -9,6 +9,8 @@ namespace tryRT
 {
     public class Connector : INotifyPropertyChanged
     {
+        public static List<Connector> List_Connector = new List<Connector>();
+
         private Node _start;
         public Node Start
         {
@@ -49,6 +51,17 @@ namespace tryRT
             {
                 _fullLine = value;
                 OnPropertyChanged("FullLine");
+            }
+        }
+
+        private string _name;
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                _name = value;
+                OnPropertyChanged("Name");
             }
         }
 

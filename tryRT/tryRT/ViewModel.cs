@@ -5,11 +5,19 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Collections;
+using System.Windows.Controls;
 
 namespace tryRT
 {
     class ViewModel : INotifyPropertyChanged
     {
+        public static int Connector_Num;
+        public static int Start_Capillary_Num;
+        public static int End_Capillary_Num;
+        public static int Rect_Num; 
+        public static List<object> List_Controls = new List<object>();
+
         private ObservableCollection<Node> _nodes;
         public ObservableCollection<Node> Nodes
         {
@@ -21,6 +29,9 @@ namespace tryRT
         {
             get { return _connectors ?? (_connectors = new ObservableCollection<Connector>()); }
         }
+
+
+
         private ObservableCollection<Rect> _rects;
         public ObservableCollection<Rect> Rects
         {
@@ -97,6 +108,8 @@ namespace tryRT
         }
         public void GenerateNode(int Nrow, int Ntube)
         {
+            //PanelHeight = (Ntube + 3) * TubePitch < 600 ? 600 : (Ntube + 3) * TubePitch;
+            //PanelWidth = (Nrow + 2) * RowPitch < 500 ? 500 : (Nrow + 2) * RowPitch;
             PanelHeight = (Ntube + 3) * TubePitch < 600 ? 600 : (Ntube + 3) * TubePitch;
             PanelWidth = (Nrow + 2) * RowPitch < 500 ? 500 : (Nrow + 2) * RowPitch;
             Nodes.Clear();
@@ -130,7 +143,7 @@ namespace tryRT
         {
             _nodes = new ObservableCollection<Node>();
             _rects = new ObservableCollection<Rect>();
-            GenerateNode(2, 4);
+            GenerateNode(2, 6);
             Rect inlet = new Rect();
             inlet.X = Nodes[0].X - RowPitch + 5;
             inlet.Y = Nodes[0].Y;

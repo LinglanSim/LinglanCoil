@@ -9,6 +9,8 @@ namespace tryRT
 {
     public class Rect : INotifyPropertyChanged
     {
+        public static List<Rect> List_Rect = new List<Rect>();
+
         private double _x;
         public double X
         {
@@ -51,7 +53,16 @@ namespace tryRT
             }
         }
 
-
+        private string _name;
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                _name = value;
+                OnPropertyChanged("Name");
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
