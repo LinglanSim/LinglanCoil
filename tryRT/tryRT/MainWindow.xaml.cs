@@ -16,6 +16,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Office.Interop.Excel;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
+using System.IO;
 
 namespace tryRT
 {
@@ -24,7 +26,7 @@ namespace tryRT
     /// </summary>
     public partial class MainWindow : System.Windows.Window
     {
-        //输出到window1的定义
+        //综合结果的定义
         private Object N_row_inter;
         public Object frmPara00
         {
@@ -199,9 +201,11 @@ namespace tryRT
         public bool flag_Calculated;
 
         ViewModel vm = new ViewModel();
+
         public MainWindow()
         {
             InitializeComponent();
+
             
             DataContext = vm;
 
@@ -220,8 +224,8 @@ namespace tryRT
             this.RadioButton_PriTri_Evap.IsChecked = true;
             this.RadioButton_Tro_Evap.IsChecked = true;
             this.RadioButton_mro_Evap.IsChecked = true;
-            this.WetBulbTemperature.IsChecked = true;
-            this.AirVolumnFlowRate.IsChecked = true;
+            this.RadioButton_WetBulbTemperature.IsChecked = true;
+            this.RadioButton_AirVolumnFlowRate.IsChecked = true;
             this.RadioButton_mro_Cond.IsChecked = true;
             this.RadioButton_ManualArrange.IsChecked = true;
             this.CheckBox_UniformWind.IsChecked = true;
@@ -231,9 +235,19 @@ namespace tryRT
 
             //数据初始化
             flag_Calculated = false;
+            this.Pri_Evap.Text = "0";
+            this.xi_Evap.Text = "0";
+            this.Hri_Evap.Text = "0";
+            this.Tro_sub_Evap.Text = "0";
+            this.xo_Evap.Text = "0";
+            ViewModel.Connector_Num = 0;
+            ViewModel.Start_Capillary_Num = 0;
+            ViewModel.End_Capillary_Num = 0;
+            ViewModel.Rect_Num = 0;
+
 
             //初始化湿空气数组
-            Model.HumidAirSourceData.SourceTableData = Model.HumidAirSourceData.InitializeSourceTableData();
+            //Model.HumidAirSourceData.SourceTableData = Model.HumidAirSourceData.InitializeSourceTableData();
 
             //#region//测试湿空气物性查表对错用
             ////测试用
@@ -467,10 +481,10 @@ namespace tryRT
         {
             IList<string> customList = new List<string>();
             string[] sss = new string[10];
-            sss[0] = "R22";
+            sss[0] = "R32";
             sss[1] = "R410A";
             sss[2] = "R290";
-            sss[3] = "R32";
+            sss[3] = "R22";
             sss[4] = "R600a";
             sss[5] = "R1234YF";
             sss[6] = "R1234ZE";
@@ -541,12 +555,12 @@ namespace tryRT
             //ComboBox_flowtype.SelectedValue = customList[0];
         }
 
-        private void MenuItem_Click_4(object sender, RoutedEventArgs e)//关闭按钮
+        private void MenuItem_Click_Close(object sender, RoutedEventArgs e)//关闭按钮
         {
             this.Close();
         }
 
-        private void MenuItem_Click_0(object sender, RoutedEventArgs e)//Start calculate
+        private void MenuItem_Click_Calculate(object sender, RoutedEventArgs e)//Start calculate
         {
             flag_Calculated = true;
 
@@ -719,10 +733,10 @@ namespace tryRT
                 winControls.RadioButton_Tro_sub_Cond = false;
             }
 
-            if (AirVolumnFlowRate.IsChecked == true) { airInput.Volumetricflowrate = Convert.ToDouble(this.Va.Text); }//空气体积流量m3/s
+            if (RadioButton_AirVolumnFlowRate.IsChecked == true) { airInput.Volumetricflowrate = Convert.ToDouble(this.Va.Text); }//空气体积流量m3/s
             else { airInput.Volumetricflowrate = Convert.ToDouble(this.Velocity_ai.Text) * geoInput.L * 0.0001 * geoInput.Pt * geoInput.Ntube; }
             airInput.tai = Convert.ToDouble(this.tai.Text);//进风干球温度
-            if (RelativeHumidity.IsChecked == true) { airInput.RHi = Convert.ToDouble(this.RHi.Text); }//进风相对湿度
+            if (RadioButton_RelativeHumidity.IsChecked == true) { airInput.RHi = Convert.ToDouble(this.RHi.Text); }//进风相对湿度
             else { airInput.RHi = humidairprop.RHI_TwetBulb(Convert.ToDouble(this.tai.Text), Convert.ToDouble(this.Tai_wet.Text), Model.HumidAirSourceData.SourceTableData); }
             airInput.AirFlowDirection = AirFlowDirection;//0:normal 1:reverse
 
@@ -940,72 +954,116 @@ namespace tryRT
         //TreeView****************************************************************************************************************Start
         private void TreeView_HExType_GotFocus(object sender, RoutedEventArgs e)
         {
-            this.TabItem_HExType.IsSelected = true;
-            this.TabItem_HExTypr_Picture.IsSelected = true;
+            this.Canvas_0.Visibility = Visibility.Visible;
+            this.Canvas_1.Visibility = Visibility.Collapsed;
+            this.Canvas_2.Visibility = Visibility.Collapsed;
+            this.Canvas_3.Visibility = Visibility.Collapsed;
+            this.Canvas_4.Visibility = Visibility.Collapsed;
+            this.Canvas_5.Visibility = Visibility.Collapsed;
+            this.Canvas_6.Visibility = Visibility.Collapsed;
+            this.Canvas_7.Visibility = Visibility.Collapsed;
+            this.Canvas_8.Visibility = Visibility.Collapsed;
+            this.Canvas_9.Visibility = Visibility.Collapsed;
 
-
-
+            this.Picture_HExTube.Visibility = Visibility.Collapsed;
+            this.Picture_FinType.Visibility = Visibility.Collapsed;
+            this.Picture_HExType.Visibility = Visibility.Visible;
+            this.Picture_Ref.Visibility = Visibility.Collapsed;
+            this.Picture_Wind.Visibility = Visibility.Collapsed;
+            //this.GroupBox_ManualArrangeCirnum.Visibility = Visibility.Collapsed;
+            this.DockPanel_Picture.Visibility = Visibility.Collapsed;
+            
             //调显示宽度
-            TabControl1.Width = 450;//450
-            Canvas_Picture_HEx.Width = 450;//450
-            StackPanel_OutPut.Width = 450;
+            this.Grid_Mid.MaxWidth = 450;
+            this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);
 
             //调显示高度
-            this.Canvas_Picture_HEx.Height = 250;
-            this.TabControl_Picuture.Height = 250;
-            ListBox_RealTimeInputShow_Condenser.Height = 450;
-            ListBox_RealTimeInputShow_Evaporator.Height = 450;
+            //this.Grid_Picture.Height = new GridLength(290, GridUnitType.Pixel);
+            //this.ListBox_RealTimeInputShow_Condenser.Height = 414;
+            //this.ListBox_RealTimeInputShow_Evaporator.Height = 414;
         }
 
         private void TreeView_Fin_GotFocus(object sender, RoutedEventArgs e)
         {
-            this.TabItem_Fin.IsSelected = true;
-            this.TabItem_FinType_Picture.IsSelected = true;
+            this.Canvas_0.Visibility = Visibility.Collapsed;
+            this.Canvas_1.Visibility = Visibility.Collapsed;
+            this.Canvas_2.Visibility = Visibility.Visible;
+            this.Canvas_3.Visibility = Visibility.Collapsed;
+            this.Canvas_4.Visibility = Visibility.Collapsed;
+            this.Canvas_5.Visibility = Visibility.Collapsed;
+            this.Canvas_6.Visibility = Visibility.Collapsed;
+            this.Canvas_7.Visibility = Visibility.Collapsed;
+            this.Canvas_8.Visibility = Visibility.Collapsed;
+            this.Canvas_9.Visibility = Visibility.Collapsed;
+
+            this.Picture_HExTube.Visibility = Visibility.Collapsed;
+            this.Picture_FinType.Visibility = Visibility.Visible;
+            this.Picture_HExType.Visibility = Visibility.Collapsed;
+            this.Picture_Ref.Visibility = Visibility.Collapsed;
+            this.Picture_Wind.Visibility = Visibility.Collapsed;
+            //this.GroupBox_ManualArrangeCirnum.Visibility = Visibility.Collapsed;
+            this.DockPanel_Picture.Visibility = Visibility.Collapsed;
 
             //调显示宽度
-            TabControl1.Width = 450;//450
-            Canvas_Picture_HEx.Width = 450;//450
-            StackPanel_OutPut.Width = 450;
+            this.Grid_Mid.MaxWidth = 450;
+            this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);
 
             //调显示高度
-            this.Canvas_Picture_HEx.Height = 250;
-            this.TabControl_Picuture.Height = 250;
-            ListBox_RealTimeInputShow_Condenser.Height = 450;
-            ListBox_RealTimeInputShow_Evaporator.Height = 450;
+            //this.Grid_Picture.Height = new GridLength(290, GridUnitType.Pixel);
+            //this.ListBox_RealTimeInputShow_Condenser.Height = 414;
+            //this.ListBox_RealTimeInputShow_Evaporator.Height = 414;
         }
 
         private void TreeView_Pass_GotFocus(object sender, RoutedEventArgs e)
         {
-            this.TabItem_Pass.IsSelected = true;
+            this.Canvas_0.Visibility = Visibility.Collapsed;
+            this.Canvas_1.Visibility = Visibility.Collapsed;
+            this.Canvas_2.Visibility = Visibility.Collapsed;
+            this.Canvas_3.Visibility = Visibility.Collapsed;
+            this.Canvas_4.Visibility = Visibility.Collapsed;
+            this.Canvas_5.Visibility = Visibility.Visible;
+            this.Canvas_6.Visibility = Visibility.Collapsed;
+            this.Canvas_7.Visibility = Visibility.Collapsed;
+            this.Canvas_8.Visibility = Visibility.Collapsed;
+            this.Canvas_9.Visibility = Visibility.Collapsed;
 
             if (RadioButton_ManualArrange.IsChecked == true)
             {
-                TabItem_Pass_Picture.IsSelected = true;
+                this.Picture_HExTube.Visibility = Visibility.Collapsed;
+                this.Picture_FinType.Visibility = Visibility.Collapsed;
+                this.Picture_HExType.Visibility = Visibility.Collapsed;
+                this.Picture_Ref.Visibility = Visibility.Collapsed;
+                this.Picture_Wind.Visibility = Visibility.Collapsed;
+                //this.GroupBox_ManualArrangeCirnum.Visibility = Visibility.Collapsed;
+                this.DockPanel_Picture.Visibility = Visibility.Visible;
+
                 this.StackPanel_ManualArrangeCirnum.Visibility = Visibility.Visible;
-                this.GroupBox_ManualArrangeCirnum.Header = "手动分配流路";
+                //this.GroupBox_ManualArrangeCirnum.Header = "手动分配流路";
                 TextBlock_AirFlow.Text = AirFlowString;
 
                 //调显示高度
-                this.Canvas_Picture_HEx.Height = 450;
-                this.TabControl_Picuture.Height = 450;
-                ListBox_RealTimeInputShow_Condenser.Height = 350;
-                ListBox_RealTimeInputShow_Evaporator.Height = 350;
+                //this.Grid_Picture.Height = new GridLength(450, GridUnitType.Pixel);
+                //this.ListBox_RealTimeInputShow_Condenser.Height = 254;
+                //this.ListBox_RealTimeInputShow_Evaporator.Height = 254;
             }
             else 
             {
-                TabItem_Null_Picture.IsSelected = true;
+                this.Picture_HExTube.Visibility = Visibility.Collapsed;
+                this.Picture_FinType.Visibility = Visibility.Collapsed;
+                this.Picture_HExType.Visibility = Visibility.Hidden;
+                this.Picture_Ref.Visibility = Visibility.Collapsed;
+                this.Picture_Wind.Visibility = Visibility.Collapsed;
+                //this.GroupBox_ManualArrangeCirnum.Visibility = Visibility.Collapsed;
+                this.DockPanel_Picture.Visibility = Visibility.Collapsed;
 
                 //调显示高度
-                this.Canvas_Picture_HEx.Height = 250;
-                this.TabControl_Picuture.Height = 250;
-                ListBox_RealTimeInputShow_Condenser.Height = 450;
-                ListBox_RealTimeInputShow_Evaporator.Height = 450;
+                //this.Grid_Picture.Height = new GridLength(290, GridUnitType.Pixel);
+                //this.ListBox_RealTimeInputShow_Condenser.Height = 414;
+                //this.ListBox_RealTimeInputShow_Evaporator.Height = 414;
             }
-
             //调显示宽度
-            TabControl1.Width = 450;//450
-            Canvas_Picture_HEx.Width = 450;//450
-            StackPanel_OutPut.Width = 450;
+            this.Grid_Mid.MaxWidth = 450;
+            this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);
 
             //生成手动连流路图
             /*int _row = Convert.ToInt32(Row.Text);
@@ -1029,76 +1087,135 @@ namespace tryRT
 
         private void TreeView_Ref_GotFocus(object sender, RoutedEventArgs e)
         {
-            this.TabItem_Ref.IsSelected = true;
-            this.TabItem_Ref_Picture.IsSelected = true;
+            this.Canvas_0.Visibility = Visibility.Collapsed;
+            this.Canvas_1.Visibility = Visibility.Collapsed;
+            this.Canvas_2.Visibility = Visibility.Collapsed;
+            this.Canvas_3.Visibility = Visibility.Visible;
+            this.Canvas_4.Visibility = Visibility.Collapsed;
+            this.Canvas_5.Visibility = Visibility.Collapsed;
+            this.Canvas_6.Visibility = Visibility.Collapsed;
+            this.Canvas_7.Visibility = Visibility.Collapsed;
+            this.Canvas_8.Visibility = Visibility.Collapsed;
+            this.Canvas_9.Visibility = Visibility.Collapsed;
+
+            this.Picture_HExTube.Visibility = Visibility.Collapsed;
+            this.Picture_FinType.Visibility = Visibility.Collapsed;
+            this.Picture_HExType.Visibility = Visibility.Collapsed;
+            this.Picture_Ref.Visibility = Visibility.Visible;
+            this.Picture_Wind.Visibility = Visibility.Collapsed;
+            //this.GroupBox_ManualArrangeCirnum.Visibility = Visibility.Collapsed;
+            this.DockPanel_Picture.Visibility = Visibility.Collapsed;
 
             //调显示宽度
-            TabControl1.Width = 450;//450
-            Canvas_Picture_HEx.Width = 450;//450
-            StackPanel_OutPut.Width = 450;
+            this.Grid_Mid.MaxWidth = 450;
+            this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);
 
             //调显示高度
-            this.Canvas_Picture_HEx.Height = 250;
-            this.TabControl_Picuture.Height = 250;
-            ListBox_RealTimeInputShow_Condenser.Height = 450;
-            ListBox_RealTimeInputShow_Evaporator.Height = 450;
+            //this.Grid_Picture.Height = new GridLength(290, GridUnitType.Pixel);
+            //this.ListBox_RealTimeInputShow_Condenser.Height = 414;
+            //this.ListBox_RealTimeInputShow_Evaporator.Height = 414;
         }
 
         private void TreeView_Wind_GotFocus(object sender, RoutedEventArgs e)
         {
-            this.TabItem_Wind.IsSelected = true;
-            this.TabItem_Wind_Picture.IsSelected = true;
+            this.Canvas_0.Visibility = Visibility.Collapsed;
+            this.Canvas_1.Visibility = Visibility.Collapsed;
+            this.Canvas_2.Visibility = Visibility.Collapsed;
+            this.Canvas_3.Visibility = Visibility.Collapsed;
+            this.Canvas_4.Visibility = Visibility.Visible;
+            this.Canvas_5.Visibility = Visibility.Collapsed;
+            this.Canvas_6.Visibility = Visibility.Collapsed;
+            this.Canvas_7.Visibility = Visibility.Collapsed;
+            this.Canvas_8.Visibility = Visibility.Collapsed;
+            this.Canvas_9.Visibility = Visibility.Collapsed;
+
+            this.Picture_HExTube.Visibility = Visibility.Collapsed;
+            this.Picture_FinType.Visibility = Visibility.Collapsed;
+            this.Picture_HExType.Visibility = Visibility.Collapsed;
+            this.Picture_Ref.Visibility = Visibility.Collapsed;
+            this.Picture_Wind.Visibility = Visibility.Visible;
+            //this.GroupBox_ManualArrangeCirnum.Visibility = Visibility.Collapsed;
+            this.DockPanel_Picture.Visibility = Visibility.Collapsed;
 
             //调显示宽度
-            TabControl1.Width = 450;//450
-            Canvas_Picture_HEx.Width = 450;//450
-            StackPanel_OutPut.Width = 450;
+            this.Grid_Mid.MaxWidth = 450;
+            this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);        
+             
 
             //调显示高度
-            this.Canvas_Picture_HEx.Height = 250;
-            this.TabControl_Picuture.Height = 250;
-            ListBox_RealTimeInputShow_Condenser.Height = 450;
-            ListBox_RealTimeInputShow_Evaporator.Height = 450;
+            //this.Grid_Picture.Height = new GridLength(290, GridUnitType.Pixel);
+            //this.ListBox_RealTimeInputShow_Condenser.Height = 414;
+            //this.ListBox_RealTimeInputShow_Evaporator.Height = 414;
 
         }
 
         private void TreeView_Result_GotFocus(object sender, RoutedEventArgs e)
         {
-            this.TabItem_Result.IsSelected = true;
-            this.TabItem_Pass_Picture.IsSelected = true;
-        
+            this.Canvas_0.Visibility = Visibility.Collapsed;
+            this.Canvas_1.Visibility = Visibility.Collapsed;
+            this.Canvas_2.Visibility = Visibility.Collapsed;
+            this.Canvas_3.Visibility = Visibility.Collapsed;
+            this.Canvas_4.Visibility = Visibility.Collapsed;
+            this.Canvas_5.Visibility = Visibility.Collapsed;
+            this.Canvas_6.Visibility = Visibility.Collapsed;
+            this.Canvas_7.Visibility = Visibility.Collapsed;
+            this.Canvas_8.Visibility = Visibility.Visible;
+            this.Canvas_9.Visibility = Visibility.Collapsed;
+
+            this.Picture_HExTube.Visibility = Visibility.Collapsed;
+            this.Picture_FinType.Visibility = Visibility.Collapsed;
+            this.Picture_HExType.Visibility = Visibility.Collapsed;
+            this.Picture_Ref.Visibility = Visibility.Collapsed;
+            this.Picture_Wind.Visibility = Visibility.Collapsed;
+            //this.GroupBox_ManualArrangeCirnum.Visibility = Visibility.Collapsed;
+            this.DockPanel_Picture.Visibility = Visibility.Visible;
 
             //调显示宽度
-            TabControl1.Width = 450;//450
-            Canvas_Picture_HEx.Width = 450;//450
-            StackPanel_OutPut.Width = 450;
+            this.Grid_Mid.MaxWidth = 450;
+            this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);                       
 
             //调显示高度
-            this.Canvas_Picture_HEx.Height = 450;
-            this.TabControl_Picuture.Height = 450;
-            this.ListBox_RealTimeInputShow_Condenser.Height = 350;
-            this.ListBox_RealTimeInputShow_Evaporator.Height = 350;
+            //this.Grid_Picture.Height = new GridLength(450, GridUnitType.Pixel);
 
-            this.GroupBox_ManualArrangeCirnum.Header = "流路分配";
+            //this.ListBox_RealTimeInputShow_Condenser.Height = 254;
+            //this.ListBox_RealTimeInputShow_Evaporator.Height = 254;
+
+            //this.GroupBox_ManualArrangeCirnum.Header = "流路分配";
             this.StackPanel_ManualArrangeCirnum.Visibility = Visibility.Collapsed;  
         }
 
         private void TreeView_DetailResult_GotFocus(object sender, RoutedEventArgs e)
         {
-            this.TabItem_DetailResult.IsSelected = true;
-            this.TabItem_Pass_Picture.IsSelected = true;
+            this.Canvas_0.Visibility = Visibility.Collapsed;
+            this.Canvas_1.Visibility = Visibility.Collapsed;
+            this.Canvas_2.Visibility = Visibility.Collapsed;
+            this.Canvas_3.Visibility = Visibility.Collapsed;
+            this.Canvas_4.Visibility = Visibility.Collapsed;
+            this.Canvas_5.Visibility = Visibility.Collapsed;
+            this.Canvas_6.Visibility = Visibility.Collapsed;
+            this.Canvas_7.Visibility = Visibility.Collapsed;
+            this.Canvas_8.Visibility = Visibility.Collapsed;
+            this.Canvas_9.Visibility = Visibility.Visible;
+
+            this.Picture_HExTube.Visibility = Visibility.Collapsed;
+            this.Picture_FinType.Visibility = Visibility.Collapsed;
+            this.Picture_HExType.Visibility = Visibility.Collapsed;
+            this.Picture_Ref.Visibility = Visibility.Collapsed;
+            this.Picture_Wind.Visibility = Visibility.Collapsed;
+            //this.GroupBox_ManualArrangeCirnum.Visibility = Visibility.Collapsed;
+            this.DockPanel_Picture.Visibility = Visibility.Visible;
 
             //调显示宽度
-            StackPanel_OutPut.Width = 550;
-            this.TabControl1.Width = 550;
+            this.Grid_Mid.MaxWidth = 650;
+            this.Grid_Mid.Width = new GridLength(650, GridUnitType.Pixel);
 
             //调显示高度
-            this.Canvas_Picture_HEx.Height = 450;
-            this.TabControl_Picuture.Height = 450;
-            this.ListBox_RealTimeInputShow_Condenser.Height = 350;
-            this.ListBox_RealTimeInputShow_Evaporator.Height = 350;
+            //this.Grid_Picture.Height = new GridLength(450, GridUnitType.Pixel);
 
-            this.GroupBox_ManualArrangeCirnum.Header = "流路分配";
+            //this.ListBox_RealTimeInputShow_Condenser.Height = 254;
+            //this.ListBox_RealTimeInputShow_Evaporator.Height = 254;
+
+            //this.GroupBox_ManualArrangeCirnum.Header = "流路分配";
             this.StackPanel_ManualArrangeCirnum.Visibility = Visibility.Collapsed;
 
             if (flag_Calculated == true)
@@ -1162,53 +1279,98 @@ namespace tryRT
 
         private void TreeView_AdjustParameter_GotFocus(object sender, RoutedEventArgs e)
         {
-            this.TabItem_AdjustParameter.IsSelected = true;
-            this.TabItem_Null_Picture.IsSelected = true;
+            this.Canvas_0.Visibility = Visibility.Collapsed;
+            this.Canvas_1.Visibility = Visibility.Collapsed;
+            this.Canvas_2.Visibility = Visibility.Collapsed;
+            this.Canvas_3.Visibility = Visibility.Collapsed;
+            this.Canvas_4.Visibility = Visibility.Collapsed;
+            this.Canvas_5.Visibility = Visibility.Collapsed;
+            this.Canvas_6.Visibility = Visibility.Collapsed;
+            this.Canvas_7.Visibility = Visibility.Visible;
+            this.Canvas_8.Visibility = Visibility.Collapsed;
+            this.Canvas_9.Visibility = Visibility.Collapsed;
+
+            this.Picture_HExTube.Visibility = Visibility.Collapsed;
+            this.Picture_FinType.Visibility = Visibility.Collapsed;
+            this.Picture_HExType.Visibility = Visibility.Hidden;
+            this.Picture_Ref.Visibility = Visibility.Collapsed;
+            this.Picture_Wind.Visibility = Visibility.Collapsed;
+            //this.GroupBox_ManualArrangeCirnum.Visibility = Visibility.Collapsed;
+            this.DockPanel_Picture.Visibility = Visibility.Collapsed;
 
             //调显示宽度
-            TabControl1.Width = 450;//450
-            Canvas_Picture_HEx.Width = 450;//450
-            StackPanel_OutPut.Width = 450;
+            this.Grid_Mid.MaxWidth = 450;
+            this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);
 
             //调显示高度
-            this.Canvas_Picture_HEx.Height = 250;
-            this.TabControl_Picuture.Height = 250;
-            ListBox_RealTimeInputShow_Condenser.Height = 450;
-            ListBox_RealTimeInputShow_Evaporator.Height = 450;
+            //this.Grid_Picture.Height = new GridLength(290, GridUnitType.Pixel);
+
+            //this.ListBox_RealTimeInputShow_Condenser.Height = 414;
+            //this.ListBox_RealTimeInputShow_Evaporator.Height = 414;
         }
 
         private void TreeView_Distributer_GotFocus(object sender, RoutedEventArgs e)
         {
-            this.TabItem_Distributer.IsSelected = true;
-            this.TabItem_Null_Picture.IsSelected = true;
+            this.Canvas_0.Visibility = Visibility.Collapsed;
+            this.Canvas_1.Visibility = Visibility.Collapsed;
+            this.Canvas_2.Visibility = Visibility.Collapsed;
+            this.Canvas_3.Visibility = Visibility.Collapsed;
+            this.Canvas_4.Visibility = Visibility.Collapsed;
+            this.Canvas_5.Visibility = Visibility.Collapsed;
+            this.Canvas_6.Visibility = Visibility.Visible;
+            this.Canvas_7.Visibility = Visibility.Collapsed;
+            this.Canvas_8.Visibility = Visibility.Collapsed;
+            this.Canvas_9.Visibility = Visibility.Collapsed;
+
+            this.Picture_HExTube.Visibility = Visibility.Collapsed;
+            this.Picture_FinType.Visibility = Visibility.Collapsed;
+            this.Picture_HExType.Visibility = Visibility.Hidden;
+            this.Picture_Ref.Visibility = Visibility.Collapsed;
+            this.Picture_Wind.Visibility = Visibility.Collapsed;
+            //this.GroupBox_ManualArrangeCirnum.Visibility = Visibility.Collapsed;
+            this.DockPanel_Picture.Visibility = Visibility.Collapsed;
 
             //调显示宽度
-            TabControl1.Width = 450;//450
-            Canvas_Picture_HEx.Width = 450;//450
-            StackPanel_OutPut.Width = 450;
+            this.Grid_Mid.MaxWidth = 450;
+            this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);
 
             //调显示高度
-            this.Canvas_Picture_HEx.Height = 250;
-            this.TabControl_Picuture.Height = 250;
-            ListBox_RealTimeInputShow_Condenser.Height = 450;
-            ListBox_RealTimeInputShow_Evaporator.Height = 450;
+            //this.Grid_Picture.Height = new GridLength(450, GridUnitType.Pixel);
+
+            //this.ListBox_RealTimeInputShow_Condenser.Height = 254;
+            //this.ListBox_RealTimeInputShow_Evaporator.Height = 254;
         }
 
         private void TreeView_HExTube_GotFocus(object sender, RoutedEventArgs e)
         {
-            this.TabItem_HExTube.IsSelected = true;
-            this.TabItem_HExTube_Picture.IsSelected = true;
+            this.Canvas_0.Visibility = Visibility.Collapsed;
+            this.Canvas_1.Visibility = Visibility.Visible;
+            this.Canvas_2.Visibility = Visibility.Collapsed;
+            this.Canvas_3.Visibility = Visibility.Collapsed;
+            this.Canvas_4.Visibility = Visibility.Collapsed;
+            this.Canvas_5.Visibility = Visibility.Collapsed;
+            this.Canvas_6.Visibility = Visibility.Collapsed;
+            this.Canvas_7.Visibility = Visibility.Collapsed;
+            this.Canvas_8.Visibility = Visibility.Collapsed;
+            this.Canvas_9.Visibility = Visibility.Collapsed;
+
+            this.Picture_HExTube.Visibility = Visibility.Visible;
+            this.Picture_FinType.Visibility = Visibility.Collapsed;
+            this.Picture_HExType.Visibility = Visibility.Collapsed;
+            this.Picture_Ref.Visibility = Visibility.Collapsed;
+            this.Picture_Wind.Visibility = Visibility.Collapsed;
+            //this.GroupBox_ManualArrangeCirnum.Visibility = Visibility.Collapsed;
+            this.DockPanel_Picture.Visibility = Visibility.Collapsed;
 
             //调显示宽度
-            TabControl1.Width = 450;//450
-            Canvas_Picture_HEx.Width = 450;//450
-            StackPanel_OutPut.Width = 450;
+            this.Grid_Mid.MaxWidth = 450;
+            this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);
 
             //调显示高度
-            this.Canvas_Picture_HEx.Height = 250;
-            this.TabControl_Picuture.Height = 250;
-            ListBox_RealTimeInputShow_Condenser.Height = 450;
-            ListBox_RealTimeInputShow_Evaporator.Height = 450;
+            //this.Grid_Picture.Height = new GridLength(290, GridUnitType.Pixel);
+
+            //this.ListBox_RealTimeInputShow_Condenser.Height = 414;
+            //this.ListBox_RealTimeInputShow_Evaporator.Height = 414;
         }
 
         //TreeView****************************************************************************************************************End
@@ -1439,14 +1601,20 @@ namespace tryRT
         private void RadioButton_ManualArrange_Checked(object sender, RoutedEventArgs e)
         {
             //this.GroupBox_AutoArrangeCirnum.Visibility = Visibility.Hidden;
-            this.GroupBox_ManualArrangeCirnum.Visibility = Visibility.Visible;
-            this.TabItem_Pass_Picture.IsSelected = true;
+            //this.GroupBox_ManualArrangeCirnum.Visibility = Visibility.Visible;
+
+            this.Picture_HExTube.Visibility = Visibility.Collapsed;
+            this.Picture_FinType.Visibility = Visibility.Collapsed;
+            this.Picture_HExType.Visibility = Visibility.Collapsed;
+            this.Picture_Ref.Visibility = Visibility.Collapsed;
+            this.Picture_Wind.Visibility = Visibility.Collapsed;
+            //this.GroupBox_ManualArrangeCirnum.Visibility = Visibility.Collapsed;
+            this.DockPanel_Picture.Visibility = Visibility.Visible;
+
             Cirnum.IsEnabled = false;
             Pass_OK.IsEnabled = false;
 
             //调显示高度
-            this.Canvas_Picture_HEx.Height = 450;
-            this.TabControl_Picuture.Height = 450;
             CircuitIndex = 0;
 
         }
@@ -1456,12 +1624,17 @@ namespace tryRT
             //this.GroupBox_AutoArrangeCirnum.Visibility = Visibility.Visible;
             Cirnum.IsEnabled = true;
             Pass_OK.IsEnabled = true;
-            this.GroupBox_ManualArrangeCirnum.Visibility = Visibility.Hidden;
-            this.TabItem_Null_Picture.IsSelected = true;
+            //this.GroupBox_ManualArrangeCirnum.Visibility = Visibility.Hidden;
+
+            this.Picture_HExTube.Visibility = Visibility.Collapsed;
+            this.Picture_FinType.Visibility = Visibility.Collapsed;
+            this.Picture_HExType.Visibility = Visibility.Collapsed;
+            this.Picture_Ref.Visibility = Visibility.Collapsed;
+            this.Picture_Wind.Visibility = Visibility.Collapsed;
+            //this.GroupBox_ManualArrangeCirnum.Visibility = Visibility.Collapsed;
+            this.DockPanel_Picture.Visibility = Visibility.Hidden;
 
             //调显示高度
-            this.Canvas_Picture_HEx.Height = 250;
-            this.TabControl_Picuture.Height = 250;
             ListBox_RealTimeInputShow_Condenser.Height = 450;
             ListBox_RealTimeInputShow_Evaporator.Height = 450;
             CircuitIndex = 1;
@@ -1476,13 +1649,19 @@ namespace tryRT
             this.GroupBox_RefOutlet_Evaporator.Visibility = Visibility.Hidden;
             this.GroupBox_RefInlet_Condenser.Visibility = Visibility.Visible;
             this.GroupBox_RefOutlet_Condenser.Visibility = Visibility.Visible;
-            this.GroupBox_RealTimeInputShow_Condenser.Visibility = Visibility.Visible;
-            this.GroupBox_RealTimeInputShow_Evaporator.Visibility = Visibility.Hidden;
-            this.TabItem_HExType.IsSelected = true;
+            this.ListBox_RealTimeInputShow_Condenser.Visibility = Visibility.Visible;
+            this.ListBox_RealTimeInputShow_Evaporator.Visibility = Visibility.Hidden;
+            this.Canvas_0.Visibility = Visibility.Visible;
             this.Tri_ValveBefore.Text="24";
             this.Pri_ValveBefore.Text = "1729.2";
 
-            this.TabItem_HExTypr_Picture.IsSelected = true;
+            this.Picture_HExTube.Visibility = Visibility.Collapsed;
+            this.Picture_FinType.Visibility = Visibility.Collapsed;
+            this.Picture_HExType.Visibility = Visibility.Visible;
+            this.Picture_Ref.Visibility = Visibility.Collapsed;
+            this.Picture_Wind.Visibility = Visibility.Collapsed;
+            //this.GroupBox_ManualArrangeCirnum.Visibility = Visibility.Collapsed;
+            this.DockPanel_Picture.Visibility = Visibility.Collapsed;
         }
 
         private void HExType_Evaporator(object sender, RoutedEventArgs e)
@@ -1492,13 +1671,20 @@ namespace tryRT
             this.GroupBox_RefOutlet_Evaporator.Visibility = Visibility.Visible;
             this.GroupBox_RefInlet_Condenser.Visibility = Visibility.Hidden;
             this.GroupBox_RefOutlet_Condenser.Visibility = Visibility.Hidden;
-            this.GroupBox_RealTimeInputShow_Condenser.Visibility = Visibility.Hidden;
-            this.GroupBox_RealTimeInputShow_Evaporator.Visibility = Visibility.Visible;
-            this.TabItem_HExType.IsSelected = true;
+            this.ListBox_RealTimeInputShow_Condenser.Visibility = Visibility.Hidden;
+            this.ListBox_RealTimeInputShow_Evaporator.Visibility = Visibility.Visible;
+            this.Canvas_0.Visibility = Visibility.Visible;
             this.Tri_ValveBefore.Text = "20";
             this.Pri_ValveBefore.Text = "1842.28";
 
-            this.TabItem_HExTypr_Picture.IsSelected = true;
+            this.Picture_HExTube.Visibility = Visibility.Collapsed;
+            this.Picture_FinType.Visibility = Visibility.Collapsed;
+            this.Picture_HExType.Visibility = Visibility.Visible;
+            this.Picture_Ref.Visibility = Visibility.Collapsed;
+            this.Picture_Wind.Visibility = Visibility.Collapsed;
+            this.Picture_Wind.Visibility = Visibility.Collapsed;
+            //this.GroupBox_ManualArrangeCirnum.Visibility = Visibility.Collapsed;
+            this.DockPanel_Picture.Visibility = Visibility.Collapsed;
         }
 
 
@@ -1552,7 +1738,7 @@ namespace tryRT
         }
 
         //---Enter 达到 Tab 的效果
-        private void dtgShow_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void dtgShow_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             var uie = e.OriginalSource as UIElement;
             if (e.Key == Key.Enter)
@@ -1563,7 +1749,7 @@ namespace tryRT
         }
 
         //---取得选中 Cell 所在的行列
-        private bool GetCellXY(DataGrid dg, ref int rowIndex, ref int columnIndex)
+        private bool GetCellXY(System.Windows.Controls.DataGrid dg, ref int rowIndex, ref int columnIndex)
         {
             var _cells = dg.SelectedCells;
             if (_cells.Any())
@@ -1576,7 +1762,7 @@ namespace tryRT
         }
 
         //---获取所有的选中cell 的值
-        private string GetSelectedCellsValue(DataGrid dg)
+        private string GetSelectedCellsValue(System.Windows.Controls.DataGrid dg)
         {
             var cells = dg.SelectedCells;
             StringBuilder sb = new StringBuilder();
@@ -1613,7 +1799,7 @@ namespace tryRT
                 {
                     Width = (Width - 800) / num_col,
                     Header = i + 1,
-                    Binding = new Binding("[{i.ToString()}]")
+                    Binding = new System.Windows.Data.Binding("[{i.ToString()}]")
                 });
             }
 
@@ -1678,6 +1864,8 @@ namespace tryRT
 
                 //System.Data.DataRow
                 System.Data.DataRow row = dt.NewRow();
+
+                //表头
                 row["参数"] = "参数";
                 row["数值"] = "数值";
                 row["单位"] = "单位";
@@ -1687,7 +1875,7 @@ namespace tryRT
                 row = dt.NewRow();
                 row["参数"] = "换热量";
                 row["数值"] = Q_inter;
-                row["单位"] = "kJ";
+                row["单位"] = "kW";
                 dt.Rows.Add(row);
 
                 row = dt.NewRow();
@@ -1735,7 +1923,7 @@ namespace tryRT
 
                 row = dt.NewRow();
                 row["参数"] = "流量";
-                row["数值"] = "数值";
+                row["数值"] = mr_inter;
                 row["单位"] = "kg/s";
                 dt.Rows.Add(row);
 
@@ -1760,7 +1948,7 @@ namespace tryRT
 
 
                 //创建Excel
-
+                
                 Microsoft.Office.Interop.Excel.Application excelApp = new Microsoft.Office.Interop.Excel.Application();
                 Workbook excelWB = excelApp.Workbooks.Add(System.Type.Missing);    //创建工作簿（WorkBook：即Excel文件主体本身）
                 Worksheet excelWS = (Worksheet)excelWB.Worksheets[1];   //创建工作表（即Excel里的子表sheet） 1表示在子表sheet1里进行数据导出
@@ -1775,9 +1963,36 @@ namespace tryRT
                     }
                 }
 
-                excelWB.SaveAs("D:\\sanjiawan.xlsx");  //将其进行保存到指定的路径
-                excelWB.Close();
-                excelApp.Quit();  //KillAllExcel(excelApp); 释放可能还没释放的进程
+                string localFilePath, fileNameExt, FilePath;
+                SaveFileDialog sfd = new SaveFileDialog();
+
+                //设置文件类型 
+                sfd.Filter = "Excel文件(*.xlsx)|*.xlsx|Excel文件(*.xls)|*.xls";
+
+                //默认文件名
+                if (this.RadioButton_HExType_Condenser.IsChecked == true)
+                {
+                    sfd.FileName = "Cond "+DateTime.Now.ToString("yyyyMMddHHmmss") + "_Mcoil输出" + ".xlsx";
+                }
+                else 
+                {
+                    sfd.FileName = "Evap " + DateTime.Now.ToString("yyyyMMddHHmmss") + "_Mcoil输出" + ".xlsx";
+                }
+
+                //点了保存按钮进入 
+                if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    localFilePath = sfd.FileName.ToString(); //获得文件路径 
+                    fileNameExt = localFilePath.Substring(localFilePath.LastIndexOf("\\") + 1); //获取文件名，不带路径
+
+                    //获取文件路径，不带文件名 
+                    FilePath = localFilePath.Substring(0, localFilePath.LastIndexOf("\\")) +"\\"+ fileNameExt;
+                    excelWB.SaveAs(localFilePath);  //将其进行保存到指定的路径
+                    excelWB.Close();
+                    excelApp.Quit();  //KillAllExcel(excelApp); 释放可能还没释放的进程
+                    System.Windows.MessageBox.Show("文件保存成功！");
+                }
+
             }
 
             //DetailResult******************************************************************************************************End
@@ -1814,6 +2029,7 @@ namespace tryRT
                 //MessageBox.Show(msg);
                 if(vm.CreatNewConnector)
                 {
+                    this.ToggleButton1.Content = "正在流路连接";
                     var item = ListBox_this.SelectedItem;
                     if(item==null)
                     {
@@ -1838,6 +2054,14 @@ namespace tryRT
                                 rect.FullLine = node1.FullLine;
                                 vm.Capillaries.Where(x => x.Start == newcapillary.Start && x.End == newcapillary.End).ToList().ForEach(x => vm.Capillaries.Remove(x));
                                 vm.Capillaries.Add(newcapillary);
+
+                                Canvas_Picture.RegisterName("New_End_Capillary" + ViewModel.End_Capillary_Num, newcapillary);//注册名字，以便以后使用
+                                newcapillary.Name = Convert.ToString("New_End_Capillary" + ViewModel.End_Capillary_Num);
+                                ViewModel.End_Capillary_Num++;
+
+                                ViewModel.List_Controls.Add(newcapillary);
+                                Capillary.List_Capillary.Add(newcapillary);
+
                                 if (node1.Y < rect.Y)//change rect height
                                 {
                                     rect.RectHeight = rect.RectHeight + (rect.Y - node1.Y);
@@ -1861,24 +2085,47 @@ namespace tryRT
                         else if(item.GetType().Name=="Node")
                         {
                             node2 = item as Node;
-                            if(rect_start&&node1!=null&&node1!=node2&&node2.Full==false)
+                            //if(rect_start&&node1!=null&&node1!=node2&&node2.Full==false)
+                            if (rect_start && node1 != null && node1 != node2)
                             {
                                 Connector newLine = new Connector();
                                 newLine.Start = node1;
                                 newLine.End = node2;
                                 newLine.FullLine = node1.FullLine;
                                 vm.Connectors.Add(newLine);
+
+                                Canvas_Picture.RegisterName("newLine" + ViewModel.Connector_Num, newLine);//注册名字，以便以后使用
+                                newLine.Name = Convert.ToString("newLine"+ViewModel.Connector_Num);
+                                ViewModel.Connector_Num++;
+                                //System.Windows.MessageBox.Show("newLine" + Convert.ToString(ViewModel.Connector_Num));
+
+                                Connector.List_Connector.Add(newLine);
+                                ViewModel.List_Controls.Add(newLine);
+                                //ViewModel.List_Controls.Add(Connector.List_Connector);
+                                //System.Windows.MessageBox.Show(Convert.ToString(Connector.List_Connector));//显示全部成员？？？
+
                                 node2.FullLine = newLine.FullLine ? false : true;
                                 node2.Full = true;
                                 node1 = node2;
                             }
-                            else if(rect_start&&rect!=null&&node2.Full==false)
+                            //else if(rect_start&&rect!=null&&node2.Full==false)
+                            else if (rect_start && rect != null)
                             {
                                 Capillary newcapillary = new Capillary();
                                 newcapillary.Start = node2;
                                 newcapillary.End = rect;
                                 vm.Capillaries.Where(x => x.Start == newcapillary.Start && x.End == newcapillary.End).ToList().ForEach(x => vm.Capillaries.Remove(x));//delete same capillary
                                 vm.Capillaries.Add(newcapillary);
+
+                                Canvas_Picture.RegisterName("New_Start_Capillary" + ViewModel.Start_Capillary_Num, newcapillary);//注册名字，以便以后使用
+                                newcapillary.Name = Convert.ToString("New_Start_Capillary" + ViewModel.Start_Capillary_Num);
+                                ViewModel.Start_Capillary_Num++;
+                                //System.Windows.MessageBox.Show("New_Start_Capillary" + Convert.ToString(ViewModel.Start_Capillary_Num));
+
+                                ViewModel.List_Controls.Add(newcapillary);
+                                Capillary.List_Capillary.Add(newcapillary);
+                                //System.Windows.MessageBox.Show(Convert.ToString(ViewModel.List_Controls));
+
                                 newcapillary.FullLine = rect.FullLine;
                                 newcapillary.In = true;
                                 node2.FullLine = rect.FullLine ? false : true;
@@ -1903,6 +2150,8 @@ namespace tryRT
                 }
                 else if(vm.CreatNewConnector==false)
                 {
+                    this.ToggleButton1.Content = "开始流路连接";
+
                     var item = ListBox_this.SelectedItem;
                     if (item!=null&&item.GetType().Name == "Capillary")
                     {
@@ -2036,6 +2285,14 @@ namespace tryRT
             private void Button_Click_Reconnect(object sender, RoutedEventArgs e)
             {
                 Button_Click_Sure(sender, e);
+
+                //删除List_Controls上的线、毛细管
+                int i_List_Controls = 0;
+                while(ViewModel.List_Controls.Count>0)
+                {
+                    ViewModel.List_Controls.Remove(ViewModel.List_Controls[i_List_Controls]);
+                }
+
             }
             private void Button_Click_zoomout(object sender, RoutedEventArgs e)
             {
@@ -2056,6 +2313,14 @@ namespace tryRT
                     newrect.Y = e.GetPosition(ListBox_this).Y;
                     newrect.RectHeight = 20;
                     vm.Rects.Add(newrect);
+
+                    Canvas_Picture.RegisterName("newRect" + ViewModel.Rect_Num, newrect);//注册名字，以便以后使用
+                    newrect.Name = Convert.ToString("newRect" + ViewModel.Rect_Num);
+                    ViewModel.Rect_Num++;
+                    //System.Windows.MessageBox.Show("newRect" + Convert.ToString(ViewModel.Rect_Num));
+
+                    Rect.List_Rect.Add(newrect);
+                    ViewModel.List_Controls.Add(newrect);
                 }
             }
 
@@ -2079,6 +2344,10 @@ namespace tryRT
                     {
                         var selectelement = item as Connector;
                         vm.Connectors.Remove(selectelement);
+
+                        ViewModel.Connector_Num--;
+                        Canvas_Picture.UnregisterName(selectelement.Name);//把对用的名字注销掉
+                        System.Windows.MessageBox.Show(selectelement.Name+"删除了");
                     }
                     else if (item.GetType().Name == "Rect")
                     {
@@ -2093,8 +2362,21 @@ namespace tryRT
                     {
                         var selectelement = item as Capillary;
                         vm.Capillaries.Remove(selectelement);
+
+                        if (selectelement.Name.Contains("Start_Capillary_Num"))
+                        {
+                            ViewModel.Start_Capillary_Num--;
+                        }
+                        else if (selectelement.Name.Contains("End_Capillary_Num"))
+                        {
+                            ViewModel.End_Capillary_Num--;
+                        }
+                        
+                        Canvas_Picture.UnregisterName(selectelement.Name);//把对用的名字注销掉
+                        System.Windows.MessageBox.Show(selectelement.Name + "删除了");
                     }
                 }
+
             }
 
             private void Button_Click_Capillary(object sender, RoutedEventArgs e)
@@ -2207,7 +2489,7 @@ namespace tryRT
                 {
                     if ((TextBoxText.Text != "" && TextBoxText.Text!="-") && (Convert.ToDouble(TextBoxText.Text) < -40 || Convert.ToDouble(TextBoxText.Text) > 90))
                     {
-                        MessageBoxResult result = MessageBox.Show("空气干球温度只能在-40~90℃内");
+                        MessageBoxResult result = System.Windows.MessageBox.Show("空气干球温度只能在-40~90℃内");
                         TextBoxText.Text = TextBoxText.Text.Substring(0, TextBoxText.Text.Length-1);
                         TextBoxText.SelectionStart = TextBoxText.Text.Length;
                     }
@@ -2216,21 +2498,11 @@ namespace tryRT
                 {
                     if ((TextBoxText.Text != "" && TextBoxText.Text != "-") && (Convert.ToDouble(TextBoxText.Text) < 0 || Convert.ToDouble(TextBoxText.Text) > 37.5))
                     {
-                        MessageBoxResult result = MessageBox.Show("空气湿球温度只能在0~37.5℃内");
+                        MessageBoxResult result = System.Windows.MessageBox.Show("空气湿球温度只能在0~37.5℃内");
                         TextBoxText.Text = TextBoxText.Text.Substring(0, TextBoxText.Text.Length - 1);
                         TextBoxText.SelectionStart = TextBoxText.Text.Length;
                     }
                 }
-                if (TextBoxText.Name == "xo_Cond" || TextBoxText.Name == "xi_Evap"|| TextBoxText.Name == "xo_Evap")
-                {
-                    if ((TextBoxText.Text != "" && TextBoxText.Text != "-") && (Convert.ToDouble(TextBoxText.Text) < 0 || Convert.ToDouble(TextBoxText.Text) > 1))
-                    {
-                        MessageBoxResult result = MessageBox.Show("制冷剂干度只能在0~1内");
-                        TextBoxText.Text = TextBoxText.Text.Substring(0, TextBoxText.Text.Length - 1);
-                        TextBoxText.SelectionStart = TextBoxText.Text.Length;
-                    }
-                }
-
             }
             private void PositiveTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)//只允许小数点、数字
             {
@@ -2282,11 +2554,29 @@ namespace tryRT
                 {
                     if ((TextBoxText.Text != "") && (Convert.ToDouble(TextBoxText.Text) < 0 || Convert.ToDouble(TextBoxText.Text) > 1))
                     {
-                        MessageBoxResult result = MessageBox.Show("空气相对湿度只能在0~1内");
+                        MessageBoxResult result = System.Windows.MessageBox.Show("空气相对湿度只能在0~1内");
                         TextBoxText.Text = TextBoxText.Text.Substring(0, TextBoxText.Text.Length - 1);
                         TextBoxText.SelectionStart = TextBoxText.Text.Length;
                     }
                 }
+                if (TextBoxText.Name == "xo_Cond" || TextBoxText.Name == "xi_Evap" || TextBoxText.Name == "xo_Evap")
+                {
+                    if ((TextBoxText.Text != "" && TextBoxText.Text != "-") && (Convert.ToDouble(TextBoxText.Text) < 0 || Convert.ToDouble(TextBoxText.Text) > 1))
+                    {
+                        MessageBoxResult result = System.Windows.MessageBox.Show("制冷剂干度只能在0~1内");
+                        TextBoxText.Text = TextBoxText.Text.Substring(0, TextBoxText.Text.Length - 1);
+                        TextBoxText.SelectionStart = TextBoxText.Text.Length;
+                    }
+                }
+                //if (TextBoxText.Name == "Tro_sub_Evap" || TextBoxText.Name == "Tro_sub_Cond")
+                //{
+                //    if ((TextBoxText.Text != "" && TextBoxText.Text != "-") && (Convert.ToDouble(TextBoxText.Text) < 0 || Convert.ToDouble(TextBoxText.Text) > 1))
+                //    {
+                //        MessageBoxResult result = MessageBox.Show("制冷剂干度只能在0~1内");
+                //        TextBoxText.Text = TextBoxText.Text.Substring(0, TextBoxText.Text.Length - 1);
+                //        TextBoxText.SelectionStart = TextBoxText.Text.Length;
+                //    }
+                //}
             }
 
             private void NumTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)//只允许整数
@@ -2306,6 +2596,1268 @@ namespace tryRT
             }
 
             #endregion
+
+            private void MenuItem_Click_DefaultCond(object sender, RoutedEventArgs e)
+            {
+                //***********************HEx Type***********************
+                this.RadioButton_HExType_Condenser.IsChecked = true;
+
+                //***********************HEx Tube***********************
+                //管型号
+                //ComboBox_TubeVersion
+                this.ComboBox_TubeVersion.SelectedItem = "7mm,2R,21x22";
+
+                ////管外径
+                ////Do
+
+                ////管间距
+                ////Pt
+
+                ////列间距
+                ////Pr
+
+                ////管排
+                ////Row
+
+                //管数/排
+                //tube_per
+                this.tube_per.Text = "6";
+
+                //管壁厚
+                //thick_tube
+                this.thick_tube.Text = "0.2";
+
+                //管长
+                //L
+                this.L.Text = "914.4";
+
+                //管种类
+                //ComboBox_tubetype
+                this.ComboBox_tubetype.SelectedItem = "光管";
+
+                //确定
+                //Button1
+                MouseButtonEventArgs args = new MouseButtonEventArgs(Mouse.PrimaryDevice,0, MouseButton.Left);
+                args.RoutedEvent = System.Windows.Controls.Button.ClickEvent;
+                this.Button1 .RaiseEvent(args);
+
+                //直排
+                //TubeArrangement_Crossed_High
+                this.TubeArrangement_Crossed_High.IsChecked = true;
+                
+                //***********************Fin***********************
+
+                //翅片间距
+                //Fnum
+                this.Fnum.Text = "1.2";
+
+                //翅片厚度
+                //Fthick
+                this.Fthick.Text = "0.095";
+
+                //翅片种类
+                //ComboBox_fintype
+                this.ComboBox_fintype.SelectedItem = "平片";
+
+                //***********************Ref***********************
+
+                //制冷剂
+                this.ComboBox_Refrigerant.SelectedItem = "R32";
+
+                //***********************冷凝器
+                //饱和温度
+                this.tc.Text = "45";
+
+                //进口温度
+                this.tri.Text="78";
+
+                //流量
+                this.RadioButton_mro_Cond.IsChecked = true;
+                this.mro_Cond.Text="0.02";
+
+                //***********************Air***********************
+
+                //进风干球温度
+                this.tai.Text="35";
+                
+                //大气压力
+                this.Patm.Text="101.325";
+
+                //进风湿球温度
+                this.RadioButton_WetBulbTemperature.IsChecked = true;
+                this.Tai_wet.Text="24";
+
+                ////进风相对湿度
+                ////RelativeHumidity
+                ////this.RHi.Text="0.5"
+
+                //体积流量
+                this.RadioButton_AirVolumnFlowRate.IsChecked = true;
+                this.Va.Text="0.12";
+
+                ////风速
+                ////AirVelocity
+                ////Velocity_ai.Text="1";
+
+                //均匀送风
+                this.CheckBox_UniformWind.IsChecked =true ;
+
+                //***********************Pass***********************
+                //手动分配流路
+                //RadioButton_ManualArrange
+                this.RadioButton_ManualArrange.IsChecked=true;
+                
+                ////自动分配流路
+                ////RadioButton_AutoArrange
+                ////流路数
+                ////Cirnum.Text="2";
+                //<Button x:Name="Pass_OK" Content="确定" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="220,85,0,0" Height="Auto" Width="90" IsEnabled="False"/>
+
+                //空气流向反转
+                //AirReverse
+                this.AirReverse.IsChecked = false;
+
+                //制冷剂流向反转
+                //RefReverse
+                this.RefReverse.IsChecked = false;
+
+                //***********************AdjustParameter***********************
+                //***********************制冷剂侧系数
+                //传热系数修正
+                 this.Zhr.Text="1";
+                //压降系数修正
+                this.Zapr.Text = "1";
+                //***********************管外侧修正
+                //传热系数修正
+                this.Zha.Text = "1";
+                //压降系数修正
+                this.Zapa.Text = "1";
+
+            }
+
+            private void MenuItem_Click_DefaultEvap(object sender, RoutedEventArgs e)
+            {
+                //***********************HEx Type***********************
+                this.RadioButton_HExType_Evaporator.IsChecked = true;
+
+                //***********************HEx Tube***********************
+                //管型号
+                //ComboBox_TubeVersion
+                this.ComboBox_TubeVersion.SelectedItem = "7mm,2R,21x22";
+
+                ////管外径
+                ////Do
+
+                ////管间距
+                ////Pt
+
+                ////列间距
+                ////Pr
+
+                ////管排
+                ////Row
+
+                //管数/排
+                //tube_per
+                this.tube_per.Text = "6";
+
+                //管壁厚
+                //thick_tube
+                this.thick_tube.Text = "0.2";
+
+                //管长
+                //L
+                this.L.Text = "914.4";
+
+                //管种类
+                //ComboBox_tubetype
+                this.ComboBox_tubetype.SelectedItem = "光管";
+
+                //确定
+                //Button1
+                //后台点击按钮
+                MouseButtonEventArgs args = new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left);
+                args.RoutedEvent = System.Windows.Controls.Button.ClickEvent;
+                this.Button1.RaiseEvent(args);
+
+                //直排
+                //TubeArrangement_Crossed_High
+                this.TubeArrangement_Crossed_High.IsChecked = true;
+
+                //***********************Fin***********************
+
+                //翅片间距
+                //Fnum
+                this.Fnum.Text = "1.2";
+
+                //翅片厚度
+                //Fthick
+                this.Fthick.Text = "0.095";
+
+                //翅片种类
+                //ComboBox_fintype
+                this.ComboBox_fintype.SelectedItem = "平片";
+
+                //***********************Ref***********************
+
+                //制冷剂
+                this.ComboBox_Refrigerant.SelectedItem = "R32";
+
+                //***********************蒸发器
+                ////压力
+                ////RadioButton_Pri_Evap
+                ////Pri_Evap
+
+                ////干度
+                ////RadioButton_xi_Evap
+                ////xi_Evap
+
+                ////焓值
+                ////RadioButton_Hri_Evap
+                ////Hri_Evap
+
+                //阀前温度
+                //RadioButton_PriTri_Evap
+                //Tri_ValveBefore
+                this.RadioButton_PriTri_Evap.IsChecked = true;
+                this.Pri_Evap.Text = "0";
+                this.xi_Evap.Text = "0";
+                this.Hri_Evap.Text = "0";
+                this.Tri_ValveBefore.Text = "20";
+
+                //阀前压力
+                //Pri_ValveBefore
+                this.Pri_ValveBefore.Text = "1842.28";
+
+                //饱和温度
+                this.RadioButton_Tro_Evap.IsChecked = true;
+                Tcro_Evap.Text = "10";
+
+                ////过热度
+                ////RadioButton_Tro_sub_Evap
+                ////Tro_sub_Evap
+
+                ////干度
+                ////RadioButton_xo_Evap
+                ////xo_Evap"
+
+                //流量
+                this.RadioButton_mro_Evap.IsChecked = true;
+                this.mro_Evap.Text = "0.02";
+
+                //***********************Air***********************
+
+                //进风干球温度
+                this.tai.Text = "27";
+
+                //大气压力
+                this.Patm.Text = "101.325";
+
+                //进风湿球温度
+                this.RadioButton_WetBulbTemperature.IsChecked = true;
+                this.Tai_wet.Text = "12";
+
+                ////进风相对湿度
+                ////RelativeHumidity
+                ////this.RHi.Text="0.5"
+
+                //体积流量
+                this.RadioButton_AirVolumnFlowRate.IsChecked = true;
+                this.Va.Text = "0.12";
+
+                ////风速
+                ////AirVelocity
+                ////Velocity_ai.Text="1";
+
+                //均匀送风
+                this.CheckBox_UniformWind.IsChecked = true;
+
+                //***********************Pass***********************
+                //手动分配流路
+                //RadioButton_ManualArrange
+                this.RadioButton_ManualArrange.IsChecked = true;
+
+                ////自动分配流路
+                ////RadioButton_AutoArrange
+                ////流路数
+                ////Cirnum.Text="2";
+                //<Button x:Name="Pass_OK" Content="确定" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="220,85,0,0" Height="Auto" Width="90" IsEnabled="False"/>
+
+                //空气流向反转
+                //AirReverse
+                this.AirReverse.IsChecked = false;
+
+                //制冷剂流向反转
+                //RefReverse
+                this.RefReverse.IsChecked = false;
+
+                //***********************AdjustParameter***********************
+                //***********************制冷剂侧系数
+                //传热系数修正
+                this.Zhr.Text = "1";
+                //压降系数修正
+                this.Zapr.Text = "1";
+                //***********************管外侧修正
+                //传热系数修正
+                this.Zha.Text = "1";
+                //压降系数修正
+                this.Zapa.Text = "1";
+            }
+
+            private void MenuItem_Click_ExportInput(object sender, RoutedEventArgs e)
+            {
+                string data =
+                    "冷凝器"+
+                    "\t"+
+                    Convert.ToString(this.RadioButton_HExType_Condenser.IsChecked.Value) +
+                    "\r\n" +
+                    "蒸发器" + 
+                    "\t" +
+                    Convert.ToString(this.RadioButton_HExType_Evaporator.IsChecked.Value) +
+                    "\r\n" +
+                    "管型号" + 
+                    "\t" +
+                    Convert.ToString(this.ComboBox_TubeVersion.SelectedItem) +
+                    "\r\n" +
+                    "管外径" + 
+                    "\t" +
+                    Convert.ToString(this.Do.Text)+
+                    "\r\n" +
+                    "管间距" + 
+                    "\t" +
+                    Convert.ToString(this.Pt.Text)+
+                    "\r\n" +
+                    "列间距" + 
+                    "\t" +
+                    Convert.ToString(this.Pr.Text)+
+                    "\r\n" +
+                    "管排" + 
+                    "\t" +
+                    Convert.ToString(this.Row.Text) +
+                    "\r\n" +
+                    "管数每排" + 
+                    "\t" +
+                    Convert.ToString(this.tube_per.Text)+
+                    "\r\n" +
+                    "管壁厚" + 
+                    "\t" +
+                    Convert.ToString(this.thick_tube.Text)+
+                    "\r\n" +
+                    "管长" + 
+                    "\t" +
+                    Convert.ToString(this.L.Text)+
+                    "\r\n" +
+                    "管种类" + 
+                    "\t" +
+                    Convert.ToString(this.ComboBox_tubetype.Text) +
+                    "\r\n" +
+                    "直排" + 
+                    "\t" +
+                    Convert.ToString(this.TubeArrangement_Straight.IsChecked.Value) +
+                    "\r\n" +
+                    "叉排迎风面高" + 
+                    "\t" +
+                    Convert.ToString(this.TubeArrangement_Crossed_High.IsChecked.Value)+
+                    "\r\n" +
+                    "叉排迎风面低" + 
+                    "\t" +
+                    Convert.ToString(this.TubeArrangement_Crossed_Short.IsChecked.Value) +
+                    "\r\n" +
+                    "翅片间距" + 
+                    "\t" +
+                    Convert.ToString(this.Fnum.Text) +
+                    "\r\n" +
+                    "翅片厚度" + 
+                    "\t" +
+                    Convert.ToString(this.Fthick.Text)+
+                    "\r\n" +
+                    "翅片种类" + 
+                    "\t" +
+                    Convert.ToString(this.ComboBox_fintype.SelectedItem) +
+                    "\r\n" +
+                    "制冷剂种类" + 
+                    "\t" +
+                    Convert.ToString(this.ComboBox_Refrigerant.SelectedItem) +
+                     "\r\n" +
+                    "冷凝器饱和温度" + 
+                    "\t" +
+                    Convert.ToString(this.tc.Text) +
+                    "\r\n" +
+                    "冷凝器进口温度" + 
+                    "\t" +
+                    Convert.ToString(this.tri.Text) +
+                    "\r\n" +
+                    "冷凝器流量" + 
+                    "\t" +
+                    Convert.ToString(this.RadioButton_mro_Cond.IsChecked.Value) +
+                    "\t" +
+                    Convert.ToString(this.mro_Cond.Text) +
+                    "\r\n" +
+                    "冷凝器出口干度" + 
+                    "\t" +
+                    Convert.ToString(this.RadioButton_xo_Cond.IsChecked.Value) +
+                    "\t" +
+                    Convert.ToString(this.xo_Cond.Text) +
+                    "\r\n" +
+                    "冷凝器出口过冷度" +
+                    "\t" +
+                    Convert.ToString(this.RadioButton_Tro_sub_Cond.IsChecked.Value) +
+                    "\t" +
+                    Convert.ToString(this.Tro_sub_Cond.Text) +
+                    "\r\n" +
+                    "蒸发器进口压力" +
+                    "\t" +
+                    Convert.ToString(this.RadioButton_Pri_Evap.IsChecked.Value) +
+                    "\t" +
+                    Convert.ToString(this.Pri_Evap.Text) +
+                    "\r\n" +
+                    "蒸发器进口干度" +
+                    "\t" +
+                    Convert.ToString(this.RadioButton_xi_Evap.IsChecked.Value) +
+                    "\t" +
+                    Convert.ToString(this.xi_Evap.Text) +
+                    "\r\n" +
+                    "蒸发器进口焓" +
+                    "\t" +
+                    Convert.ToString(this.RadioButton_Hri_Evap.IsChecked.Value) +
+                    "\t" +
+                    Convert.ToString(this.Hri_Evap.Text) +
+                    "\r\n" +
+                    "蒸发器阀前温度压力" +
+                    "\t" +
+                    Convert.ToString(this.RadioButton_PriTri_Evap.IsChecked.Value) +
+                    "\t" +
+                    Convert.ToString(this.Tri_ValveBefore.Text) +
+                    "\t" +
+                    Convert.ToString(this.Pri_ValveBefore.Text) +
+                    "\r\n" +
+                    "蒸发器出口饱和温度" +
+                    "\t" +
+                    Convert.ToString(this.RadioButton_Tro_Evap.IsChecked.Value) +
+                    "\t" +
+                    Convert.ToString(this.Tcro_Evap.Text) +
+                    "\r\n" +
+                    "蒸发器出口过热度" +
+                    "\t" +
+                    Convert.ToString(this.RadioButton_Tro_sub_Evap.IsChecked.Value) +
+                    "\t" +
+                    Convert.ToString(this.Tro_sub_Evap.Text) +
+                    "\r\n" +
+                    "蒸发器出口干度" +
+                    "\t" +
+                    Convert.ToString(this.RadioButton_xo_Evap.IsChecked.Value) +
+                    "\t" +
+                    Convert.ToString(this.xo_Evap.Text) +
+                    "\r\n" +
+                    "蒸发器流量" +
+                    "\t" +
+                    Convert.ToString(this.RadioButton_mro_Evap.IsChecked.Value) +
+                    "\t" +
+                    Convert.ToString(this.mro_Evap.Text) +
+                    "\r\n" +
+                    "进风干球温度" +
+                    "\t" +
+                    Convert.ToString(this.tai.Text) +
+                    "\r\n" +
+                    "环境压力" +
+                    "\t" +
+                    Convert.ToString(this.Patm.Text) +
+                    "\r\n" +
+                    "进风湿球温度" +
+                    "\t" +
+                    Convert.ToString(this.RadioButton_WetBulbTemperature.IsChecked.Value) +
+                    "\t" +
+                    Convert.ToString(this.Tai_wet.Text) +
+                    "\r\n" +
+                    "进风相对" +
+                    "\t" +
+                    Convert.ToString(this.RadioButton_RelativeHumidity.IsChecked.Value) +
+                    "\t" +
+                    Convert.ToString(this.RHi.Text) +
+                    "\r\n" +
+                    "进风体积流量" +
+                    "\t" +
+                    Convert.ToString(this.RadioButton_AirVolumnFlowRate.IsChecked.Value) +
+                    "\t" +
+                    Convert.ToString(this.Va.Text) +
+                    "\r\n" +
+                    "进风风速" +
+                    "\t" +
+                    Convert.ToString(this.RadioButton_AirVelocity.IsChecked.Value) +
+                    "\t" +
+                    Convert.ToString(this.Velocity_ai.Text) +
+                    "\r\n" +
+                    "均匀送风" +
+                    "\t" +
+                    Convert.ToString(this.CheckBox_UniformWind.IsChecked.Value) +
+                    "\r\n" +
+                    "手动分配流路" +
+                    "\t" +
+                    Convert.ToString(this.RadioButton_ManualArrange.IsChecked.Value) +
+                    "\r\n" +
+                    "自动分配流路" +
+                    "\t" +
+                    Convert.ToString(this.RadioButton_AutoArrange.IsChecked.Value) +
+                    "\r\n" +
+                    "自动分配流路数" +
+                    "\t" +
+                    Convert.ToString(this.Cirnum.Text) +
+                    "\r\n" +
+                    "风反向" +
+                    "\t" +
+                    Convert.ToString(this.AirReverse.IsChecked.Value) +
+                    "\r\n" +
+                    "制冷剂反向" +
+                    "\t" +
+                    Convert.ToString(this.RefReverse.IsChecked.Value) +
+                    "\r\n" +
+                    "制冷剂侧传热系数修正" +
+                    "\t" +
+                    Convert.ToString(this.Zhr.Text) +
+                    "\r\n" +
+                    "制冷剂侧压降系数修正" +
+                    "\t" +
+                    Convert.ToString(this.Zapr.Text) +
+                    "\r\n" +
+                    "空气侧传热系数修正" +
+                    "\t" +
+                    Convert.ToString(this.Zha.Text) +
+                    "\r\n" +
+                    "空气侧压降系数修正" +
+                    "\t" +
+                    Convert.ToString(this.Zapa.Text)
+                    ;
+
+                //List_Controls
+                int i_List_Controls = 0;//在List_Controls中找选定线的位置
+
+                //List_Connector
+                int i_List_Connector = 0;//在List_Connector中找选定线的位置
+
+                //List_Capillary
+                int i_List_Capillary = 0;
+
+                //List_Rect
+                int i_List_Rect = 0;//在List_Rect中找选定线的位置
+
+                for (i_List_Controls = 0; i_List_Controls < ViewModel.List_Controls.Count; i_List_Controls++)
+                {
+                    if (ViewModel.List_Controls[i_List_Controls].GetType().Name == "Capillary")
+                    {
+                        data = data +
+                            "\r\n" +
+                            "Capillary" +
+                            "\r\n" +
+                            "Name" +
+                            "\t" +
+                            Convert.ToString(Capillary.List_Capillary[i_List_Capillary].Name)+
+                            "\r\n" +
+                            "Start" +
+                            "\t" +
+                            Convert.ToString(Capillary.List_Capillary[i_List_Capillary].Start) +
+                            "\r\n" +
+                            "End" +
+                            "\t" +
+                            Convert.ToString(Capillary.List_Capillary[i_List_Capillary].End) +
+                            "\r\n" +
+                            "Length" +
+                            "\t" +
+                            Convert.ToString(Capillary.List_Capillary[i_List_Capillary].Length) +
+                            "\r\n" +
+                            "Diameter" +
+                            "\t" +
+                            Convert.ToString(Capillary.List_Capillary[i_List_Capillary].Diameter)+
+                            "\r\n" +
+                            "X" +
+                            "\t" +
+                            Convert.ToString(Capillary.List_Capillary[i_List_Capillary].X) +
+                            "\r\n" +
+                            "Y" +
+                            "\t" +
+                            Convert.ToString(Capillary.List_Capillary[i_List_Capillary].Y) +
+                            "\r\n" +
+                            "FullLine" +
+                            "\t" +
+                            Convert.ToString(Capillary.List_Capillary[i_List_Capillary].FullLine) +
+                            "\r\n" +
+                            "In" +
+                            "\t" +
+                            Convert.ToString(Capillary.List_Capillary[i_List_Capillary].In)
+                            ;
+                        i_List_Capillary++;
+                    }
+                    else if (ViewModel.List_Controls[i_List_Controls].GetType().Name == "Connector")
+                    {
+                        vm.Connectors.Add(Connector.List_Connector[i_List_Connector]);
+                        i_List_Connector++;
+                    }
+                    else if (ViewModel.List_Controls[i_List_Controls].GetType().Name == "Rect")
+                    {
+                        vm.Rects.Add(Rect.List_Rect[i_List_Rect]);
+                        i_List_Rect++;
+                    }
+                }
+
+                //按照日期建立一个文件名
+                string FileName = DateTime.Now.ToString("yyyyMMddHHmmss") + "_Mcoil输入.txt";
+
+                string localFilePath, fileNameExt, FilePath;
+                SaveFileDialog sfd = new SaveFileDialog();
+
+                //设置文件类型 
+                sfd.Filter = "Mcoil文件(*.Mcoil)|*.Mcoil|MCOIL文件(*.MCOIL)|*.MCOIL";
+
+                //默认文件名
+                sfd.FileName = DateTime.Now.ToString("yyyyMMddHHmmss") + "_Mcoil输入.Mcoil";
+
+                try
+                { 
+                    //点了保存按钮进入 
+                    if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    {
+                        localFilePath = sfd.FileName.ToString(); //获得文件路径 
+                        fileNameExt = localFilePath.Substring(localFilePath.LastIndexOf("\\") + 1); //获取文件名，不带路径
+
+                        //获取文件路径，不带文件名 
+                        FilePath = localFilePath.Substring(0, localFilePath.LastIndexOf("\\")) + "\\" + fileNameExt;
+
+                        //文件覆盖方式添加内容
+                        System.IO.StreamWriter file = new System.IO.StreamWriter(FilePath, false);
+                        //保存数据到文件
+                        file.Write(data);
+                        //关闭文件
+                        file.Close();
+                        //释放对象
+                        file.Dispose();
+
+                        System.Windows.MessageBox.Show("文件保存成功！");
+                    }
+                }
+                catch (IOException ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+
+
+            }
+
+            private void MenuItem_Click_InportInput(object sender, RoutedEventArgs e)
+            {
+                //定义一个变量，存储文件所在的路径
+                string upStr = "";
+                int i = 1;
+
+                OpenFileDialog fdlg = new OpenFileDialog();
+                fdlg.Title = "选择需导入的输入信息文件";
+                //fdlg.InitialDirectory = @"c:\";   //@是取消转义字符的意思
+                fdlg.Filter = "Mcoil文件(*.Mcoil)|*.Mcoil|MCOIL文件(*.MCOIL)|*.MCOIL";
+                fdlg.FilterIndex = 1;//FilterIndex 属性用于选择了何种文件类型,缺省设置为0,系统取Filter属性设置第一项,相当于FilterIndex 属性设置为1.如果你编了3个文件类型，当FilterIndex ＝2时是指第2个
+                fdlg.RestoreDirectory = false;//如果值为false，那么下一次选择文件的初始目录是上一次你选择的那个目录，不固定；如果值为true，每次打开这个对话框初始目录不随你的选择而改变，是固定的
+
+                try
+                {
+                    if (fdlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    {
+                        upStr = File.ReadAllText(fdlg.FileName, Encoding.UTF8);//UTF8万国码 //先读取文本内容，调用File类的ReadAllLines即可读取所有内容
+                    }
+
+                    if(upStr!="")
+                    {
+                        string[] sp = upStr.Split(new string[] { "\r\n", "\t" }, StringSplitOptions.None);
+
+                        this.RadioButton_HExType_Condenser.IsChecked = Convert.ToBoolean(sp[i]); i++; i++;
+                        this.RadioButton_HExType_Evaporator.IsChecked = Convert.ToBoolean(sp[i]); i++; i++;
+                        this.ComboBox_TubeVersion.SelectedItem = Convert.ToString(sp[i]); i++; i++;
+                        this.Do.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.Pt.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.Pr.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.Row.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.tube_per.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.thick_tube.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.L.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.ComboBox_tubetype.SelectedItem = Convert.ToString(sp[i]); i++; i++;
+                        this.TubeArrangement_Straight.IsChecked = Convert.ToBoolean(sp[i]); i++; i++;
+                        this.TubeArrangement_Crossed_High.IsChecked = Convert.ToBoolean(sp[i]); i++; i++;
+                        this.TubeArrangement_Crossed_Short.IsChecked = Convert.ToBoolean(sp[i]); i++; i++;
+                        this.Fnum.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.Fthick.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.ComboBox_fintype.SelectedItem = Convert.ToString(sp[i]); i++; i++;
+                        this.ComboBox_Refrigerant.SelectedItem = Convert.ToString(sp[i]); i++; i++;
+                        this.tc.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.tri.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.RadioButton_mro_Cond.IsChecked = Convert.ToBoolean(sp[i]); i++;
+                        this.mro_Cond.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.RadioButton_xo_Cond.IsChecked = Convert.ToBoolean(sp[i]); i++;
+                        this.xo_Cond.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.RadioButton_Tro_sub_Cond.IsChecked = Convert.ToBoolean(sp[i]); i++;
+                        this.Tro_sub_Cond.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.RadioButton_Pri_Evap.IsChecked = Convert.ToBoolean(sp[i]); i++;
+                        this.Pri_Evap.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.RadioButton_xi_Evap.IsChecked = Convert.ToBoolean(sp[i]); i++;
+                        this.xi_Evap.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.RadioButton_Hri_Evap.IsChecked = Convert.ToBoolean(sp[i]); i++;
+                        this.Hri_Evap.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.RadioButton_PriTri_Evap.IsChecked = Convert.ToBoolean(sp[i]); i++;
+                        this.Tri_ValveBefore.Text = Convert.ToString(sp[i]); i++; 
+                        this.Pri_ValveBefore.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.RadioButton_Tro_Evap.IsChecked = Convert.ToBoolean(sp[i]); i++;
+                        this.Tcro_Evap.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.RadioButton_Tro_sub_Evap.IsChecked = Convert.ToBoolean(sp[i]); i++;
+                        this.Tro_sub_Evap.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.RadioButton_xo_Evap.IsChecked = Convert.ToBoolean(sp[i]); i++;
+                        this.xo_Evap.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.RadioButton_mro_Evap.IsChecked = Convert.ToBoolean(sp[i]); i++;
+                        this.mro_Evap.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.tai.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.Patm.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.RadioButton_WetBulbTemperature.IsChecked = Convert.ToBoolean(sp[i]); i++;
+                        this.Tai_wet.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.RadioButton_RelativeHumidity.IsChecked = Convert.ToBoolean(sp[i]); i++;
+                        this.RHi.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.RadioButton_AirVolumnFlowRate.IsChecked = Convert.ToBoolean(sp[i]); i++;
+                        this.Va.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.RadioButton_AirVelocity.IsChecked = Convert.ToBoolean(sp[i]); i++;
+                        this.Velocity_ai.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.CheckBox_UniformWind.IsChecked = Convert.ToBoolean(sp[i]); i++; i++;
+                        this.RadioButton_ManualArrange.IsChecked = Convert.ToBoolean(sp[i]); i++; i++;
+                        this.RadioButton_AutoArrange.IsChecked = Convert.ToBoolean(sp[i]); i++; i++;
+                        this.Cirnum.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.AirReverse.IsChecked = Convert.ToBoolean(sp[i]); i++; i++;
+                        this.RefReverse.IsChecked = Convert.ToBoolean(sp[i]); i++; i++;
+                        this.Zhr.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.Zapr.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.Zha.Text = Convert.ToString(sp[i]); i++; i++;
+                        this.Zapa.Text = Convert.ToString(sp[i]); i++; i++; i++; i++; i++;
+
+                        //List_Control存入数据
+                        for (int j = i; j < sp.Count()-i+1;j++ )
+                        {
+                            if (sp[j].GetType().Name == "Capillary")
+                            {
+                                Capillary newcapillary = new Capillary();
+                                this.Canvas_Picture.RegisterName("New_Start_Capillary" + ViewModel.Start_Capillary_Num, newcapillary);//注册名字，以便以后使用
+                                newcapillary.Name = Convert.ToString("New_Start_Capillary" + ViewModel.Start_Capillary_Num);
+                            }
+                        }
+
+                        //确定
+                        //Button1
+                        MouseButtonEventArgs args = new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left);
+                        args.RoutedEvent = System.Windows.Controls.Button.ClickEvent;
+                        this.Button1.RaiseEvent(args);
+                    }
+
+                }
+                catch (IOException ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+
+            }
+
+            private void Button_Delete_Controls(object sender, RoutedEventArgs e)
+            {
+                vm.CreatNewConnector = false;
+                rect = null;
+                node1 = null;
+
+                //List_Controls
+                int i_List_Controls;//在List_Controls中找选定线的位置
+                int i_selected_List_Controls = 0;//在List_Controls记住选定线当前的位置
+                int j_FirstConnector_List_Controls = 0; //在List_Controls选定线对应流路中第一条线的位置
+                int k_LastConnector_List_Controls = 0; //在List_Controls中选定线对应流路最后条线的位置
+
+                //List_Connector
+                int i_List_Connector;//在List_Connector中找选定线的位置
+                int j_FirstConnector_List_Connector = 0;//在List_Connector中选定线对应流路第一条线的位置
+                int k_LastConnector_List_Connector = 0;//在List_Connector中选定线对应流路最后条线的位置
+
+                //List_Capillary
+                int Index_Start_Capiliary = 0;
+                int Index_End_Capiliary = 0;
+
+                //List_Rect
+                int i_List_Rect = 0;//在List_Rect中找选定线的位置
+
+                var item = ListBox_this.SelectedItem;
+                vm.CreatNewConnector = false;
+
+                if (item != null)
+                {
+                    if (item.GetType().Name == "Connector")
+                    {
+                        var selectelement = item as Connector;
+                        //System.Windows.MessageBox.Show(selectelement.Name);
+                        for (i_List_Controls = 0; i_List_Controls < ViewModel.List_Controls.Count; i_List_Controls++)
+                        {
+                            if (selectelement.GetHashCode() == ViewModel.List_Controls[i_List_Controls].GetHashCode())
+                            {
+                                i_selected_List_Controls = i_List_Controls;
+                                j_FirstConnector_List_Controls = i_List_Controls;//初始化
+                                k_LastConnector_List_Controls = i_List_Controls;//初始化
+                                while (Convert.ToString(ViewModel.List_Controls[j_FirstConnector_List_Controls]).Contains("Connector"))
+                                {
+                                    j_FirstConnector_List_Controls--;
+                                }
+                                j_FirstConnector_List_Controls++;//记录
+                                while (Convert.ToString(ViewModel.List_Controls[k_LastConnector_List_Controls]).Contains("Connector"))
+                                {
+                                    k_LastConnector_List_Controls++;
+                                }
+                                k_LastConnector_List_Controls--;//记录
+
+                                Index_Start_Capiliary = j_FirstConnector_List_Controls - 1;//记录
+                                Index_End_Capiliary = k_LastConnector_List_Controls + 1;//记录
+
+                                //System.Windows.MessageBox.Show(Convert.ToString(j - 1) + ":" + Capillary.List_Capillary[Index_Start_Capiliary]);//用List_Capillary显示
+                                //System.Windows.MessageBox.Show(Convert.ToString(j) + ":" + ViewModel.List_Controls[j]);
+                                //System.Windows.MessageBox.Show(Convert.ToString(i) + ":" + ViewModel.List_Controls[i]);
+                                //System.Windows.MessageBox.Show(Convert.ToString(k) + ":" + ViewModel.List_Controls[k]);
+                                //System.Windows.MessageBox.Show(Convert.ToString(k + 1) + ":" + ViewModel.List_Controls[Index_End_Capiliary]);
+
+                                break;
+                            }
+                        }
+
+                        //删除界面上的毛细管
+                        for (i_List_Controls = 0; i_List_Controls < Capillary.List_Capillary.Count; i_List_Controls++)
+                        {
+                            if (Capillary.List_Capillary[i_List_Controls].GetHashCode() == ViewModel.List_Controls[Index_Start_Capiliary].GetHashCode())
+                            {
+                                vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls]);//删除Start毛细管
+                                vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls + 1]);//删除End毛细管
+                                break;
+                            }
+                        }
+
+                        //删除界面上的线
+                        for (i_List_Connector = 0; i_List_Connector < Connector.List_Connector.Count; i_List_Connector++)
+                        {
+                            if (selectelement.GetHashCode() == Connector.List_Connector[i_List_Connector].GetHashCode())
+                            {
+                                j_FirstConnector_List_Connector = i_List_Connector - (i_selected_List_Controls - j_FirstConnector_List_Controls);//记录
+                                k_LastConnector_List_Connector = i_List_Connector + (k_LastConnector_List_Controls - i_selected_List_Controls);//记录
+                                //System.Windows.MessageBox.Show(Convert.ToString(jj) + ":" + Connector.List_Connector[jj]);
+                                //System.Windows.MessageBox.Show(Convert.ToString(ii) + ":" + Connector.List_Connector[ii]);
+                                //System.Windows.MessageBox.Show(Convert.ToString(kk) + ":" + Connector.List_Connector[kk]);
+                                for (i_List_Connector = j_FirstConnector_List_Connector; i_List_Connector < k_LastConnector_List_Connector + 1; i_List_Connector++)
+                                {
+                                    vm.Connectors.Remove(Connector.List_Connector[i_List_Connector]);
+                                }
+                                break;
+                            }
+                        }
+
+                        //删除List_Controls上的线、毛细管
+                        for (i_List_Controls = k_LastConnector_List_Controls + 1; i_List_Controls > j_FirstConnector_List_Controls - 2; i_List_Controls--)//删除选定的线关联的线、毛细管
+                        {
+                            ViewModel.List_Controls.Remove(ViewModel.List_Controls[i_List_Controls]);
+                        }
+
+                    }
+
+                    else if (item.GetType().Name == "Capillary")
+                    {
+                        var selectelement = item as Capillary;
+
+                        for (i_List_Controls = 0; i_List_Controls < ViewModel.List_Controls.Count; i_List_Controls++)
+                        {
+                            if (selectelement.GetHashCode() == ViewModel.List_Controls[i_List_Controls].GetHashCode())
+                            {
+                                i_selected_List_Controls = i_List_Controls;
+
+                                if (i_selected_List_Controls == 0)//判断当前选择的毛细管是否为最先的Start毛细管
+                                {
+                                    j_FirstConnector_List_Controls = i_List_Controls + 1;//初始化
+                                    k_LastConnector_List_Controls = i_List_Controls + 1;//初始化
+                                    while (Convert.ToString(ViewModel.List_Controls[k_LastConnector_List_Controls]).Contains("Connector"))
+                                    {
+                                        k_LastConnector_List_Controls++;
+                                    }
+                                    k_LastConnector_List_Controls--;//记录
+
+                                    Index_Start_Capiliary = i_List_Controls;//记录
+                                    Index_End_Capiliary = k_LastConnector_List_Controls + 1;//记录
+                                }
+                                else if (i_List_Controls == ViewModel.List_Controls.Count - 1)//判断当前选择的毛细管是否为最后的End毛细管
+                                {
+                                    j_FirstConnector_List_Controls = i_List_Controls - 1;//初始化
+                                    k_LastConnector_List_Controls = i_List_Controls - 1;//初始化
+                                    while (Convert.ToString(ViewModel.List_Controls[j_FirstConnector_List_Controls]).Contains("Connector"))
+                                    {
+                                        j_FirstConnector_List_Controls--;
+                                    }
+                                    j_FirstConnector_List_Controls++;//记录
+
+                                    Index_Start_Capiliary = j_FirstConnector_List_Controls - 1;//记录
+                                    Index_End_Capiliary = i_List_Controls;//记录
+                                }
+                                else if (i_List_Controls < ViewModel.List_Controls.Count-1)
+                                {
+                                    if (ViewModel.List_Controls[i_List_Controls + 1].GetType().Name == "Connector")//判断当前选择的毛细管是否为Start毛细管
+                                    {
+                                        j_FirstConnector_List_Controls = i_List_Controls + 1;//初始化
+                                        k_LastConnector_List_Controls = i_List_Controls + 1;//初始化
+                                        while (Convert.ToString(ViewModel.List_Controls[k_LastConnector_List_Controls]).Contains("Connector"))
+                                        {
+                                            k_LastConnector_List_Controls++;
+                                        }
+                                        k_LastConnector_List_Controls--;//记录
+
+                                        Index_Start_Capiliary = i_List_Controls;//记录
+                                        Index_End_Capiliary = k_LastConnector_List_Controls + 1;//记录
+                                    }
+                                    else if (i_selected_List_Controls == (ViewModel.List_Controls.Count - 1) || ViewModel.List_Controls[i_List_Controls - 1].GetType().Name == "Connector")//判断当前选择的毛细管是否为End毛细管
+                                    {
+                                        j_FirstConnector_List_Controls = i_List_Controls - 1;//初始化
+                                        k_LastConnector_List_Controls = i_List_Controls - 1;//初始化
+                                        while (Convert.ToString(ViewModel.List_Controls[j_FirstConnector_List_Controls]).Contains("Connector"))
+                                        {
+                                            j_FirstConnector_List_Controls--;
+                                        }
+                                        j_FirstConnector_List_Controls++;//记录
+
+                                        Index_Start_Capiliary = j_FirstConnector_List_Controls - 1;//记录
+                                        Index_End_Capiliary = i_List_Controls;//记录
+                                    }
+                                }
+
+                                break;
+                            }
+                        }
+
+                        //删除界面上的毛细管
+                        for (i_List_Controls = 0; i_List_Controls < Capillary.List_Capillary.Count; i_List_Controls++)
+                        {
+                            if (Capillary.List_Capillary[i_List_Controls].GetHashCode() == ViewModel.List_Controls[Index_Start_Capiliary].GetHashCode())
+                            {
+                                vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls]);//删除Start毛细管
+                                vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls + 1]);//删除End毛细管
+                                break;
+                            }
+                        }
+
+                        //删除界面上的线
+                        for (i_List_Connector = 0; i_List_Connector < Connector.List_Connector.Count; i_List_Connector++)
+                        {
+                            if (Connector.List_Connector[i_List_Connector].GetHashCode() == ViewModel.List_Controls[j_FirstConnector_List_Controls].GetHashCode())
+                            {
+                                j_FirstConnector_List_Connector = i_List_Connector;//记录
+                                k_LastConnector_List_Connector = i_List_Connector + (k_LastConnector_List_Controls - j_FirstConnector_List_Controls);//记录
+                                for (i_List_Connector = j_FirstConnector_List_Connector; i_List_Connector < k_LastConnector_List_Connector + 1; i_List_Connector++)
+                                {
+                                    vm.Connectors.Remove(Connector.List_Connector[i_List_Connector]);
+                                }
+                                break;
+                            }
+                        }
+
+                        //删除List_Controls上的线、毛细管
+                        for (i_List_Controls = k_LastConnector_List_Controls + 1; i_List_Controls > j_FirstConnector_List_Controls - 2; i_List_Controls--)//删除选定的线关联的线、毛细管
+                        {
+                            ViewModel.List_Controls.Remove(ViewModel.List_Controls[i_List_Controls]);
+                        }
+
+                    }
+
+                    else if (item.GetType().Name == "Rect")
+                    {
+                        object obj;
+                        var selectelement = item as Rect;
+                        for (i_List_Controls = 0; i_List_Controls < ViewModel.List_Controls.Count; i_List_Controls++)
+                        {
+                            if (selectelement.GetHashCode() == ViewModel.List_Controls[i_List_Controls].GetHashCode())
+                            {
+                                i_selected_List_Controls = i_List_Controls;
+
+                                //由于先储存了Rect才连线生成Capiliary，Capiliary后储存，所以调换一下位置
+                                obj = ViewModel.List_Controls[i_selected_List_Controls];
+                                ViewModel.List_Controls[i_selected_List_Controls] = ViewModel.List_Controls[i_selected_List_Controls + 1];
+                                ViewModel.List_Controls[i_selected_List_Controls+1] = obj;//Rect存放的位置
+
+                                for (i_List_Rect = 0; i_List_Rect < Rect.List_Rect.Count; i_List_Rect++)
+                                {
+                                    if (Rect.List_Rect[i_List_Rect].GetHashCode() == ViewModel.List_Controls[i_selected_List_Controls+1].GetHashCode())
+                                    {
+                                        break;
+                                    }
+                                }
+
+                                //先找集流管前面的流路
+                                Index_Start_Capiliary = i_selected_List_Controls;//初始化
+                                Index_End_Capiliary=i_selected_List_Controls;//记录
+
+                                j_FirstConnector_List_Controls = Index_End_Capiliary - 1;//初始化
+                                k_LastConnector_List_Controls = Index_End_Capiliary - 1;//记录
+
+                                if (Convert.ToString(ViewModel.List_Controls[j_FirstConnector_List_Controls]).Contains("Connector"))
+                                {
+                                    if (Convert.ToString(ViewModel.List_Controls[j_FirstConnector_List_Controls - 1]).Contains("Connector"))
+                                    {
+                                        #region Rect_Start-Cap-Node-Co-Node-Co-Node-Cap-Rect
+                                        while (Convert.ToString(ViewModel.List_Controls[j_FirstConnector_List_Controls]).Contains("Connector"))
+                                        {
+                                            j_FirstConnector_List_Controls--;
+                                        }
+                                        Index_Start_Capiliary = j_FirstConnector_List_Controls;//记录
+                                        j_FirstConnector_List_Controls = Index_Start_Capiliary + 1;//记录
+
+                                        //删除界面上的毛细管
+                                        for (i_List_Controls = 0; i_List_Controls < Capillary.List_Capillary.Count; i_List_Controls++)
+                                        {
+                                            if (Capillary.List_Capillary[i_List_Controls].GetHashCode() == ViewModel.List_Controls[Index_Start_Capiliary].GetHashCode())
+                                            {
+                                                vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls]);//删除Start毛细管
+                                                vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls + 1]);//删除End毛细管
+                                                break;
+                                            }
+                                        }
+
+                                        //删除界面上的线
+                                        for (i_List_Connector = 0; i_List_Connector < Connector.List_Connector.Count; i_List_Connector++)
+                                        {
+                                            if (Connector.List_Connector[i_List_Connector].GetHashCode() == ViewModel.List_Controls[j_FirstConnector_List_Controls].GetHashCode())
+                                            {
+                                                j_FirstConnector_List_Connector = i_List_Connector;//记录
+                                                k_LastConnector_List_Connector = i_List_Connector + (k_LastConnector_List_Controls - j_FirstConnector_List_Controls);//记录
+                                                for (i_List_Connector = j_FirstConnector_List_Connector; i_List_Connector < k_LastConnector_List_Connector + 1; i_List_Connector++)
+                                                {
+                                                    vm.Connectors.Remove(Connector.List_Connector[i_List_Connector]);
+                                                }
+                                                break;
+                                            }
+                                        }
+
+                                        //删除List_Controls上的线、毛细管
+                                        for (i_List_Controls = k_LastConnector_List_Controls + 1; i_List_Controls > j_FirstConnector_List_Controls - 2; i_List_Controls--)//删除选定的线关联的线、毛细管
+                                        {
+                                            ViewModel.List_Controls.Remove(ViewModel.List_Controls[i_List_Controls]);
+                                            i_selected_List_Controls = i_List_Controls;//最后会回到Rect所在位置
+                                        }
+
+                                        #endregion
+                                    }
+                                    else
+                                    {
+                                        #region Rect_Start-Cap-Node-Co-Node-Cap-Rect
+                                        Index_Start_Capiliary = k_LastConnector_List_Controls - 1;
+
+                                        //删除界面上的毛细管
+                                        for (i_List_Controls = 0; i_List_Controls < Capillary.List_Capillary.Count; i_List_Controls++)
+                                        {
+                                            if (Capillary.List_Capillary[i_List_Controls].GetHashCode() == ViewModel.List_Controls[Index_End_Capiliary].GetHashCode())
+                                            {
+                                                vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls - 1]);//删除Start毛细管
+                                                vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls]);//删除End毛细管
+                                                break;
+                                            }
+                                        }
+
+                                        //删除界面上的线
+                                        for (i_List_Connector = 0; i_List_Connector < Connector.List_Connector.Count; i_List_Connector++)
+                                        {
+                                            if (Connector.List_Connector[i_List_Connector].GetHashCode() == ViewModel.List_Controls[k_LastConnector_List_Controls].GetHashCode())
+                                            {
+                                                vm.Connectors.Remove(Connector.List_Connector[i_List_Connector]);
+                                                break;
+                                            }
+                                        }
+
+                                        //删除List_Controls上的线、毛细管
+                                        for (i_List_Controls = Index_End_Capiliary; i_List_Controls > Index_Start_Capiliary - 1; i_List_Controls--)
+                                        {
+                                            ViewModel.List_Controls.Remove(ViewModel.List_Controls[i_List_Controls]);
+                                            i_selected_List_Controls = i_List_Controls;//最后会回到Rect所在位置
+                                        }
+                                        #endregion
+                                    }                                    
+                                }
+
+                                else if (Convert.ToString(ViewModel.List_Controls[j_FirstConnector_List_Controls]).Contains("Capillary"))
+                                {
+                                    //后面不能多删了Index_Start_Capiliary、j_FirstConnector_List_Controls、k_LastConnector_List_Controls所到之处
+                                    
+                                    #region Rect_Start-Cap-Node-Cap-Rect
+                                    Index_Start_Capiliary = Index_End_Capiliary - 1;//记录
+
+                                    //删除界面上的毛细管
+                                    for (i_List_Controls = 0; i_List_Controls < Capillary.List_Capillary.Count; i_List_Controls++)
+                                    {
+                                        if (Capillary.List_Capillary[i_List_Controls].GetHashCode() == ViewModel.List_Controls[Index_End_Capiliary].GetHashCode())
+                                        {
+                                            vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls - 1]);//删除Start毛细管
+                                            vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls]);//删除End毛细管
+                                            break;
+                                        }
+                                    }
+                                    //删除List_Controls上的毛细管
+                                    for (i_List_Controls = Index_End_Capiliary; i_List_Controls > Index_Start_Capiliary-1; i_List_Controls--)//删除选定的线关联的线、毛细管
+                                    {
+                                        ViewModel.List_Controls.Remove(ViewModel.List_Controls[i_List_Controls]);
+                                        i_selected_List_Controls = i_List_Controls;//最后会回到Rect所在位置
+                                    }
+                                    #endregion
+
+                                    #region Rect_Start-Cap-Rect //连不出这种情况
+                                    #endregion
+                                }
+
+                                //删除List_Controls上Rect
+                                ViewModel.List_Controls.Remove(ViewModel.List_Controls[i_selected_List_Controls]);
+
+                                //后面再对j_FirstConnector_List_Controls、k_LastConnector_List_Controls初始化一次，用于找后面另一组流路
+                                //找集流管后面的流路
+                                Index_Start_Capiliary = i_selected_List_Controls;//记录
+                                Index_End_Capiliary = i_selected_List_Controls;//初始化
+
+                                j_FirstConnector_List_Controls = Index_End_Capiliary + 1;//记录
+                                k_LastConnector_List_Controls = Index_End_Capiliary + 1;//初始化
+
+                                if (Convert.ToString(ViewModel.List_Controls[j_FirstConnector_List_Controls]).Contains("Connector"))
+                                {
+                                    if (Convert.ToString(ViewModel.List_Controls[j_FirstConnector_List_Controls + 1]).Contains("Connector"))
+                                    {
+                                        #region Rect-Cap-Node-Co-Node-Co-Node-Cap-Rect_End
+                                        //确定Index_End_Capiliary、k_LastConnector_List_Controls
+                                        while (Convert.ToString(ViewModel.List_Controls[k_LastConnector_List_Controls]).Contains("Connector"))
+                                        {
+                                            k_LastConnector_List_Controls++;
+                                        }
+                                        Index_End_Capiliary = k_LastConnector_List_Controls;//记录
+                                        k_LastConnector_List_Controls--;//记录
+
+                                        //删除界面上的毛细管
+                                        for (i_List_Controls = 0; i_List_Controls < Capillary.List_Capillary.Count; i_List_Controls++)
+                                        {
+                                            if (Capillary.List_Capillary[i_List_Controls].GetHashCode() == ViewModel.List_Controls[Index_Start_Capiliary].GetHashCode())
+                                            {
+                                                vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls]);//删除Start毛细管
+                                                vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls + 1]);//删除End毛细管
+                                                break;
+                                            }
+                                        }
+                                        //删除界面上的线
+                                        for (i_List_Connector = 0; i_List_Connector < Connector.List_Connector.Count; i_List_Connector++)
+                                        {
+                                            if (Connector.List_Connector[i_List_Connector].GetHashCode() == ViewModel.List_Controls[j_FirstConnector_List_Controls].GetHashCode())
+                                            {
+                                                j_FirstConnector_List_Connector = i_List_Connector;//记录
+                                                k_LastConnector_List_Connector = i_List_Connector + (k_LastConnector_List_Controls - j_FirstConnector_List_Controls);//记录
+                                                for (i_List_Connector = j_FirstConnector_List_Connector; i_List_Connector < k_LastConnector_List_Connector + 1; i_List_Connector++)
+                                                {
+                                                    vm.Connectors.Remove(Connector.List_Connector[i_List_Connector]);
+                                                }
+                                                break;
+                                            }
+                                        }
+                                        //删除List_Controls上的线、毛细管
+                                        for (i_List_Controls = Index_End_Capiliary; i_List_Controls > Index_Start_Capiliary -1; i_List_Controls--)
+                                        {
+                                            ViewModel.List_Controls.Remove(ViewModel.List_Controls[i_List_Controls]);
+                                        }
+                                        #endregion
+                                    }
+                                    else
+                                    {
+                                        #region Rect-Cap-Node-Co-Node-Cap-Rect_End
+                                        //删除界面上的毛细管
+                                        for (i_List_Controls = 0; i_List_Controls < Capillary.List_Capillary.Count; i_List_Controls++)
+                                        {
+                                            if (Capillary.List_Capillary[i_List_Controls].GetHashCode() == ViewModel.List_Controls[Index_Start_Capiliary].GetHashCode())
+                                            {
+                                                vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls]);//删除Start毛细管
+                                                vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls + 1]);//删除End毛细管
+                                                break;
+                                            }
+                                        }
+                                        //删除界面上的线
+                                        for (i_List_Connector = 0; i_List_Connector < Connector.List_Connector.Count; i_List_Connector++)
+                                        {
+                                            if (Connector.List_Connector[i_List_Connector].GetHashCode() == ViewModel.List_Controls[j_FirstConnector_List_Controls].GetHashCode())
+                                            {
+                                                j_FirstConnector_List_Connector = i_List_Connector;//记录
+                                                vm.Connectors.Remove(Connector.List_Connector[i_List_Connector]);
+                                                break;
+                                            }
+                                        }
+                                        //删除List_Controls上的线、毛细管
+                                        for (i_List_Controls = Index_Start_Capiliary+2; i_List_Controls > Index_Start_Capiliary-1; i_List_Controls--)
+                                        {
+                                            ViewModel.List_Controls.Remove(ViewModel.List_Controls[i_List_Controls]);
+                                        }
+                                        #endregion
+                                    }
+                                }
+                                else if (Convert.ToString(ViewModel.List_Controls[j_FirstConnector_List_Controls]).Contains("Capillary"))
+                                {
+                                    #region Rect-Cap-Node-Cap-Rect_End
+
+                                    //删除界面上的毛细管
+                                    for (i_List_Controls = 0; i_List_Controls < Capillary.List_Capillary.Count; i_List_Controls++)
+                                    {
+                                        if (Capillary.List_Capillary[i_List_Controls].GetHashCode() == ViewModel.List_Controls[Index_Start_Capiliary].GetHashCode())
+                                        {
+                                            vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls + 1]);//删除End毛细管
+                                            vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls]);//删除Start毛细管
+                                            break;
+                                        }
+                                    }
+                                    //删除List_Controls上的毛细管
+                                    for (i_List_Controls = Index_Start_Capiliary + 1; i_List_Controls > Index_Start_Capiliary - 1; i_List_Controls--)//删除选定的线关联的线、毛细管
+                                    {
+                                        ViewModel.List_Controls.Remove(ViewModel.List_Controls[i_List_Controls]);
+                                    }
+                                    #endregion
+
+                                    #region Rect-Cap-Rect_End   //连不出这种情况
+                                    #endregion
+                                }
+
+                                //删除界面上的集流管
+                                vm.Rects.Remove(Rect.List_Rect[i_List_Rect]);
+
+                                break;
+                            }
+                        }
+
+                    }
+                }
+            }
+
+            private void Button_Click_AddCircuit(object sender, RoutedEventArgs e)
+            {
+                //List_Controls
+                int i_List_Controls=0;//在List_Controls中找选定线的位置
+
+                //List_Connector
+                int i_List_Connector=0;//在List_Connector中找选定线的位置
+
+                //List_Capillary
+                int i_List_Capillary = 0;
+
+                //List_Rect
+                int i_List_Rect = 0;//在List_Rect中找选定线的位置
+
+                for (i_List_Controls = 0; i_List_Controls < ViewModel.List_Controls.Count; i_List_Controls++)
+                {
+                    if (ViewModel.List_Controls[i_List_Controls].GetType().Name == "Capillary")
+                    {
+                        vm.Capillaries.Add(Capillary.List_Capillary[i_List_Capillary]);
+                        i_List_Capillary++;
+                    }
+                    else if(ViewModel.List_Controls[i_List_Controls].GetType().Name == "Connector")
+                    {
+                        vm.Connectors.Add(Connector.List_Connector[i_List_Connector]);
+                        i_List_Connector++;
+                    }
+                    else if (ViewModel.List_Controls[i_List_Controls].GetType().Name == "Rect")
+                    {
+                        vm.Rects.Add(Rect.List_Rect[i_List_Rect]);
+                        i_List_Rect++;
+                    }
+                }
+            }
+
     }
 
 }

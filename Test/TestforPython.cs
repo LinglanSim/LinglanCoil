@@ -52,25 +52,21 @@ namespace Test
             //mm
             geoInput.Pt = 21;
             geoInput.Pr = 13.37;
-            geoInput.Di = 6.9;
-            geoInput.Do = 7.4;
-            geoInput.L = 605;
-            geoInput.FPI = 20;
+            geoInput.Di = 6.89;
+            geoInput.Do = 7.35;
+            geoInput.L = 653;
+            geoInput.FPI = 21;
             geoInput.Fthickness = 0.095;
             geoInput.Nrow =2;
             geoInput.Ntube = 15;
             geoInput.CirNum = 2;
-
-            //cap input
-            capInput.d_cap = new double[] { 0, 0 };//0.006
-            capInput.lenth_cap = new double[] { 0, 0 };//0.5
 
             //初始化湿空气数组
             double[,] HumidSourceData= Model.HumidAirSourceData.InitializeSourceTableData();
             DateTime Time1 = DateTime.Now;
             //var rr = Main.main_condenser_py(refInput, airInput, geoInput, capInput, coolprop, Model.HumidAirSourceData.SourceTableData);
             //var r = Main.main_evaporator_py(refInput, airInput, geoInput, capInput, coolprop, HumidAirSourceData.SourceTableData);
-            //var rr = Main.main_condenser_py(refInput, airInput, geoInput, HumidSourceData);
+            var rr = Main.main_condenser_py(refInput, airInput, geoInput, HumidSourceData);
             var r = Main.main_evaporator_py(refInput, airInput, geoInput, HumidSourceData);
 
             //for (int i=0;i<5;i++)
