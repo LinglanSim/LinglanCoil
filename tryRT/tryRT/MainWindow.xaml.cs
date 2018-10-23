@@ -778,7 +778,14 @@ namespace tryRT
                 //Get AutoCircuitry
                 CircuitInfo = Model.Basic.AutoCircuiting.GetTubeofCir(geoInput.Nrow, geoInput.Ntube, CircuitInfo);
                 CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
-                CirArrange = Model.Basic.AutoCircuiting.GetCirArrange_2Row(CirArrange, geoInput.Nrow, geoInput.Ntube, CircuitInfo);
+                if (geoInput.Nrow % 2 == 0)
+                {
+                    CirArrange = Model.Basic.AutoCircuiting.GetCirArrange_2Row(CirArrange, geoInput.Nrow, geoInput.Ntube, CircuitInfo);
+                }
+                else
+                {
+                    CirArrange = Model.Basic.AutoCircuiting.GetCirArrange_3Row(CirArrange, geoInput.Nrow, geoInput.Ntube, CircuitInfo);
+                }
                 bool reverse = RefFlowDirection == 0 ? false : true;
                 CirArrange = Model.Basic.CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
                 NodeInfo = new int[2, 2, Convert.ToInt32(Cirnum.Text)];
@@ -1224,7 +1231,8 @@ namespace tryRT
 
             if (flag_Calculated == true)
             {
-                peopleList.Clear();               
+                peopleList.Clear();
+                dataGrid_Result.ItemsSource = null;
                 //创建dataGrid数据
                 Result_Tube_row = Convert.ToString(tube_inter);
                 Result_Row = Convert.ToString(N_row_inter);
@@ -1274,7 +1282,7 @@ namespace tryRT
                 }
 
                 //((this.FindName("dataGrid_Result")) as DataGrid).ItemsSource = peopleList;
-                dataGrid_Result.ItemsSource = peopleList;
+                dataGrid_Result.ItemsSource = peopleList;                
                 flag_Calculated = false;
             }
 
