@@ -14,7 +14,8 @@ namespace Test
             //var r = Main.main_evaporator();
             //var r1 = Main.main_condenser();
             RefStateInput refInput=new RefStateInput();
-            CapiliaryInput capInput = new CapiliaryInput();
+            CapiliaryInput cap_inlet = new CapiliaryInput();
+            CapiliaryInput cap_outlet = new CapiliaryInput();
             refInput.FluidName = "R32";
             AbstractState coolprop = AbstractState.factory("HEOS", refInput.FluidName);
             refInput.Massflowrate = 0.005;
@@ -36,14 +37,16 @@ namespace Test
             geoInput.Ntube = 14;
             geoInput.CirNum = 3;
             // cap input
-            capInput.d_cap = new double[6];// { 0, 0 };//0.006
-            capInput.lenth_cap = new double[6];// { 0, 0 };//0.5
+            cap_inlet.d_cap = new double[6];// { 0, 0 };//0.006
+            cap_inlet.lenth_cap = new double[6];// { 0, 0 };//0.5
+            cap_outlet.d_cap = new double[6];// { 0, 0 };//0.006
+            cap_outlet.lenth_cap = new double[6];// { 0, 0 };//0.5
 
             string flowtype = "逆流";
             string fin_type="平片";
             string tube_type="光管";
             string hex_type="冷凝器";
-            var r1 = Main.main_condenser_Slab(refInput,airInput,geoInput,flowtype,fin_type,tube_type,hex_type,capInput, SourceTableData);
+            var r1 = Main.main_condenser_Slab(refInput,airInput,geoInput,flowtype,fin_type,tube_type,hex_type,cap_inlet, cap_outlet, SourceTableData);
             //var r = Main.MinNout();
             //var r = Main.NinMout();
         }
