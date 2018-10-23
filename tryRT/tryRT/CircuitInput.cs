@@ -9,47 +9,7 @@ using System.ComponentModel;
 namespace tryRT
 {
     public class CircuitInput
-    {
-        
-        public static Model.Basic.CapiliaryInput CapillaryConvert(ObservableCollection<Capillary> Capillaries,int RefFlowDierection)
-        {
-            Model.Basic.CapiliaryInput res = new Model.Basic.CapiliaryInput();
-            int N_circuit = 0;
-            for (int i = 0; i < Capillaries.Count; i++)
-            {
-                if (Capillaries[i].In == true) N_circuit++;
-            }
-            res.d_cap = new double[N_circuit];
-            res.lenth_cap = new double[N_circuit];
-            if(RefFlowDierection==0)//normal direction
-            {
-                int j = 0;
-                for(int i=0;i<Capillaries.Count;i++)
-                {
-                    if(Capillaries[i].In==true)
-                    {
-                        res.d_cap[j] = Capillaries[i].Diameter;
-                        res.lenth_cap[j] = Capillaries[i].Length;
-                        j++;
-                    }
-                }
-            }
-            else if(RefFlowDierection==1)//reverse direction
-            {
-                int j = 0;
-                for (int i = 0; i < Capillaries.Count; i++)
-                {
-                    if (Capillaries[i].In == false)
-                    {
-                        res.d_cap[j] = Capillaries[i].Diameter;
-                        res.lenth_cap[j] = Capillaries[i].Length;
-                        j++;
-                    }
-                }
-            }
-            return res;
-        }    
-        
+    {    
         public static int[,] CircuitConvert(ObservableCollection<Node> Nodes, ObservableCollection<Connector> Connectors, ObservableCollection<Capillary> Capillaries,int RefFlowDirection)
         {
             int N_tube=Nodes.Count;
@@ -123,6 +83,60 @@ namespace tryRT
             }
             return res_CirArrange;
         }
+
+        public static Model.Basic.CapiliaryInput CapillaryConvert_inlet(int[,] CirArrange, ObservableCollection<Capillary> Capillaries)
+        {
+            Model.Basic.CapiliaryInput res = new Model.Basic.CapiliaryInput();
+            int N_circuit = CirArrange.GetLength(0);
+            res.d_cap = new double[N_circuit];
+            res.lenth_cap = new double[N_circuit];
+            for (int i = 0; i < N_circuit;i++ )
+            {
+                for(int j=0;j<Capillaries.Count();j++)
+                {
+                    if(Convert.ToInt32(Capillaries[j].Start.Name)==CirArrange[i,0])
+                    {
+                        res.d_cap[i] = Capillaries[j].Diameter;
+                        res.lenth_cap[i] = Capillaries[j].Length;
+                        break;
+                    }
+                }
+            }
+            return res;
+        }
+        public static Model.Basic.CapiliaryInput CapillaryConvert_outlet(int[,] CirArrange, ObservableCollection<Capillary> Capillaries)
+        {
+            Model.Basic.CapiliaryInput res = new Model.Basic.CapiliaryInput();
+            int N_circuit = CirArrange.GetLength(0);
+            res.d_cap = new double[N_circuit];
+            res.lenth_cap = new double[N_circuit];
+            int[] tube_last = new int[N_circuit];
+            for (int i = 0; i < N_circuit;i++ )
+            {
+                for(int j=0;j<CirArrange.GetLength(1);j++)
+                {
+                    if (CirArrange[i, j] != 0)
+                    {
+                        tube_last[i] = CirArrange[i, j];
+                    }
+                    else break;
+                }
+            }
+            for (int i = 0; i < N_circuit; i++)
+            {
+                for (int j = 0; j < Capillaries.Count(); j++)
+                {
+                    if (Convert.ToInt32(Capillaries[j].Start.Name) == tube_last[i])
+                    {
+                        res.d_cap[i] = Capillaries[j].Diameter;
+                        res.lenth_cap[i] = Capillaries[j].Length;
+                        break;
+                    }
+                }
+            }
+            return res;
+        }
+
 
         public static int[,,] NodesConvert(ObservableCollection<Node> Nodes, ObservableCollection<Connector> Connectors, ObservableCollection<Capillary> Capillaries, ObservableCollection<Rect> Rects,int RefFlowDirection)
         {

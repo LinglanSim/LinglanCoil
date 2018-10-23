@@ -746,8 +746,8 @@ namespace tryRT
 
             //string bb = ComboBox6_SelectionChanged(object sender, SelectionChangedEventArgs e);
             //m_Main.W5(a, b).ha
-            Model.Basic.CapiliaryInput capInput = new Model.Basic.CapiliaryInput();
-            capInput = CircuitInput.CapillaryConvert(vm.Capillaries, RefFlowDirection);
+            Model.Basic.CapiliaryInput cap_inlet = new Model.Basic.CapiliaryInput();//进口毛细管
+            Model.Basic.CapiliaryInput cap_outlet = new Model.Basic.CapiliaryInput();//出口毛细管
             int i = 1;
             int j = 1;
             int k = 1;
@@ -759,6 +759,8 @@ namespace tryRT
                 j = CircuitInput.CircuitConvert(vm.Nodes, vm.Connectors, vm.Capillaries, RefFlowDirection).GetLength(1);
                 CirArrange = new int[i, j];
                 CirArrange = CircuitInput.CircuitConvert(vm.Nodes, vm.Connectors, vm.Capillaries,RefFlowDirection);
+                cap_inlet = CircuitInput.CapillaryConvert_inlet(CirArrange, vm.Capillaries);
+                cap_outlet = CircuitInput.CapillaryConvert_outlet(CirArrange, vm.Capillaries);
                 i = CircuitInput.NodesConvert(vm.Nodes, vm.Connectors, vm.Capillaries, vm.Rects,RefFlowDirection).GetLength(0);
                 j = CircuitInput.NodesConvert(vm.Nodes, vm.Connectors, vm.Capillaries, vm.Rects,RefFlowDirection).GetLength(2);
                 NodeInfo = new int[i, 2, j];
@@ -793,8 +795,10 @@ namespace tryRT
                     NodeInfo[0, 1, i] = i;
                     NodeInfo[1, 0, i] = i;
                 }
-                capInput.d_cap = new double[Convert.ToInt32(Cirnum.Text)];
-                capInput.lenth_cap = new double[Convert.ToInt32(Cirnum.Text)];
+                cap_inlet.d_cap = new double[Convert.ToInt32(Cirnum.Text)];
+                cap_inlet.lenth_cap = new double[Convert.ToInt32(Cirnum.Text)];
+                cap_outlet.d_cap = new double[Convert.ToInt32(Cirnum.Text)];
+                cap_outlet.lenth_cap = new double[Convert.ToInt32(Cirnum.Text)];
             }
 
             Model.Basic.CalcResult r=new Model.Basic.CalcResult();
@@ -802,17 +806,17 @@ namespace tryRT
             {
                 if (this.RadioButton_xo_Cond.IsChecked ==true) 
                 {
-                    r = m_Main.main_condenser_inputQ(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, capInput, Model.HumidAirSourceData.SourceTableData,
+                    r = m_Main.main_condenser_inputQ(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, cap_inlet,cap_outlet, Model.HumidAirSourceData.SourceTableData,
                         Convert.ToInt32(Zha.Text), Convert.ToInt32(Zapa.Text), Convert.ToInt32(Zhr.Text), Convert.ToInt32(Zapr.Text)); 
                 }
                 else if (this.RadioButton_Tro_sub_Cond.IsChecked == true)
                 {
-                    r = m_Main.main_condenser_inputSC(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, capInput, Model.HumidAirSourceData.SourceTableData,
+                    r = m_Main.main_condenser_inputSC(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, cap_inlet, cap_outlet, Model.HumidAirSourceData.SourceTableData,
                         Convert.ToInt32(Zha.Text), Convert.ToInt32(Zapa.Text), Convert.ToInt32(Zhr.Text), Convert.ToInt32(Zapr.Text));
                 }
                 else 
                 {
-                    r = m_Main.main_condenser(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, capInput, Model.HumidAirSourceData.SourceTableData,
+                    r = m_Main.main_condenser(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, cap_inlet, cap_outlet, Model.HumidAirSourceData.SourceTableData,
                         Convert.ToInt32(Zha.Text), Convert.ToInt32(Zapa.Text), Convert.ToInt32(Zhr.Text), Convert.ToInt32(Zapr.Text));
                 }
             }
@@ -820,18 +824,18 @@ namespace tryRT
             {
                 if (this.RadioButton_xo_Evap.IsChecked ==true)
                 {
-                    r = m_Main.main_evaporator_inputQ(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, capInput, Model.HumidAirSourceData.SourceTableData,
+                    r = m_Main.main_evaporator_inputQ(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, cap_inlet, cap_outlet, Model.HumidAirSourceData.SourceTableData,
                         Convert.ToInt32(Zha.Text), Convert.ToInt32(Zapa.Text), Convert.ToInt32(Zhr.Text), Convert.ToInt32(Zapr.Text));
                 }
                 else if (this.RadioButton_Tro_sub_Evap.IsChecked == true)
                 {
-                    r = m_Main.main_evaporator_inputSH(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, capInput, Model.HumidAirSourceData.SourceTableData,
+                    r = m_Main.main_evaporator_inputSH(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, cap_inlet, cap_outlet, Model.HumidAirSourceData.SourceTableData,
                         Convert.ToInt32(Zha.Text), Convert.ToInt32(Zapa.Text), Convert.ToInt32(Zhr.Text), Convert.ToInt32(Zapr.Text));
                     //r = m_Main.main_evaporator_inputSH_py(refInput, airInput, geoInput, capInput, coolprop, Model.HumidAirSourceData.SourceTableData);
                 }
                 else
                 {
-                    r = m_Main.main_evaporator(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, capInput, Model.HumidAirSourceData.SourceTableData,
+                    r = m_Main.main_evaporator(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, cap_inlet, cap_outlet, Model.HumidAirSourceData.SourceTableData,
                         Convert.ToInt32(Zha.Text), Convert.ToInt32(Zapa.Text), Convert.ToInt32(Zhr.Text), Convert.ToInt32(Zapr.Text));
                 }
             }

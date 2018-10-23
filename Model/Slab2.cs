@@ -13,7 +13,7 @@ namespace Model
         //Start
         public static CalcResult SlabCalc(int[,] CirArrange, CircuitNumber CircuitInfo, int Nrow, int[] Ntube, int Nelement, string fluid, //double Npass, int[] N_tubes_pass, 
            double l, Geometry geo, double[, ,] ta, double[, ,] RH, double te, double pe, double hri, double mr, double[,] ma, double[,] ha, double[,] haw,
-           double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater, int AirFlowDirection, List<NodeInfo> Nodes, int N_Node, double[] d_cap, double[] lenth_cap, AbstractState coolprop, double[,] SourceTableData)      
+           double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater, int AirFlowDirection, List<NodeInfo> Nodes, int N_Node, CapiliaryInput cap_inlet, CapiliaryInput cap_outlet, AbstractState coolprop, double[,] SourceTableData)      
         {
             double tri = te; //Refrigerant.SATP(fluid, composition, pri, 1).Temperature - 273.15;
             double pri = pe;
@@ -144,7 +144,7 @@ namespace Model
 
                         //index_status[index_Node]=i;//status
                         r = Circuit.CircuitCalc(index_cir, cirArr, CircuitInfo, Nrow, Ntube, Nelement, fluid, l, geo, ta, RH,
-                        tri_cal, pri_cal, hri_cal, mri_cal, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, d_cap, lenth_cap, coolprop, SourceTableData);
+                        tri_cal, pri_cal, hri_cal, mri_cal, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, cap_inlet, cap_outlet, coolprop, SourceTableData);
 
                         res_cir[index_cir] = r;
                         if (r.Pro < 0) { res_slab.Pro = -10000000; return res_slab; }
