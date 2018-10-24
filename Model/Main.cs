@@ -16,51 +16,38 @@ namespace Model
         {
             string fluid = refInput.FluidName;// refri_in;// "R32";
             AbstractState coolprop = AbstractState.factory("HEOS", fluid);
-            //***几何结构赋值***//
+            //string fluid = new string[] { "ISOBUTAN" };
             CalcResult res = new CalcResult();
-            int Nrow = geoInput.Nrow;//2
+            int Nrow = geoInput.Nrow;
+            double[] FPI = new double[Nrow];
+            FPI = new double[] { 25.4 / geoInput.FPI, 25.4 / geoInput.FPI };//to be updated
+            double Pt = geoInput.Pt * 0.001;//1 * 25.4 * 0.001;
+            double Pr = geoInput.Pr * 0.001;//0.75 * 25.4 * 0.001;
+            double Do = geoInput.Do * 0.001;// 10.0584 * 0.001;//8.4 7.35
+            double Fthickness = geoInput.Fthickness * 0.001;// 0.095 * 0.001;
+            double thickness = geoInput.Tthickness * 0.001;// 0.5 * (Do - Di);
+            double L = geoInput.L * 0.001;// 914.4 * 0.001;
+            double Di = Do - 2 * thickness; //8.4074 * 0.001;//8 6.8944
+
             int[] Ntube = { geoInput.Ntube, geoInput.Ntube };
             int N_tube = Ntube[0];
-
-            double Pt = geoInput.Pt * 0.001;
-            double Pr = geoInput.Pr * 0.001;
-            double Di = geoInput.Di * 0.001;
-            double Do = geoInput.Do * 0.001;
-            double L = geoInput.L * 0.001;
-            double thickness = 0.5 * (Do - Di);
-
-            double[] FPI = new double[Nrow + 1];
-            FPI = new double[] { geoInput.FPI, geoInput.FPI };
-            double Fthickness = geoInput.Fthickness * 0.001;//0.095 * 0.001;
-            //***几何结构赋值完成***//
-            int CirNum = geoInput.CirNum;//流路数目赋值
-            int Nelement = 5;//5;单管单元格数赋值
-
-            //流路均分设计
-            //int[,] CirArrange;
+            int Nelement = 5;
 
             CircuitNumber CircuitInfo = new CircuitNumber();
-            CircuitInfo.number = new int[] { CirNum, CirNum };
-            //Avoid invalid Ncir input 
-            if (CircuitInfo.number[0] > Ntube[0])
-            {
-                throw new Exception("circuit number is beyond range.");
-            }
-
-            CircuitInfo.TubeofCir = new int[CircuitInfo.number[0]];
-
-            //Get AutoCircuitry
-            CircuitInfo = AutoCircuiting.GetTubeofCir(Nrow, N_tube, CircuitInfo);
-            CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
-            CirArrange = AutoCircuiting.GetCirArrange_2Row(CirArrange, Nrow, N_tube, CircuitInfo);
-
-            CirArr[] cirArr = new CirArr[Nrow * N_tube];
-            cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube,0).CirArr;
-            //CircuitType CirType = new CircuitType();
-            CircuitInfo.CirType = CircuitIdentification.CircuitIdentify(CircuitInfo.number, CircuitInfo.TubeofCir, cirArr);
-
+            CircuitInfo.TubeofCir = CircuitConvert.TubeNumber(CirArrange);
             //double[] d_cap = capInput.d_cap;
             //double[] lenth_cap = capInput.lenth_cap;
+
+            List<NodeInfo> Nodes = new List<NodeInfo>();
+            Nodes = NodeConvert.NodeInputConvert(CirArrange, NodesInfo);
+            int N_Node = Nodes.Count;
+            if (N_Node == 2)//simple circuit
+            {
+                CircuitInfo.number = new int[] { CirArrange.GetLength(0), CirArrange.GetLength(0) };
+            }
+            CirArr[] cirArr = new CirArr[Nrow * N_tube];
+            cirArr = CirArrangement.ReadCirArr(CirArrange, CircuitInfo, Nrow, Ntube, airInput.AirFlowDirection).CirArr;//to be modefied
+            CircuitInfo.CirType = CircuitIdentification.CircuitIdentify(CircuitInfo.number, CircuitInfo.TubeofCir, cirArr);
 
             GeometryInput geoInput_air = new GeometryInput();
             geoInput_air.Pt = Pt;
@@ -71,22 +58,13 @@ namespace Model
             geoInput_air.Nrow = Nrow;
 
             int hexType = 1;
-            //******制冷剂、风进口参数输入******//
-            //string fluid = refInput.FluidName;
-            //AbstractState coolprop = AbstractState.factory("HEOS", fluid);
-            //double mr = refInput.Massflowrate;//initial input 
-            double mr = 0.006;//initial input 
-            double tc = refInput.tc;
-            double tri = refInput.tri;
-            double Tsc_set = refInput.Tro_sub_Cond;
+            if (hex_type == "蒸发器") hexType = 0;
+            else hexType = 1;
 
-            double Va = airInput.Volumetricflowrate;//0.28317; //m/s
-            double tai = airInput.tai;//26.67;
-            double RHi = airInput.RHi;//0.469;
-            //******制冷剂、风进口参数输入完成******//
-
+            double mr = refInput.Massflowrate; //mr_in;//0.01;
+            //double Vel_a = 1.8; //m/s
             double[,] Vel_distribution = { { 1.0 } };//distribution,do not must be real velocity!
-            //double Vel_ave =2.032;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
+            //double Vel_ave = 1;//average velocity, if Vel_distribution is real, then Vel_ave=1.0
             AirDistribution VaDistri = new AirDistribution();
             VaDistri = DistributionConvert.VaConvert(Vel_distribution, N_tube, Nelement);
             double[,] ma = new double[N_tube, Nelement];
@@ -94,17 +72,13 @@ namespace Model
             double H = Pt * N_tube;
             double Hx = L * H;
             double rho_a_st = 1.2; //kg/m3
-
+            double Va = airInput.Volumetricflowrate;
             double Vel_ave = Va / Hx;
-
             //空气侧几何结构选择
-            //if curve = 1, geometry parameter is:Do:5mm,Pt:14.5mm,Pl:12.56mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
-            //if curve = 2, geometry parameter is:Do:7mm,Pt:21mm,Pl:22mm,Fin_type:plain,Tf:0.095,Pf:1.2mm;
-            //if curve = 3, geometry parameter is:Do:7mm,Pt:21mm,Pl:19.4mm,Fin_type:plain,Tf:0.1,Pf:1.5mm;
-            //if curve = 4, geometry parameter is:Do:8mm,Pt:22mm,Pl:19.05mm,Fin_type:plain,Tf:0.1,Pf:1.6mm;
             int curve = 1; //
+
             double za = 1; //Adjust factor
-                        if (fin_type == "平片")
+            if (fin_type == "平片")
                 za = 1.0;
             else if (fin_type == "louver")
                 za = 1.3;
@@ -112,22 +86,16 @@ namespace Model
                 za = 1.1;
             za = za * zh_a;
 
-
             for (int i = 0; i < N_tube; i++)
             {
                 for (int j = 0; j < Nelement; j++)
                 {
                     ma[i, j] = VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave) * (Hx / N_tube / Nelement) * rho_a_st;
-                    //ha[i, j] = airInput.ha;// AirHTC.alpha(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve);// *1.5;
                     //ha[i, j] = 79;
-                    //ha[i, j] = AirHTC.alpha1(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve, geoInput_air, hexType).ha;
+                    ha[i, j] = AirHTC.alpha1(VaDistri.Va[i, j] * (Vel_ave / VaDistri.Va_ave), za, curve, geoInput_air, hexType).ha;
                 }
             }
-            ha = AirHTC_CAL.alpha_cal(ha, VaDistri.Va, VaDistri.Va_ave, Vel_ave, airInput.za, curve, geoInput_air, hexType, N_tube, Nelement);
             double[,] haw = ha;
-
-            res.DPa = AirHTC.alpha1(Vel_ave, airInput.za, curve, geoInput_air, hexType).dP_a * airInput.zdpa;
-
             double eta_surface = 1;
             double zh = 1;
             double zdp = 1;
@@ -141,16 +109,23 @@ namespace Model
             zh = zh * zh_r;
             zdp = zdp * zdp_r;
 
-
-
+            double tai = airInput.tai;// tai_in;//26.67;
+            double RHi = airInput.RHi;// RHi_in;//0.469;
+            double tc = refInput.tc;// tc_in;//45.0;
+            //double pri = Refrigerant.SATT(fluid, composition, tc + 273.15, 1).Pressure;
             coolprop.update(input_pairs.QT_INPUTS, 0, tc + 273.15);
             double pri = coolprop.p() / 1000;
             //double pri = CoolProp.PropsSI("P", "T", tc + 273.15, "Q", 0, fluid) / 1000;
-            double conductivity = 386;
+            //double P_exv = 1842.28;//kpa
+            double tri = refInput.tri;// tri_in;//78;//C
+            double conductivity = 386; //w/mK for Cu
             double Pwater = 100.0;
+            //int hexType = 1; //*********************************0 is evap, 1 is cond******************************************
             coolprop.update(input_pairs.PT_INPUTS, pri * 1000, tri + 273.15);
             double hri = coolprop.hmass() / 1000;
-            //double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000;
+            //double hri = CoolProp.PropsSI("H", "T", tri + 273.15, "P", pri * 1000, fluid) / 1000 ;
+            //double hri = 354.6;
+            //double xin = 0.57;
 
             double[, ,] ta = new double[Nelement, N_tube, Nrow + 1];
             double[, ,] RH = new double[Nelement, N_tube, Nrow + 1];
@@ -162,6 +137,8 @@ namespace Model
 
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
+
+
             //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tri, pri, hri,
             //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection);
 
@@ -170,17 +147,19 @@ namespace Model
             double hsc_cal = 0;
             double Tro_set = 0;
             double hsc_set = 0;
+            double Tsc_set = refInput.Tro_sub_Cond;
 
             int ii = 0;
             //supercooling temp calculaiton loop
             do
             {
-
                 //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, tri, pri, hri,
                 // mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, cap_inlet, cap_outlet);
 
-                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, tri, pri, hri,
-                 mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, cap_inlet, cap_outlet, coolprop, SourceTableData);
+                //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, tri, pri, hri,
+                //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, cap_inlet, cap_outlet, coolprop, SourceTableData);
+                res = Slab2.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, tri, pri, hri,
+                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, airInput.AirFlowDirection, Nodes, N_Node, cap_inlet, cap_outlet, coolprop, SourceTableData);
 
                 if (res.Pro != -10000000.0)//压降过大则跳出
                 {
@@ -214,11 +193,11 @@ namespace Model
                 mr = mr * (hsc_set / hsc_cal);//1.8?
 
                 ii++;
-                string arr1 = Convert.ToString(ii);
-                string arr2 = Convert.ToString(mr);
-                string arr3 = Convert.ToString((hsc_set / hsc_cal));
-                Console.WriteLine(arr1 + ":" + arr2 + "," + arr3);
-            } while (Math.Abs((hsc_cal - hsc_set) / hsc_set) > 0.005);
+                string arr1 = "迭代次数:" + Convert.ToString(ii);
+                string arr2 = "流量:" + Convert.ToString(mr);
+                string arr3 = "新旧焓比:" + Convert.ToString((hsc_set / hsc_cal));
+                Console.WriteLine(arr1 + "/" + arr2 + "/" + arr3);
+            } while (Math.Abs((hsc_cal - hsc_set) / hsc_set) > 0.001);
 
             return res;
         }
@@ -342,9 +321,9 @@ namespace Model
         //    double conductivity = 386; //w/mK for Cu
         //    double Pwater = 0;
 
-        //    WindowControls winControls = new WindowControls();
+        //    WindowControls  Model.WindowControls.= new WindowControls();
         //    double hri = 0;
-        //    if (winControls.RadioButton_PriTri_Evap == true)
+        //    if ( Model.WindowControls.RadioButton_PriTri_Evap == true)
         //    {
         //        double P_exv = refInput.P_exv;//1842.28;//kpa
         //        double T_exv = refInput.T_exv;// 20;//C
@@ -354,12 +333,12 @@ namespace Model
         //        //hri=airInput.
         //        //double hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000 ;
         //    }
-        //    else if (winControls.RadioButton_xi_Evap == true)
+        //    else if ( Model.WindowControls.RadioButton_xi_Evap == true)
         //    {
         //        coolprop.update(input_pairs.QT_INPUTS, refInput.xi_Evap, refInput.te + 273.15);
         //        hri = coolprop.hmass() / 1000;
         //    }
-        //    else if (winControls.RadioButton_Hri_Evap == true)
+        //    else if ( Model.WindowControls.RadioButton_Hri_Evap == true)
         //    {
         //        hri = refInput.H_exv;
         //    }
@@ -505,7 +484,7 @@ namespace Model
             double za = 1; //Adjust factor
             if (fin_type == "平片")
                 za = 1.0;
-            else if (fin_type == "louver")
+            else if (fin_type == "百叶窗片")
                 za = 1.3;
             else
                 za = 1.1;
@@ -544,9 +523,8 @@ namespace Model
             double conductivity = 386; //w/mK for Cu
             double Pwater = 0;
 
-            WindowControls winControls = new WindowControls();
             double hri = 0;
-            if (winControls.RadioButton_PriTri_Evap == true)
+            if (WindowControls.RadioButton_PriTri_Evap == true)
             {
                 double P_exv = refInput.P_exv;//1842.28;//kpa
                 double T_exv = refInput.T_exv;// 20;//C
@@ -556,12 +534,12 @@ namespace Model
                 //hri=airInput.
                 //double hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000 ;
             }
-            else if (winControls.RadioButton_xi_Evap == true)
+            else if (WindowControls.RadioButton_xi_Evap == true)
             {
                 coolprop.update(input_pairs.QT_INPUTS, refInput.xi_Evap, refInput.te + 273.15);
                 hri = coolprop.hmass() / 1000;
             }
-            else if (winControls.RadioButton_Hri_Evap == true)
+            else if (WindowControls.RadioButton_Hri_Evap == true)
             {
                 hri = refInput.H_exv;
             }
@@ -581,6 +559,10 @@ namespace Model
             double Tro_set = 0;
             double hsh_set = 0;
             double Tsh_set = refInput.Tro_sub_Evap;
+            if (Tsh_set==0)
+            {
+                Tsh_set=Tsh_set+0.0001;//界面输入过热度为0时Coolprop不知道为啥会报错，所以加个很小的数，目前不能再小了
+            }
 
             int ii = 0;
             //superheating temp calculaiton loop
@@ -589,9 +571,10 @@ namespace Model
                 //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, Di, L, geo, ta, RH, te, pe, hri,
                 //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, cap_inlet, cap_outlet);
 
-                res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, te, pe, hri,
-                mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, cap_inlet, cap_outlet, coolprop, SourceTableData);
-
+                //res = Slab2.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, te, pe, hri,
+                //mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, cap_inlet, cap_outlet, coolprop, SourceTableData);
+                res = Slab2.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, te, pe, hri,
+                    mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, airInput.AirFlowDirection, Nodes, N_Node, cap_inlet, cap_outlet, coolprop, SourceTableData);
                 if (res.Pro != -10000000.0)//压降过大则跳出
                 {
                     if (res.x_o >= 0 && res.x_o <= 1)
@@ -624,11 +607,11 @@ namespace Model
                 mr = mr * (hsh_cal / hsh_set);//3.8?
 
                 ii++;
-                string arr1 = Convert.ToString(ii);
-                string arr2 = Convert.ToString(mr);
-                string arr3 = Convert.ToString((hsh_cal / hsh_set));
-                Console.WriteLine(arr1 + ":" + arr2 + "," + arr3);
-            } while (Math.Abs((hsh_cal - hsh_set) / hsh_set) > 0.0027);
+                string arr1 = "迭代次数:" + Convert.ToString(ii);
+                string arr2 = "流量:" + Convert.ToString(mr);
+                string arr3 = "新旧焓比:" + Convert.ToString((hsh_cal / hsh_set));
+                Console.WriteLine(arr1 + "/" + arr2 + "/" + arr3);
+            } while (Math.Abs((hsh_cal - hsh_set) / hsh_set) > 0.001);
 
             return res;
         }
@@ -740,10 +723,8 @@ namespace Model
 
             double conductivity = 386; //w/mK for Cu
             double Pwater = 0;
-
-            WindowControls winControls = new WindowControls();
             double hri = 0;
-            if (winControls.RadioButton_PriTri_Evap == true)
+            if ( Model.WindowControls.RadioButton_PriTri_Evap == true)
             {
                 double P_exv = refInput.P_exv;//1842.28;//kpa
                 double T_exv = refInput.T_exv;// 20;//C
@@ -753,12 +734,12 @@ namespace Model
                 //hri=airInput.
                 //double hri = CoolProp.PropsSI("H", "T", T_exv + 273.15, "P", P_exv * 1000, fluid) / 1000 ;
             }
-            else if (winControls.RadioButton_xi_Evap == true)
+            else if ( Model.WindowControls.RadioButton_xi_Evap == true)
             {
                 coolprop.update(input_pairs.QT_INPUTS, refInput.xi_Evap, refInput.te + 273.15);
                 hri = coolprop.hmass() / 1000;
             }
-            else if (winControls.RadioButton_Hri_Evap == true)
+            else if ( Model.WindowControls.RadioButton_Hri_Evap == true)
             {
                 hri = refInput.H_exv;
             }
@@ -811,10 +792,10 @@ namespace Model
                 //mr = mr * Math.Pow((hxo_cal / hxo_set), (hxo_cal / hxo_set));//3.8
                 mr = mr * (hxo_cal / hxo_set);//3.8
                 ii++;
-                string arr1 = Convert.ToString(ii);
-                string arr2 = Convert.ToString(mr);
-                string arr3 = Convert.ToString((hxo_cal / hxo_set));
-                Console.WriteLine(arr1 + ":" + arr2 + "," + arr3);
+                string arr1 = "迭代次数:" + Convert.ToString(ii);
+                string arr2 = "流量:" + Convert.ToString(mr);
+                string arr3 = "新旧焓比:" + Convert.ToString((hxo_cal / hxo_set));
+                Console.WriteLine(arr1 + "/" + arr2 + "/" + arr3);
             } while (Math.Abs((hxo_cal - hxo_set) / hxo_set) > 0.0027);
 
             return res;
@@ -889,7 +870,7 @@ namespace Model
             double za = 1; //Adjust factor
             if (fin_type == "平片")
                 za = 1.0;
-            else if (fin_type == "louver")
+            else if (fin_type == "百叶窗片")
                 za = 1.3;
             else
                 za = 1.1;
@@ -986,10 +967,10 @@ namespace Model
                 //mr = mr * Math.Pow((hxo_cal / hxo_set), (hxo_cal / hxo_set));//3.8?
                 mr = mr *(hxo_cal / hxo_set);//3.8?
                 ii++;
-                string arr1 = Convert.ToString(ii);
-                string arr2 = Convert.ToString(mr);
-                string arr3 = Convert.ToString((hxo_cal / hxo_set));
-                Console.WriteLine(arr1 + ":" + arr2 + "," + arr3);
+                string arr1 = "迭代次数:" + Convert.ToString(ii);
+                string arr2 = "流量:" + Convert.ToString(mr);
+                string arr3 = "新旧焓比:" + Convert.ToString((hxo_cal / hxo_set));
+                Console.WriteLine(arr1 + "/" + arr2 + "/" + arr3);
             } while (Math.Abs((hxo_cal - hxo_set) / hxo_set) > 0.0027);
 
             return res;
@@ -1429,7 +1410,6 @@ namespace Model
             double conductivity = 386; //w/mK for Cu
             double Pwater = 0;
 
-            WindowControls winControls = new WindowControls();//null
             double hri = 0;
             if(refInput.H_exv!=0)
             {
@@ -1598,8 +1578,7 @@ namespace Model
 
             Geometry geo = new Geometry();
             geo = GeometryCal.GeoCal(Nrow, N_tube, Nelement, L, FPI, Do, Di, Pt, Pr, Fthickness);
-            //res = Slab.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid,L, geo, ta, RH, tri, pri, hri,
-            //    mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, AirDirection, cap_inlet, cap_outlet, coolprop);
+
             res = Slab2.SlabCalc(CirArrange, CircuitInfo, Nrow, Ntube, Nelement, fluid, L, geo, ta, RH, tri, pri, hri,
                 mr, ma, ha, haw, eta_surface, zh, zdp, hexType, thickness, conductivity, Pwater, airInput.AirFlowDirection, Nodes, N_Node, cap_inlet, cap_outlet, coolprop, SourceTableData);
 
