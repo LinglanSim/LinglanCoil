@@ -14,12 +14,13 @@ namespace Model
             double l, Geometry geo, double[, ,] ta, double[, ,] RH, double tri, double pri, double hri, double mr, double[,] ma, double[,] ha,double[,] haw,
             double eta_surface, double zh, double zdp, int hexType, double thickness, double conductivity, double Pwater, CapiliaryInput cap_inlet,CapiliaryInput cap_outlet, AbstractState coolprop, double[,] SourceTableData)
         {
+            #region 算进口毛细管
             //调用毛细管守恒方程模型
             ///            
             double DP_cap = 0;
             int N = 1;
             Capiliary_res[] res_cap_in = new Capiliary_res[N];
-            if (cap_inlet.d_cap[index] == 0 && cap_outlet.lenth_cap[index] == 0)
+            if (cap_inlet.d_cap[index] == 0 && cap_inlet.lenth_cap[index] == 0)
             {
                 pri = pri;
                 hri = hri;
@@ -29,15 +30,16 @@ namespace Model
             {
                 for (int i = 0; i < N; i++)
                 {
-                    res_cap_in[i] = Capiliary.CapiliaryCalc(index, fluid, cap_inlet.d_cap[index], cap_outlet.lenth_cap[index] / N, tri, pri, hri, mr, Pwater, hexType, coolprop, SourceTableData);
+                    res_cap_in[i] = Capiliary.CapiliaryCalc(index, fluid, cap_inlet.d_cap[index], cap_inlet.lenth_cap[index] / N, tri, pri, hri, mr, Pwater, hexType, coolprop, SourceTableData);
                     pri = res_cap_in[i].pro;
                     hri = res_cap_in[i].hro;
                     tri = res_cap_in[i].tro;
                     DP_cap += res_cap_in[i].DP_cap;
                 }
             }
-            
-            
+            #endregion
+
+            #region 算流路
             ///
             //******蒸发器毛细管******//
 
@@ -226,7 +228,9 @@ namespace Model
             res_cir.href_detail = href_detail;
             res_cir.mr_detail = mr_detail;
 
+            #endregion
 
+            #region 算出口毛细管
             //调用毛细管守恒方程模型  ----需要校核，调整----
             ///
             N = 1;
@@ -249,6 +253,7 @@ namespace Model
                     DP_cap += res_cap_out[i].DP_cap;
                 }
             }
+            #endregion
 
             //增加毛细管模型的单流路总压降
             res_cir.DP = res_cir.DP + DP_cap;

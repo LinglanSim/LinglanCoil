@@ -80,7 +80,7 @@ namespace Model
             double za = 1; //Adjust factor
             if (fin_type == "平片")
                 za = 1.0;
-            else if (fin_type == "louver")
+            else if (fin_type == "百叶窗片")
                 za = 1.3;
             else
                 za = 1.1;
@@ -148,6 +148,10 @@ namespace Model
             double Tro_set = 0;
             double hsc_set = 0;
             double Tsc_set = refInput.Tro_sub_Cond;
+            if (Tsc_set == 0)
+            {
+                Tsc_set = Tsc_set + 0.0001;//界面输入过热度为0时Coolprop不知道为啥会报错，所以加个很小的数，目前不能再小了
+            }
 
             int ii = 0;
             //supercooling temp calculaiton loop
@@ -685,7 +689,7 @@ namespace Model
             double za = 1; //Adjust factor
             if (fin_type == "平片")
                 za = 1.0;
-            else if (fin_type == "louver")
+            else if (fin_type == "百叶窗片")
                 za = 1.3;
             else
                 za = 1.1;
@@ -1369,7 +1373,7 @@ namespace Model
             double za = 1; //Adjust factor
             if (fin_type == "平片")
                 za = 1.0;
-            else if (fin_type == "louver")
+            else if (fin_type == "百叶窗片")
                 za = 1.3;
             else
                 za = 1.1;// wavy-fin
@@ -1521,7 +1525,7 @@ namespace Model
             double za = 1; //Adjust factor
             if (fin_type == "平片")
                 za = 1.0;
-            else if (fin_type == "louver")
+            else if (fin_type == "百叶窗片")
                 za = 1.3;
             else
                 za = 1.1;
