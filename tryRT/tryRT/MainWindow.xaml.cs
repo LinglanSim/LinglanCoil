@@ -569,7 +569,6 @@ namespace tryRT
             Model.Basic.RefStateInput refInput = new Model.Basic.RefStateInput();
             Model.Basic.AirStateInput airInput = new Model.Basic.AirStateInput();
             Model.HumidAirProp humidairprop = new Model.HumidAirProp();
-            Model.WindowControls winControls = new Model.WindowControls();
             
             //几何结构输入
             geoInput.Pt = Convert.ToDouble(Pt.Text);//管间距
@@ -591,33 +590,33 @@ namespace tryRT
 
                 if (this.RadioButton_mro_Cond.IsChecked == true) 
                 { 
-                    refInput.Massflowrate = Convert.ToDouble(this.mro_Cond.Text); 
-                    winControls.RadioButton_mro_Cond = true; 
+                    refInput.Massflowrate = Convert.ToDouble(this.mro_Cond.Text);
+                    Model.WindowControls.RadioButton_mro_Cond = true; 
                 }//制冷剂流量kg/s
                 else 
                 { 
                     refInput.Massflowrate = 0.01; 
-                    winControls.RadioButton_mro_Cond = false; 
+                     Model.WindowControls.RadioButton_mro_Cond = false; 
                 }
                 if (this.RadioButton_xo_Cond.IsChecked == true) 
                 { 
                     refInput.xo_Cond = Convert.ToDouble(this.xo_Cond.Text);
-                    winControls.RadioButton_xo_Cond = true; 
+                     Model.WindowControls.RadioButton_xo_Cond = true; 
                 }//Cond_out干度
                 else 
                 { 
                     refInput.xo_Cond = 0; 
-                    winControls.RadioButton_xo_Cond = false; 
+                     Model.WindowControls.RadioButton_xo_Cond = false; 
                 }
                 if (this.RadioButton_Tro_sub_Cond.IsChecked == true) 
                 { 
                     refInput.Tro_sub_Cond = Convert.ToDouble(this.Tro_sub_Cond.Text); 
-                    winControls.RadioButton_Tro_sub_Cond = true; 
+                     Model.WindowControls.RadioButton_Tro_sub_Cond = true; 
                 }//Cond_out过冷度
                 else 
                 { 
                     refInput.Tro_sub_Cond = 0; 
-                    winControls.RadioButton_Tro_sub_Cond = false; 
+                     Model.WindowControls.RadioButton_Tro_sub_Cond = false; 
                 }
 
                 refInput.te = -1000;//Evap饱和温度
@@ -628,14 +627,14 @@ namespace tryRT
                 refInput.Tro_sub_Evap = 0;//Evap_out过热度
                 refInput.xo_Evap = 1;//Evap_out干度
 
-                winControls.RadioButton_Pri_Evap = false;
-                winControls.RadioButton_xi_Evap = false;
-                winControls.RadioButton_Hri_Evap = false;
-                winControls.RadioButton_PriTri_Evap = false;
-                winControls.RadioButton_Tro_Evap = false;
-                winControls.RadioButton_Tro_sub_Evap = false;
-                winControls.RadioButton_xo_Evap = false;
-                winControls.RadioButton_mro_Evap = false;
+                 Model.WindowControls.RadioButton_Pri_Evap = false;
+                 Model.WindowControls.RadioButton_xi_Evap = false;
+                 Model.WindowControls.RadioButton_Hri_Evap = false;
+                 Model.WindowControls.RadioButton_PriTri_Evap = false;
+                 Model.WindowControls.RadioButton_Tro_Evap = false;
+                 Model.WindowControls.RadioButton_Tro_sub_Evap = false;
+                 Model.WindowControls.RadioButton_xo_Evap = false;
+                 Model.WindowControls.RadioButton_mro_Evap = false;
                 
             }
             else  //Evap
@@ -643,94 +642,94 @@ namespace tryRT
                 if (this.RadioButton_Tro_Evap.IsChecked == true) 
                 { 
                     refInput.te = Convert.ToDouble(this.Tcro_Evap.Text); 
-                    winControls.RadioButton_Tro_Evap = true;
-                    winControls.RadioButton_Pri_Evap = false; 
+                     Model.WindowControls.RadioButton_Tro_Evap = true;
+                     Model.WindowControls.RadioButton_Pri_Evap = false; 
                 }//Evap饱和温度
                 else if (this.RadioButton_Pri_Evap.IsChecked == true) 
                 { 
                     coolprop.update(input_pairs.PQ_INPUTS, Convert.ToDouble(this.Pri_Evap.Text) * 1000, 1); 
                     refInput.te = coolprop.T() - 273.15; 
-                    winControls.RadioButton_Tro_Evap = false; 
-                    winControls.RadioButton_Pri_Evap = true; 
+                     Model.WindowControls.RadioButton_Tro_Evap = false; 
+                     Model.WindowControls.RadioButton_Pri_Evap = true; 
                 }//调用CoolProp把压力转成饱和温度
                 else 
                 { 
                     refInput.te = -1000; 
-                    winControls.RadioButton_Tro_Evap = false;
-                    winControls.RadioButton_Pri_Evap = false; 
+                     Model.WindowControls.RadioButton_Tro_Evap = false;
+                     Model.WindowControls.RadioButton_Pri_Evap = false; 
                 }
 
                 if (this.RadioButton_xi_Evap.IsChecked == true) 
                 { 
                     refInput.xi_Evap = Convert.ToDouble(this.xi_Evap.Text);
-                    winControls.RadioButton_xi_Evap = true;
+                     Model.WindowControls.RadioButton_xi_Evap = true;
                 }//Evap_in干度
                 else 
                 { 
                     refInput.xi_Evap = 0;
-                    winControls.RadioButton_xi_Evap = false;
+                     Model.WindowControls.RadioButton_xi_Evap = false;
                 }
                 if (this.RadioButton_Hri_Evap.IsChecked == true) 
                 { 
                     refInput.H_exv = Convert.ToDouble(this.Hri_Evap.Text);
-                    winControls.RadioButton_Hri_Evap = true;
+                     Model.WindowControls.RadioButton_Hri_Evap = true;
                 }//Evap_in焓
                 else 
                 { 
                     refInput.H_exv = -1000;
-                    winControls.RadioButton_Hri_Evap = false;
+                     Model.WindowControls.RadioButton_Hri_Evap = false;
                 }
                 if (this.RadioButton_PriTri_Evap.IsChecked == true) 
                 {
                     refInput.P_exv = Convert.ToDouble(this.Pri_ValveBefore.Text);//Evap阀前压力
                     refInput.T_exv = Convert.ToDouble(this.Tri_ValveBefore.Text);//Evap阀前温度
-                    winControls.RadioButton_PriTri_Evap = true;
+                     Model.WindowControls.RadioButton_PriTri_Evap = true;
                 }
                 else
                 {
                     refInput.P_exv = 0;
                     refInput.T_exv = -1000;
-                    winControls.RadioButton_PriTri_Evap = false;
+                     Model.WindowControls.RadioButton_PriTri_Evap = false;
                 }
 
                 if (this.RadioButton_Tro_sub_Evap.IsChecked == true) 
                 { 
                     refInput.Tro_sub_Evap = Convert.ToDouble(this.Tro_sub_Evap.Text);
-                    winControls.RadioButton_Tro_sub_Evap = true;
+                     Model.WindowControls.RadioButton_Tro_sub_Evap = true;
                 }//Evap_out过热度
                 else 
                 { 
                     refInput.Tro_sub_Evap = 0;
-                    winControls.RadioButton_Tro_sub_Evap = false;
+                     Model.WindowControls.RadioButton_Tro_sub_Evap = false;
                 }
                 if (this.RadioButton_xo_Evap.IsChecked == true) 
                 { 
                     refInput.xo_Evap = Convert.ToDouble(this.xo_Evap.Text);
-                    winControls.RadioButton_xo_Evap = true;
+                     Model.WindowControls.RadioButton_xo_Evap = true;
                 }
                 else 
                 { 
                     refInput.xo_Evap = 1;
-                    winControls.RadioButton_xo_Evap = false;
+                     Model.WindowControls.RadioButton_xo_Evap = false;
                 }
                 if (this.RadioButton_mro_Evap.IsChecked == true) 
                 { 
                     refInput.Massflowrate = Convert.ToDouble(this.mro_Evap.Text);
-                    winControls.RadioButton_mro_Evap = true;
+                     Model.WindowControls.RadioButton_mro_Evap = true;
                 }//制冷剂流量kg/s
                 else 
                 { 
                     refInput.Massflowrate = 0.01;
-                    winControls.RadioButton_mro_Evap = false;
+                     Model.WindowControls.RadioButton_mro_Evap = false;
                 }
 
                 refInput.tc = -1000;//Cond饱和温度
                 refInput.tri = -1000;//Cond进口温度
                 refInput.Tro_sub_Cond = 0;//Cond_out过冷度
 
-                winControls.RadioButton_mro_Cond = false;
-                winControls.RadioButton_xo_Cond = false;
-                winControls.RadioButton_Tro_sub_Cond = false;
+                 Model.WindowControls.RadioButton_mro_Cond = false;
+                 Model.WindowControls.RadioButton_xo_Cond = false;
+                 Model.WindowControls.RadioButton_Tro_sub_Cond = false;
             }
 
             if (RadioButton_AirVolumnFlowRate.IsChecked == true) { airInput.Volumetricflowrate = Convert.ToDouble(this.Va.Text); }//空气体积流量m3/s
@@ -778,6 +777,17 @@ namespace tryRT
                 //Get AutoCircuitry
                 CircuitInfo = Model.Basic.AutoCircuiting.GetTubeofCir(geoInput.Nrow, geoInput.Ntube, CircuitInfo);
                 CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
+                if(geoInput.Nrow%2==0)
+                {
+                    CirArrange = Model.Basic.AutoCircuiting.GetCirArrange_2Row(CirArrange, geoInput.Nrow, geoInput.Ntube, CircuitInfo);
+                }
+                else if(geoInput.Nrow%2==1)
+                {
+                    CirArrange = Model.Basic.AutoCircuiting.GetCirArrange_3Row(CirArrange, geoInput.Nrow, geoInput.Ntube, CircuitInfo);
+                }
+                
+
+
                 if (geoInput.Nrow % 2 == 0)
                 {
                     CirArrange = Model.Basic.AutoCircuiting.GetCirArrange_2Row(CirArrange, geoInput.Nrow, geoInput.Ntube, CircuitInfo);
@@ -786,6 +796,7 @@ namespace tryRT
                 {
                     CirArrange = Model.Basic.AutoCircuiting.GetCirArrange_3Row(CirArrange, geoInput.Nrow, geoInput.Ntube, CircuitInfo);
                 }
+
                 bool reverse = RefFlowDirection == 0 ? false : true;
                 CirArrange = Model.Basic.CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
                 NodeInfo = new int[2, 2, Convert.ToInt32(Cirnum.Text)];
@@ -814,17 +825,17 @@ namespace tryRT
                 if (this.RadioButton_xo_Cond.IsChecked ==true) 
                 {
                     r = m_Main.main_condenser_inputQ(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, cap_inlet,cap_outlet, Model.HumidAirSourceData.SourceTableData,
-                        Convert.ToInt32(Zha.Text), Convert.ToInt32(Zapa.Text), Convert.ToInt32(Zhr.Text), Convert.ToInt32(Zapr.Text)); 
+                        Convert.ToDouble(Zha.Text), Convert.ToDouble(Zapa.Text), Convert.ToDouble(Zhr.Text), Convert.ToDouble(Zapr.Text)); 
                 }
                 else if (this.RadioButton_Tro_sub_Cond.IsChecked == true)
                 {
                     r = m_Main.main_condenser_inputSC(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, cap_inlet, cap_outlet, Model.HumidAirSourceData.SourceTableData,
-                        Convert.ToInt32(Zha.Text), Convert.ToInt32(Zapa.Text), Convert.ToInt32(Zhr.Text), Convert.ToInt32(Zapr.Text));
+                        Convert.ToDouble(Zha.Text), Convert.ToDouble(Zapa.Text), Convert.ToDouble(Zhr.Text), Convert.ToDouble(Zapr.Text));
                 }
                 else 
                 {
                     r = m_Main.main_condenser(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, cap_inlet, cap_outlet, Model.HumidAirSourceData.SourceTableData,
-                        Convert.ToInt32(Zha.Text), Convert.ToInt32(Zapa.Text), Convert.ToInt32(Zhr.Text), Convert.ToInt32(Zapr.Text));
+                        Convert.ToDouble(Zha.Text), Convert.ToDouble(Zapa.Text), Convert.ToDouble(Zhr.Text), Convert.ToDouble(Zapr.Text));
                 }
             }
             else 
@@ -832,18 +843,18 @@ namespace tryRT
                 if (this.RadioButton_xo_Evap.IsChecked ==true)
                 {
                     r = m_Main.main_evaporator_inputQ(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, cap_inlet, cap_outlet, Model.HumidAirSourceData.SourceTableData,
-                        Convert.ToInt32(Zha.Text), Convert.ToInt32(Zapa.Text), Convert.ToInt32(Zhr.Text), Convert.ToInt32(Zapr.Text));
+                        Convert.ToDouble(Zha.Text), Convert.ToDouble(Zapa.Text), Convert.ToDouble(Zhr.Text), Convert.ToDouble(Zapr.Text));
                 }
                 else if (this.RadioButton_Tro_sub_Evap.IsChecked == true)
                 {
                     r = m_Main.main_evaporator_inputSH(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, cap_inlet, cap_outlet, Model.HumidAirSourceData.SourceTableData,
-                        Convert.ToInt32(Zha.Text), Convert.ToInt32(Zapa.Text), Convert.ToInt32(Zhr.Text), Convert.ToInt32(Zapr.Text));
+                        Convert.ToDouble(Zha.Text), Convert.ToDouble(Zapa.Text), Convert.ToDouble(Zhr.Text), Convert.ToDouble(Zapr.Text));
                     //r = m_Main.main_evaporator_inputSH_py(refInput, airInput, geoInput, capInput, coolprop, Model.HumidAirSourceData.SourceTableData);
                 }
                 else
                 {
                     r = m_Main.main_evaporator(refInput, airInput, geoInput, CirArrange, NodeInfo, fin_type, tube_type, hex_type, cap_inlet, cap_outlet, Model.HumidAirSourceData.SourceTableData,
-                        Convert.ToInt32(Zha.Text), Convert.ToInt32(Zapa.Text), Convert.ToInt32(Zhr.Text), Convert.ToInt32(Zapr.Text));
+                        Convert.ToDouble(Zha.Text), Convert.ToDouble(Zapa.Text), Convert.ToDouble(Zhr.Text), Convert.ToDouble(Zapr.Text));
                 }
             }
 
