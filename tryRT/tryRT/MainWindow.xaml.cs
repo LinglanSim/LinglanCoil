@@ -971,10 +971,11 @@ namespace tryRT
             this.Canvas_3.Visibility = Visibility.Collapsed;
             this.Canvas_4.Visibility = Visibility.Collapsed;
             this.Canvas_5.Visibility = Visibility.Collapsed;
-            this.Canvas_6.Visibility = Visibility.Collapsed;
+            //this.Canvas_6.Visibility = Visibility.Collapsed;
             this.Canvas_7.Visibility = Visibility.Collapsed;
             this.Canvas_8.Visibility = Visibility.Collapsed;
             this.Canvas_9.Visibility = Visibility.Collapsed;
+            this.ScrollViewer_0.Visibility = Visibility.Collapsed;
 
             this.Picture_HExTube.Visibility = Visibility.Collapsed;
             this.Picture_FinType.Visibility = Visibility.Collapsed;
@@ -985,8 +986,8 @@ namespace tryRT
             this.DockPanel_Picture.Visibility = Visibility.Collapsed;
             
             //调显示宽度
-            this.Grid_Mid.MaxWidth = 450;
-            this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);
+            //this.Grid_Mid.MaxWidth = 450;
+            //this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);
 
             //调显示高度
             //this.Grid_Picture.Height = new GridLength(290, GridUnitType.Pixel);
@@ -1002,10 +1003,11 @@ namespace tryRT
             this.Canvas_3.Visibility = Visibility.Collapsed;
             this.Canvas_4.Visibility = Visibility.Collapsed;
             this.Canvas_5.Visibility = Visibility.Collapsed;
-            this.Canvas_6.Visibility = Visibility.Collapsed;
+            //this.Canvas_6.Visibility = Visibility.Collapsed;
             this.Canvas_7.Visibility = Visibility.Collapsed;
             this.Canvas_8.Visibility = Visibility.Collapsed;
             this.Canvas_9.Visibility = Visibility.Collapsed;
+            this.ScrollViewer_0.Visibility = Visibility.Collapsed;
 
             this.Picture_HExTube.Visibility = Visibility.Collapsed;
             this.Picture_FinType.Visibility = Visibility.Visible;
@@ -1016,8 +1018,8 @@ namespace tryRT
             this.DockPanel_Picture.Visibility = Visibility.Collapsed;
 
             //调显示宽度
-            this.Grid_Mid.MaxWidth = 450;
-            this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);
+            //this.Grid_Mid.MaxWidth = 450;
+            //this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);
 
             //调显示高度
             //this.Grid_Picture.Height = new GridLength(290, GridUnitType.Pixel);
@@ -1033,10 +1035,11 @@ namespace tryRT
             this.Canvas_3.Visibility = Visibility.Collapsed;
             this.Canvas_4.Visibility = Visibility.Collapsed;
             this.Canvas_5.Visibility = Visibility.Visible;
-            this.Canvas_6.Visibility = Visibility.Collapsed;
+            //this.Canvas_6.Visibility = Visibility.Collapsed;
             this.Canvas_7.Visibility = Visibility.Collapsed;
             this.Canvas_8.Visibility = Visibility.Collapsed;
             this.Canvas_9.Visibility = Visibility.Collapsed;
+            this.ScrollViewer_0.Visibility = Visibility.Collapsed;
 
             if (RadioButton_ManualArrange.IsChecked == true)
             {
@@ -1073,8 +1076,8 @@ namespace tryRT
                 //this.ListBox_RealTimeInputShow_Evaporator.Height = 414;
             }
             //调显示宽度
-            this.Grid_Mid.MaxWidth = 450;
-            this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);
+            //this.Grid_Mid.MaxWidth = 450;
+            //this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);
 
             //生成手动连流路图
             /*int _row = Convert.ToInt32(Row.Text);
@@ -1104,10 +1107,11 @@ namespace tryRT
             this.Canvas_3.Visibility = Visibility.Visible;
             this.Canvas_4.Visibility = Visibility.Collapsed;
             this.Canvas_5.Visibility = Visibility.Collapsed;
-            this.Canvas_6.Visibility = Visibility.Collapsed;
+            //this.Canvas_6.Visibility = Visibility.Collapsed;
             this.Canvas_7.Visibility = Visibility.Collapsed;
             this.Canvas_8.Visibility = Visibility.Collapsed;
             this.Canvas_9.Visibility = Visibility.Collapsed;
+            this.ScrollViewer_0.Visibility = Visibility.Collapsed;
 
             this.Picture_HExTube.Visibility = Visibility.Collapsed;
             this.Picture_FinType.Visibility = Visibility.Collapsed;
@@ -1118,8 +1122,8 @@ namespace tryRT
             this.DockPanel_Picture.Visibility = Visibility.Collapsed;
 
             //调显示宽度
-            this.Grid_Mid.MaxWidth = 450;
-            this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);
+            //this.Grid_Mid.MaxWidth = 450;
+            //this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);
 
             //调显示高度
             //this.Grid_Picture.Height = new GridLength(290, GridUnitType.Pixel);
@@ -1135,10 +1139,11 @@ namespace tryRT
             this.Canvas_3.Visibility = Visibility.Collapsed;
             this.Canvas_4.Visibility = Visibility.Visible;
             this.Canvas_5.Visibility = Visibility.Collapsed;
-            this.Canvas_6.Visibility = Visibility.Collapsed;
+            //this.Canvas_6.Visibility = Visibility.Collapsed;
             this.Canvas_7.Visibility = Visibility.Collapsed;
             this.Canvas_8.Visibility = Visibility.Collapsed;
             this.Canvas_9.Visibility = Visibility.Collapsed;
+            this.ScrollViewer_0.Visibility = Visibility.Collapsed;
 
             this.Picture_HExTube.Visibility = Visibility.Collapsed;
             this.Picture_FinType.Visibility = Visibility.Collapsed;
@@ -1149,8 +1154,8 @@ namespace tryRT
             this.DockPanel_Picture.Visibility = Visibility.Collapsed;
 
             //调显示宽度
-            this.Grid_Mid.MaxWidth = 450;
-            this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);        
+            //this.Grid_Mid.MaxWidth = 450;
+            //this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);        
              
 
             //调显示高度
@@ -1168,10 +1173,12 @@ namespace tryRT
             this.Canvas_3.Visibility = Visibility.Collapsed;
             this.Canvas_4.Visibility = Visibility.Collapsed;
             this.Canvas_5.Visibility = Visibility.Collapsed;
-            this.Canvas_6.Visibility = Visibility.Collapsed;
+            //this.Canvas_6.Visibility = Visibility.Collapsed;
             this.Canvas_7.Visibility = Visibility.Collapsed;
             this.Canvas_8.Visibility = Visibility.Visible;
             this.Canvas_9.Visibility = Visibility.Collapsed;
+            this.ScrollViewer_0.Visibility = Visibility.Collapsed;
+            
 
             this.Picture_HExTube.Visibility = Visibility.Collapsed;
             this.Picture_FinType.Visibility = Visibility.Collapsed;
@@ -1182,8 +1189,8 @@ namespace tryRT
             this.DockPanel_Picture.Visibility = Visibility.Visible;
 
             //调显示宽度
-            this.Grid_Mid.MaxWidth = 450;
-            this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);                       
+            //this.Grid_Mid.MaxWidth = 450;
+            //this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);                       
 
             //调显示高度
             //this.Grid_Picture.Height = new GridLength(450, GridUnitType.Pixel);
@@ -1203,10 +1210,11 @@ namespace tryRT
             this.Canvas_3.Visibility = Visibility.Collapsed;
             this.Canvas_4.Visibility = Visibility.Collapsed;
             this.Canvas_5.Visibility = Visibility.Collapsed;
-            this.Canvas_6.Visibility = Visibility.Collapsed;
+            //this.Canvas_6.Visibility = Visibility.Collapsed;
             this.Canvas_7.Visibility = Visibility.Collapsed;
             this.Canvas_8.Visibility = Visibility.Collapsed;
             this.Canvas_9.Visibility = Visibility.Visible;
+            this.ScrollViewer_0.Visibility = Visibility.Visible;
 
             this.Picture_HExTube.Visibility = Visibility.Collapsed;
             this.Picture_FinType.Visibility = Visibility.Collapsed;
@@ -1217,8 +1225,8 @@ namespace tryRT
             this.DockPanel_Picture.Visibility = Visibility.Visible;
 
             //调显示宽度
-            this.Grid_Mid.MaxWidth = 650;
-            this.Grid_Mid.Width = new GridLength(650, GridUnitType.Pixel);
+            //this.Grid_Mid.MaxWidth = 650;
+            //this.Grid_Mid.Width = new GridLength(650, GridUnitType.Pixel);
 
             //调显示高度
             //this.Grid_Picture.Height = new GridLength(450, GridUnitType.Pixel);
@@ -1297,7 +1305,7 @@ namespace tryRT
             this.Canvas_3.Visibility = Visibility.Collapsed;
             this.Canvas_4.Visibility = Visibility.Collapsed;
             this.Canvas_5.Visibility = Visibility.Collapsed;
-            this.Canvas_6.Visibility = Visibility.Collapsed;
+            //this.Canvas_6.Visibility = Visibility.Collapsed;
             this.Canvas_7.Visibility = Visibility.Visible;
             this.Canvas_8.Visibility = Visibility.Collapsed;
             this.Canvas_9.Visibility = Visibility.Collapsed;
@@ -1309,10 +1317,11 @@ namespace tryRT
             this.Picture_Wind.Visibility = Visibility.Collapsed;
             //this.GroupBox_ManualArrangeCirnum.Visibility = Visibility.Collapsed;
             this.DockPanel_Picture.Visibility = Visibility.Collapsed;
+            this.ScrollViewer_0.Visibility = Visibility.Collapsed;
 
             //调显示宽度
-            this.Grid_Mid.MaxWidth = 450;
-            this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);
+            //this.Grid_Mid.MaxWidth = 450;
+            //this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);
 
             //调显示高度
             //this.Grid_Picture.Height = new GridLength(290, GridUnitType.Pixel);
@@ -1329,7 +1338,7 @@ namespace tryRT
             this.Canvas_3.Visibility = Visibility.Collapsed;
             this.Canvas_4.Visibility = Visibility.Collapsed;
             this.Canvas_5.Visibility = Visibility.Collapsed;
-            this.Canvas_6.Visibility = Visibility.Visible;
+            //this.Canvas_6.Visibility = Visibility.Visible;
             this.Canvas_7.Visibility = Visibility.Collapsed;
             this.Canvas_8.Visibility = Visibility.Collapsed;
             this.Canvas_9.Visibility = Visibility.Collapsed;
@@ -1343,8 +1352,8 @@ namespace tryRT
             this.DockPanel_Picture.Visibility = Visibility.Collapsed;
 
             //调显示宽度
-            this.Grid_Mid.MaxWidth = 450;
-            this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);
+            //this.Grid_Mid.MaxWidth = 450;
+            //this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);
 
             //调显示高度
             //this.Grid_Picture.Height = new GridLength(450, GridUnitType.Pixel);
@@ -1361,7 +1370,7 @@ namespace tryRT
             this.Canvas_3.Visibility = Visibility.Collapsed;
             this.Canvas_4.Visibility = Visibility.Collapsed;
             this.Canvas_5.Visibility = Visibility.Collapsed;
-            this.Canvas_6.Visibility = Visibility.Collapsed;
+            //this.Canvas_6.Visibility = Visibility.Collapsed;
             this.Canvas_7.Visibility = Visibility.Collapsed;
             this.Canvas_8.Visibility = Visibility.Collapsed;
             this.Canvas_9.Visibility = Visibility.Collapsed;
@@ -1375,8 +1384,8 @@ namespace tryRT
             this.DockPanel_Picture.Visibility = Visibility.Collapsed;
 
             //调显示宽度
-            this.Grid_Mid.MaxWidth = 450;
-            this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);
+            //this.Grid_Mid.MaxWidth = 450;
+            //this.Grid_Mid.Width = new GridLength(450, GridUnitType.Pixel);
 
             //调显示高度
             //this.Grid_Picture.Height = new GridLength(290, GridUnitType.Pixel);
@@ -1622,6 +1631,7 @@ namespace tryRT
             this.Picture_Wind.Visibility = Visibility.Collapsed;
             //this.GroupBox_ManualArrangeCirnum.Visibility = Visibility.Collapsed;
             this.DockPanel_Picture.Visibility = Visibility.Visible;
+            this.StackPanel_ManualArrangeCirnum.Visibility = Visibility.Visible;
 
             Cirnum.IsEnabled = false;
             Pass_OK.IsEnabled = false;
