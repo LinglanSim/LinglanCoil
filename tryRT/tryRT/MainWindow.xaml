@@ -613,8 +613,8 @@
                                         <Label Content="毛细管直径/m" HorizontalAlignment="Left" Width="Auto" Margin="5,0,0,0"/>
                                         <TextBox  x:Name="TextBox_Diameter" HorizontalAlignment="Stretch" Width="Auto" Margin="5,0,5,5" IsEnabled="False" input:InputMethod.IsInputMethodEnabled="False" PreviewTextInput="PositiveTextBox_PreviewTextInput" TextChanged="PositiveTextBox_TextChanged"/>
                                         <Button x:Name="Button_Capillary" Content="确定" HorizontalAlignment="Stretch" Margin="5,0,5,5" Click="Button_Click_Capillary" IsEnabled="False" />
-                                        <Button Content="添加流路" HorizontalAlignment="Stretch" Margin="5,0,5,5" Click="Button_Click_AddCircuit"/>
-                                    </StackPanel>
+                                        <Button Content="添加流路(调试)" HorizontalAlignment="Stretch" Margin="5,0,5,5" Click="Button_Click_AddCircuit"/>
+                            </StackPanel>
 
                                     <!--AirFlowDirection-->
                                     <TextBlock x:Name="TextBlock_AirFlow" Width="Auto" HorizontalAlignment="Left"  VerticalAlignment="Top" DockPanel.Dock="Top" TextAlignment="Center" FontSize="15"/>

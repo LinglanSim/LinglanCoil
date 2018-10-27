@@ -9,7 +9,7 @@ namespace tryRT
 {
     public class Rect : INotifyPropertyChanged
     {
-        public static List<Rect> List_Rect = new List<Rect>();
+        //public static List<Rect> List_Rect = new List<Rect>();
 
         private double _x;
         public double X

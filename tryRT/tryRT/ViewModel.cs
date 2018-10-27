@@ -15,7 +15,8 @@ namespace tryRT
         public static int Connector_Num;
         public static int Start_Capillary_Num;
         public static int End_Capillary_Num;
-        public static int Rect_Num; 
+        public static int Rect_Num;
+        public static int Circuit_Num; 
         public static List<object> List_Controls = new List<object>();
 
         private ObservableCollection<Node> _nodes;

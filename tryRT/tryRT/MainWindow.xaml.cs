@@ -244,10 +244,11 @@ namespace tryRT
             ViewModel.Start_Capillary_Num = 0;
             ViewModel.End_Capillary_Num = 0;
             ViewModel.Rect_Num = 0;
+            ViewModel.Circuit_Num = 0;
 
 
             //初始化湿空气数组
-            Model.HumidAirSourceData.SourceTableData = Model.HumidAirSourceData.InitializeSourceTableData();
+            //Model.HumidAirSourceData.SourceTableData = Model.HumidAirSourceData.InitializeSourceTableData();
 
             //#region//测试湿空气物性查表对错用
             ////测试用
@@ -786,8 +787,6 @@ namespace tryRT
                     CirArrange = Model.Basic.AutoCircuiting.GetCirArrange_3Row(CirArrange, geoInput.Nrow, geoInput.Ntube, CircuitInfo);
                 }
                 
-
-
                 if (geoInput.Nrow % 2 == 0)
                 {
                     CirArrange = Model.Basic.AutoCircuiting.GetCirArrange_2Row(CirArrange, geoInput.Nrow, geoInput.Ntube, CircuitInfo);
@@ -2088,12 +2087,60 @@ namespace tryRT
                                 vm.Capillaries.Where(x => x.Start == newcapillary.Start && x.End == newcapillary.End).ToList().ForEach(x => vm.Capillaries.Remove(x));
                                 vm.Capillaries.Add(newcapillary);
 
-                                Canvas_Picture.RegisterName("New_End_Capillary" + ViewModel.End_Capillary_Num, newcapillary);//注册名字，以便以后使用
-                                newcapillary.Name = Convert.ToString("New_End_Capillary" + ViewModel.End_Capillary_Num);
-                                ViewModel.End_Capillary_Num++;
+                                //Canvas_Picture.RegisterName("New_End_Capillary/" + ViewModel.End_Capillary_Num + "/" + ViewModel.Circuit_Num, newcapillary);//注册名字，以便以后使用
+                                if (rect.GetHashCode() != vm.Rects[0].GetHashCode() && rect.GetHashCode() != vm.Rects[1].GetHashCode())
+                                {
+                                    newcapillary.Name = Convert.ToString("New_End_Capillary/CapillaryNum" + ViewModel.End_Capillary_Num + "/CircuitNum" + ViewModel.Circuit_Num);
+                                    
+                                    var selectele_rect = rect as Rect;
+                                    string circuitnum_str = "";
 
+                                    circuitnum_str = selectele_rect.Name.Substring(0, selectele_rect.Name.LastIndexOf("HasCircuitNum") + 13);
+                                    int lenth_circuitnum_str = selectele_rect.Name.Substring(0, selectele_rect.Name.LastIndexOf("HasCircuitNum") + 13).Length - selectele_rect.Name.Length;
+
+                                    if (lenth_circuitnum_str != 0)//第一次连的集管会等于0
+                                    {
+                                        circuitnum_str = selectele_rect.Name.Substring(selectele_rect.Name.LastIndexOf("HasCircuitNum") + 14, (selectele_rect.Name.Length - (selectele_rect.Name.LastIndexOf("HasCircuitNum") + 14)));
+
+                                        string[] sp = circuitnum_str.ToString().Split(new string[] { "," }, StringSplitOptions.None);
+
+                                        for (int list_circuit = 0; list_circuit < sp.Length; list_circuit++)
+                                        {
+                                            int circuitnum = Convert.ToInt32(sp[list_circuit]);
+                                            if (circuitnum == ViewModel.Circuit_Num)
+                                            {
+                                                break;
+                                            }
+                                            else if (list_circuit == sp.Length - 1 && circuitnum != ViewModel.Circuit_Num)
+                                            {
+                                                rect.Name = rect.Name + Convert.ToString("," + ViewModel.Circuit_Num);
+                                            }
+                                        }
+                                    }
+                                    else 
+                                    {
+                                        rect.Name = rect.Name + Convert.ToString("," + ViewModel.Circuit_Num);
+                                    }
+
+                                }
+                                else if (rect.GetHashCode() == vm.Rects[1].GetHashCode())
+                                {
+                                    newcapillary.Name = Convert.ToString("New_End_Capillary/CapillaryNum" + ViewModel.End_Capillary_Num + "/CircuitNum" + ViewModel.Circuit_Num);
+                                }
+
+                                ViewModel.End_Capillary_Num++;
+                                ViewModel.Circuit_Num++;
+                                //Capillary.List_Capillary.Add(newcapillary);
                                 ViewModel.List_Controls.Add(newcapillary);
-                                Capillary.List_Capillary.Add(newcapillary);
+                                //System.Windows.MessageBox.Show(rect.Name);
+
+                                //由于先储存了Rect才连线生成Capiliary，Capiliary后储存，所以调换一下位置
+                                if (ViewModel.List_Controls[ViewModel.List_Controls.Count - 2].GetType().Name=="Rect")
+                                {
+                                    object obj = ViewModel.List_Controls[ViewModel.List_Controls.Count - 1];
+                                    ViewModel.List_Controls[ViewModel.List_Controls.Count - 1] = ViewModel.List_Controls[ViewModel.List_Controls.Count - 2];
+                                    ViewModel.List_Controls[ViewModel.List_Controls.Count - 2] = obj;//Rect存放的位置
+                                }
 
                                 if (node1.Y < rect.Y)//change rect height
                                 {
@@ -2127,15 +2174,14 @@ namespace tryRT
                                 newLine.FullLine = node1.FullLine;
                                 vm.Connectors.Add(newLine);
 
-                                Canvas_Picture.RegisterName("newLine" + ViewModel.Connector_Num, newLine);//注册名字，以便以后使用
-                                newLine.Name = Convert.ToString("newLine"+ViewModel.Connector_Num);
-                                ViewModel.Connector_Num++;
-                                //System.Windows.MessageBox.Show("newLine" + Convert.ToString(ViewModel.Connector_Num));
+                                //Canvas_Picture.RegisterName("NewLine/" + ViewModel.Connector_Num + "/" + ViewModel.Circuit_Num, newLine);//注册名字，以便以后使用
+                                newLine.Name = Convert.ToString("NewConnector/ConnectorNum" + ViewModel.Connector_Num + "/CircuitNum" + ViewModel.Circuit_Num);
+                                //System.Windows.MessageBox.Show(newLine.Name);
 
-                                Connector.List_Connector.Add(newLine);
+                                ViewModel.Connector_Num++;
+                                //Connector.List_Connector.Add(newLine);
                                 ViewModel.List_Controls.Add(newLine);
                                 //ViewModel.List_Controls.Add(Connector.List_Connector);
-                                //System.Windows.MessageBox.Show(Convert.ToString(Connector.List_Connector));//显示全部成员？？？
 
                                 node2.FullLine = newLine.FullLine ? false : true;
                                 node2.Full = true;
@@ -2150,14 +2196,40 @@ namespace tryRT
                                 vm.Capillaries.Where(x => x.Start == newcapillary.Start && x.End == newcapillary.End).ToList().ForEach(x => vm.Capillaries.Remove(x));//delete same capillary
                                 vm.Capillaries.Add(newcapillary);
 
-                                Canvas_Picture.RegisterName("New_Start_Capillary" + ViewModel.Start_Capillary_Num, newcapillary);//注册名字，以便以后使用
-                                newcapillary.Name = Convert.ToString("New_Start_Capillary" + ViewModel.Start_Capillary_Num);
-                                ViewModel.Start_Capillary_Num++;
-                                //System.Windows.MessageBox.Show("New_Start_Capillary" + Convert.ToString(ViewModel.Start_Capillary_Num));
 
+                                if (rect.GetHashCode() != vm.Rects[0].GetHashCode() && rect.GetHashCode() != vm.Rects[1].GetHashCode())
+                                {
+                                    newcapillary.Name = Convert.ToString("New_Start_Capillary/StartCapillaryNum" + ViewModel.Start_Capillary_Num + "/CircuitNum" + ViewModel.Circuit_Num); 
+
+                                    var selectele_rect = rect as Rect;
+                                    string circuitnum_str = selectele_rect.Name.Substring(selectele_rect.Name.LastIndexOf("HasCircuitNum") + 14, (selectele_rect.Name.Length - (selectele_rect.Name.LastIndexOf("HasCircuitNum") + 14)));
+                                    string[] sp = circuitnum_str.ToString().Split(new string[] { "," }, StringSplitOptions.None);
+
+                                    for (int list_circuit = 0; list_circuit < sp.Length; list_circuit++)
+                                    {
+                                        int circuitnum = Convert.ToInt32(sp[list_circuit]);
+                                        if (circuitnum == ViewModel.Circuit_Num)
+                                        {
+                                            break;
+                                        }
+                                        else if (list_circuit == sp.Length - 1 && circuitnum != ViewModel.Circuit_Num)
+                                        {
+                                            rect.Name = rect.Name + Convert.ToString("," + ViewModel.Circuit_Num);
+                                        }
+                                    }
+                                }
+                                else if (rect.GetHashCode() == vm.Rects[0].GetHashCode())
+                                {
+                                    newcapillary.Name = Convert.ToString("New_Start_Capillary/StartCapillaryNum" + ViewModel.Start_Capillary_Num + "/CircuitNum" + ViewModel.Circuit_Num); 
+                                }
+
+                                //Canvas_Picture.RegisterName("New_Start_Capillary," + ViewModel.Start_Capillary_Num + "," + ViewModel.Circuit_Num, newcapillary);//注册名字，以便以后使用
+                                //newcapillary.Name = Convert.ToString("New_Start_Capillary/StartCapillaryNum" + ViewModel.Start_Capillary_Num + "/CircuitNum" + ViewModel.Circuit_Num);                                
+                                //System.Windows.MessageBox.Show(rect.Name);
+
+                                ViewModel.Start_Capillary_Num++;
+                                //Capillary.List_Capillary.Add(newcapillary);
                                 ViewModel.List_Controls.Add(newcapillary);
-                                Capillary.List_Capillary.Add(newcapillary);
-                                //System.Windows.MessageBox.Show(Convert.ToString(ViewModel.List_Controls));
 
                                 newcapillary.FullLine = rect.FullLine;
                                 newcapillary.In = true;
@@ -2319,7 +2391,7 @@ namespace tryRT
             {
                 Button_Click_Sure(sender, e);
 
-                //删除List_Controls上的线、毛细管
+                //删除List_Controls上的所有
                 int i_List_Controls = 0;
                 while(ViewModel.List_Controls.Count>0)
                 {
@@ -2345,14 +2417,15 @@ namespace tryRT
                     newrect.X = e.GetPosition(ListBox_this).X + 5;
                     newrect.Y = e.GetPosition(ListBox_this).Y;
                     newrect.RectHeight = 20;
+                    newrect.Name = Convert.ToString("NewRect/RectNum" + ViewModel.Rect_Num + "/HasCircuitNum");
                     vm.Rects.Add(newrect);
 
-                    Canvas_Picture.RegisterName("newRect" + ViewModel.Rect_Num, newrect);//注册名字，以便以后使用
-                    newrect.Name = Convert.ToString("newRect" + ViewModel.Rect_Num);
+                    //Canvas_Picture.RegisterName("newRect" + ViewModel.Rect_Num, newrect);//注册名字，以便以后使用
+                    
+                    //System.Windows.MessageBox.Show(newrect.Name);
                     ViewModel.Rect_Num++;
-                    //System.Windows.MessageBox.Show("newRect" + Convert.ToString(ViewModel.Rect_Num));
 
-                    Rect.List_Rect.Add(newrect);
+                    //Rect.List_Rect.Add(newrect);
                     ViewModel.List_Controls.Add(newrect);
                 }
             }
@@ -2939,6 +3012,7 @@ namespace tryRT
 
             private void MenuItem_Click_ExportInput(object sender, RoutedEventArgs e)
             {
+                //记录按钮、键入信息
                 string data =
                     "冷凝器"+
                     "\t"+
@@ -3161,6 +3235,7 @@ namespace tryRT
                     Convert.ToString(this.Zapa.Text)
                     ;
 
+                //开始记录流路信息
                 //List_Controls
                 int i_List_Controls = 0;//在List_Controls中找选定线的位置
 
@@ -3177,57 +3252,171 @@ namespace tryRT
                 {
                     if (ViewModel.List_Controls[i_List_Controls].GetType().Name == "Capillary")
                     {
+                        var CurrentItem = ViewModel.List_Controls[i_List_Controls] as Capillary;
+
                         data = data +
                             "\r\n" +
                             "Capillary" +
                             "\r\n" +
                             "Name" +
                             "\t" +
-                            Convert.ToString(Capillary.List_Capillary[i_List_Capillary].Name)+
+                            Convert.ToString(CurrentItem.Name) +
                             "\r\n" +
-                            "Start" +
+                            "Start.Name" +
                             "\t" +
-                            Convert.ToString(Capillary.List_Capillary[i_List_Capillary].Start) +
+                            Convert.ToString(CurrentItem.Start.Name) +
                             "\r\n" +
-                            "End" +
+                            "Start.X" +
                             "\t" +
-                            Convert.ToString(Capillary.List_Capillary[i_List_Capillary].End) +
+                            Convert.ToString(CurrentItem.Start.X) +
+                            "\r\n" +
+                            "Start.Y" +
+                            "\t" +
+                            Convert.ToString(CurrentItem.Start.Y) +
+                            "\r\n" +
+                            "Start.Full" +
+                            "\t" +
+                            Convert.ToString(CurrentItem.Start.Full) +
+                            "\r\n" +
+                            "Start.FullLine" +
+                            "\t" +
+                            Convert.ToString(CurrentItem.Start.FullLine) +
+                            "\r\n" +
+                            "End.Name" +
+                            "\t" +
+                            Convert.ToString(CurrentItem.End.Name) +
+                            "\r\n" +
+                            "End.X" +
+                            "\t" +
+                            Convert.ToString(CurrentItem.End.X) +
+                            "\r\n" +
+                            "End.Y" +
+                            "\t" +
+                            Convert.ToString(CurrentItem.End.Y) +
+                            "\r\n" +
+                            "End.FullLine" +
+                            "\t" +
+                            Convert.ToString(CurrentItem.End.FullLine) +
+                            "\r\n" +
+                            "End.RectHeight" +
+                            "\t" +
+                            Convert.ToString(CurrentItem.End.RectHeight) +
                             "\r\n" +
                             "Length" +
                             "\t" +
-                            Convert.ToString(Capillary.List_Capillary[i_List_Capillary].Length) +
+                            Convert.ToString(CurrentItem.Length) +
                             "\r\n" +
                             "Diameter" +
                             "\t" +
-                            Convert.ToString(Capillary.List_Capillary[i_List_Capillary].Diameter)+
+                            Convert.ToString(CurrentItem.Diameter) +
                             "\r\n" +
                             "X" +
                             "\t" +
-                            Convert.ToString(Capillary.List_Capillary[i_List_Capillary].X) +
+                            Convert.ToString(CurrentItem.X) +
                             "\r\n" +
                             "Y" +
                             "\t" +
-                            Convert.ToString(Capillary.List_Capillary[i_List_Capillary].Y) +
+                            Convert.ToString(CurrentItem.Y) +
                             "\r\n" +
                             "FullLine" +
                             "\t" +
-                            Convert.ToString(Capillary.List_Capillary[i_List_Capillary].FullLine) +
+                            Convert.ToString(CurrentItem.FullLine) +
                             "\r\n" +
                             "In" +
                             "\t" +
-                            Convert.ToString(Capillary.List_Capillary[i_List_Capillary].In)
+                            Convert.ToString(CurrentItem.In)
                             ;
-                        i_List_Capillary++;
                     }
-                    else if (ViewModel.List_Controls[i_List_Controls].GetType().Name == "Connector")
+
+                    if (ViewModel.List_Controls[i_List_Controls].GetType().Name == "Rect")
                     {
-                        vm.Connectors.Add(Connector.List_Connector[i_List_Connector]);
-                        i_List_Connector++;
+                        var CurrentItem = ViewModel.List_Controls[i_List_Controls] as Rect;
+
+                        data = data +
+                            "\r\n" +
+                            "Rect" +
+                            "\r\n" +
+                            "Name" +
+                            "\t" +
+                            Convert.ToString(CurrentItem.Name) +
+                            "\r\n" +
+                            "Rect.X" +
+                            "\t" +
+                            Convert.ToString(CurrentItem.X) +
+                            "\r\n" +
+                            "Rect.Y" +
+                            "\t" +
+                            Convert.ToString(CurrentItem.Y) +
+                            "\r\n" +
+                            "RectHeight" +
+                            "\t" +
+                            Convert.ToString(CurrentItem.RectHeight) +
+                            "\r\n" +
+                            "FullLine" +
+                            "\t" +
+                            Convert.ToString(CurrentItem.FullLine)
+                            ;
                     }
-                    else if (ViewModel.List_Controls[i_List_Controls].GetType().Name == "Rect")
+                    if (ViewModel.List_Controls[i_List_Controls].GetType().Name == "Connector")
                     {
-                        vm.Rects.Add(Rect.List_Rect[i_List_Rect]);
-                        i_List_Rect++;
+                        var CurrentItem = ViewModel.List_Controls[i_List_Controls] as Connector;
+
+                        data = data +
+                            "\r\n" +
+                            "Connector" +
+                            "\r\n" +
+                            "Name" +
+                            "\t" +
+                            Convert.ToString(CurrentItem.Name) +
+                            "\r\n" +
+                            "Start.Name" +
+                            "\t" +
+                            Convert.ToString(CurrentItem.Start.Name) +
+                            "\r\n" +
+                            "Start.X" +
+                            "\t" +
+                            Convert.ToString(CurrentItem.Start.X) +
+                            "\r\n" +
+                            "Start.Y" +
+                            "\t" +
+                            Convert.ToString(CurrentItem.Start.Y) +
+                            "\r\n" +
+                            "Start.Full" +
+                            "\t" +
+                            Convert.ToString(CurrentItem.Start.Full) +
+                            "\r\n" +
+                            "Start.FullLine" +
+                            "\t" +
+                            Convert.ToString(CurrentItem.Start.FullLine) +
+                            "\r\n" +
+                            "End.Name" +
+                            "\t" +
+                            Convert.ToString(CurrentItem.End.Name) +
+                            "\r\n" +
+                            "End.X" +
+                            "\t" +
+                            Convert.ToString(CurrentItem.End.X) +
+                            "\r\n" +
+                            "End.Y" +
+                            "\t" +
+                            Convert.ToString(CurrentItem.End.Y) +
+                            "\r\n" +
+                            "End.FullLine" +
+                            "\t" +
+                            Convert.ToString(CurrentItem.End.FullLine) +
+                            "\r\n" +
+                            "X" +
+                            "\t" +
+                            Convert.ToString(CurrentItem.X) +
+                            "\r\n" +
+                            "Y" +
+                            "\t" +
+                            Convert.ToString(CurrentItem.Y) +
+                            "\r\n" +
+                            "FullLine" +
+                            "\t" +
+                            Convert.ToString(CurrentItem.FullLine)
+                            ;
                     }
                 }
 
@@ -3360,24 +3549,170 @@ namespace tryRT
                         this.Zhr.Text = Convert.ToString(sp[i]); i++; i++;
                         this.Zapr.Text = Convert.ToString(sp[i]); i++; i++;
                         this.Zha.Text = Convert.ToString(sp[i]); i++; i++;
-                        this.Zapa.Text = Convert.ToString(sp[i]); i++; i++; i++; i++; i++;
-
-                        //List_Control存入数据
-                        for (int j = i; j < sp.Count()-i+1;j++ )
-                        {
-                            if (sp[j].GetType().Name == "Capillary")
-                            {
-                                Capillary newcapillary = new Capillary();
-                                this.Canvas_Picture.RegisterName("New_Start_Capillary" + ViewModel.Start_Capillary_Num, newcapillary);//注册名字，以便以后使用
-                                newcapillary.Name = Convert.ToString("New_Start_Capillary" + ViewModel.Start_Capillary_Num);
-                            }
-                        }
+                        this.Zapa.Text = Convert.ToString(sp[i]); i++;
 
                         //确定
                         //Button1
                         MouseButtonEventArgs args = new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left);
                         args.RoutedEvent = System.Windows.Controls.Button.ClickEvent;
                         this.Button1.RaiseEvent(args);
+
+                        int list_vm_Nodes = 0;
+                        int list_vm_Rects = 0;
+                        bool skip=false;
+
+                        if (i < sp.Length - 1)//没流路时可能会超数组长度，所以判断后面有没有流路信息
+                        {
+                            //先生成Rect才能生成Capillary
+                            for (int j = i; j < sp.Count(); j++)
+                            {
+                                if (sp[j] == "Rect")
+                                {
+                                    Rect newrect = new Rect();
+                                    j++; j++;
+                                    newrect.Name = sp[j]; j++; j++;
+                                    newrect.X = Convert.ToDouble(sp[j]); j++; j++;
+                                    newrect.Y = Convert.ToDouble(sp[j]); j++; j++;
+                                    newrect.RectHeight = Convert.ToDouble(sp[j]); j++; j++;
+                                    newrect.FullLine = Convert.ToBoolean(sp[j]); j++; j++;
+                                    vm.Rects.Add(newrect);
+                                }
+                            }
+
+                            //生成Capillary
+                            for (int j = i; j < sp.Count(); j++)
+                            {
+                                if (sp[j] == "Capillary")
+                                {
+                                    Capillary newcapillary = new Capillary();
+                                    j++; j++;
+                                    //this.Canvas_Picture.RegisterName("New_Start_Capillary" + ViewModel.Start_Capillary_Num, newcapillary);//注册名字，以便以后使用
+                                    newcapillary.Name = sp[j]; j++; j++;
+
+                                    for (list_vm_Nodes = 0; list_vm_Nodes < vm.Nodes.Count; list_vm_Nodes++)
+                                    {
+                                        if (Convert.ToDouble(sp[j + 2]) == vm.Nodes[list_vm_Nodes].X)
+                                        {
+                                            if (Convert.ToDouble(sp[j + 4]) == vm.Nodes[list_vm_Nodes].Y)
+                                            {
+                                                newcapillary.Start = vm.Nodes[list_vm_Nodes];
+                                                j++; j++;//Start.Name
+                                                j++; j++;//Start.X
+                                                j++; j++;//Start.Y
+                                                j++; j++;//Start.Full
+                                                j++; j++;//Start.FullLine
+                                                break;
+                                            }
+
+                                        }
+                                    }
+                                    for (list_vm_Rects = 0; list_vm_Rects < vm.Rects.Count; list_vm_Rects++)
+                                    {
+                                        if (Convert.ToDouble(sp[j + 2]) == vm.Rects[list_vm_Rects].X)
+                                        {
+                                            if (Convert.ToDouble(sp[j + 4]) == vm.Rects[list_vm_Rects].Y)
+                                            {
+                                                newcapillary.End = vm.Rects[list_vm_Rects];
+                                                j++; j++;//End.Name
+                                                j++; j++;//End.X
+                                                j++; j++;//End.Y
+                                                j++; j++;//End.FullLine
+                                                j++; j++;//End.RectHeight
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    newcapillary.Length = Convert.ToDouble(sp[j]); j++; j++;
+                                    newcapillary.Diameter = Convert.ToDouble(sp[j]); j++; j++;
+                                    newcapillary.X = Convert.ToDouble(sp[j]); j++; j++; j++; j++;
+                                    if (sp[j] == "True")
+                                    {
+                                        sp[j] = "true";
+                                    }
+                                    else
+                                    {
+                                        sp[j] = "false";
+                                    }
+                                    newcapillary.FullLine = Convert.ToBoolean(sp[j]); j++; j++;
+                                    if (sp[j] == "True")
+                                    {
+                                        sp[j] = "true";
+                                    }
+                                    else
+                                    {
+                                        sp[j] = "false";
+                                    }
+                                    newcapillary.In = Convert.ToBoolean(sp[j]);
+
+                                    vm.Capillaries.Add(newcapillary);
+
+                                }
+                            }
+
+                            int _list_vm_Nodes = 0;
+                            //先生成Rect才能生成Connector
+                            for (int j = i; j < sp.Count(); j++)
+                            {
+                                if (sp[j] == "Connector")
+                                {
+                                    Connector newLine = new Connector();
+                                    j++; j++;//newLine.Name
+                                    newLine.Name = sp[j];
+                                    j++; j++;//Start.Name
+
+                                    for (list_vm_Nodes = 0; list_vm_Nodes < vm.Nodes.Count; list_vm_Nodes++)
+                                    {
+                                        if (Convert.ToDouble(sp[j + 2]) == vm.Nodes[list_vm_Nodes].X)
+                                        {
+                                            if (Convert.ToDouble(sp[j + 4]) == vm.Nodes[list_vm_Nodes].Y)
+                                            {
+                                                newLine.Start = vm.Nodes[list_vm_Nodes];
+                                                j++; j++;//Start.X
+                                                j++; j++;//Start.Y
+                                                j++; j++;//Start.Full
+                                                j++; j++;//Start.FullLine
+                                                j++; j++;//End.Name
+                                                break;
+                                            }
+                                        }
+                                    }
+
+                                    for (_list_vm_Nodes = 0; _list_vm_Nodes < vm.Nodes.Count; _list_vm_Nodes++)
+                                    {
+                                        if (Convert.ToDouble(sp[j + 2]) == vm.Nodes[_list_vm_Nodes].X)
+                                        {
+                                            if (Convert.ToDouble(sp[j + 4]) == vm.Nodes[_list_vm_Nodes].Y)
+                                            {
+                                                j++; j++;//End.X
+                                                newLine.End = vm.Nodes[_list_vm_Nodes];
+                                                j++; j++;//End.Y
+                                                j++; j++;//End.FullLine
+                                                j++; j++;//X
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    newLine.X = Convert.ToDouble(sp[j]); j++; j++;
+                                    newLine.Y = Convert.ToDouble(sp[j]); j++; j++;
+                                    if (sp[j] == "True")
+                                    {
+                                        sp[j] = "true";
+                                    }
+                                    else
+                                    {
+                                        sp[j] = "false";
+                                    }
+                                    newLine.FullLine = Convert.ToBoolean(sp[j]);
+
+                                    vm.Connectors.Add(newLine);
+                                    
+                                }
+                            }
+
+                            //保存流路到List_Controls
+                            //.........................................................................................................
+                        }
+
                     }
 
                 }
@@ -3396,474 +3731,229 @@ namespace tryRT
 
                 //List_Controls
                 int i_List_Controls;//在List_Controls中找选定线的位置
-                int i_selected_List_Controls = 0;//在List_Controls记住选定线当前的位置
-                int j_FirstConnector_List_Controls = 0; //在List_Controls选定线对应流路中第一条线的位置
-                int k_LastConnector_List_Controls = 0; //在List_Controls中选定线对应流路最后条线的位置
 
                 //List_Connector
                 int i_List_Connector;//在List_Connector中找选定线的位置
-                int j_FirstConnector_List_Connector = 0;//在List_Connector中选定线对应流路第一条线的位置
-                int k_LastConnector_List_Connector = 0;//在List_Connector中选定线对应流路最后条线的位置
 
                 //List_Capillary
-                int Index_Start_Capiliary = 0;
-                int Index_End_Capiliary = 0;
+                int i_List_Capillaries;//在List_Controls中找选定线的位置
 
                 //List_Rect
                 int i_List_Rect = 0;//在List_Rect中找选定线的位置
+                int list_circuit = 0;//在Rect的Name中存放流路
 
                 var item = ListBox_this.SelectedItem;
                 vm.CreatNewConnector = false;
 
+                string circuitnum_str="";//截取选定对象所在流路用
+                int circuitnum=0;
                 if (item != null)
                 {
-                    if (item.GetType().Name == "Connector")
+                    if (item.GetType().Name == "Connector" || item.GetType().Name == "Capillary")
                     {
-                        var selectelement = item as Connector;
-                        //System.Windows.MessageBox.Show(selectelement.Name);
-                        for (i_List_Controls = 0; i_List_Controls < ViewModel.List_Controls.Count; i_List_Controls++)
+                        if (item.GetType().Name == "Connector")
                         {
-                            if (selectelement.GetHashCode() == ViewModel.List_Controls[i_List_Controls].GetHashCode())
+                            var selectelement = item as Connector;
+                            circuitnum_str = selectelement.Name.Substring(selectelement.Name.LastIndexOf("CircuitNum") + 10, (selectelement.Name.Length - (selectelement.Name.LastIndexOf("CircuitNum") + 10)));
+                            circuitnum = Convert.ToInt32(circuitnum_str);
+                        }
+                        else
+                        {
+                            var selectelement = item as Capillary;
+                            circuitnum_str = selectelement.Name.Substring(selectelement.Name.LastIndexOf("CircuitNum") + 10, (selectelement.Name.Length - (selectelement.Name.LastIndexOf("CircuitNum") + 10)));//截取Connector所在流路
+                            circuitnum = Convert.ToInt32(circuitnum_str);
+                        }
+
+                        //删除界面上的线
+                        for (i_List_Connector = 0; i_List_Connector < vm.Connectors.Count; )
+                        {
+                            string _circuitnum_str = vm.Connectors[i_List_Connector].Name.Substring(vm.Connectors[i_List_Connector].Name.LastIndexOf("CircuitNum") + 10, (vm.Connectors[i_List_Connector].Name.Length - (vm.Connectors[i_List_Connector].Name.LastIndexOf("CircuitNum") + 10)));//截取Connector所在流路
+                            int _circuitnum = Convert.ToInt32(_circuitnum_str);
+                            if (_circuitnum == circuitnum)
                             {
-                                i_selected_List_Controls = i_List_Controls;
-                                j_FirstConnector_List_Controls = i_List_Controls;//初始化
-                                k_LastConnector_List_Controls = i_List_Controls;//初始化
-                                while (Convert.ToString(ViewModel.List_Controls[j_FirstConnector_List_Controls]).Contains("Connector"))
-                                {
-                                    j_FirstConnector_List_Controls--;
-                                }
-                                j_FirstConnector_List_Controls++;//记录
-                                while (Convert.ToString(ViewModel.List_Controls[k_LastConnector_List_Controls]).Contains("Connector"))
-                                {
-                                    k_LastConnector_List_Controls++;
-                                }
-                                k_LastConnector_List_Controls--;//记录
-
-                                Index_Start_Capiliary = j_FirstConnector_List_Controls - 1;//记录
-                                Index_End_Capiliary = k_LastConnector_List_Controls + 1;//记录
-
-                                //System.Windows.MessageBox.Show(Convert.ToString(j - 1) + ":" + Capillary.List_Capillary[Index_Start_Capiliary]);//用List_Capillary显示
-                                //System.Windows.MessageBox.Show(Convert.ToString(j) + ":" + ViewModel.List_Controls[j]);
-                                //System.Windows.MessageBox.Show(Convert.ToString(i) + ":" + ViewModel.List_Controls[i]);
-                                //System.Windows.MessageBox.Show(Convert.ToString(k) + ":" + ViewModel.List_Controls[k]);
-                                //System.Windows.MessageBox.Show(Convert.ToString(k + 1) + ":" + ViewModel.List_Controls[Index_End_Capiliary]);
-
-                                break;
+                                vm.Connectors.Remove(vm.Connectors[i_List_Connector]);
+                            }
+                            else
+                            {
+                                i_List_Connector++;
                             }
                         }
 
                         //删除界面上的毛细管
-                        for (i_List_Controls = 0; i_List_Controls < Capillary.List_Capillary.Count; i_List_Controls++)
+                        for (i_List_Capillaries = 0; i_List_Capillaries < vm.Capillaries.Count; )
                         {
-                            if (Capillary.List_Capillary[i_List_Controls].GetHashCode() == ViewModel.List_Controls[Index_Start_Capiliary].GetHashCode())
+                            string _circuitnum_str = vm.Capillaries[i_List_Capillaries].Name.Substring(vm.Capillaries[i_List_Capillaries].Name.LastIndexOf("CircuitNum") + 10, (vm.Capillaries[i_List_Capillaries].Name.Length - (vm.Capillaries[i_List_Capillaries].Name.LastIndexOf("CircuitNum") + 10)));//截取Connector所在流路
+                            int _circuitnum = Convert.ToInt32(_circuitnum_str);
+                            if (_circuitnum == circuitnum)
                             {
-                                vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls]);//删除Start毛细管
-                                vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls + 1]);//删除End毛细管
-                                break;
+                                vm.Capillaries.Remove(vm.Capillaries[i_List_Capillaries]);
+                            }
+                            else
+                            {
+                                i_List_Capillaries++;
                             }
                         }
 
-                        //删除界面上的线
-                        for (i_List_Connector = 0; i_List_Connector < Connector.List_Connector.Count; i_List_Connector++)
+                        //删除List_Controls上Connector
+                        for (i_List_Controls = 0; i_List_Controls < ViewModel.List_Controls.Count; )
                         {
-                            if (selectelement.GetHashCode() == Connector.List_Connector[i_List_Connector].GetHashCode())
+                            if (ViewModel.List_Controls[i_List_Controls].GetType().Name == "Connector")
                             {
-                                j_FirstConnector_List_Connector = i_List_Connector - (i_selected_List_Controls - j_FirstConnector_List_Controls);//记录
-                                k_LastConnector_List_Connector = i_List_Connector + (k_LastConnector_List_Controls - i_selected_List_Controls);//记录
-                                //System.Windows.MessageBox.Show(Convert.ToString(jj) + ":" + Connector.List_Connector[jj]);
-                                //System.Windows.MessageBox.Show(Convert.ToString(ii) + ":" + Connector.List_Connector[ii]);
-                                //System.Windows.MessageBox.Show(Convert.ToString(kk) + ":" + Connector.List_Connector[kk]);
-                                for (i_List_Connector = j_FirstConnector_List_Connector; i_List_Connector < k_LastConnector_List_Connector + 1; i_List_Connector++)
+                                var CurrentItem = ViewModel.List_Controls[i_List_Controls] as Connector;
+                                string _circuitnum_str = CurrentItem.Name.Substring(CurrentItem.Name.LastIndexOf("CircuitNum") + 10, (CurrentItem.Name.Length - (CurrentItem.Name.LastIndexOf("CircuitNum") + 10)));//截取Connector所在流路
+                                int _circuitnum = Convert.ToInt32(_circuitnum_str);
+                                if (_circuitnum == circuitnum)
                                 {
-                                    vm.Connectors.Remove(Connector.List_Connector[i_List_Connector]);
+                                    ViewModel.List_Controls.Remove(ViewModel.List_Controls[i_List_Controls]);
                                 }
-                                break;
+                                else
+                                {
+                                    i_List_Controls++;
+                                }
+                            }
+                            else
+                            {
+                                i_List_Controls++;
                             }
                         }
 
-                        //删除List_Controls上的线、毛细管
-                        for (i_List_Controls = k_LastConnector_List_Controls + 1; i_List_Controls > j_FirstConnector_List_Controls - 2; i_List_Controls--)//删除选定的线关联的线、毛细管
+                        //删除List_Controls上Capillary
+                        for (i_List_Controls = 0; i_List_Controls < ViewModel.List_Controls.Count; )
                         {
-                            ViewModel.List_Controls.Remove(ViewModel.List_Controls[i_List_Controls]);
+                            if (ViewModel.List_Controls[i_List_Controls].GetType().Name == "Capillary")
+                            {
+                                var CurrentItem = ViewModel.List_Controls[i_List_Controls] as Capillary;
+                                string _circuitnum_str = CurrentItem.Name.Substring(CurrentItem.Name.LastIndexOf("CircuitNum") + 10, (CurrentItem.Name.Length - (CurrentItem.Name.LastIndexOf("CircuitNum") + 10)));//截取Connector所在流路
+                                int _circuitnum = Convert.ToInt32(_circuitnum_str);
+                                if (_circuitnum == circuitnum)
+                                {
+                                    ViewModel.List_Controls.Remove(ViewModel.List_Controls[i_List_Controls]);
+                                }
+                                else
+                                {
+                                    i_List_Controls++;
+                                }
+                            }
+                            else
+                            {
+                                i_List_Controls++;
+                            }
                         }
-
                     }
-
-                    else if (item.GetType().Name == "Capillary")
+                    else if (item.GetType().Name == "Rect" && item != vm.Rects[0] && item != vm.Rects[1])
                     {
-                        var selectelement = item as Capillary;
-
-                        for (i_List_Controls = 0; i_List_Controls < ViewModel.List_Controls.Count; i_List_Controls++)
-                        {
-                            if (selectelement.GetHashCode() == ViewModel.List_Controls[i_List_Controls].GetHashCode())
-                            {
-                                i_selected_List_Controls = i_List_Controls;
-
-                                if (i_selected_List_Controls == 0)//判断当前选择的毛细管是否为最先的Start毛细管
-                                {
-                                    j_FirstConnector_List_Controls = i_List_Controls + 1;//初始化
-                                    k_LastConnector_List_Controls = i_List_Controls + 1;//初始化
-                                    while (Convert.ToString(ViewModel.List_Controls[k_LastConnector_List_Controls]).Contains("Connector"))
-                                    {
-                                        k_LastConnector_List_Controls++;
-                                    }
-                                    k_LastConnector_List_Controls--;//记录
-
-                                    Index_Start_Capiliary = i_List_Controls;//记录
-                                    Index_End_Capiliary = k_LastConnector_List_Controls + 1;//记录
-                                }
-                                else if (i_List_Controls == ViewModel.List_Controls.Count - 1)//判断当前选择的毛细管是否为最后的End毛细管
-                                {
-                                    j_FirstConnector_List_Controls = i_List_Controls - 1;//初始化
-                                    k_LastConnector_List_Controls = i_List_Controls - 1;//初始化
-                                    while (Convert.ToString(ViewModel.List_Controls[j_FirstConnector_List_Controls]).Contains("Connector"))
-                                    {
-                                        j_FirstConnector_List_Controls--;
-                                    }
-                                    j_FirstConnector_List_Controls++;//记录
-
-                                    Index_Start_Capiliary = j_FirstConnector_List_Controls - 1;//记录
-                                    Index_End_Capiliary = i_List_Controls;//记录
-                                }
-                                else if (i_List_Controls < ViewModel.List_Controls.Count-1)
-                                {
-                                    if (ViewModel.List_Controls[i_List_Controls + 1].GetType().Name == "Connector")//判断当前选择的毛细管是否为Start毛细管
-                                    {
-                                        j_FirstConnector_List_Controls = i_List_Controls + 1;//初始化
-                                        k_LastConnector_List_Controls = i_List_Controls + 1;//初始化
-                                        while (Convert.ToString(ViewModel.List_Controls[k_LastConnector_List_Controls]).Contains("Connector"))
-                                        {
-                                            k_LastConnector_List_Controls++;
-                                        }
-                                        k_LastConnector_List_Controls--;//记录
-
-                                        Index_Start_Capiliary = i_List_Controls;//记录
-                                        Index_End_Capiliary = k_LastConnector_List_Controls + 1;//记录
-                                    }
-                                    else if (i_selected_List_Controls == (ViewModel.List_Controls.Count - 1) || ViewModel.List_Controls[i_List_Controls - 1].GetType().Name == "Connector")//判断当前选择的毛细管是否为End毛细管
-                                    {
-                                        j_FirstConnector_List_Controls = i_List_Controls - 1;//初始化
-                                        k_LastConnector_List_Controls = i_List_Controls - 1;//初始化
-                                        while (Convert.ToString(ViewModel.List_Controls[j_FirstConnector_List_Controls]).Contains("Connector"))
-                                        {
-                                            j_FirstConnector_List_Controls--;
-                                        }
-                                        j_FirstConnector_List_Controls++;//记录
-
-                                        Index_Start_Capiliary = j_FirstConnector_List_Controls - 1;//记录
-                                        Index_End_Capiliary = i_List_Controls;//记录
-                                    }
-                                }
-
-                                break;
-                            }
-                        }
-
-                        //删除界面上的毛细管
-                        for (i_List_Controls = 0; i_List_Controls < Capillary.List_Capillary.Count; i_List_Controls++)
-                        {
-                            if (Capillary.List_Capillary[i_List_Controls].GetHashCode() == ViewModel.List_Controls[Index_Start_Capiliary].GetHashCode())
-                            {
-                                vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls]);//删除Start毛细管
-                                vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls + 1]);//删除End毛细管
-                                break;
-                            }
-                        }
-
-                        //删除界面上的线
-                        for (i_List_Connector = 0; i_List_Connector < Connector.List_Connector.Count; i_List_Connector++)
-                        {
-                            if (Connector.List_Connector[i_List_Connector].GetHashCode() == ViewModel.List_Controls[j_FirstConnector_List_Controls].GetHashCode())
-                            {
-                                j_FirstConnector_List_Connector = i_List_Connector;//记录
-                                k_LastConnector_List_Connector = i_List_Connector + (k_LastConnector_List_Controls - j_FirstConnector_List_Controls);//记录
-                                for (i_List_Connector = j_FirstConnector_List_Connector; i_List_Connector < k_LastConnector_List_Connector + 1; i_List_Connector++)
-                                {
-                                    vm.Connectors.Remove(Connector.List_Connector[i_List_Connector]);
-                                }
-                                break;
-                            }
-                        }
-
-                        //删除List_Controls上的线、毛细管
-                        for (i_List_Controls = k_LastConnector_List_Controls + 1; i_List_Controls > j_FirstConnector_List_Controls - 2; i_List_Controls--)//删除选定的线关联的线、毛细管
-                        {
-                            ViewModel.List_Controls.Remove(ViewModel.List_Controls[i_List_Controls]);
-                        }
-
-                    }
-
-                    else if (item.GetType().Name == "Rect")
-                    {
-                        object obj;
                         var selectelement = item as Rect;
-                        for (i_List_Controls = 0; i_List_Controls < ViewModel.List_Controls.Count; i_List_Controls++)
+                        circuitnum_str = selectelement.Name.Substring(selectelement.Name.LastIndexOf("HasCircuitNum") + 14, (selectelement.Name.Length - (selectelement.Name.LastIndexOf("HasCircuitNum") + 14)));
+
+                        string[] sp = circuitnum_str.ToString().Split(new string[] { "," }, StringSplitOptions.None);
+
+                        for (list_circuit = 0; list_circuit < sp.Length; list_circuit++)
+                        {
+                            circuitnum = Convert.ToInt32(sp[list_circuit]);
+
+                            //删除界面上的线
+                            for (i_List_Connector = 0; i_List_Connector < vm.Connectors.Count; )
+                            {
+                                string _circuitnum_str = vm.Connectors[i_List_Connector].Name.Substring(vm.Connectors[i_List_Connector].Name.LastIndexOf("CircuitNum") + 10, (vm.Connectors[i_List_Connector].Name.Length - (vm.Connectors[i_List_Connector].Name.LastIndexOf("CircuitNum") + 10)));//截取Connector所在流路
+                                int _circuitnum = Convert.ToInt32(_circuitnum_str);
+                                if (_circuitnum == circuitnum)
+                                {
+                                    vm.Connectors.Remove(vm.Connectors[i_List_Connector]);
+                                }
+                                else
+                                {
+                                    i_List_Connector++;
+                                }
+                            }
+
+                            //删除界面上的毛细管
+                            for (i_List_Capillaries = 0; i_List_Capillaries < vm.Capillaries.Count; )
+                            {
+                                string _circuitnum_str = vm.Capillaries[i_List_Capillaries].Name.Substring(vm.Capillaries[i_List_Capillaries].Name.LastIndexOf("CircuitNum") + 10, (vm.Capillaries[i_List_Capillaries].Name.Length - (vm.Capillaries[i_List_Capillaries].Name.LastIndexOf("CircuitNum") + 10)));//截取Connector所在流路
+                                int _circuitnum = Convert.ToInt32(_circuitnum_str);
+                                if (_circuitnum == circuitnum)
+                                {
+                                    vm.Capillaries.Remove(vm.Capillaries[i_List_Capillaries]);
+                                }
+                                else
+                                {
+                                    i_List_Capillaries++;
+                                }
+                            }
+
+                            //删除List_Controls上Connector
+                            for (i_List_Controls = 0; i_List_Controls < ViewModel.List_Controls.Count; )
+                            {
+                                if (ViewModel.List_Controls[i_List_Controls].GetType().Name == "Connector")
+                                {
+                                    var CurrentItem = ViewModel.List_Controls[i_List_Controls] as Connector;
+                                    string _circuitnum_str = CurrentItem.Name.Substring(CurrentItem.Name.LastIndexOf("CircuitNum") + 10, (CurrentItem.Name.Length - (CurrentItem.Name.LastIndexOf("CircuitNum") + 10)));//截取Connector所在流路
+                                    int _circuitnum = Convert.ToInt32(_circuitnum_str);
+                                    if (_circuitnum == circuitnum)
+                                    {
+                                        ViewModel.List_Controls.Remove(ViewModel.List_Controls[i_List_Controls]);
+                                    }
+                                    else
+                                    {
+                                        i_List_Controls++;
+                                    }
+                                }
+                                else
+                                {
+                                    i_List_Controls++;
+                                }
+                            }
+
+                            //删除List_Controls上Capillary
+                            for (i_List_Controls = 0; i_List_Controls < ViewModel.List_Controls.Count; )
+                            {
+                                if (ViewModel.List_Controls[i_List_Controls].GetType().Name == "Capillary")
+                                {
+                                    var CurrentItem = ViewModel.List_Controls[i_List_Controls] as Capillary;
+                                    string _circuitnum_str = CurrentItem.Name.Substring(CurrentItem.Name.LastIndexOf("CircuitNum") + 10, (CurrentItem.Name.Length - (CurrentItem.Name.LastIndexOf("CircuitNum") + 10)));//截取Connector所在流路
+                                    int _circuitnum = Convert.ToInt32(_circuitnum_str);
+                                    if (_circuitnum == circuitnum)
+                                    {
+                                        ViewModel.List_Controls.Remove(ViewModel.List_Controls[i_List_Controls]);
+                                    }
+                                    else
+                                    {
+                                        i_List_Controls++;
+                                    }
+                                }
+                                else
+                                {
+                                    i_List_Controls++;
+                                }
+                            }
+
+                        }
+
+                        //删除界面上的集管
+                        vm.Rects.Remove(selectelement);
+
+                        //删除List_Controls上Rect
+                        for (i_List_Controls = 0; i_List_Controls < ViewModel.List_Controls.Count; )
                         {
                             if (selectelement.GetHashCode() == ViewModel.List_Controls[i_List_Controls].GetHashCode())
                             {
-                                i_selected_List_Controls = i_List_Controls;
-
-                                //由于先储存了Rect才连线生成Capiliary，Capiliary后储存，所以调换一下位置
-                                obj = ViewModel.List_Controls[i_selected_List_Controls];
-                                ViewModel.List_Controls[i_selected_List_Controls] = ViewModel.List_Controls[i_selected_List_Controls + 1];
-                                ViewModel.List_Controls[i_selected_List_Controls+1] = obj;//Rect存放的位置
-
-                                for (i_List_Rect = 0; i_List_Rect < Rect.List_Rect.Count; i_List_Rect++)
-                                {
-                                    if (Rect.List_Rect[i_List_Rect].GetHashCode() == ViewModel.List_Controls[i_selected_List_Controls+1].GetHashCode())
-                                    {
-                                        break;
-                                    }
-                                }
-
-                                //先找集流管前面的流路
-                                Index_Start_Capiliary = i_selected_List_Controls;//初始化
-                                Index_End_Capiliary=i_selected_List_Controls;//记录
-
-                                j_FirstConnector_List_Controls = Index_End_Capiliary - 1;//初始化
-                                k_LastConnector_List_Controls = Index_End_Capiliary - 1;//记录
-
-                                if (Convert.ToString(ViewModel.List_Controls[j_FirstConnector_List_Controls]).Contains("Connector"))
-                                {
-                                    if (Convert.ToString(ViewModel.List_Controls[j_FirstConnector_List_Controls - 1]).Contains("Connector"))
-                                    {
-                                        #region Rect_Start-Cap-Node-Co-Node-Co-Node-Cap-Rect
-                                        while (Convert.ToString(ViewModel.List_Controls[j_FirstConnector_List_Controls]).Contains("Connector"))
-                                        {
-                                            j_FirstConnector_List_Controls--;
-                                        }
-                                        Index_Start_Capiliary = j_FirstConnector_List_Controls;//记录
-                                        j_FirstConnector_List_Controls = Index_Start_Capiliary + 1;//记录
-
-                                        //删除界面上的毛细管
-                                        for (i_List_Controls = 0; i_List_Controls < Capillary.List_Capillary.Count; i_List_Controls++)
-                                        {
-                                            if (Capillary.List_Capillary[i_List_Controls].GetHashCode() == ViewModel.List_Controls[Index_Start_Capiliary].GetHashCode())
-                                            {
-                                                vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls]);//删除Start毛细管
-                                                vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls + 1]);//删除End毛细管
-                                                break;
-                                            }
-                                        }
-
-                                        //删除界面上的线
-                                        for (i_List_Connector = 0; i_List_Connector < Connector.List_Connector.Count; i_List_Connector++)
-                                        {
-                                            if (Connector.List_Connector[i_List_Connector].GetHashCode() == ViewModel.List_Controls[j_FirstConnector_List_Controls].GetHashCode())
-                                            {
-                                                j_FirstConnector_List_Connector = i_List_Connector;//记录
-                                                k_LastConnector_List_Connector = i_List_Connector + (k_LastConnector_List_Controls - j_FirstConnector_List_Controls);//记录
-                                                for (i_List_Connector = j_FirstConnector_List_Connector; i_List_Connector < k_LastConnector_List_Connector + 1; i_List_Connector++)
-                                                {
-                                                    vm.Connectors.Remove(Connector.List_Connector[i_List_Connector]);
-                                                }
-                                                break;
-                                            }
-                                        }
-
-                                        //删除List_Controls上的线、毛细管
-                                        for (i_List_Controls = k_LastConnector_List_Controls + 1; i_List_Controls > j_FirstConnector_List_Controls - 2; i_List_Controls--)//删除选定的线关联的线、毛细管
-                                        {
-                                            ViewModel.List_Controls.Remove(ViewModel.List_Controls[i_List_Controls]);
-                                            i_selected_List_Controls = i_List_Controls;//最后会回到Rect所在位置
-                                        }
-
-                                        #endregion
-                                    }
-                                    else
-                                    {
-                                        #region Rect_Start-Cap-Node-Co-Node-Cap-Rect
-                                        Index_Start_Capiliary = k_LastConnector_List_Controls - 1;
-
-                                        //删除界面上的毛细管
-                                        for (i_List_Controls = 0; i_List_Controls < Capillary.List_Capillary.Count; i_List_Controls++)
-                                        {
-                                            if (Capillary.List_Capillary[i_List_Controls].GetHashCode() == ViewModel.List_Controls[Index_End_Capiliary].GetHashCode())
-                                            {
-                                                vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls - 1]);//删除Start毛细管
-                                                vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls]);//删除End毛细管
-                                                break;
-                                            }
-                                        }
-
-                                        //删除界面上的线
-                                        for (i_List_Connector = 0; i_List_Connector < Connector.List_Connector.Count; i_List_Connector++)
-                                        {
-                                            if (Connector.List_Connector[i_List_Connector].GetHashCode() == ViewModel.List_Controls[k_LastConnector_List_Controls].GetHashCode())
-                                            {
-                                                vm.Connectors.Remove(Connector.List_Connector[i_List_Connector]);
-                                                break;
-                                            }
-                                        }
-
-                                        //删除List_Controls上的线、毛细管
-                                        for (i_List_Controls = Index_End_Capiliary; i_List_Controls > Index_Start_Capiliary - 1; i_List_Controls--)
-                                        {
-                                            ViewModel.List_Controls.Remove(ViewModel.List_Controls[i_List_Controls]);
-                                            i_selected_List_Controls = i_List_Controls;//最后会回到Rect所在位置
-                                        }
-                                        #endregion
-                                    }                                    
-                                }
-
-                                else if (Convert.ToString(ViewModel.List_Controls[j_FirstConnector_List_Controls]).Contains("Capillary"))
-                                {
-                                    //后面不能多删了Index_Start_Capiliary、j_FirstConnector_List_Controls、k_LastConnector_List_Controls所到之处
-                                    
-                                    #region Rect_Start-Cap-Node-Cap-Rect
-                                    Index_Start_Capiliary = Index_End_Capiliary - 1;//记录
-
-                                    //删除界面上的毛细管
-                                    for (i_List_Controls = 0; i_List_Controls < Capillary.List_Capillary.Count; i_List_Controls++)
-                                    {
-                                        if (Capillary.List_Capillary[i_List_Controls].GetHashCode() == ViewModel.List_Controls[Index_End_Capiliary].GetHashCode())
-                                        {
-                                            vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls - 1]);//删除Start毛细管
-                                            vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls]);//删除End毛细管
-                                            break;
-                                        }
-                                    }
-                                    //删除List_Controls上的毛细管
-                                    for (i_List_Controls = Index_End_Capiliary; i_List_Controls > Index_Start_Capiliary-1; i_List_Controls--)//删除选定的线关联的线、毛细管
-                                    {
-                                        ViewModel.List_Controls.Remove(ViewModel.List_Controls[i_List_Controls]);
-                                        i_selected_List_Controls = i_List_Controls;//最后会回到Rect所在位置
-                                    }
-                                    #endregion
-
-                                    #region Rect_Start-Cap-Rect //连不出这种情况
-                                    #endregion
-                                }
-
-                                //删除List_Controls上Rect
-                                ViewModel.List_Controls.Remove(ViewModel.List_Controls[i_selected_List_Controls]);
-
-                                //后面再对j_FirstConnector_List_Controls、k_LastConnector_List_Controls初始化一次，用于找后面另一组流路
-                                //找集流管后面的流路
-                                Index_Start_Capiliary = i_selected_List_Controls;//记录
-                                Index_End_Capiliary = i_selected_List_Controls;//初始化
-
-                                j_FirstConnector_List_Controls = Index_End_Capiliary + 1;//记录
-                                k_LastConnector_List_Controls = Index_End_Capiliary + 1;//初始化
-
-                                if (Convert.ToString(ViewModel.List_Controls[j_FirstConnector_List_Controls]).Contains("Connector"))
-                                {
-                                    if (Convert.ToString(ViewModel.List_Controls[j_FirstConnector_List_Controls + 1]).Contains("Connector"))
-                                    {
-                                        #region Rect-Cap-Node-Co-Node-Co-Node-Cap-Rect_End
-                                        //确定Index_End_Capiliary、k_LastConnector_List_Controls
-                                        while (Convert.ToString(ViewModel.List_Controls[k_LastConnector_List_Controls]).Contains("Connector"))
-                                        {
-                                            k_LastConnector_List_Controls++;
-                                        }
-                                        Index_End_Capiliary = k_LastConnector_List_Controls;//记录
-                                        k_LastConnector_List_Controls--;//记录
-
-                                        //删除界面上的毛细管
-                                        for (i_List_Controls = 0; i_List_Controls < Capillary.List_Capillary.Count; i_List_Controls++)
-                                        {
-                                            if (Capillary.List_Capillary[i_List_Controls].GetHashCode() == ViewModel.List_Controls[Index_Start_Capiliary].GetHashCode())
-                                            {
-                                                vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls]);//删除Start毛细管
-                                                vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls + 1]);//删除End毛细管
-                                                break;
-                                            }
-                                        }
-                                        //删除界面上的线
-                                        for (i_List_Connector = 0; i_List_Connector < Connector.List_Connector.Count; i_List_Connector++)
-                                        {
-                                            if (Connector.List_Connector[i_List_Connector].GetHashCode() == ViewModel.List_Controls[j_FirstConnector_List_Controls].GetHashCode())
-                                            {
-                                                j_FirstConnector_List_Connector = i_List_Connector;//记录
-                                                k_LastConnector_List_Connector = i_List_Connector + (k_LastConnector_List_Controls - j_FirstConnector_List_Controls);//记录
-                                                for (i_List_Connector = j_FirstConnector_List_Connector; i_List_Connector < k_LastConnector_List_Connector + 1; i_List_Connector++)
-                                                {
-                                                    vm.Connectors.Remove(Connector.List_Connector[i_List_Connector]);
-                                                }
-                                                break;
-                                            }
-                                        }
-                                        //删除List_Controls上的线、毛细管
-                                        for (i_List_Controls = Index_End_Capiliary; i_List_Controls > Index_Start_Capiliary -1; i_List_Controls--)
-                                        {
-                                            ViewModel.List_Controls.Remove(ViewModel.List_Controls[i_List_Controls]);
-                                        }
-                                        #endregion
-                                    }
-                                    else
-                                    {
-                                        #region Rect-Cap-Node-Co-Node-Cap-Rect_End
-                                        //删除界面上的毛细管
-                                        for (i_List_Controls = 0; i_List_Controls < Capillary.List_Capillary.Count; i_List_Controls++)
-                                        {
-                                            if (Capillary.List_Capillary[i_List_Controls].GetHashCode() == ViewModel.List_Controls[Index_Start_Capiliary].GetHashCode())
-                                            {
-                                                vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls]);//删除Start毛细管
-                                                vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls + 1]);//删除End毛细管
-                                                break;
-                                            }
-                                        }
-                                        //删除界面上的线
-                                        for (i_List_Connector = 0; i_List_Connector < Connector.List_Connector.Count; i_List_Connector++)
-                                        {
-                                            if (Connector.List_Connector[i_List_Connector].GetHashCode() == ViewModel.List_Controls[j_FirstConnector_List_Controls].GetHashCode())
-                                            {
-                                                j_FirstConnector_List_Connector = i_List_Connector;//记录
-                                                vm.Connectors.Remove(Connector.List_Connector[i_List_Connector]);
-                                                break;
-                                            }
-                                        }
-                                        //删除List_Controls上的线、毛细管
-                                        for (i_List_Controls = Index_Start_Capiliary+2; i_List_Controls > Index_Start_Capiliary-1; i_List_Controls--)
-                                        {
-                                            ViewModel.List_Controls.Remove(ViewModel.List_Controls[i_List_Controls]);
-                                        }
-                                        #endregion
-                                    }
-                                }
-                                else if (Convert.ToString(ViewModel.List_Controls[j_FirstConnector_List_Controls]).Contains("Capillary"))
-                                {
-                                    #region Rect-Cap-Node-Cap-Rect_End
-
-                                    //删除界面上的毛细管
-                                    for (i_List_Controls = 0; i_List_Controls < Capillary.List_Capillary.Count; i_List_Controls++)
-                                    {
-                                        if (Capillary.List_Capillary[i_List_Controls].GetHashCode() == ViewModel.List_Controls[Index_Start_Capiliary].GetHashCode())
-                                        {
-                                            vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls + 1]);//删除End毛细管
-                                            vm.Capillaries.Remove(Capillary.List_Capillary[i_List_Controls]);//删除Start毛细管
-                                            break;
-                                        }
-                                    }
-                                    //删除List_Controls上的毛细管
-                                    for (i_List_Controls = Index_Start_Capiliary + 1; i_List_Controls > Index_Start_Capiliary - 1; i_List_Controls--)//删除选定的线关联的线、毛细管
-                                    {
-                                        ViewModel.List_Controls.Remove(ViewModel.List_Controls[i_List_Controls]);
-                                    }
-                                    #endregion
-
-                                    #region Rect-Cap-Rect_End   //连不出这种情况
-                                    #endregion
-                                }
-
-                                //删除界面上的集流管
-                                vm.Rects.Remove(Rect.List_Rect[i_List_Rect]);
-
+                                ViewModel.List_Controls.Remove(ViewModel.List_Controls[i_List_Controls]);
                                 break;
                             }
                         }
 
                     }
+ 
                 }
             }
 
             private void Button_Click_AddCircuit(object sender, RoutedEventArgs e)
             {
                 //List_Controls
-                int i_List_Controls=0;//在List_Controls中找选定线的位置
+                int i_List_Controls = 0;//在List_Controls中找选定线的位置
 
                 //List_Connector
-                int i_List_Connector=0;//在List_Connector中找选定线的位置
+                int i_List_Connector = 0;//在List_Connector中找选定线的位置
 
                 //List_Capillary
                 int i_List_Capillary = 0;
@@ -3875,17 +3965,23 @@ namespace tryRT
                 {
                     if (ViewModel.List_Controls[i_List_Controls].GetType().Name == "Capillary")
                     {
-                        vm.Capillaries.Add(Capillary.List_Capillary[i_List_Capillary]);
+                        var CurrentItem = ViewModel.List_Controls[i_List_Controls] as Capillary;
+
+                        vm.Capillaries.Add(CurrentItem);
                         i_List_Capillary++;
                     }
-                    else if(ViewModel.List_Controls[i_List_Controls].GetType().Name == "Connector")
+                    else if (ViewModel.List_Controls[i_List_Controls].GetType().Name == "Connector")
                     {
-                        vm.Connectors.Add(Connector.List_Connector[i_List_Connector]);
+                        var CurrentItem = ViewModel.List_Controls[i_List_Controls] as Connector;
+
+                        vm.Connectors.Add(CurrentItem);
                         i_List_Connector++;
                     }
                     else if (ViewModel.List_Controls[i_List_Controls].GetType().Name == "Rect")
                     {
-                        vm.Rects.Add(Rect.List_Rect[i_List_Rect]);
+                        var CurrentItem = ViewModel.List_Controls[i_List_Controls] as Rect;
+
+                        vm.Rects.Add(CurrentItem);
                         i_List_Rect++;
                     }
                 }
