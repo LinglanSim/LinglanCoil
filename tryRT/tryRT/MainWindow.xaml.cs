@@ -2095,8 +2095,9 @@ namespace tryRT
                             if (rect.X == vm.Rects[0].X && rect.Y == vm.Rects[0].Y)//check selected item is Rect[0] or not
                             {
                                 rect_start = true;
+                                ViewModel.Circuit_Num++;//防止自动分配流路与手动分配流路切换后，会出现两个流路共用一个流路号
                             }
-                            else if (rect_start && node1 != null)
+                            else if (rect_start && node1 != null && node1.ConnectNum==1)
                             {
                                 Capillary newcapillary = new Capillary();
                                 newcapillary.Start = node1;
@@ -2111,7 +2112,7 @@ namespace tryRT
                                 if (rect.GetHashCode() != vm.Rects[0].GetHashCode() && rect.GetHashCode() != vm.Rects[1].GetHashCode())
                                 {
                                     newcapillary.Name = Convert.ToString("New_End_Capillary/CapillaryNum" + ViewModel.End_Capillary_Num + "/CircuitNum" + ViewModel.Circuit_Num);
-                                    
+                                    //System.Windows.MessageBox.Show(newcapillary.Name);
                                     var selectele_rect = rect as Rect;
                                     string circuitnum_str = "";
 
@@ -2170,7 +2171,7 @@ namespace tryRT
                                 //}
 
                                 ViewModel.End_Capillary_Num++;
-                                ViewModel.Circuit_Num++;
+                                //ViewModel.Circuit_Num++;
 
                                 if (node1.Y < rect.Y)//change rect height
                                 {
@@ -2184,6 +2185,8 @@ namespace tryRT
                                         rect.RectHeight = node1.Y + 20 - rect.Y;
                                     }
                                 }
+
+                                node1.ConnectNum--;
                                 node1 = null;
                             }
                             if (rect.X == vm.Rects[1].X && rect.Y == vm.Rects[1].Y)
@@ -2196,7 +2199,7 @@ namespace tryRT
                         {
                             node2 = item as Node;
                             //if(rect_start&&node1!=null&&node1!=node2&&node2.Full==false)
-                            if (rect_start && node1 != null && node1 != node2)
+                            if (rect_start && node1 != null && node1 != node2 && node1.ConnectNum != 0 && node2.ConnectNum!=0)
                             {
                                 Connector newLine = new Connector();
                                 newLine.Start = node1;
@@ -2215,10 +2218,12 @@ namespace tryRT
 
                                 node2.FullLine = newLine.FullLine ? false : true;
                                 node2.Full = true;
+                                node1.ConnectNum--;
+                                node2.ConnectNum--;
                                 node1 = node2;
                             }
                             //else if(rect_start&&rect!=null&&node2.Full==false)
-                            else if (rect_start && rect != null)
+                            else if (rect_start && rect != null && node2.ConnectNum==2)
                             {
                                 Capillary newcapillary = new Capillary();
                                 newcapillary.Start = node2;
@@ -2229,8 +2234,9 @@ namespace tryRT
 
                                 if (rect.GetHashCode() != vm.Rects[0].GetHashCode() && rect.GetHashCode() != vm.Rects[1].GetHashCode())
                                 {
-                                    newcapillary.Name = Convert.ToString("New_Start_Capillary/StartCapillaryNum" + ViewModel.Start_Capillary_Num + "/CircuitNum" + ViewModel.Circuit_Num); 
-
+                                    ViewModel.Circuit_Num++;/////////////////////////////////////////////////////////////////////////////////////////////////////
+                                    newcapillary.Name = Convert.ToString("New_Start_Capillary/StartCapillaryNum" + ViewModel.Start_Capillary_Num + "/CircuitNum" + ViewModel.Circuit_Num);
+                                    //System.Windows.MessageBox.Show(newcapillary.Name);
                                     var selectele_rect = rect as Rect;
                                     string circuitnum_str = selectele_rect.Name.Substring(selectele_rect.Name.LastIndexOf("HasCircuitNum") + 14, (selectele_rect.Name.Length - (selectele_rect.Name.LastIndexOf("HasCircuitNum") + 14)));
                                     string[] sp = circuitnum_str.ToString().Split(new string[] { "," }, StringSplitOptions.None);
@@ -2265,6 +2271,7 @@ namespace tryRT
                                 newcapillary.In = true;
                                 node2.FullLine = rect.FullLine ? false : true;
                                 node2.Full = true;
+                                node2.ConnectNum--;
                                 node1 = node2;
                                 if (node1.Y < rect.Y)
                                 {
@@ -3531,17 +3538,28 @@ namespace tryRT
                         this.Zha.Text = Convert.ToString(sp[i]); i++; i++;
                         this.Zapa.Text = Convert.ToString(sp[i]); i++;
 
-                        //确定
-                        //Button1
-                        MouseButtonEventArgs args = new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left);
-                        args.RoutedEvent = System.Windows.Controls.Button.ClickEvent;
-                        this.Button1.RaiseEvent(args);
-
+                        //界面生成管子
+                        ////人为后台按Button1
+                        //MouseButtonEventArgs args = new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left);
+                        //args.RoutedEvent = System.Windows.Controls.Button.ClickEvent;
+                        //this.Button1.RaiseEvent(args);
+                        int _row = Convert.ToInt32(Row.Text);
+                        int _tube = Convert.ToInt32(tube_per.Text);
+                        vm.Connectors.Clear();
+                        vm.Capillaries.Clear();
+                        while (vm.Rects.Count > 2)
+                        {
+                            vm.Rects.RemoveAt(2);
+                        }
+                        ViewModel.List_Controls.Clear();
+                        node1 = null;
+                        rect = null;
+                        vm.GenerateNode(_row, _tube);
 
                         //生成显示的流路
                         int list_vm_Nodes = 0;
                         int list_vm_Rects = 0;
-
+                        
                         if (i < sp.Length - 1)//没流路时可能会超数组长度，所以判断后面有没有流路信息
                         {
                             //先生成Rect才能生成Capillary
@@ -3592,7 +3610,7 @@ namespace tryRT
                                     {
                                         if (Convert.ToDouble(sp[j + 2]) == vm.Rects[list_vm_Rects].X)
                                         {
-                                            if (Convert.ToDouble(sp[j + 4]) == vm.Rects[list_vm_Rects].Y)
+                                            if (list_vm_Rects == 0)//导出文件时vm.Rects[0].Y可能不会和当前已有的vm.Rects[0].Y相等，所以特殊处理
                                             {
                                                 newcapillary.End = vm.Rects[list_vm_Rects];
                                                 j++; j++;//End.Name
@@ -3602,6 +3620,17 @@ namespace tryRT
                                                 j++; j++;//End.RectHeight
                                                 break;
                                             }
+                                            else if (Convert.ToDouble(sp[j + 4]) == vm.Rects[list_vm_Rects].Y)
+                                            {
+                                                newcapillary.End = vm.Rects[list_vm_Rects];
+                                                j++; j++;//End.Name
+                                                j++; j++;//End.X
+                                                j++; j++;//End.Y
+                                                j++; j++;//End.FullLine
+                                                j++; j++;//End.RectHeight
+                                                break;
+                                            }
+
                                         }
                                     }
                                     newcapillary.Length = Convert.ToDouble(sp[j]); j++; j++;
@@ -3722,6 +3751,9 @@ namespace tryRT
                 int i_List_Rect = 0;//在List_Rect中找选定线的位置
                 int list_circuit = 0;//在Rect的Name中存放流路
 
+                //List_Node
+                int List_Node = 0;
+
                 var item = ListBox_this.SelectedItem;
                 vm.CreatNewConnector = false;
 
@@ -3751,6 +3783,13 @@ namespace tryRT
                             int _circuitnum = Convert.ToInt32(_circuitnum_str);
                             if (_circuitnum == circuitnum)
                             {
+                                for (List_Node = 0; List_Node < vm.Nodes.Count; List_Node++)
+                                {
+                                    if (vm.Nodes[List_Node].Name == vm.Connectors[i_List_Connector].Start.Name || vm.Nodes[List_Node].Name == vm.Connectors[i_List_Connector].End.Name)
+                                    {
+                                        vm.Nodes[List_Node].ConnectNum++;
+                                    }
+                                }
                                 vm.Connectors.Remove(vm.Connectors[i_List_Connector]);
                             }
                             else
@@ -3766,6 +3805,13 @@ namespace tryRT
                             int _circuitnum = Convert.ToInt32(_circuitnum_str);
                             if (_circuitnum == circuitnum)
                             {
+                                for (List_Node = 0; List_Node < vm.Nodes.Count; List_Node++)
+                                {
+                                    if (vm.Nodes[List_Node].Name == vm.Capillaries[i_List_Capillaries].Start.Name || vm.Nodes[List_Node].Name == vm.Capillaries[i_List_Capillaries].End.Name)
+                                    {
+                                        vm.Nodes[List_Node].ConnectNum++;
+                                    }
+                                }
                                 vm.Capillaries.Remove(vm.Capillaries[i_List_Capillaries]);
                             }
                             else
@@ -3838,6 +3884,13 @@ namespace tryRT
                                 int _circuitnum = Convert.ToInt32(_circuitnum_str);
                                 if (_circuitnum == circuitnum)
                                 {
+                                    for (List_Node = 0; List_Node < vm.Nodes.Count; List_Node++)
+                                    {
+                                        if (vm.Nodes[List_Node].Name == vm.Connectors[i_List_Connector].Start.Name || vm.Nodes[List_Node].Name == vm.Connectors[i_List_Connector].End.Name)
+                                        {
+                                            vm.Nodes[List_Node].ConnectNum++;
+                                        }
+                                    }
                                     vm.Connectors.Remove(vm.Connectors[i_List_Connector]);
                                 }
                                 else
@@ -3853,6 +3906,13 @@ namespace tryRT
                                 int _circuitnum = Convert.ToInt32(_circuitnum_str);
                                 if (_circuitnum == circuitnum)
                                 {
+                                    for (List_Node = 0; List_Node < vm.Nodes.Count; List_Node++)
+                                    {
+                                        if (vm.Nodes[List_Node].Name == vm.Capillaries[i_List_Capillaries].Start.Name || vm.Nodes[List_Node].Name == vm.Capillaries[i_List_Capillaries].End.Name)
+                                        {
+                                            vm.Nodes[List_Node].ConnectNum++;
+                                        }
+                                    }
                                     vm.Capillaries.Remove(vm.Capillaries[i_List_Capillaries]);
                                 }
                                 else
@@ -3923,7 +3983,7 @@ namespace tryRT
                         }
 
                     }
- 
+
                 }
             }
 
@@ -3971,10 +4031,20 @@ namespace tryRT
             {
                 vm.Connectors.Clear();
                 vm.Capillaries.Clear();
-                ViewModel.Circuit_Num = 0;
+                while (vm.Rects.Count>2)
+                {
+                    vm.Rects.RemoveAt(2);
+                }
+                ViewModel.List_Controls.Clear();
+                //ViewModel.Circuit_Num++;
                 ViewModel.Start_Capillary_Num = 0;
                 ViewModel.End_Capillary_Num = 0;
                 ViewModel.Connector_Num = 0;
+
+                for (int List_Node = 0; List_Node < vm.Nodes.Count; List_Node++)
+                {
+                    vm.Nodes[List_Node].ConnectNum = 2;
+                }
 
                 #region CirArrange
                 //**************下面这段求CirArrange的方法的代码和点击菜单中计算按钮后求CirArrange的方法的代码一样，为方便维护，以后宜提取出来共用
@@ -4046,8 +4116,12 @@ namespace tryRT
                                         newcapillary.In = false;
                                     }
                                     ViewModel.Start_Capillary_Num++;
-                                    ViewModel.Circuit_Num = i_CirArrange;
-                                    newcapillary.Name = Convert.ToString("New_Start_Capillary/StartCapillaryNum" + ViewModel.Start_Capillary_Num + "/CircuitNum" + ViewModel.Circuit_Num); 
+
+                                    //ViewModel.Circuit_Num = ViewModel.Circuit_Num + i_CirArrange + 1;
+                                    ViewModel.Circuit_Num++;
+                                    
+                                    newcapillary.Name = Convert.ToString("New_Start_Capillary/StartCapillaryNum" + ViewModel.Start_Capillary_Num + "/CircuitNum" + ViewModel.Circuit_Num);
+                                    vm.Nodes[list_vm_Nodes].ConnectNum--;
                                     vm.Capillaries.Add(newcapillary);
                                     ViewModel.List_Controls.Add(newcapillary);
                                 }
@@ -4080,8 +4154,9 @@ namespace tryRT
                                         newcapillary.In = false;
                                     }
                                     ViewModel.End_Capillary_Num++;
-                                    ViewModel.Circuit_Num = i_CirArrange;
+                                    //ViewModel.Circuit_Num = i_CirArrange;
                                     newcapillary.Name = Convert.ToString("New_End_Capillary/CapillaryNum" + ViewModel.End_Capillary_Num + "/CircuitNum" + ViewModel.Circuit_Num);
+                                    vm.Nodes[list_vm_Nodes].ConnectNum--;
                                     vm.Capillaries.Add(newcapillary);
                                     ViewModel.List_Controls.Add(newcapillary);
                                 }
@@ -4150,8 +4225,10 @@ namespace tryRT
                                 {
                                     Line_complet = false;
                                     ViewModel.Connector_Num++;
-                                    ViewModel.Circuit_Num = i_CirArrange;
+                                    //ViewModel.Circuit_Num = i_CirArrange;
                                     newLine.Name = Convert.ToString("NewConnector/ConnectorNum" + ViewModel.Connector_Num + "/CircuitNum" + ViewModel.Circuit_Num);
+                                    vm.Nodes[remember_list_vm_Nodes].ConnectNum--;
+                                    vm.Nodes[list_vm_Nodes].ConnectNum--;
                                     vm.Connectors.Add(newLine);
                                     ViewModel.List_Controls.Add(newLine);
 
