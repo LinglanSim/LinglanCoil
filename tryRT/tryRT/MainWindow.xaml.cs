@@ -248,7 +248,7 @@ namespace tryRT
 
 
             //初始化湿空气数组
-            //Model.HumidAirSourceData.SourceTableData = Model.HumidAirSourceData.InitializeSourceTableData();
+            Model.HumidAirSourceData.SourceTableData = Model.HumidAirSourceData.InitializeSourceTableData();
 
             //#region//测试湿空气物性查表对错用
             ////测试用
@@ -748,6 +748,8 @@ namespace tryRT
             //m_Main.W5(a, b).ha
             Model.Basic.CapiliaryInput cap_inlet = new Model.Basic.CapiliaryInput();//进口毛细管
             Model.Basic.CapiliaryInput cap_outlet = new Model.Basic.CapiliaryInput();//出口毛细管
+
+            //流路
             int i = 1;
             int j = 1;
             int k = 1;
@@ -787,14 +789,14 @@ namespace tryRT
                     CirArrange = Model.Basic.AutoCircuiting.GetCirArrange_3Row(CirArrange, geoInput.Nrow, geoInput.Ntube, CircuitInfo);
                 }
                 
-                if (geoInput.Nrow % 2 == 0)
-                {
-                    CirArrange = Model.Basic.AutoCircuiting.GetCirArrange_2Row(CirArrange, geoInput.Nrow, geoInput.Ntube, CircuitInfo);
-                }
-                else
-                {
-                    CirArrange = Model.Basic.AutoCircuiting.GetCirArrange_3Row(CirArrange, geoInput.Nrow, geoInput.Ntube, CircuitInfo);
-                }
+                //if (geoInput.Nrow % 2 == 0)
+                //{
+                //    CirArrange = Model.Basic.AutoCircuiting.GetCirArrange_2Row(CirArrange, geoInput.Nrow, geoInput.Ntube, CircuitInfo);
+                //}
+                //else
+                //{
+                //    CirArrange = Model.Basic.AutoCircuiting.GetCirArrange_3Row(CirArrange, geoInput.Nrow, geoInput.Ntube, CircuitInfo);
+                //}
 
                 bool reverse = RefFlowDirection == 0 ? false : true;
                 CirArrange = Model.Basic.CircuitReverse.CirReverse(reverse, CirArrange, CircuitInfo);
@@ -1643,6 +1645,11 @@ namespace tryRT
             this.DockPanel_Picture.Visibility = Visibility.Visible;
             this.StackPanel_ManualArrangeCirnum.Visibility = Visibility.Visible;
 
+            this.ToggleButton1.Visibility = Visibility.Visible;
+            this.Button_ReArrange.Visibility = Visibility.Visible;
+            this.Button_Delete.Visibility = Visibility.Visible;
+            this.Button_CopyCircuit.Visibility = Visibility.Visible;
+
             Cirnum.IsEnabled = false;
             Pass_OK.IsEnabled = false;
 
@@ -1653,18 +1660,20 @@ namespace tryRT
 
         private void RadioButton_AutoArrange_Checked(object sender, RoutedEventArgs e)
         {
-            //this.GroupBox_AutoArrangeCirnum.Visibility = Visibility.Visible;
             Cirnum.IsEnabled = true;
             Pass_OK.IsEnabled = true;
-            //this.GroupBox_ManualArrangeCirnum.Visibility = Visibility.Hidden;
 
             this.Picture_HExTube.Visibility = Visibility.Collapsed;
             this.Picture_FinType.Visibility = Visibility.Collapsed;
             this.Picture_HExType.Visibility = Visibility.Collapsed;
             this.Picture_Ref.Visibility = Visibility.Collapsed;
             this.Picture_Wind.Visibility = Visibility.Collapsed;
-            //this.GroupBox_ManualArrangeCirnum.Visibility = Visibility.Collapsed;
-            this.DockPanel_Picture.Visibility = Visibility.Hidden;
+            //this.DockPanel_Picture.Visibility = Visibility.Hidden;
+
+            this.ToggleButton1.Visibility = Visibility.Hidden;
+            this.Button_ReArrange.Visibility = Visibility.Hidden;
+            this.Button_Delete.Visibility = Visibility.Hidden;
+            this.Button_CopyCircuit.Visibility = Visibility.Hidden;
 
             //调显示高度
             ListBox_RealTimeInputShow_Condenser.Height = 450;
@@ -1719,6 +1728,7 @@ namespace tryRT
             this.DockPanel_Picture.Visibility = Visibility.Collapsed;
         }
 
+        #region 非均匀风速分布
 
         //非均匀风速分布Start*****************************************************************************************************************************Start
         private void CheckBox_UniformWind_Checked(object sender, RoutedEventArgs e)
@@ -1844,8 +1854,18 @@ namespace tryRT
 
         }
 
-        //非均匀风速分布End*****************************************************************************************************************************End
 
+        private void Get_Value(object sender, RoutedEventArgs e)
+        {
+            int dtg_col = dtgShow.Columns.Count;
+            int dtg_row = dtgShow.Items.Count;//DataGrid居然是用Items表示行数
+            string ss = (dtgShow.Columns[dtg_col-1].GetCellContent(dtgShow.Items[dtg_row-1]) as TextBlock).Text;//最大行最大列对应数据
+            System.Windows.MessageBox.Show(dtg_col.ToString());
+            System.Windows.MessageBox.Show(dtg_row.ToString());
+            System.Windows.MessageBox.Show(ss);
+        }
+        //非均匀风速分布End*****************************************************************************************************************************End
+        #endregion
 
         //DetailResult******************************************************************************************************Start
 
@@ -2128,19 +2148,29 @@ namespace tryRT
                                     newcapillary.Name = Convert.ToString("New_End_Capillary/CapillaryNum" + ViewModel.End_Capillary_Num + "/CircuitNum" + ViewModel.Circuit_Num);
                                 }
 
-                                ViewModel.End_Capillary_Num++;
-                                ViewModel.Circuit_Num++;
-                                //Capillary.List_Capillary.Add(newcapillary);
                                 ViewModel.List_Controls.Add(newcapillary);
-                                //System.Windows.MessageBox.Show(rect.Name);
-
                                 //由于先储存了Rect才连线生成Capiliary，Capiliary后储存，所以调换一下位置
-                                if (ViewModel.List_Controls[ViewModel.List_Controls.Count - 2].GetType().Name=="Rect")
+                                if (ViewModel.List_Controls[ViewModel.List_Controls.Count - 2].GetType().Name == "Rect")
                                 {
                                     object obj = ViewModel.List_Controls[ViewModel.List_Controls.Count - 1];
                                     ViewModel.List_Controls[ViewModel.List_Controls.Count - 1] = ViewModel.List_Controls[ViewModel.List_Controls.Count - 2];
                                     ViewModel.List_Controls[ViewModel.List_Controls.Count - 2] = obj;//Rect存放的位置
                                 }
+
+                                ////对一个流路里的Node着色
+                                //for (int i_vm_connectors = 0; i_vm_connectors < vm.Connectors.Count; i_vm_connectors++)
+                                //{
+                                //    string _circuitnum_str = vm.Connectors[i_vm_connectors].Name.Substring(vm.Connectors[i_vm_connectors].Name.LastIndexOf("CircuitNum") + 10, (vm.Connectors[i_vm_connectors].Name.Length - (vm.Connectors[i_vm_connectors].Name.LastIndexOf("CircuitNum") + 10)));//截取Connector所在流路
+                                //    int _circuitnum = Convert.ToInt32(_circuitnum_str);
+
+                                //    if (_circuitnum == ViewModel.Circuit_Num)
+                                //    {
+                                //        ;
+                                //    }
+                                //}
+
+                                ViewModel.End_Capillary_Num++;
+                                ViewModel.Circuit_Num++;
 
                                 if (node1.Y < rect.Y)//change rect height
                                 {
@@ -2380,12 +2410,10 @@ namespace tryRT
 
             private void ListBox_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
             {
-                //string msg = "Right";
-                //MessageBox.Show(msg);  
-                ListBox_this.SelectedValue = null;
-                node1 = null;
-                node2 = null;
-                rect = null;
+                //ListBox_this.SelectedValue = null;
+                //node1 = null;
+                //node2 = null;
+                //rect = null;
             }
             private void Button_Click_Reconnect(object sender, RoutedEventArgs e)
             {
@@ -2436,53 +2464,6 @@ namespace tryRT
                 string name = Mouse.DirectlyOver.GetType().Name;
                 if (name == "Canvas") flag = true;
                 return flag;
-            }
-
-            private void Button_Click_delete(object sender, RoutedEventArgs e)
-            {
-                var item = ListBox_this.SelectedItem;
-                vm.CreatNewConnector = false;
-                rect = null;
-                node1 = null;
-                if (item != null)
-                {
-                    if (item.GetType().Name == "Connector")
-                    {
-                        var selectelement = item as Connector;
-                        vm.Connectors.Remove(selectelement);
-
-                        ViewModel.Connector_Num--;
-                        Canvas_Picture.UnregisterName(selectelement.Name);//把对用的名字注销掉
-                        System.Windows.MessageBox.Show(selectelement.Name+"删除了");
-                    }
-                    else if (item.GetType().Name == "Rect")
-                    {
-                        var selectelement = item as Rect;
-                        if (selectelement != vm.Rects[0] && selectelement != vm.Rects[1])
-                        {
-                            vm.Capillaries.Where(x => x.End == selectelement).ToList().ForEach(x => vm.Capillaries.Remove(x));
-                            vm.Rects.Remove(selectelement);
-                        }
-                    }
-                    else if (item.GetType().Name == "Capillary")
-                    {
-                        var selectelement = item as Capillary;
-                        vm.Capillaries.Remove(selectelement);
-
-                        if (selectelement.Name.Contains("Start_Capillary_Num"))
-                        {
-                            ViewModel.Start_Capillary_Num--;
-                        }
-                        else if (selectelement.Name.Contains("End_Capillary_Num"))
-                        {
-                            ViewModel.End_Capillary_Num--;
-                        }
-                        
-                        Canvas_Picture.UnregisterName(selectelement.Name);//把对用的名字注销掉
-                        System.Windows.MessageBox.Show(selectelement.Name + "删除了");
-                    }
-                }
-
             }
 
             private void Button_Click_Capillary(object sender, RoutedEventArgs e)
@@ -2703,311 +2684,310 @@ namespace tryRT
 
             #endregion
 
-            private void MenuItem_Click_DefaultCond(object sender, RoutedEventArgs e)
+            private void MenuItem_Click_DefaultValue(object sender, RoutedEventArgs e)
             {
                 //***********************HEx Type***********************
-                this.RadioButton_HExType_Condenser.IsChecked = true;
+                if (this.RadioButton_HExType_Condenser.IsChecked == true)
+                {
+                    //***********************HEx Tube***********************
+                    //管型号
+                    //ComboBox_TubeVersion
+                    this.ComboBox_TubeVersion.SelectedItem = "7mm,2R,21x22";
 
-                //***********************HEx Tube***********************
-                //管型号
-                //ComboBox_TubeVersion
-                this.ComboBox_TubeVersion.SelectedItem = "7mm,2R,21x22";
+                    ////管外径
+                    ////Do
 
-                ////管外径
-                ////Do
-
-                ////管间距
-                ////Pt
-
-                ////列间距
-                ////Pr
-
-                ////管排
-                ////Row
-
-                //管数/排
-                //tube_per
-                this.tube_per.Text = "6";
-
-                //管壁厚
-                //thick_tube
-                this.thick_tube.Text = "0.2";
-
-                //管长
-                //L
-                this.L.Text = "914.4";
-
-                //管种类
-                //ComboBox_tubetype
-                this.ComboBox_tubetype.SelectedItem = "光管";
-
-                //确定
-                //Button1
-                MouseButtonEventArgs args = new MouseButtonEventArgs(Mouse.PrimaryDevice,0, MouseButton.Left);
-                args.RoutedEvent = System.Windows.Controls.Button.ClickEvent;
-                this.Button1 .RaiseEvent(args);
-
-                //直排
-                //TubeArrangement_Crossed_High
-                this.TubeArrangement_Crossed_High.IsChecked = true;
-                
-                //***********************Fin***********************
-
-                //翅片间距
-                //Fnum
-                this.Fnum.Text = "1.2";
-
-                //翅片厚度
-                //Fthick
-                this.Fthick.Text = "0.095";
-
-                //翅片种类
-                //ComboBox_fintype
-                this.ComboBox_fintype.SelectedItem = "平片";
-
-                //***********************Ref***********************
-
-                //制冷剂
-                this.ComboBox_Refrigerant.SelectedItem = "R32";
-
-                //***********************冷凝器
-                //饱和温度
-                this.tc.Text = "45";
-
-                //进口温度
-                this.tri.Text="78";
-
-                //流量
-                this.RadioButton_mro_Cond.IsChecked = true;
-                this.mro_Cond.Text="0.02";
-
-                //***********************Air***********************
-
-                //进风干球温度
-                this.tai.Text="35";
-                
-                //大气压力
-                this.Patm.Text="101.325";
-
-                //进风湿球温度
-                this.RadioButton_WetBulbTemperature.IsChecked = true;
-                this.Tai_wet.Text="24";
-
-                ////进风相对湿度
-                ////RelativeHumidity
-                ////this.RHi.Text="0.5"
-
-                //体积流量
-                this.RadioButton_AirVolumnFlowRate.IsChecked = true;
-                this.Va.Text="0.12";
-
-                ////风速
-                ////AirVelocity
-                ////Velocity_ai.Text="1";
-
-                //均匀送风
-                this.CheckBox_UniformWind.IsChecked =true ;
-
-                //***********************Pass***********************
-                //手动分配流路
-                //RadioButton_ManualArrange
-                this.RadioButton_ManualArrange.IsChecked=true;
-                
-                ////自动分配流路
-                ////RadioButton_AutoArrange
-                ////流路数
-                ////Cirnum.Text="2";
-                //<Button x:Name="Pass_OK" Content="确定" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="220,85,0,0" Height="Auto" Width="90" IsEnabled="False"/>
-
-                //空气流向反转
-                //AirReverse
-                this.AirReverse.IsChecked = false;
-
-                //制冷剂流向反转
-                //RefReverse
-                this.RefReverse.IsChecked = false;
-
-                //***********************AdjustParameter***********************
-                //***********************制冷剂侧系数
-                //传热系数修正
-                 this.Zhr.Text="1";
-                //压降系数修正
-                this.Zapr.Text = "1";
-                //***********************管外侧修正
-                //传热系数修正
-                this.Zha.Text = "1";
-                //压降系数修正
-                this.Zapa.Text = "1";
-
-            }
-
-            private void MenuItem_Click_DefaultEvap(object sender, RoutedEventArgs e)
-            {
-                //***********************HEx Type***********************
-                this.RadioButton_HExType_Evaporator.IsChecked = true;
-
-                //***********************HEx Tube***********************
-                //管型号
-                //ComboBox_TubeVersion
-                this.ComboBox_TubeVersion.SelectedItem = "7mm,2R,21x22";
-
-                ////管外径
-                ////Do
-
-                ////管间距
-                ////Pt
-
-                ////列间距
-                ////Pr
-
-                ////管排
-                ////Row
-
-                //管数/排
-                //tube_per
-                this.tube_per.Text = "6";
-
-                //管壁厚
-                //thick_tube
-                this.thick_tube.Text = "0.2";
-
-                //管长
-                //L
-                this.L.Text = "914.4";
-
-                //管种类
-                //ComboBox_tubetype
-                this.ComboBox_tubetype.SelectedItem = "光管";
-
-                //确定
-                //Button1
-                //后台点击按钮
-                MouseButtonEventArgs args = new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left);
-                args.RoutedEvent = System.Windows.Controls.Button.ClickEvent;
-                this.Button1.RaiseEvent(args);
-
-                //直排
-                //TubeArrangement_Crossed_High
-                this.TubeArrangement_Crossed_High.IsChecked = true;
-
-                //***********************Fin***********************
-
-                //翅片间距
-                //Fnum
-                this.Fnum.Text = "1.2";
-
-                //翅片厚度
-                //Fthick
-                this.Fthick.Text = "0.095";
-
-                //翅片种类
-                //ComboBox_fintype
-                this.ComboBox_fintype.SelectedItem = "平片";
-
-                //***********************Ref***********************
-
-                //制冷剂
-                this.ComboBox_Refrigerant.SelectedItem = "R32";
-
-                //***********************蒸发器
-                ////压力
-                ////RadioButton_Pri_Evap
-                ////Pri_Evap
-
-                ////干度
-                ////RadioButton_xi_Evap
-                ////xi_Evap
-
-                ////焓值
-                ////RadioButton_Hri_Evap
-                ////Hri_Evap
-
-                //阀前温度
-                //RadioButton_PriTri_Evap
-                //Tri_ValveBefore
-                this.RadioButton_PriTri_Evap.IsChecked = true;
-                this.Pri_Evap.Text = "0";
-                this.xi_Evap.Text = "0";
-                this.Hri_Evap.Text = "0";
-                this.Tri_ValveBefore.Text = "20";
-
-                //阀前压力
-                //Pri_ValveBefore
-                this.Pri_ValveBefore.Text = "1842.28";
-
-                //饱和温度
-                this.RadioButton_Tro_Evap.IsChecked = true;
-                Tcro_Evap.Text = "10";
-
-                ////过热度
-                ////RadioButton_Tro_sub_Evap
-                ////Tro_sub_Evap
-
-                ////干度
-                ////RadioButton_xo_Evap
-                ////xo_Evap"
-
-                //流量
-                this.RadioButton_mro_Evap.IsChecked = true;
-                this.mro_Evap.Text = "0.02";
-
-                //***********************Air***********************
-
-                //进风干球温度
-                this.tai.Text = "27";
-
-                //大气压力
-                this.Patm.Text = "101.325";
-
-                //进风湿球温度
-                this.RadioButton_WetBulbTemperature.IsChecked = true;
-                this.Tai_wet.Text = "12";
-
-                ////进风相对湿度
-                ////RelativeHumidity
-                ////this.RHi.Text="0.5"
-
-                //体积流量
-                this.RadioButton_AirVolumnFlowRate.IsChecked = true;
-                this.Va.Text = "0.12";
-
-                ////风速
-                ////AirVelocity
-                ////Velocity_ai.Text="1";
-
-                //均匀送风
-                this.CheckBox_UniformWind.IsChecked = true;
-
-                //***********************Pass***********************
-                //手动分配流路
-                //RadioButton_ManualArrange
-                this.RadioButton_ManualArrange.IsChecked = true;
-
-                ////自动分配流路
-                ////RadioButton_AutoArrange
-                ////流路数
-                ////Cirnum.Text="2";
-                //<Button x:Name="Pass_OK" Content="确定" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="220,85,0,0" Height="Auto" Width="90" IsEnabled="False"/>
-
-                //空气流向反转
-                //AirReverse
-                this.AirReverse.IsChecked = false;
-
-                //制冷剂流向反转
-                //RefReverse
-                this.RefReverse.IsChecked = false;
-
-                //***********************AdjustParameter***********************
-                //***********************制冷剂侧系数
-                //传热系数修正
-                this.Zhr.Text = "1";
-                //压降系数修正
-                this.Zapr.Text = "1";
-                //***********************管外侧修正
-                //传热系数修正
-                this.Zha.Text = "1";
-                //压降系数修正
-                this.Zapa.Text = "1";
+                    ////管间距
+                    ////Pt
+
+                    ////列间距
+                    ////Pr
+
+                    ////管排
+                    ////Row
+
+                    //管数/排
+                    //tube_per
+                    this.tube_per.Text = "6";
+
+                    //管壁厚
+                    //thick_tube
+                    this.thick_tube.Text = "0.2";
+
+                    //管长
+                    //L
+                    this.L.Text = "914.4";
+
+                    //管种类
+                    //ComboBox_tubetype
+                    this.ComboBox_tubetype.SelectedItem = "光管";
+
+                    //确定
+                    //Button1
+                    MouseButtonEventArgs args = new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left);
+                    args.RoutedEvent = System.Windows.Controls.Button.ClickEvent;
+                    this.Button1.RaiseEvent(args);
+
+                    //直排
+                    //TubeArrangement_Crossed_High
+                    this.TubeArrangement_Crossed_High.IsChecked = true;
+
+                    //***********************Fin***********************
+
+                    //翅片间距
+                    //Fnum
+                    this.Fnum.Text = "1.2";
+
+                    //翅片厚度
+                    //Fthick
+                    this.Fthick.Text = "0.095";
+
+                    //翅片种类
+                    //ComboBox_fintype
+                    this.ComboBox_fintype.SelectedItem = "平片";
+
+                    //***********************Ref***********************
+
+                    //制冷剂
+                    this.ComboBox_Refrigerant.SelectedItem = "R32";
+
+                    //***********************冷凝器
+                    //饱和温度
+                    this.tc.Text = "45";
+
+                    //进口温度
+                    this.tri.Text = "78";
+
+                    //流量
+                    this.RadioButton_mro_Cond.IsChecked = true;
+                    this.mro_Cond.Text = "0.02";
+
+                    //***********************Air***********************
+
+                    //进风干球温度
+                    this.tai.Text = "35";
+
+                    //大气压力
+                    this.Patm.Text = "101.325";
+
+                    //进风湿球温度
+                    this.RadioButton_WetBulbTemperature.IsChecked = true;
+                    this.Tai_wet.Text = "24";
+
+                    ////进风相对湿度
+                    ////RelativeHumidity
+                    ////this.RHi.Text="0.5"
+
+                    //体积流量
+                    this.RadioButton_AirVolumnFlowRate.IsChecked = true;
+                    this.Va.Text = "0.12";
+
+                    ////风速
+                    ////AirVelocity
+                    ////Velocity_ai.Text="1";
+
+                    //均匀送风
+                    this.CheckBox_UniformWind.IsChecked = true;
+
+                    //***********************Pass***********************
+                    //手动分配流路
+                    //RadioButton_ManualArrange
+                    this.RadioButton_ManualArrange.IsChecked = true;
+
+                    ////自动分配流路
+                    ////RadioButton_AutoArrange
+                    ////流路数
+                    ////Cirnum.Text="2";
+                    //<Button x:Name="Pass_OK" Content="确定" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="220,85,0,0" Height="Auto" Width="90" IsEnabled="False"/>
+
+                    //空气流向反转
+                    //AirReverse
+                    this.AirReverse.IsChecked = false;
+
+                    //制冷剂流向反转
+                    //RefReverse
+                    this.RefReverse.IsChecked = false;
+
+                    //***********************AdjustParameter***********************
+                    //***********************制冷剂侧系数
+                    //传热系数修正
+                    this.Zhr.Text = "1";
+                    //压降系数修正
+                    this.Zapr.Text = "1";
+                    //***********************管外侧修正
+                    //传热系数修正
+                    this.Zha.Text = "1";
+                    //压降系数修正
+                    this.Zapa.Text = "1";
+
+                }
+
+                else 
+                {
+                    //***********************HEx Tube***********************
+                    //管型号
+                    //ComboBox_TubeVersion
+                    this.ComboBox_TubeVersion.SelectedItem = "7mm,2R,21x22";
+
+                    ////管外径
+                    ////Do
+
+                    ////管间距
+                    ////Pt
+
+                    ////列间距
+                    ////Pr
+
+                    ////管排
+                    ////Row
+
+                    //管数/排
+                    //tube_per
+                    this.tube_per.Text = "6";
+
+                    //管壁厚
+                    //thick_tube
+                    this.thick_tube.Text = "0.2";
+
+                    //管长
+                    //L
+                    this.L.Text = "914.4";
+
+                    //管种类
+                    //ComboBox_tubetype
+                    this.ComboBox_tubetype.SelectedItem = "光管";
+
+                    //确定
+                    //Button1
+                    //后台点击按钮
+                    MouseButtonEventArgs args = new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left);
+                    args.RoutedEvent = System.Windows.Controls.Button.ClickEvent;
+                    this.Button1.RaiseEvent(args);
+
+                    //直排
+                    //TubeArrangement_Crossed_High
+                    this.TubeArrangement_Crossed_High.IsChecked = true;
+
+                    //***********************Fin***********************
+
+                    //翅片间距
+                    //Fnum
+                    this.Fnum.Text = "1.2";
+
+                    //翅片厚度
+                    //Fthick
+                    this.Fthick.Text = "0.095";
+
+                    //翅片种类
+                    //ComboBox_fintype
+                    this.ComboBox_fintype.SelectedItem = "平片";
+
+                    //***********************Ref***********************
+
+                    //制冷剂
+                    this.ComboBox_Refrigerant.SelectedItem = "R32";
+
+                    //***********************蒸发器
+                    ////压力
+                    ////RadioButton_Pri_Evap
+                    ////Pri_Evap
+
+                    ////干度
+                    ////RadioButton_xi_Evap
+                    ////xi_Evap
+
+                    ////焓值
+                    ////RadioButton_Hri_Evap
+                    ////Hri_Evap
+
+                    //阀前温度
+                    //RadioButton_PriTri_Evap
+                    //Tri_ValveBefore
+                    this.RadioButton_PriTri_Evap.IsChecked = true;
+                    this.Pri_Evap.Text = "0";
+                    this.xi_Evap.Text = "0";
+                    this.Hri_Evap.Text = "0";
+                    this.Tri_ValveBefore.Text = "20";
+
+                    //阀前压力
+                    //Pri_ValveBefore
+                    this.Pri_ValveBefore.Text = "1842.28";
+
+                    //饱和温度
+                    this.RadioButton_Tro_Evap.IsChecked = true;
+                    Tcro_Evap.Text = "10";
+
+                    ////过热度
+                    ////RadioButton_Tro_sub_Evap
+                    ////Tro_sub_Evap
+
+                    ////干度
+                    ////RadioButton_xo_Evap
+                    ////xo_Evap"
+
+                    //流量
+                    this.RadioButton_mro_Evap.IsChecked = true;
+                    this.mro_Evap.Text = "0.02";
+
+                    //***********************Air***********************
+
+                    //进风干球温度
+                    this.tai.Text = "27";
+
+                    //大气压力
+                    this.Patm.Text = "101.325";
+
+                    //进风湿球温度
+                    this.RadioButton_WetBulbTemperature.IsChecked = true;
+                    this.Tai_wet.Text = "12";
+
+                    ////进风相对湿度
+                    ////RelativeHumidity
+                    ////this.RHi.Text="0.5"
+
+                    //体积流量
+                    this.RadioButton_AirVolumnFlowRate.IsChecked = true;
+                    this.Va.Text = "0.12";
+
+                    ////风速
+                    ////AirVelocity
+                    ////Velocity_ai.Text="1";
+
+                    //均匀送风
+                    this.CheckBox_UniformWind.IsChecked = true;
+
+                    //***********************Pass***********************
+                    //手动分配流路
+                    //RadioButton_ManualArrange
+                    this.RadioButton_ManualArrange.IsChecked = true;
+
+                    ////自动分配流路
+                    ////RadioButton_AutoArrange
+                    ////流路数
+                    ////Cirnum.Text="2";
+                    //<Button x:Name="Pass_OK" Content="确定" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="220,85,0,0" Height="Auto" Width="90" IsEnabled="False"/>
+
+                    //空气流向反转
+                    //AirReverse
+                    this.AirReverse.IsChecked = false;
+
+                    //制冷剂流向反转
+                    //RefReverse
+                    this.RefReverse.IsChecked = false;
+
+                    //***********************AdjustParameter***********************
+                    //***********************制冷剂侧系数
+                    //传热系数修正
+                    this.Zhr.Text = "1";
+                    //压降系数修正
+                    this.Zapr.Text = "1";
+                    //***********************管外侧修正
+                    //传热系数修正
+                    this.Zha.Text = "1";
+                    //压降系数修正
+                    this.Zapa.Text = "1";
+
+                }
             }
 
             private void MenuItem_Click_ExportInput(object sender, RoutedEventArgs e)
@@ -3557,9 +3537,10 @@ namespace tryRT
                         args.RoutedEvent = System.Windows.Controls.Button.ClickEvent;
                         this.Button1.RaiseEvent(args);
 
+
+                        //生成显示的流路
                         int list_vm_Nodes = 0;
                         int list_vm_Rects = 0;
-                        bool skip=false;
 
                         if (i < sp.Length - 1)//没流路时可能会超数组长度，所以判断后面有没有流路信息
                         {
@@ -3576,6 +3557,7 @@ namespace tryRT
                                     newrect.RectHeight = Convert.ToDouble(sp[j]); j++; j++;
                                     newrect.FullLine = Convert.ToBoolean(sp[j]); j++; j++;
                                     vm.Rects.Add(newrect);
+                                    ViewModel.List_Controls.Add(newrect);//导入时生成的List_Controls顺序会乱...除非有顺序要求，目前不调顺序了
                                 }
                             }
 
@@ -3645,7 +3627,7 @@ namespace tryRT
                                     newcapillary.In = Convert.ToBoolean(sp[j]);
 
                                     vm.Capillaries.Add(newcapillary);
-
+                                    ViewModel.List_Controls.Add(newcapillary);
                                 }
                             }
 
@@ -3705,12 +3687,10 @@ namespace tryRT
                                     newLine.FullLine = Convert.ToBoolean(sp[j]);
 
                                     vm.Connectors.Add(newLine);
-                                    
+                                    ViewModel.List_Controls.Add(newLine);
                                 }
                             }
 
-                            //保存流路到List_Controls
-                            //.........................................................................................................
                         }
 
                     }
@@ -3947,7 +3927,7 @@ namespace tryRT
                 }
             }
 
-            private void Button_Click_AddCircuit(object sender, RoutedEventArgs e)
+            private void Button_Click_CopyCircuit(object sender, RoutedEventArgs e)
             {
                 //List_Controls
                 int i_List_Controls = 0;//在List_Controls中找选定线的位置
@@ -3986,6 +3966,228 @@ namespace tryRT
                     }
                 }
             }
+
+            private void Button_Click_AutoArrange(object sender, RoutedEventArgs e)
+            {
+                vm.Connectors.Clear();
+                vm.Capillaries.Clear();
+                ViewModel.Circuit_Num = 0;
+                ViewModel.Start_Capillary_Num = 0;
+                ViewModel.End_Capillary_Num = 0;
+                ViewModel.Connector_Num = 0;
+
+                #region CirArrange
+                //**************下面这段求CirArrange的方法的代码和点击菜单中计算按钮后求CirArrange的方法的代码一样，为方便维护，以后宜提取出来共用
+                Model.Basic.GeometryInput geoInput = new Model.Basic.GeometryInput();
+                //几何结构输入
+                geoInput.Nrow = Convert.ToInt16(Row.Text);//管排数
+                geoInput.Ntube = Convert.ToInt16(tube_per.Text);//管数/排
+
+                //流路
+                int i = 1;
+                int j = 1;
+                int k = 1;
+                int[,] CirArrange = new int[i, j];
+                int[, ,] NodeInfo = new int[i, j, k];
+
+                Model.Basic.CircuitNumber CircuitInfo = new Model.Basic.CircuitNumber();
+                CircuitInfo.number = new int[] { Convert.ToInt32(Cirnum.Text), Convert.ToInt32(Cirnum.Text) };
+                if (CircuitInfo.number[0] > geoInput.Ntube)//Avoid invalid Ncir input//管排数比管数还多
+                {
+                    throw new Exception("circuit number is beyond range.");
+                }
+                CircuitInfo.TubeofCir = new int[CircuitInfo.number[0]];
+                //Get AutoCircuitry
+                CircuitInfo = Model.Basic.AutoCircuiting.GetTubeofCir(geoInput.Nrow, geoInput.Ntube, CircuitInfo);
+                CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
+                if (geoInput.Nrow % 2 == 0)
+                {
+                    CirArrange = Model.Basic.AutoCircuiting.GetCirArrange_2Row(CirArrange, geoInput.Nrow, geoInput.Ntube, CircuitInfo);
+                }
+                else if (geoInput.Nrow % 2 == 1)
+                {
+                    CirArrange = Model.Basic.AutoCircuiting.GetCirArrange_3Row(CirArrange, geoInput.Nrow, geoInput.Ntube, CircuitInfo);
+                }
+                #endregion
+
+                #region 连线
+                bool Line_Start = true;
+                bool Line_complet = false;
+                int remember_list_vm_Nodes = 0;
+                bool remember_FullLine = true;
+
+                for (int i_CirArrange = 0; i_CirArrange < CircuitInfo.number[0]; i_CirArrange++)
+                {
+                    for (int j_CirArrange = 0; j_CirArrange < CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]; j_CirArrange++)
+                    {
+                        for (int list_vm_Nodes = 0; list_vm_Nodes < vm.Nodes.Count; list_vm_Nodes++)
+                        {
+                            //Start,End
+                            if (CirArrange[i_CirArrange, j_CirArrange].ToString() == vm.Nodes[list_vm_Nodes].Name)
+                            {
+                                #region 连Capillary
+                                if (j_CirArrange == 0)
+                                {
+                                    //连StartCapillary
+                                    Capillary newcapillary = new Capillary();
+
+                                    newcapillary.Start = vm.Nodes[list_vm_Nodes];
+                                    newcapillary.End = vm.Rects[0];
+                                    newcapillary.Length = 0;
+                                    newcapillary.Diameter = 0;
+                                    newcapillary.X = vm.Nodes[0].X - vm.RowPitch + 5;
+                                    newcapillary.FullLine = true;
+                                    if (this.RefReverse.IsChecked == false)
+                                    {
+                                        newcapillary.In = true;
+                                    }
+                                    else
+                                    {
+                                        newcapillary.In = false;
+                                    }
+                                    ViewModel.Start_Capillary_Num++;
+                                    ViewModel.Circuit_Num = i_CirArrange;
+                                    newcapillary.Name = Convert.ToString("New_Start_Capillary/StartCapillaryNum" + ViewModel.Start_Capillary_Num + "/CircuitNum" + ViewModel.Circuit_Num); 
+                                    vm.Capillaries.Add(newcapillary);
+                                    ViewModel.List_Controls.Add(newcapillary);
+                                }
+                                else if (j_CirArrange == CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1] - 1)
+                                {
+                                    //连EndCapillary
+                                    Capillary newcapillary = new Capillary();
+
+                                    newcapillary.Start = vm.Nodes[list_vm_Nodes];
+                                    newcapillary.End = vm.Rects[1];
+                                    newcapillary.Length = 0;
+                                    newcapillary.Diameter = 0;
+                                    newcapillary.X = vm.Nodes[list_vm_Nodes].X - vm.RowPitch + 5;
+
+                                    if (j_CirArrange % 2 != 0)
+                                    {
+                                        remember_FullLine = false;
+                                    }
+                                    else
+                                    {
+                                        remember_FullLine = true;
+                                    }
+
+                                    if (this.RefReverse.IsChecked == false)
+                                    {
+                                        newcapillary.In = true;
+                                    }
+                                    else
+                                    {
+                                        newcapillary.In = false;
+                                    }
+                                    ViewModel.End_Capillary_Num++;
+                                    ViewModel.Circuit_Num = i_CirArrange;
+                                    newcapillary.Name = Convert.ToString("New_End_Capillary/CapillaryNum" + ViewModel.End_Capillary_Num + "/CircuitNum" + ViewModel.Circuit_Num);
+                                    vm.Capillaries.Add(newcapillary);
+                                    ViewModel.List_Controls.Add(newcapillary);
+                                }
+                                #endregion
+
+                                //连Connector里面有更新Rect的高度的region
+                                #region 连Connector
+                                Connector newLine = new Connector();
+
+                                if (Line_Start == true)
+                                {
+                                    Line_Start = false;
+                                    remember_list_vm_Nodes = list_vm_Nodes;
+                                    
+                                    if (j_CirArrange % 2 != 0)
+                                    {
+                                        remember_FullLine = true;
+                                    }
+                                    else 
+                                    {
+                                        remember_FullLine = false;
+                                    }
+                                    break;
+                                }
+                                else 
+                                {
+                                    newLine.Start = vm.Nodes[remember_list_vm_Nodes];
+                                    newLine.End = vm.Nodes[list_vm_Nodes];
+                                    newLine.FullLine = remember_FullLine;
+                                    Line_Start = true;
+                                    Line_complet = true;
+
+                                }
+
+                                if (j_CirArrange!= 0)
+                                {
+                                    if (j_CirArrange != CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]-1)
+                                    {
+                                        j_CirArrange--;
+                                    }
+                                }
+                                //X,Y
+                                //;;;;;;;;;;;;;;;
+
+                                    #region 更新Rect长度
+                                    for (int list_Rect = 0; list_Rect < 2; list_Rect++)
+                                    {
+                                        if (vm.Nodes[list_vm_Nodes].Y < vm.Rects[list_Rect].Y)
+                                        {
+                                            vm.Rects[list_Rect].RectHeight = vm.Rects[list_Rect].RectHeight + (vm.Rects[list_Rect].Y - vm.Nodes[list_vm_Nodes].Y);
+                                            vm.Rects[list_Rect].Y = vm.Nodes[list_vm_Nodes].Y;
+                                            //break;
+                                        }
+                                        else if (vm.Nodes[list_vm_Nodes].Y > vm.Rects[list_Rect].Y)
+                                        {
+                                            if (vm.Nodes[list_vm_Nodes].Y + 20 > vm.Rects[list_Rect].Y + vm.Rects[list_Rect].RectHeight)
+                                            {
+                                                vm.Rects[list_Rect].RectHeight = vm.Nodes[list_vm_Nodes].Y + 20 - vm.Rects[list_Rect].Y;
+                                                //break;
+                                            }
+                                        }
+                                    }
+                                    #endregion
+
+                                if (Line_complet==true)
+                                {
+                                    Line_complet = false;
+                                    ViewModel.Connector_Num++;
+                                    ViewModel.Circuit_Num = i_CirArrange;
+                                    newLine.Name = Convert.ToString("NewConnector/ConnectorNum" + ViewModel.Connector_Num + "/CircuitNum" + ViewModel.Circuit_Num);
+                                    vm.Connectors.Add(newLine);
+                                    ViewModel.List_Controls.Add(newLine);
+
+                                    //由于先储存了Capiliary才连线生成Connectors，Connectors后储存，所以调换一下位置
+                                    if (ViewModel.List_Controls.Count - 2>0)
+                                    {
+                                        if (ViewModel.List_Controls[ViewModel.List_Controls.Count - 2].GetType().Name == "Capillary")
+                                        {
+                                            var currentitem = ViewModel.List_Controls[ViewModel.List_Controls.Count - 2] as Capillary;
+
+                                            if (currentitem.Name.Contains("End"))
+                                            {
+                                                object obj = ViewModel.List_Controls[ViewModel.List_Controls.Count - 1];
+                                                ViewModel.List_Controls[ViewModel.List_Controls.Count - 1] = ViewModel.List_Controls[ViewModel.List_Controls.Count - 2];
+                                                ViewModel.List_Controls[ViewModel.List_Controls.Count - 2] = obj;//Capiliary存放的位置
+                                            }
+                                        }
+                                    }
+
+
+                                    break;
+                                }
+                                #endregion
+
+                            }
+                        }
+                    }
+                }
+                #endregion
+
+
+
+            }
+
+
+
 
     }
 
