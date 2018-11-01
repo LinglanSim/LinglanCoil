@@ -18,6 +18,8 @@ namespace tryRT
         public static int Rect_Num;
         public static int Circuit_Num; 
         public static List<object> List_Controls = new List<object>();
+        public static int ScaleNum_Positive;
+        public static int ScaleNum_Negative;
 
         private ObservableCollection<Node> _nodes;
         public ObservableCollection<Node> Nodes

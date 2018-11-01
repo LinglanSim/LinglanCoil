@@ -245,10 +245,12 @@ namespace tryRT
             ViewModel.End_Capillary_Num = 0;
             ViewModel.Rect_Num = 0;
             ViewModel.Circuit_Num = 0;
+            ViewModel.ScaleNum_Negative = 0;
+            ViewModel.ScaleNum_Positive = 0;
 
 
             //初始化湿空气数组
-            Model.HumidAirSourceData.SourceTableData = Model.HumidAirSourceData.InitializeSourceTableData();
+            //Model.HumidAirSourceData.SourceTableData = Model.HumidAirSourceData.InitializeSourceTableData();
 
             //#region//测试湿空气物性查表对错用
             ////测试用
@@ -1080,7 +1082,9 @@ namespace tryRT
                 this.Picture_Ref.Visibility = Visibility.Collapsed;
                 this.Picture_Wind.Visibility = Visibility.Collapsed;
                 //this.GroupBox_ManualArrangeCirnum.Visibility = Visibility.Collapsed;
-                this.DockPanel_Picture.Visibility = Visibility.Collapsed;
+                this.DockPanel_Picture.Visibility = Visibility.Visible;
+                this.StackPanel_ManualArrangeCirnum.Visibility = Visibility.Visible;
+                TextBlock_AirFlow.Text = AirFlowString;
 
                 //调显示高度
                 //this.Grid_Picture.Height = new GridLength(290, GridUnitType.Pixel);
@@ -2068,7 +2072,7 @@ namespace tryRT
                 while (vm.Rects.Count > 2)
                 {
                     vm.Rects.RemoveAt(2);
-                };
+                }
             }
 
             private Node node1;
@@ -2079,6 +2083,15 @@ namespace tryRT
             {
                 //string msg="Successful";
                 //MessageBox.Show(msg);
+                //if (ViewModel.start111 == true)
+                //{
+                //    if (ListBox_this.SelectedItem.GetType().Name == "Node")//**********************************************************************************************
+                //    {
+                //        node2 = ListBox_this.SelectedItem as Node;
+                //        System.Windows.MessageBox.Show(node2.ConnectNum.ToString());
+                //    }
+                //}
+
                 if(vm.CreatNewConnector)
                 {
                     this.ToggleButton1.Content = "正在流路连接";
@@ -2427,22 +2440,19 @@ namespace tryRT
                 Button_Click_Sure(sender, e);
 
                 //删除List_Controls上的所有
-                int i_List_Controls = 0;
-                while(ViewModel.List_Controls.Count>0)
-                {
-                    ViewModel.List_Controls.Remove(ViewModel.List_Controls[i_List_Controls]);
-                }
-
+                ViewModel.List_Controls.Clear();
             }
             private void Button_Click_zoomout(object sender, RoutedEventArgs e)
             {
                 vm.ScaleFactor = 1.2;
                 vm.Zoom();
+                ViewModel.ScaleNum_Positive++;
             }
             private void Button_Click_zoomin(object sender, RoutedEventArgs e)
             {
                 vm.ScaleFactor = 1.0 / 1.2;
                 vm.Zoom();
+                ViewModel.ScaleNum_Negative++;
             }
             private void ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
             {
@@ -2999,95 +3009,114 @@ namespace tryRT
 
             private void MenuItem_Click_ExportInput(object sender, RoutedEventArgs e)
             {
+                //流路图缩放到初始大小先
+                if (ViewModel.ScaleNum_Positive > 0)
+                {
+                    for (int scalenum = 0; scalenum < ViewModel.ScaleNum_Positive; scalenum++)
+                    {
+                        vm.ScaleFactor = 1.0 / 1.2;
+                        vm.Zoom();
+                    }
+                }
+                if (ViewModel.ScaleNum_Negative > 0)
+                {
+                    for (int scalenum = 0; scalenum < ViewModel.ScaleNum_Negative; scalenum++)
+                    {
+                        vm.ScaleFactor = 1.2;
+                        vm.Zoom();
+                    }
+
+                }
+
                 //记录按钮、键入信息
                 string data =
-                    "冷凝器"+
-                    "\t"+
+                    "冷凝器" +
+                    "\t" +
                     Convert.ToString(this.RadioButton_HExType_Condenser.IsChecked.Value) +
                     "\r\n" +
-                    "蒸发器" + 
+                    "蒸发器" +
                     "\t" +
                     Convert.ToString(this.RadioButton_HExType_Evaporator.IsChecked.Value) +
                     "\r\n" +
-                    "管型号" + 
+                    "管型号" +
                     "\t" +
                     Convert.ToString(this.ComboBox_TubeVersion.SelectedItem) +
                     "\r\n" +
-                    "管外径" + 
+                    "管外径" +
                     "\t" +
-                    Convert.ToString(this.Do.Text)+
+                    Convert.ToString(this.Do.Text) +
                     "\r\n" +
-                    "管间距" + 
+                    "管间距" +
                     "\t" +
-                    Convert.ToString(this.Pt.Text)+
+                    Convert.ToString(this.Pt.Text) +
                     "\r\n" +
-                    "列间距" + 
+                    "列间距" +
                     "\t" +
-                    Convert.ToString(this.Pr.Text)+
+                    Convert.ToString(this.Pr.Text) +
                     "\r\n" +
-                    "管排" + 
+                    "管排" +
                     "\t" +
                     Convert.ToString(this.Row.Text) +
                     "\r\n" +
-                    "管数每排" + 
+                    "管数每排" +
                     "\t" +
-                    Convert.ToString(this.tube_per.Text)+
+                    Convert.ToString(this.tube_per.Text) +
                     "\r\n" +
-                    "管壁厚" + 
+                    "管壁厚" +
                     "\t" +
-                    Convert.ToString(this.thick_tube.Text)+
+                    Convert.ToString(this.thick_tube.Text) +
                     "\r\n" +
-                    "管长" + 
+                    "管长" +
                     "\t" +
-                    Convert.ToString(this.L.Text)+
+                    Convert.ToString(this.L.Text) +
                     "\r\n" +
-                    "管种类" + 
+                    "管种类" +
                     "\t" +
                     Convert.ToString(this.ComboBox_tubetype.Text) +
                     "\r\n" +
-                    "直排" + 
+                    "直排" +
                     "\t" +
                     Convert.ToString(this.TubeArrangement_Straight.IsChecked.Value) +
                     "\r\n" +
-                    "叉排迎风面高" + 
+                    "叉排迎风面高" +
                     "\t" +
-                    Convert.ToString(this.TubeArrangement_Crossed_High.IsChecked.Value)+
+                    Convert.ToString(this.TubeArrangement_Crossed_High.IsChecked.Value) +
                     "\r\n" +
-                    "叉排迎风面低" + 
+                    "叉排迎风面低" +
                     "\t" +
                     Convert.ToString(this.TubeArrangement_Crossed_Short.IsChecked.Value) +
                     "\r\n" +
-                    "翅片间距" + 
+                    "翅片间距" +
                     "\t" +
                     Convert.ToString(this.Fnum.Text) +
                     "\r\n" +
-                    "翅片厚度" + 
+                    "翅片厚度" +
                     "\t" +
-                    Convert.ToString(this.Fthick.Text)+
+                    Convert.ToString(this.Fthick.Text) +
                     "\r\n" +
-                    "翅片种类" + 
+                    "翅片种类" +
                     "\t" +
                     Convert.ToString(this.ComboBox_fintype.SelectedItem) +
                     "\r\n" +
-                    "制冷剂种类" + 
+                    "制冷剂种类" +
                     "\t" +
                     Convert.ToString(this.ComboBox_Refrigerant.SelectedItem) +
                      "\r\n" +
-                    "冷凝器饱和温度" + 
+                    "冷凝器饱和温度" +
                     "\t" +
                     Convert.ToString(this.tc.Text) +
                     "\r\n" +
-                    "冷凝器进口温度" + 
+                    "冷凝器进口温度" +
                     "\t" +
                     Convert.ToString(this.tri.Text) +
                     "\r\n" +
-                    "冷凝器流量" + 
+                    "冷凝器流量" +
                     "\t" +
                     Convert.ToString(this.RadioButton_mro_Cond.IsChecked.Value) +
                     "\t" +
                     Convert.ToString(this.mro_Cond.Text) +
                     "\r\n" +
-                    "冷凝器出口干度" + 
+                    "冷凝器出口干度" +
                     "\t" +
                     Convert.ToString(this.RadioButton_xo_Cond.IsChecked.Value) +
                     "\t" +
@@ -3219,7 +3248,15 @@ namespace tryRT
                     "\r\n" +
                     "空气侧压降系数修正" +
                     "\t" +
-                    Convert.ToString(this.Zapa.Text)
+                    Convert.ToString(this.Zapa.Text) +
+                    "\r\n" +
+                    "流路界面放大次数" +
+                    "\t" +
+                    Convert.ToString(ViewModel.ScaleNum_Positive) +
+                    "\r\n" +
+                    "流路界面缩小次数" +
+                    "\t" +
+                    Convert.ToString(ViewModel.ScaleNum_Negative)
                     ;
 
                 //开始记录流路信息
@@ -3235,176 +3272,226 @@ namespace tryRT
                 //List_Rect
                 int i_List_Rect = 0;//在List_Rect中找选定线的位置
 
-                for (i_List_Controls = 0; i_List_Controls < ViewModel.List_Controls.Count; i_List_Controls++)
+                //List_Node
+                int i_List_Node = 0;//在i_List_Node中找选定线的位置
+
+                //Rect
+                for(i_List_Rect=0;i_List_Rect<vm.Rects.Count;i_List_Rect++)
                 {
-                    if (ViewModel.List_Controls[i_List_Controls].GetType().Name == "Capillary")
-                    {
-                        var CurrentItem = ViewModel.List_Controls[i_List_Controls] as Capillary;
+                    data = data +
+                        "\r\n" +
+                        "Rect" +
+                        "\r\n" +
+                        "Name" +
+                        "\t" +
+                        Convert.ToString(vm.Rects[i_List_Rect].Name) +
+                        "\r\n" +
+                        "Rect.X" +
+                        "\t" +
+                        Convert.ToString(vm.Rects[i_List_Rect].X) +
+                        "\r\n" +
+                        "Rect.Y" +
+                        "\t" +
+                        Convert.ToString(vm.Rects[i_List_Rect].Y) +
+                        "\r\n" +
+                        "RectHeight" +
+                        "\t" +
+                        Convert.ToString(vm.Rects[i_List_Rect].RectHeight) +
+                        "\r\n" +
+                        "FullLine" +
+                        "\t" +
+                        Convert.ToString(vm.Rects[i_List_Rect].FullLine)
+                        ;
+                }
 
-                        data = data +
-                            "\r\n" +
-                            "Capillary" +
-                            "\r\n" +
-                            "Name" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.Name) +
-                            "\r\n" +
-                            "Start.Name" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.Start.Name) +
-                            "\r\n" +
-                            "Start.X" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.Start.X) +
-                            "\r\n" +
-                            "Start.Y" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.Start.Y) +
-                            "\r\n" +
-                            "Start.Full" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.Start.Full) +
-                            "\r\n" +
-                            "Start.FullLine" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.Start.FullLine) +
-                            "\r\n" +
-                            "End.Name" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.End.Name) +
-                            "\r\n" +
-                            "End.X" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.End.X) +
-                            "\r\n" +
-                            "End.Y" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.End.Y) +
-                            "\r\n" +
-                            "End.FullLine" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.End.FullLine) +
-                            "\r\n" +
-                            "End.RectHeight" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.End.RectHeight) +
-                            "\r\n" +
-                            "Length" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.Length) +
-                            "\r\n" +
-                            "Diameter" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.Diameter) +
-                            "\r\n" +
-                            "X" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.X) +
-                            "\r\n" +
-                            "Y" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.Y) +
-                            "\r\n" +
-                            "FullLine" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.FullLine) +
-                            "\r\n" +
-                            "In" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.In)
-                            ;
+                //Capillary
+                for(i_List_Capillary=0;i_List_Capillary<vm.Capillaries.Count;i_List_Capillary++)
+                {
+                    data = data +
+                        "\r\n" +
+                        "Capillary" +
+                        "\r\n" +
+                        "Name" +
+                        "\t" +
+                        Convert.ToString(vm.Capillaries[i_List_Capillary].Name) +
+                        "\r\n" +
+                        "Start.Name" +
+                        "\t" +
+                        Convert.ToString(vm.Capillaries[i_List_Capillary].Start.Name) +
+                        "\r\n" +
+                        "Start.X" +
+                        "\t" +
+                        Convert.ToString(vm.Capillaries[i_List_Capillary].Start.X) +
+                        "\r\n" +
+                        "Start.Y" +
+                        "\t" +
+                        Convert.ToString(vm.Capillaries[i_List_Capillary].Start.Y) +
+                        "\r\n" +
+                        "Start.Full" +
+                        "\t" +
+                        Convert.ToString(vm.Capillaries[i_List_Capillary].Start.Full) +
+                        "\r\n" +
+                        "Start.FullLine" +
+                        "\t" +
+                        Convert.ToString(vm.Capillaries[i_List_Capillary].Start.FullLine) +
+                        "\r\n" +
+                        "End.Name" +
+                        "\t" +
+                        Convert.ToString(vm.Capillaries[i_List_Capillary].End.Name) +
+                        "\r\n" +
+                        "End.X" +
+                        "\t" +
+                        Convert.ToString(vm.Capillaries[i_List_Capillary].End.X) +
+                        "\r\n" +
+                        "End.Y" +
+                        "\t" +
+                        Convert.ToString(vm.Capillaries[i_List_Capillary].End.Y) +
+                        "\r\n" +
+                        "End.FullLine" +
+                        "\t" +
+                        Convert.ToString(vm.Capillaries[i_List_Capillary].End.FullLine) +
+                        "\r\n" +
+                        "End.RectHeight" +
+                        "\t" +
+                        Convert.ToString(vm.Capillaries[i_List_Capillary].End.RectHeight) +
+                        "\r\n" +
+                        "Length" +
+                        "\t" +
+                        Convert.ToString(vm.Capillaries[i_List_Capillary].Length) +
+                        "\r\n" +
+                        "Diameter" +
+                        "\t" +
+                        Convert.ToString(vm.Capillaries[i_List_Capillary].Diameter) +
+                        "\r\n" +
+                        "X" +
+                        "\t" +
+                        Convert.ToString(vm.Capillaries[i_List_Capillary].X) +
+                        "\r\n" +
+                        "Y" +
+                        "\t" +
+                        Convert.ToString(vm.Capillaries[i_List_Capillary].Y) +
+                        "\r\n" +
+                        "FullLine" +
+                        "\t" +
+                        Convert.ToString(vm.Capillaries[i_List_Capillary].FullLine) +
+                        "\r\n" +
+                        "In" +
+                        "\t" +
+                        Convert.ToString(vm.Capillaries[i_List_Capillary].In)
+                        ;
+
+                }
+
+                //Connector
+                for(i_List_Connector=0;i_List_Connector<vm.Connectors.Count;i_List_Connector++)
+                {
+                    data = data +
+                    "\r\n" +
+                    "Connector" +
+                    "\r\n" +
+                    "Name" +
+                    "\t" +
+                    Convert.ToString(vm.Connectors[i_List_Connector].Name) +
+                    "\r\n" +
+                    "Start.Name" +
+                    "\t" +
+                    Convert.ToString(vm.Connectors[i_List_Connector].Start.Name) +
+                    "\r\n" +
+                    "Start.X" +
+                    "\t" +
+                    Convert.ToString(vm.Connectors[i_List_Connector].Start.X) +
+                    "\r\n" +
+                    "Start.Y" +
+                    "\t" +
+                    Convert.ToString(vm.Connectors[i_List_Connector].Start.Y) +
+                    "\r\n" +
+                    "Start.Full" +
+                    "\t" +
+                    Convert.ToString(vm.Connectors[i_List_Connector].Start.Full) +
+                    "\r\n" +
+                    "Start.FullLine" +
+                    "\t" +
+                    Convert.ToString(vm.Connectors[i_List_Connector].Start.FullLine) +
+                    "\r\n" +
+                    "End.Name" +
+                    "\t" +
+                    Convert.ToString(vm.Connectors[i_List_Connector].End.Name) +
+                    "\r\n" +
+                    "End.X" +
+                    "\t" +
+                    Convert.ToString(vm.Connectors[i_List_Connector].End.X) +
+                    "\r\n" +
+                    "End.Y" +
+                    "\t" +
+                    Convert.ToString(vm.Connectors[i_List_Connector].End.Y) +
+                    "\r\n" +
+                    "End.FullLine" +
+                    "\t" +
+                    Convert.ToString(vm.Connectors[i_List_Connector].End.FullLine) +
+                    "\r\n" +
+                    "X" +
+                    "\t" +
+                    Convert.ToString(vm.Connectors[i_List_Connector].X) +
+                    "\r\n" +
+                    "Y" +
+                    "\t" +
+                    Convert.ToString(vm.Connectors[i_List_Connector].Y) +
+                    "\r\n" +
+                    "FullLine" +
+                    "\t" +
+                    Convert.ToString(vm.Connectors[i_List_Connector].FullLine)
+                    ;
+                }
+
+                //Node
+                for (i_List_Node = 0; i_List_Node < vm.Nodes.Count; i_List_Node++)
+                {
+                    data = data +
+                    "\r\n" +
+                    "Nodes" +
+                    "\r\n" +
+                    "Name" +
+                    "\t" +
+                    Convert.ToString(vm.Nodes[i_List_Node].Name) +
+                    "\r\n" +
+                    "X" +
+                    "\t" +
+                    Convert.ToString(vm.Nodes[i_List_Node].X) +
+                    "\r\n" +
+                    "Y" +
+                    "\t" +
+                    Convert.ToString(vm.Nodes[i_List_Node].Y) +
+                    "\r\n" +
+                    "Full" +
+                    "\t" +
+                    Convert.ToString(vm.Nodes[i_List_Node].Full) +
+                    "\r\n" +
+                    "FullLine" +
+                    "\t" +
+                    Convert.ToString(vm.Nodes[i_List_Node].FullLine) +
+                    "\r\n" +
+                    "ConnectNum" +
+                    "\t" +
+                    Convert.ToString(vm.Nodes[i_List_Node].ConnectNum)
+                    ;
+                }
+                //流路图缩放到原大小
+                if (ViewModel.ScaleNum_Positive > 0)
+                {
+                    for (int scalenum = 0; scalenum < ViewModel.ScaleNum_Positive; scalenum++)
+                    {
+                        vm.ScaleFactor = 1.2;
+                        vm.Zoom();
+                    }
+                }
+                if (ViewModel.ScaleNum_Negative > 0)
+                {
+                    for (int scalenum = 0; scalenum < ViewModel.ScaleNum_Negative; scalenum++)
+                    {
+                        vm.ScaleFactor = 1.0 / 1.2;
+                        vm.Zoom();
                     }
 
-                    if (ViewModel.List_Controls[i_List_Controls].GetType().Name == "Rect")
-                    {
-                        var CurrentItem = ViewModel.List_Controls[i_List_Controls] as Rect;
-
-                        data = data +
-                            "\r\n" +
-                            "Rect" +
-                            "\r\n" +
-                            "Name" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.Name) +
-                            "\r\n" +
-                            "Rect.X" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.X) +
-                            "\r\n" +
-                            "Rect.Y" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.Y) +
-                            "\r\n" +
-                            "RectHeight" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.RectHeight) +
-                            "\r\n" +
-                            "FullLine" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.FullLine)
-                            ;
-                    }
-                    if (ViewModel.List_Controls[i_List_Controls].GetType().Name == "Connector")
-                    {
-                        var CurrentItem = ViewModel.List_Controls[i_List_Controls] as Connector;
-
-                        data = data +
-                            "\r\n" +
-                            "Connector" +
-                            "\r\n" +
-                            "Name" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.Name) +
-                            "\r\n" +
-                            "Start.Name" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.Start.Name) +
-                            "\r\n" +
-                            "Start.X" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.Start.X) +
-                            "\r\n" +
-                            "Start.Y" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.Start.Y) +
-                            "\r\n" +
-                            "Start.Full" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.Start.Full) +
-                            "\r\n" +
-                            "Start.FullLine" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.Start.FullLine) +
-                            "\r\n" +
-                            "End.Name" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.End.Name) +
-                            "\r\n" +
-                            "End.X" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.End.X) +
-                            "\r\n" +
-                            "End.Y" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.End.Y) +
-                            "\r\n" +
-                            "End.FullLine" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.End.FullLine) +
-                            "\r\n" +
-                            "X" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.X) +
-                            "\r\n" +
-                            "Y" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.Y) +
-                            "\r\n" +
-                            "FullLine" +
-                            "\t" +
-                            Convert.ToString(CurrentItem.FullLine)
-                            ;
-                    }
                 }
 
                 //按照日期建立一个文件名
@@ -3420,7 +3507,7 @@ namespace tryRT
                 sfd.FileName = DateTime.Now.ToString("yyyyMMddHHmmss") + "_Mcoil输入.Mcoil";
 
                 try
-                { 
+                {
                     //点了保存按钮进入 
                     if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     {
@@ -3446,12 +3533,11 @@ namespace tryRT
                 {
                     Console.WriteLine(ex.ToString());
                 }
-
-
             }
 
             private void MenuItem_Click_InportInput(object sender, RoutedEventArgs e)
             {
+                //ViewModel.start111 = false;///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 //定义一个变量，存储文件所在的路径
                 string upStr = "";
                 int i = 1;
@@ -3470,7 +3556,7 @@ namespace tryRT
                         upStr = File.ReadAllText(fdlg.FileName, Encoding.UTF8);//UTF8万国码 //先读取文本内容，调用File类的ReadAllLines即可读取所有内容
                     }
 
-                    if(upStr!="")
+                    if (upStr != "")
                     {
                         string[] sp = upStr.Split(new string[] { "\r\n", "\t" }, StringSplitOptions.None);
 
@@ -3507,7 +3593,7 @@ namespace tryRT
                         this.RadioButton_Hri_Evap.IsChecked = Convert.ToBoolean(sp[i]); i++;
                         this.Hri_Evap.Text = Convert.ToString(sp[i]); i++; i++;
                         this.RadioButton_PriTri_Evap.IsChecked = Convert.ToBoolean(sp[i]); i++;
-                        this.Tri_ValveBefore.Text = Convert.ToString(sp[i]); i++; 
+                        this.Tri_ValveBefore.Text = Convert.ToString(sp[i]); i++;
                         this.Pri_ValveBefore.Text = Convert.ToString(sp[i]); i++; i++;
                         this.RadioButton_Tro_Evap.IsChecked = Convert.ToBoolean(sp[i]); i++;
                         this.Tcro_Evap.Text = Convert.ToString(sp[i]); i++; i++;
@@ -3538,6 +3624,39 @@ namespace tryRT
                         this.Zha.Text = Convert.ToString(sp[i]); i++; i++;
                         this.Zapa.Text = Convert.ToString(sp[i]); i++;
 
+                        //流路图缩放到初始大小先
+                        if (ViewModel.ScaleNum_Positive > 0)
+                        {
+                            for (int scalenum = 0; scalenum < ViewModel.ScaleNum_Positive; scalenum++)
+                            {
+                                vm.ScaleFactor = 1.0 / 1.2;
+                                vm.Zoom();
+                            }
+                        }
+                        if (ViewModel.ScaleNum_Negative > 0)
+                        {
+                            for (int scalenum = 0; scalenum < ViewModel.ScaleNum_Negative; scalenum++)
+                            {
+                                vm.ScaleFactor = 1.2;
+                                vm.Zoom();
+                            }
+
+                        }
+                        ViewModel.ScaleNum_Positive = 0;
+                        ViewModel.ScaleNum_Negative = 0;
+
+                        i++;//记录放大次数
+                        if (Convert.ToInt16(sp[i]) > 0)
+                        {
+                            ViewModel.ScaleNum_Positive = Convert.ToInt16(sp[i]);
+                        }
+                        i++; i++;//记录缩小次数
+                        if (Convert.ToInt16(sp[i]) > 0)
+                        {
+                            ViewModel.ScaleNum_Negative = Convert.ToInt16(sp[i]);
+                        }
+                        i++;
+
                         //界面生成管子
                         ////人为后台按Button1
                         //MouseButtonEventArgs args = new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left);
@@ -3547,10 +3666,11 @@ namespace tryRT
                         int _tube = Convert.ToInt32(tube_per.Text);
                         vm.Connectors.Clear();
                         vm.Capillaries.Clear();
-                        while (vm.Rects.Count > 2)
-                        {
-                            vm.Rects.RemoveAt(2);
-                        }
+                        vm.Rects.Clear();
+                        //while (vm.Rects.Count > 2)
+                        //{
+                        //    vm.Rects.RemoveAt(2);
+                        //}
                         ViewModel.List_Controls.Clear();
                         node1 = null;
                         rect = null;
@@ -3559,7 +3679,7 @@ namespace tryRT
                         //生成显示的流路
                         int list_vm_Nodes = 0;
                         int list_vm_Rects = 0;
-                        
+
                         if (i < sp.Length - 1)//没流路时可能会超数组长度，所以判断后面有没有流路信息
                         {
                             //先生成Rect才能生成Capillary
@@ -3573,7 +3693,7 @@ namespace tryRT
                                     newrect.X = Convert.ToDouble(sp[j]); j++; j++;
                                     newrect.Y = Convert.ToDouble(sp[j]); j++; j++;
                                     newrect.RectHeight = Convert.ToDouble(sp[j]); j++; j++;
-                                    newrect.FullLine = Convert.ToBoolean(sp[j]); j++; j++;
+                                    newrect.FullLine = Convert.ToBoolean(sp[j]);
                                     vm.Rects.Add(newrect);
                                     ViewModel.List_Controls.Add(newrect);//导入时生成的List_Controls顺序会乱...除非有顺序要求，目前不调顺序了
                                 }
@@ -3610,7 +3730,7 @@ namespace tryRT
                                     {
                                         if (Convert.ToDouble(sp[j + 2]) == vm.Rects[list_vm_Rects].X)
                                         {
-                                            if (list_vm_Rects == 0)//导出文件时vm.Rects[0].Y可能不会和当前已有的vm.Rects[0].Y相等，所以特殊处理
+                                            if (list_vm_Rects == 0 || list_vm_Rects == 1)//导出文件时vm.Rects[0].Y可能不会和当前已有的vm.Rects[0].Y相等，所以特殊处理
                                             {
                                                 newcapillary.End = vm.Rects[list_vm_Rects];
                                                 j++; j++;//End.Name
@@ -3720,8 +3840,47 @@ namespace tryRT
                                 }
                             }
 
-                        }
+                            //设置Nodes属性
+                            for (int j = i; j < sp.Count(); j++)
+                            {
+                                if (sp[j] == "Nodes")
+                                {
+                                    j++; j++;//Name
+                                    for (list_vm_Nodes = 0; list_vm_Nodes < vm.Nodes.Count; list_vm_Nodes++)
+                                    {
+                                        if (sp[j]== vm.Nodes[list_vm_Nodes].Name)
+                                        {
+                                            j++; j++;//X
+                                            j++; j++;//Y
+                                            j++; j++;//Full
+                                            j++; j++;//FullLine
+                                            j++; j++;//ConnectNum
+                                            vm.Nodes[list_vm_Nodes].ConnectNum=Convert.ToInt16(sp[j]);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
 
+                        }
+                        //流路图缩放到原大小先
+                        if (ViewModel.ScaleNum_Positive > 0)
+                        {
+                            for (int scalenum = 0; scalenum < ViewModel.ScaleNum_Positive; scalenum++)
+                            {
+                                vm.ScaleFactor = 1.2;
+                                vm.Zoom();
+                            }
+                        }
+                        if (ViewModel.ScaleNum_Negative > 0)
+                        {
+                            for (int scalenum = 0; scalenum < ViewModel.ScaleNum_Negative; scalenum++)
+                            {
+                                vm.ScaleFactor = 1.0 / 1.2;
+                                vm.Zoom();
+                            }
+
+                        }
                     }
 
                 }
@@ -3729,7 +3888,6 @@ namespace tryRT
                 {
                     Console.WriteLine(ex.ToString());
                 }
-
             }
 
             private void Button_Delete_Controls(object sender, RoutedEventArgs e)
@@ -3787,7 +3945,7 @@ namespace tryRT
                                 {
                                     if (vm.Nodes[List_Node].Name == vm.Connectors[i_List_Connector].Start.Name || vm.Nodes[List_Node].Name == vm.Connectors[i_List_Connector].End.Name)
                                     {
-                                        vm.Nodes[List_Node].ConnectNum++;
+                                        vm.Nodes[List_Node].ConnectNum = 2;
                                     }
                                 }
                                 vm.Connectors.Remove(vm.Connectors[i_List_Connector]);
@@ -3809,7 +3967,7 @@ namespace tryRT
                                 {
                                     if (vm.Nodes[List_Node].Name == vm.Capillaries[i_List_Capillaries].Start.Name || vm.Nodes[List_Node].Name == vm.Capillaries[i_List_Capillaries].End.Name)
                                     {
-                                        vm.Nodes[List_Node].ConnectNum++;
+                                        vm.Nodes[List_Node].ConnectNum = 2;
                                     }
                                 }
                                 vm.Capillaries.Remove(vm.Capillaries[i_List_Capillaries]);
@@ -3888,7 +4046,7 @@ namespace tryRT
                                     {
                                         if (vm.Nodes[List_Node].Name == vm.Connectors[i_List_Connector].Start.Name || vm.Nodes[List_Node].Name == vm.Connectors[i_List_Connector].End.Name)
                                         {
-                                            vm.Nodes[List_Node].ConnectNum++;
+                                            vm.Nodes[List_Node].ConnectNum = 2;
                                         }
                                     }
                                     vm.Connectors.Remove(vm.Connectors[i_List_Connector]);
@@ -3910,7 +4068,7 @@ namespace tryRT
                                     {
                                         if (vm.Nodes[List_Node].Name == vm.Capillaries[i_List_Capillaries].Start.Name || vm.Nodes[List_Node].Name == vm.Capillaries[i_List_Capillaries].End.Name)
                                         {
-                                            vm.Nodes[List_Node].ConnectNum++;
+                                            vm.Nodes[List_Node].ConnectNum = 2;
                                         }
                                     }
                                     vm.Capillaries.Remove(vm.Capillaries[i_List_Capillaries]);
@@ -3973,13 +4131,26 @@ namespace tryRT
                         vm.Rects.Remove(selectelement);
 
                         //删除List_Controls上Rect
-                        for (i_List_Controls = 0; i_List_Controls < ViewModel.List_Controls.Count; )
+                        for (i_List_Controls = 2; i_List_Controls < ViewModel.List_Controls.Count; i_List_Controls++)//不能删除进出口Rect，所以起始点为2
                         {
-                            if (selectelement.GetHashCode() == ViewModel.List_Controls[i_List_Controls].GetHashCode())
+                            if (ViewModel.List_Controls[i_List_Controls].GetType().Name == "Rect")
                             {
-                                ViewModel.List_Controls.Remove(ViewModel.List_Controls[i_List_Controls]);
-                                break;
+                                var CurrentItem = ViewModel.List_Controls[i_List_Controls] as Rect;
+                                string _circuitnum_str = CurrentItem.Name.Substring(CurrentItem.Name.LastIndexOf("HasCircuitNum") + 14, (CurrentItem.Name.Length - (CurrentItem.Name.LastIndexOf("HasCircuitNum") + 14)));
+
+                                if (_circuitnum_str == circuitnum_str)
+                                {
+                                    ViewModel.List_Controls.Remove(ViewModel.List_Controls[i_List_Controls]);
+                                    break;
+                                }
+
                             }
+
+                            //if (selectelement.GetHashCode() == ViewModel.List_Controls[i_List_Controls].GetHashCode())
+                            //{
+                            //    ViewModel.List_Controls.Remove(ViewModel.List_Controls[i_List_Controls]);
+                            //    break;
+                            //}
                         }
 
                     }
@@ -4029,6 +4200,31 @@ namespace tryRT
 
             private void Button_Click_AutoArrange(object sender, RoutedEventArgs e)
             {
+                Model.Basic.GeometryInput geoInput = new Model.Basic.GeometryInput();
+                //几何结构输入
+                geoInput.Nrow = Convert.ToInt16(Row.Text);//管排数
+                geoInput.Ntube = Convert.ToInt16(tube_per.Text);//管数/排
+
+                if (geoInput.Nrow % 2 == 0)
+                {
+                    if (Convert.ToInt16(this.Cirnum.Text) > geoInput.Ntube)
+                    {
+                        System.Windows.MessageBox.Show("流路数超出每排最大管数!");
+                        this.Cirnum.Text = geoInput.Ntube.ToString();
+                        //return;//退出按钮事件
+                    }
+                }
+                else if (geoInput.Nrow % 2 == 1)
+                {
+                    if (Convert.ToInt16(this.Cirnum.Text) > Convert.ToInt16(geoInput.Ntube/2))
+                    {
+                        System.Windows.MessageBox.Show("流路数超出自动分配合理值!");
+                        this.Cirnum.Text = Convert.ToInt16(geoInput.Ntube / 2).ToString();
+                        //return;//退出按钮事件
+                    }
+                }
+
+                #region 初始化
                 vm.Connectors.Clear();
                 vm.Capillaries.Clear();
                 while (vm.Rects.Count>2)
@@ -4045,14 +4241,10 @@ namespace tryRT
                 {
                     vm.Nodes[List_Node].ConnectNum = 2;
                 }
+                #endregion
 
                 #region CirArrange
                 //**************下面这段求CirArrange的方法的代码和点击菜单中计算按钮后求CirArrange的方法的代码一样，为方便维护，以后宜提取出来共用
-                Model.Basic.GeometryInput geoInput = new Model.Basic.GeometryInput();
-                //几何结构输入
-                geoInput.Nrow = Convert.ToInt16(Row.Text);//管排数
-                geoInput.Ntube = Convert.ToInt16(tube_per.Text);//管数/排
-
                 //流路
                 int i = 1;
                 int j = 1;
@@ -4070,25 +4262,28 @@ namespace tryRT
                 //Get AutoCircuitry
                 CircuitInfo = Model.Basic.AutoCircuiting.GetTubeofCir(geoInput.Nrow, geoInput.Ntube, CircuitInfo);
                 CirArrange = new int[CircuitInfo.number[0], CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]];
-                if (geoInput.Nrow % 2 == 0)
+                if (geoInput.Nrow % 2 == 0)//只能连2排
                 {
                     CirArrange = Model.Basic.AutoCircuiting.GetCirArrange_2Row(CirArrange, geoInput.Nrow, geoInput.Ntube, CircuitInfo);
                 }
-                else if (geoInput.Nrow % 2 == 1)
+                else if (geoInput.Nrow % 2 == 1)//只能连1排
                 {
                     CirArrange = Model.Basic.AutoCircuiting.GetCirArrange_3Row(CirArrange, geoInput.Nrow, geoInput.Ntube, CircuitInfo);
                 }
+
+                
                 #endregion
 
                 #region 连线
                 bool Line_Start = true;
                 bool Line_complet = false;
+                bool Circuit_complet = false;
                 int remember_list_vm_Nodes = 0;
                 bool remember_FullLine = true;
-
-                for (int i_CirArrange = 0; i_CirArrange < CircuitInfo.number[0]; i_CirArrange++)
+              
+                for (int i_CirArrange = 0; i_CirArrange < CircuitInfo.number[0]; i_CirArrange++)//相当于流路号
                 {
-                    for (int j_CirArrange = 0; j_CirArrange < CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]; j_CirArrange++)
+                    for (int j_CirArrange = 0; j_CirArrange < CircuitInfo.TubeofCir[CircuitInfo.number[0] - 1]; j_CirArrange++)//相当于流路中哪几个管
                     {
                         for (int list_vm_Nodes = 0; list_vm_Nodes < vm.Nodes.Count; list_vm_Nodes++)
                         {
@@ -4228,6 +4423,7 @@ namespace tryRT
                                     //ViewModel.Circuit_Num = i_CirArrange;
                                     newLine.Name = Convert.ToString("NewConnector/ConnectorNum" + ViewModel.Connector_Num + "/CircuitNum" + ViewModel.Circuit_Num);
                                     vm.Nodes[remember_list_vm_Nodes].ConnectNum--;
+                                    remember_list_vm_Nodes = list_vm_Nodes;
                                     vm.Nodes[list_vm_Nodes].ConnectNum--;
                                     vm.Connectors.Add(newLine);
                                     ViewModel.List_Controls.Add(newLine);
@@ -4254,18 +4450,56 @@ namespace tryRT
                                 #endregion
 
                             }
+                            else if (CirArrange[i_CirArrange, j_CirArrange] == 0 && list_vm_Nodes == (vm.Nodes.Count - 1))
+                            {
+                                //连EndCapillary
+                                Capillary newcapillary = new Capillary();
+
+                                newcapillary.Start = vm.Nodes[remember_list_vm_Nodes];
+                                newcapillary.End = vm.Rects[1];
+                                newcapillary.Length = 0;
+                                newcapillary.Diameter = 0;
+                                newcapillary.X = vm.Nodes[remember_list_vm_Nodes].X - vm.RowPitch + 5;
+
+                                if (j_CirArrange % 2 != 0)
+                                {
+                                    remember_FullLine = false;
+                                }
+                                else
+                                {
+                                    remember_FullLine = true;
+                                }
+
+                                if (this.RefReverse.IsChecked == false)
+                                {
+                                    newcapillary.In = true;
+                                }
+                                else
+                                {
+                                    newcapillary.In = false;
+                                }
+                                ViewModel.End_Capillary_Num++;
+                                //ViewModel.Circuit_Num = i_CirArrange;
+                                newcapillary.Name = Convert.ToString("New_End_Capillary/CapillaryNum" + ViewModel.End_Capillary_Num + "/CircuitNum" + ViewModel.Circuit_Num);
+                                vm.Nodes[remember_list_vm_Nodes].ConnectNum--;
+                                vm.Capillaries.Add(newcapillary);
+                                ViewModel.List_Controls.Add(newcapillary);
+                                //List_Nodes.RemoveAt(remember_list_vm_Nodes);
+                                Line_Start = true;//否则会出现下一个流路连Connector时连到上一个流路末尾去
+                                Circuit_complet = true;
+                                break;
+                            }
+                        }
+
+                        if (Circuit_complet == true)
+                        {
+                            Circuit_complet = false;
+                            break;
                         }
                     }
                 }
                 #endregion
-
-
-
             }
-
-
-
-
     }
 
 }
