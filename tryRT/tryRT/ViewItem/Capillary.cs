@@ -9,7 +9,7 @@ namespace tryRT
 {
     public class Capillary : INotifyPropertyChanged
     {
-        public static List<Capillary> List_Capillary = new List<Capillary>();
+        //public static List<Capillary> List_Capillary = new List<Capillary>();
 
         private Node _start;
         public Node Start

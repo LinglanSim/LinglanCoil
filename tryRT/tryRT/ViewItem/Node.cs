@@ -63,6 +63,17 @@ namespace tryRT
             }
         }
 
+        private int _ConnectNum = 2;
+        public int ConnectNum
+        {
+            get { return _ConnectNum; }
+            set
+            {
+                _ConnectNum = value;
+                OnPropertyChanged("ConnectNum");
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged(string propertyName)

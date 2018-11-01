@@ -9,7 +9,7 @@ namespace tryRT
 {
     public class Connector : INotifyPropertyChanged
     {
-        public static List<Connector> List_Connector = new List<Connector>();
+        //public static List<Connector> List_Connector = new List<Connector>();
 
         private Node _start;
         public Node Start
@@ -64,7 +64,6 @@ namespace tryRT
                 OnPropertyChanged("Name");
             }
         }
-
 
         public event PropertyChangedEventHandler PropertyChanged;
 
