@@ -1226,7 +1226,9 @@ namespace tryRT
             this.Canvas_8.Visibility = Visibility.Collapsed;
             this.Canvas_9.Visibility = Visibility.Visible;
             this.ScrollViewer_0.Visibility = Visibility.Visible;
-
+            //this.Grid_DetailResult.Height = this.dataGrid_Result.Height;
+            this.Grid_DetailResult.Height = this.dataGrid_Result.RowHeight * Convert.ToInt32(tube_per.Text) * Convert.ToInt32(Row.Text)+60;
+            //this.Grid_DetailResult.Height = 1300;
             this.Picture_HExTube.Visibility = Visibility.Collapsed;
             this.Picture_FinType.Visibility = Visibility.Collapsed;
             this.Picture_HExType.Visibility = Visibility.Collapsed;
