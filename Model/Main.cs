@@ -20,7 +20,10 @@ namespace Model
             CalcResult res = new CalcResult();
             int Nrow = geoInput.Nrow;
             double[] FPI = new double[Nrow];
-            FPI = new double[] { 25.4 / geoInput.FPI, 25.4 / geoInput.FPI };//to be updated
+            for (int i = 0; i < Nrow;i++ )
+            {
+                FPI[i] = 25.4 / geoInput.FPI;
+            }            
             double Pt = geoInput.Pt * 0.001;//1 * 25.4 * 0.001;
             double Pr = geoInput.Pr * 0.001;//0.75 * 25.4 * 0.001;
             double Do = geoInput.Do * 0.001;// 10.0584 * 0.001;//8.4 7.35
@@ -428,7 +431,10 @@ namespace Model
             CalcResult res = new CalcResult();
             int Nrow = geoInput.Nrow;
             double[] FPI = new double[Nrow];
-            FPI = new double[] { 25.4 / geoInput.FPI, 25.4 / geoInput.FPI };//to be updated
+            for (int i = 0; i < Nrow; i++)
+            {
+                FPI[i] = 25.4 / geoInput.FPI;
+            }  
             double Pt = geoInput.Pt * 0.001;//1 * 25.4 * 0.001;
             double Pr = geoInput.Pr * 0.001;//0.75 * 25.4 * 0.001;
             double Do = geoInput.Do * 0.001;// 10.0584 * 0.001;//8.4 7.35
@@ -629,7 +635,10 @@ namespace Model
             CalcResult res = new CalcResult();
             int Nrow = geoInput.Nrow;
             double[] FPI = new double[Nrow];
-            FPI = new double[] { 25.4 / geoInput.FPI, 25.4 / geoInput.FPI };//to be updated
+            for (int i = 0; i < Nrow; i++)
+            {
+                FPI[i] = 25.4 / geoInput.FPI;
+            }
             double Pt = geoInput.Pt * 0.001;//1 * 25.4 * 0.001;
             double Pr = geoInput.Pr * 0.001;//0.75 * 25.4 * 0.001;
             double Do = geoInput.Do * 0.001;// 10.0584 * 0.001;//8.4 7.35
@@ -814,7 +823,10 @@ namespace Model
             CalcResult res = new CalcResult();
             int Nrow = geoInput.Nrow;
             double[] FPI = new double[Nrow];
-            FPI = new double[] { 25.4 / geoInput.FPI, 25.4 / geoInput.FPI };//to be updated
+            for (int i = 0; i < Nrow; i++)
+            {
+                FPI[i] = 25.4 / geoInput.FPI;
+            }
             double Pt = geoInput.Pt * 0.001;//1 * 25.4 * 0.001;
             double Pr = geoInput.Pr * 0.001;//0.75 * 25.4 * 0.001;
             double Do = geoInput.Do * 0.001;// 10.0584 * 0.001;//8.4 7.35
@@ -1001,8 +1013,11 @@ namespace Model
             double Do = geoInput.Do * 0.001;
             double L = geoInput.L * 0.001;
             double thickness = 0.5 * (Do - Di);
-            double[] FPI = new double[Nrow + 1];
-            FPI = new double[] { geoInput.FPI, geoInput.FPI };
+            double[] FPI = new double[Nrow];
+            for (int i = 0; i < Nrow; i++)
+            {
+                FPI[i] = geoInput.FPI;
+            }  
             double Fthickness = geoInput.Fthickness * 0.001;
             int CirNum = geoInput.CirNum;//流路数目赋值
             int Nelement = 5;//单管单元格数赋值
@@ -1172,8 +1187,11 @@ namespace Model
             double L = geoInput.L * 0.001;
             double thickness = 0.5 * (Do - Di);
 
-            double[] FPI = new double[Nrow + 1];
-            FPI = new double[] { geoInput.FPI, geoInput.FPI };
+            double[] FPI = new double[Nrow];
+            for (int i = 0; i < Nrow; i++)
+            {
+                FPI[i] = geoInput.FPI;
+            }
             double Fthickness = geoInput.Fthickness * 0.001;//0.095 * 0.001;
             //***几何结构赋值完成***//
             int CirNum = geoInput.CirNum;//流路数目赋值
@@ -1313,7 +1331,10 @@ namespace Model
             CalcResult res = new CalcResult();
             int Nrow = geoInput.Nrow;
             double[] FPI = new double[Nrow];
-            FPI = new double[] { 25.4 / geoInput.FPI, 25.4 / geoInput.FPI };//to be updated
+            for (int i = 0; i < Nrow; i++)
+            {
+                FPI[i] = 25.4 / geoInput.FPI;
+            }
             double Pt = geoInput.Pt * 0.001;//1 * 25.4 * 0.001;
             double Pr = geoInput.Pr * 0.001;//0.75 * 25.4 * 0.001;
             double Do = geoInput.Do * 0.001;// 10.0584 * 0.001;//8.4 7.35
@@ -1464,8 +1485,11 @@ namespace Model
             //string fluid = new string[] { "ISOBUTAN" };
             CalcResult res = new CalcResult();
             int Nrow = geoInput.Nrow;
-            double[] FPI = new double[Nrow];            
-            FPI = new double[] { 25.4 / geoInput.FPI, 25.4 / geoInput.FPI };//to be updated
+            double[] FPI = new double[Nrow];
+            for (int i = 0; i < Nrow; i++)
+            {
+                FPI[i] = 25.4 / geoInput.FPI;
+            }
             double Pt = geoInput.Pt * 0.001;//1 * 25.4 * 0.001;
             double Pr = geoInput.Pr * 0.001;//0.75 * 25.4 * 0.001;
             double Do = geoInput.Do * 0.001;// 10.0584 * 0.001;//8.4 7.35

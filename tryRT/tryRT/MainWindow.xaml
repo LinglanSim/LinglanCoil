@@ -552,7 +552,7 @@
                     </Grid>
                 </ScrollViewer>
                 <!-->具体计算结果<!-->
-                <ScrollViewer x:Name="ScrollViewer_0" Grid.Column="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#FFE5E5E5" Visibility="Collapsed">
+                <ScrollViewer x:Name="ScrollViewer_0" Grid.Column="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#FFE5E5E5" Visibility="Collapsed">
                     <Grid x:Name="Grid_DetailResult" Width="920" Height="Auto" HorizontalAlignment="Left" VerticalAlignment="Top">
                         <Canvas x:Name="Canvas_9" Width="Auto" Height="Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Visibility="Collapsed" Background="#FFE5E5E5">
                             <TextBlock Text="具体计算结果" TextAlignment="Center" VerticalAlignment="Top" Height="22" Width="Auto" Margin="10,5,1,0"/>
